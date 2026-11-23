@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.gradle
 
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.MapProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
-import org.gradle.workers.WorkParameters
 
-internal interface GenerateParameters : WorkParameters {
-    val specification: RegularFileProperty
-
-    val root: DirectoryProperty
-
-    val overlays: ListProperty<String>
-
+internal interface OutputParameters {
     val commonKotlin: DirectoryProperty
 
     val jvmKotlin: DirectoryProperty
@@ -41,18 +29,4 @@ internal interface GenerateParameters : WorkParameters {
     val report: RegularFileProperty
 
     val sarif: RegularFileProperty
-
-    val packageName: Property<String>
-
-    val apiName: Property<String>
-
-    val typePrefix: Property<String>
-
-    val artifacts: SetProperty<String>
-
-    val visibility: Property<String>
-
-    val generatorVersion: Property<String>
-
-    val acknowledgements: MapProperty<String, String>
 }

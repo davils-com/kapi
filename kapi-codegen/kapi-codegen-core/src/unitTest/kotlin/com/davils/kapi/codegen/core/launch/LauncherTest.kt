@@ -35,6 +35,10 @@ private const val LAUNCH: String = "kapi-launch"
 
 private const val COMMON: String = "out/common"
 
+private const val JVM: String = "out/jvm"
+
+private const val MODELS: String = "Models"
+
 private const val LINE: String = "\n"
 
 private const val PETSTORE: String = """openapi: 3.1.0
@@ -64,10 +68,72 @@ components:
 
 private const val UNKNOWN_FIELD: String = "openapi.field.unknown"
 
+private const val CHAT: String = """asyncapi: 3.0.0
+info:
+  title: Chat
+  version: 1.0.0
+defaultContentType: application/json
+servers:
+  production:
+    host: chat.example.com
+    protocol: wss
+channels:
+  room:
+    address: /rooms
+    messages:
+      say:
+        ${'$'}ref: '#/components/messages/Say'
+operations:
+  receiveSay:
+    action: receive
+    channel:
+      ${'$'}ref: '#/channels/room'
+    messages:
+      - ${'$'}ref: '#/channels/room/messages/say'
+components:
+  messages:
+    Say:
+      payload:
+        ${'$'}ref: '#/components/schemas/Say'
+  schemas:
+    Say:
+      type: object
+      required: [text]
+      properties:
+        text: {type: string}
+"""
+
+private fun chatIn(
+    base: Path,
+    document: String = CHAT,
+    overlays: List<Path> = emptyList(),
+    artifacts: Set<String> = setOf(MODELS, "Client", "Server"),
+): LaunchRequest {
+    val request = requestIn(base, document = document)
+    return LaunchRequest(
+        specification = request.specification,
+        root = request.root,
+        overlays = overlays,
+        commonKotlin = request.commonKotlin,
+        jvmKotlin = request.jvmKotlin,
+        resources = request.resources,
+        report = request.report,
+        sarif = request.sarif,
+        packageName = "com.example.chat",
+        apiName = "Chat",
+        typePrefix = "",
+        artifacts = artifacts,
+        visibility = "Public",
+        generatorVersion = "test",
+        acknowledgements = emptyMap(),
+        kind = LaunchKind.AsyncApi,
+    )
+}
+
 private fun requestIn(
     base: Path,
     document: String = PETSTORE,
-    artifacts: Set<String> = setOf("Models", "Client", "Server"),
+    artifacts: Set<String> = setOf(MODELS, "Client", "Server"),
     acknowledgements: Map<String, String> = emptyMap(),
     visibility: String = "Public",
     folder: String = "api",
@@ -81,7 +147,7 @@ private fun requestIn(
         root = root,
         overlays = emptyList(),
         commonKotlin = base.resolve(COMMON),
-        jvmKotlin = base.resolve("out/jvm"),
+        jvmKotlin = base.resolve(JVM),
         resources = base.resolve("out/resources"),
         report = base.resolve("report/report.json"),
         sarif = base.resolve("report/report.sarif"),
@@ -107,7 +173,7 @@ class LauncherTest : FunSpec({
 
             verdict.isAccepted shouldBe true
             Files.walk(base.resolve(COMMON)).anyMatch { path -> path.toString().endsWith("Pet.kt") } shouldBe true
-            Files.walk(base.resolve("out/jvm")).anyMatch { path -> path.toString().contains("server") } shouldBe true
+            Files.walk(base.resolve(JVM)).anyMatch { path -> path.toString().contains("server") } shouldBe true
             base.resolve("out/resources/META-INF/kapi/openapi/petstore.provenance.json").exists() shouldBe true
             request.report.readText() shouldContain """"outcome": "Generated""""
             request.sarif.readText() shouldContain """"version": "2.1.0""""
@@ -145,6 +211,58 @@ class LauncherTest : FunSpec({
             val verdict = Launcher.run(requestIn(base, document = document))
 
             verdict.isAccepted shouldBe false
+        }
+    }
+
+    context("an AsyncAPI run") {
+        test("writes the models, the client and the server of the WebSocket channels") {
+            val base = createTempDirectory(LAUNCH)
+            val request = chatIn(base)
+
+            val verdict = Launcher.run(request)
+
+            verdict.failures.shouldBeEmpty()
+            Files.walk(base.resolve(COMMON)).anyMatch { path -> path.toString().endsWith("Say.kt") } shouldBe true
+            base.resolve(JVM).exists() shouldBe true
+            request.toString() shouldContain "AsyncApi"
+        }
+
+        test("refuses overlays, a document that is no AsyncAPI and an artifact AsyncAPI does not describe") {
+            val base = createTempDirectory(LAUNCH)
+            val overlay = base.resolve("api/overlay.yaml")
+
+            Launcher.run(chatIn(base, overlays = listOf(overlay))).failures shouldContain
+                "An AsyncAPI document takes no overlays"
+            Launcher.run(chatIn(base, document = "asyncapi: [")).isAccepted shouldBe false
+            val unknown = CHAT.replace(oldValue = "  room:", newValue = "  room:\n    x: 1")
+            Launcher.run(chatIn(base, document = unknown)).isAccepted shouldBe false
+            val mocks = Launcher.run(chatIn(base, artifacts = setOf(MODELS, "Mocks")))
+            mocks.failures.joinToString() shouldContain "which AsyncAPI does not describe"
+        }
+    }
+
+    context("a lint") {
+        test("writes both reports but no code") {
+            val base = createTempDirectory(LAUNCH)
+            val request = requestIn(base)
+
+            val verdict = Launcher.lint(request)
+
+            verdict.isAccepted shouldBe true
+            base.resolve(COMMON).exists() shouldBe false
+            request.report.readText() shouldContain """"outcome": "Audited""""
+            request.sarif.exists() shouldBe true
+        }
+
+        test("audits an AsyncAPI document and refuses an unused acknowledgement") {
+            val base = createTempDirectory(LAUNCH)
+            val request = chatIn(base)
+
+            Launcher.lint(request).isAccepted shouldBe true
+            base.resolve(COMMON).exists() shouldBe false
+            val unused = requestIn(base, acknowledgements = mapOf("openapi.x" to "known"))
+            val failures = Launcher.lint(unused).failures
+            failures shouldContain "The acknowledgement of openapi.x matches no warning and has to go"
         }
     }
 

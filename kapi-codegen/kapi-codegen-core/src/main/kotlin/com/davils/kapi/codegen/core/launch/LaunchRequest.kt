@@ -38,6 +38,7 @@ import java.nio.file.Path
  * @property visibility the name of the visibility of the generated code, `Public` or `Internal`.
  * @property generatorVersion the version of kapi that generates.
  * @property acknowledgements the codes of warnings the build accepts, each with its reason.
+ * @property kind the specification the document follows; OpenAPI by default. An AsyncAPI document takes no overlays.
  * @since 1.0.0
  */
 @DavilsInternal
@@ -57,6 +58,7 @@ public class LaunchRequest(
     public val visibility: String,
     public val generatorVersion: String,
     public val acknowledgements: Map<String, String>,
+    public val kind: LaunchKind = LaunchKind.OpenApi,
 ) {
-    override fun toString(): String = "LaunchRequest($specification, $packageName, $apiName, $artifacts)"
+    override fun toString(): String = "LaunchRequest($kind, $specification, $packageName, $apiName, $artifacts)"
 }

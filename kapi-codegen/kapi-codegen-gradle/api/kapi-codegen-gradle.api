@@ -1,0 +1,110 @@
+public abstract class com/davils/kapi/codegen/gradle/ArtifactsSpec {
+	public fun <init> ()V
+	public abstract fun getClient ()Lorg/gradle/api/provider/Property;
+	public abstract fun getMocks ()Lorg/gradle/api/provider/Property;
+	public abstract fun getModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getReceivers ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSenders ()Lorg/gradle/api/provider/Property;
+	public abstract fun getServer ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/CodegenExtension {
+	public fun <init> ()V
+	public final fun asyncApi (Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public abstract fun getAsyncApi ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public abstract fun getGeneratorClasspath ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getOpenApi ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public abstract fun getRuntimes ()Lcom/davils/kapi/codegen/gradle/RuntimesSpec;
+	public abstract fun getVersion ()Lorg/gradle/api/provider/Property;
+	public final fun openApi (Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public final fun runtimes (Lorg/gradle/api/Action;)V
+}
+
+public final class com/davils/kapi/codegen/gradle/CodegenPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class com/davils/kapi/codegen/gradle/DocumentSpec : org/gradle/api/Named {
+	public fun <init> ()V
+	public final fun acknowledge (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun getAcknowledgements ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getApiName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getRoot ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getSource ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getTypePrefix ()Lorg/gradle/api/provider/Property;
+	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/DocumentTask : org/gradle/api/DefaultTask {
+	public static final field Companion Lcom/davils/kapi/codegen/gradle/DocumentTask$Companion;
+	public static final field GROUP Ljava/lang/String;
+	public fun <init> ()V
+	public abstract fun getAcknowledgements ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getApiName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getArtifacts ()Lorg/gradle/api/provider/SetProperty;
+	public abstract fun getGeneratorClasspath ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getGeneratorVersion ()Lorg/gradle/api/provider/Property;
+	public abstract fun getKind ()Lorg/gradle/api/provider/Property;
+	public abstract fun getLauncher ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOverlays ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getReport ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getRoot ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getSarif ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getSources ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getSpecification ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getTypePrefix ()Lorg/gradle/api/provider/Property;
+	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
+	protected abstract fun getWorkers ()Lorg/gradle/workers/WorkerExecutor;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/Generate : com/davils/kapi/codegen/gradle/DocumentTask {
+	public fun <init> ()V
+	public final fun generateKotlin ()V
+	public abstract fun getCommonKotlin ()Lorg/gradle/api/file/DirectoryProperty;
+	protected abstract fun getFiles ()Lorg/gradle/api/file/FileSystemOperations;
+	public abstract fun getJvmKotlin ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getResources ()Lorg/gradle/api/file/DirectoryProperty;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/Lint : com/davils/kapi/codegen/gradle/DocumentTask {
+	public fun <init> ()V
+	public final fun audit ()V
+}
+
+public abstract interface com/davils/kapi/codegen/gradle/RuntimesSpec {
+	public abstract fun getEnabled ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/SpecificationSpec : com/davils/kapi/codegen/gradle/DocumentSpec {
+	public fun <init> ()V
+	public final fun artifacts (Lorg/gradle/api/Action;)V
+	public abstract fun getArtifacts ()Lcom/davils/kapi/codegen/gradle/ArtifactsSpec;
+	public abstract fun getOverlays ()Lorg/gradle/api/provider/ListProperty;
+	public final fun overlay (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/codegen/gradle/Visibility : java/lang/Enum {
+	public static final field Internal Lcom/davils/kapi/codegen/gradle/Visibility;
+	public static final field Public Lcom/davils/kapi/codegen/gradle/Visibility;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/codegen/gradle/Visibility;
+	public static fun values ()[Lcom/davils/kapi/codegen/gradle/Visibility;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/asyncapi/ArtifactsSpec {
+	public fun <init> ()V
+	public abstract fun getClient ()Lorg/gradle/api/provider/Property;
+	public abstract fun getModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getServer ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/asyncapi/SpecificationSpec : com/davils/kapi/codegen/gradle/DocumentSpec {
+	public fun <init> ()V
+	public final fun artifacts (Lorg/gradle/api/Action;)V
+	public abstract fun getArtifacts ()Lcom/davils/kapi/codegen/gradle/asyncapi/ArtifactsSpec;
+}
+
