@@ -30,7 +30,7 @@ import com.davils.kapi.spec.core.source.Source
  */
 public object Corpus {
     /**
-     * The names of the OpenAPI documents of the corpus, sorted.
+     * The names of the OpenAPI documents of the corpus, sorted by the names of their files, `<name>.yaml`.
      *
      * @since 1.0.0
      */
