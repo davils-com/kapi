@@ -38,6 +38,7 @@ internal object TargetReaders {
         ReferenceKind.SecurityScheme to referable(ReferenceKind.SecurityScheme, SecuritySchemeReader::scheme),
         ReferenceKind.Link to referable(ReferenceKind.Link, ResponseReader::link),
         ReferenceKind.Callback to referable(ReferenceKind.Callback, PathReader::callback),
+        ReferenceKind.MediaType to referable(ReferenceKind.MediaType, ContentReader::mediaType),
     )
 
     fun read(kind: ReferenceKind, cursor: Cursor): Referable<Element>? = readers.getValue(kind).invoke(cursor)

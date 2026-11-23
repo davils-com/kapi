@@ -192,9 +192,12 @@ internal object Shapes {
         subject = "A media type",
         fields = listOf(
             FieldRule(Keys.SCHEMA, FieldKind.Schema),
+            FieldRule(Keys.ITEM_SCHEMA, FieldKind.Schema, since = VersionFamily.V32),
             FieldRule(Keys.EXAMPLE, FieldKind.Value),
             FieldRule(Keys.EXAMPLES, FieldKind.Mapping),
             FieldRule(Keys.ENCODING, FieldKind.Mapping),
+            FieldRule(Keys.PREFIX_ENCODING, FieldKind.Sequence, since = VersionFamily.V32),
+            FieldRule(Keys.ITEM_ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -206,6 +209,9 @@ internal object Shapes {
             FieldRule(Keys.STYLE, FieldKind.Text),
             FieldRule(Keys.EXPLODE, FieldKind.Flag),
             FieldRule(Keys.ALLOW_RESERVED, FieldKind.Flag),
+            FieldRule(Keys.ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
+            FieldRule(Keys.PREFIX_ENCODING, FieldKind.Sequence, since = VersionFamily.V32),
+            FieldRule(Keys.ITEM_ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -254,6 +260,7 @@ internal object Shapes {
             FieldRule(Keys.LINKS, FieldKind.Mapping),
             FieldRule(Keys.CALLBACKS, FieldKind.Mapping),
             FieldRule(Keys.PATH_ITEMS, FieldKind.Mapping, since = VersionFamily.V31),
+            FieldRule(Keys.MEDIA_TYPES, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 

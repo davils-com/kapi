@@ -20,6 +20,7 @@ import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.content.Example
 import com.davils.kapi.spec.openapi.model.content.Link
+import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.RequestBody
 import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.parameter.Header
@@ -52,6 +53,13 @@ public class Components internal constructor(builder: ComponentsBuilder) :
 
     public val pathItems: Map<String, PathItem> = builder.pathItems.toMap()
 
+    /**
+     * The media types that content refers to by `$ref`, by name; empty before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val mediaTypes: Map<String, Referable<MediaType>> = builder.mediaTypes.toMap()
+
     override val identity: List<Any?>
         get() = listOf(
             schemas,
@@ -64,5 +72,6 @@ public class Components internal constructor(builder: ComponentsBuilder) :
             links,
             callbacks,
             pathItems,
+            mediaTypes,
         )
 }

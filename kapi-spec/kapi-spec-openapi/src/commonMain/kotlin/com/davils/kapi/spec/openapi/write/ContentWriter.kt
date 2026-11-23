@@ -41,7 +41,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.choice(Keys.EXPLODE, parameter.isExploded)
         out.flag(Keys.ALLOW_RESERVED, parameter.isReservedAllowed)
         out.node(Keys.SCHEMA, parameter.schema?.let(schemas::schema))
-        out.map(Keys.CONTENT, parameter.content, ::mediaType)
+        out.map(Keys.CONTENT, parameter.content, ReferenceWriter.referables(::mediaType))
         out.node(Keys.EXAMPLE, parameter.example?.let(Nodes::of))
         out.map(Keys.EXAMPLES, parameter.examples, ReferenceWriter.referables(::example))
         return out.build(parameter)
@@ -55,7 +55,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.text(Keys.STYLE, header.style?.keyword)
         out.choice(Keys.EXPLODE, header.isExploded)
         out.node(Keys.SCHEMA, header.schema?.let(schemas::schema))
-        out.map(Keys.CONTENT, header.content, ::mediaType)
+        out.map(Keys.CONTENT, header.content, ReferenceWriter.referables(::mediaType))
         out.node(Keys.EXAMPLE, header.example?.let(Nodes::of))
         out.map(Keys.EXAMPLES, header.examples, ReferenceWriter.referables(::example))
         return out.build(header)
@@ -64,16 +64,18 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
     fun mediaType(media: MediaType): YamlNode {
         val out = Out()
         out.node(Keys.SCHEMA, media.schema?.let(schemas::schema))
+        out.node(Keys.ITEM_SCHEMA, media.itemSchema?.takeIf { isCurrent }?.let(schemas::schema))
         out.node(Keys.EXAMPLE, media.example?.let(Nodes::of))
         out.map(Keys.EXAMPLES, media.examples, ReferenceWriter.referables(::example))
         out.map(Keys.ENCODING, media.encoding, ::encoding)
+        nested(out, media.prefixEncoding, media.itemEncoding)
         return out.build(media)
     }
 
     fun requestBody(body: RequestBody): YamlNode {
         val out = Out()
         out.text(Keys.DESCRIPTION, body.description)
-        out.node(Keys.CONTENT, Nodes.mapping(body.content, ::mediaType))
+        out.node(Keys.CONTENT, Nodes.mapping(body.content, ReferenceWriter.referables(::mediaType)))
         out.flag(Keys.REQUIRED, body.isRequired)
         return out.build(body)
     }
@@ -94,6 +96,13 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.text(Keys.STYLE, encoding.style?.keyword)
         out.choice(Keys.EXPLODE, encoding.isExploded)
         out.flag(Keys.ALLOW_RESERVED, encoding.isReservedAllowed)
+        out.map(Keys.ENCODING, encoding.encoding.takeIf { isCurrent }.orEmpty(), ::encoding)
+        nested(out, encoding.prefixEncoding, encoding.itemEncoding)
         return out.build(encoding)
+    }
+
+    private fun nested(out: Out, prefix: List<Encoding>, item: Encoding?) {
+        out.list(Keys.PREFIX_ENCODING, prefix.takeIf { isCurrent }.orEmpty(), ::encoding)
+        out.node(Keys.ITEM_ENCODING, item?.takeIf { isCurrent }?.let(::encoding))
     }
 }

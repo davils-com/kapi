@@ -70,6 +70,8 @@ internal class DocumentWriter(family: VersionFamily) {
         out.map(Keys.LINKS, components.links, ReferenceWriter.referables(responses::link))
         out.map(Keys.CALLBACKS, components.callbacks, ReferenceWriter.referables(paths::callback))
         out.map(Keys.PATH_ITEMS, components.pathItems, paths::pathItem)
+        val media = components.mediaTypes.takeIf { isCurrent }.orEmpty()
+        out.map(Keys.MEDIA_TYPES, media, ReferenceWriter.referables(content::mediaType))
         return out.build(components)
     }
 }

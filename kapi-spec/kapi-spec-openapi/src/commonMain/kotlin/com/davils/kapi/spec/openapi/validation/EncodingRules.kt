@@ -1,0 +1,43 @@
+/*
+ * Copyright 2026 Davils
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.davils.kapi.spec.openapi.validation
+
+import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.openapi.DiagnosticCodes
+import com.davils.kapi.spec.openapi.model.content.Encoding
+import com.davils.kapi.spec.openapi.model.content.MediaType
+
+internal object EncodingRules {
+    fun check(scope: RuleScope) {
+        val media = scope.all<MediaType>().filter { type ->
+            isMixed(type.encoding, type.prefixEncoding, type.itemEncoding)
+        }
+        val encodings = scope.all<Encoding>().filter { encoding ->
+            isMixed(encoding.encoding, encoding.prefixEncoding, encoding.itemEncoding)
+        }
+        (media + encodings).forEach { owner -> mixed(scope, owner) }
+    }
+
+    private fun isMixed(named: Map<String, Encoding>, prefix: List<Encoding>, item: Encoding?): Boolean =
+        named.isNotEmpty() && (prefix.isNotEmpty() || item != null)
+
+    private fun mixed(scope: RuleScope, owner: Element) {
+        val message = "encoding stands beside prefixEncoding or itemEncoding, but a part is encoded either by the " +
+            "names of its properties or by the positions of its items"
+        scope.report(DiagnosticCodes.MEDIA_TYPE_ENCODING, message, owner)
+    }
+}

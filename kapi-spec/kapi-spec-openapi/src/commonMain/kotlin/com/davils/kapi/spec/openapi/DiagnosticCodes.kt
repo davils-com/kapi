@@ -234,6 +234,14 @@ public object DiagnosticCodes {
      */
     public val TAG_PARENT_CYCLE: ViolationCode = code("tag.parent-cycle")
 
+    /**
+     * A media type or an encoding has encoding beside prefixEncoding or itemEncoding; the properties of a part are
+     * encoded by name or its items by position, never both.
+     *
+     * @since 1.0.0
+     */
+    public val MEDIA_TYPE_ENCODING: ViolationCode = code("media-type.encoding")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -317,6 +325,7 @@ public object DiagnosticCodes {
         PARAMETER_QUERYSTRING_WITH_QUERY,
         TAG_PARENT_UNKNOWN,
         TAG_PARENT_CYCLE,
+        MEDIA_TYPE_ENCODING,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

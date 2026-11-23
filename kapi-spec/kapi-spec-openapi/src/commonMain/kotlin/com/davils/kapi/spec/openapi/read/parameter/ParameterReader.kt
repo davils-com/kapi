@@ -26,7 +26,6 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.content.ContentReader
-import com.davils.kapi.spec.openapi.read.mapped
 import com.davils.kapi.spec.openapi.read.read
 import com.davils.kapi.spec.openapi.read.schema.SchemaReader
 import com.davils.kapi.spec.openapi.read.shape.Fields
@@ -50,7 +49,7 @@ internal object ParameterReader {
         isExploded = fields.flagOrNull(Keys.EXPLODE)
         isReservedAllowed = fields.flag(Keys.ALLOW_RESERVED)
         schema = fields.cursor(Keys.SCHEMA)?.let(SchemaReader::read)
-        content.putAll(fields.entries(Keys.CONTENT).mapped(ContentReader::mediaType))
+        content.putAll(ContentReader.content(fields))
         example = fields.value(Keys.EXAMPLE)
         examples.putAll(ContentReader.examples(fields))
     }
@@ -62,7 +61,7 @@ internal object ParameterReader {
         style = styleOf(fields)
         isExploded = fields.flagOrNull(Keys.EXPLODE)
         schema = fields.cursor(Keys.SCHEMA)?.let(SchemaReader::read)
-        content.putAll(fields.entries(Keys.CONTENT).mapped(ContentReader::mediaType))
+        content.putAll(ContentReader.content(fields))
         example = fields.value(Keys.EXAMPLE)
         examples.putAll(ContentReader.examples(fields))
     }

@@ -67,7 +67,7 @@ class EdgeReadingTest : FunSpec({
 
             reading.diagnostics.shouldBeEmpty()
             header.schema shouldBe null
-            response.content.getValue("text/plain").schema shouldBe null
+            document.resolve(response.content.getValue("text/plain"))?.schema shouldBe null
         }
     }
 

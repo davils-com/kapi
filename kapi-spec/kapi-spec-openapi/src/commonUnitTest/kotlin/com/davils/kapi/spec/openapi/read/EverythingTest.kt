@@ -256,9 +256,10 @@ class EverythingTest : FunSpec({
 
         test("keep their content with examples and encodings") {
             val document = everything()
-            val media = document.okResponse().content.getValue(JSON)
+            val content = document.okResponse().content
+            val media = document.resolve(content.getValue(JSON)).shouldNotBeNull()
             val photo = media.encoding.getValue("photo")
-            val plain = document.okResponse().content.getValue("text/plain")
+            val plain = document.resolve(content.getValue("text/plain")).shouldNotBeNull()
 
             media.schema.shouldNotBeNull()
             plain.example shouldBe Value.Mapping(mapOf("name" to Value.Text("Rex")))

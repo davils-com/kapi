@@ -42,7 +42,7 @@ internal class ResponseWriter(
         val out = Out()
         out.text(Keys.DESCRIPTION, response.description)
         out.map(Keys.HEADERS, response.headers, ReferenceWriter.referables(content::header))
-        out.map(Keys.CONTENT, response.content, content::mediaType)
+        out.map(Keys.CONTENT, response.content, ReferenceWriter.referables(content::mediaType))
         out.map(Keys.LINKS, response.links, ReferenceWriter.referables(::link))
         return out.build(response)
     }

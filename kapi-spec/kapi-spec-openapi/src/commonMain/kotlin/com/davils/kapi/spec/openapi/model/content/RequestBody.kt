@@ -17,12 +17,13 @@
 package com.davils.kapi.spec.openapi.model.content
 
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.core.model.Referable
 
 public class RequestBody internal constructor(builder: RequestBodyBuilder) :
     Element(builder) {
     public val description: String? = builder.description
 
-    public val content: Map<String, MediaType> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
 
     public val isRequired: Boolean = builder.isRequired
 

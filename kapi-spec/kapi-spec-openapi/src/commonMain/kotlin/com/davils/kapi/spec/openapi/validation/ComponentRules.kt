@@ -44,6 +44,7 @@ internal object ComponentRules {
             components.links,
             components.callbacks,
             components.pathItems,
+            components.mediaTypes,
         )
         return sections.flatMap { section -> section.keys }
     }

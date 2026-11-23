@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.read.content
 
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.content.Encoding
 import com.davils.kapi.spec.openapi.model.content.EncodingBuilder
 import com.davils.kapi.spec.openapi.model.content.Example
@@ -39,14 +40,24 @@ import com.davils.kapi.spec.openapi.read.shape.Shapes
 internal object ContentReader {
     fun mediaType(cursor: Cursor): MediaType = cursor.read(Shapes.mediaType, MediaTypeBuilder()) { fields ->
         schema = fields.cursor(Keys.SCHEMA)?.let(SchemaReader::read)
+        itemSchema = fields.cursor(Keys.ITEM_SCHEMA)?.let(SchemaReader::read)
         example = fields.value(Keys.EXAMPLE)
         examples.putAll(examples(fields))
         encoding.putAll(fields.entries(Keys.ENCODING).mapped(::encoding))
+        prefixEncoding.addAll(fields.items(Keys.PREFIX_ENCODING).map(::encoding))
+        itemEncoding = fields.cursor(Keys.ITEM_ENCODING)?.let(::encoding)
+    }
+
+    fun content(fields: Fields): Map<String, Referable<MediaType>> {
+        val entries = fields.entries(Keys.CONTENT)
+        val isReferable = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        if (isReferable) return entries.referables(ReferenceKind.MediaType, ::mediaType)
+        return entries.mapped { cursor -> Referable.Inline(mediaType(cursor)) }
     }
 
     fun requestBody(cursor: Cursor): RequestBody = cursor.read(Shapes.requestBody, RequestBodyBuilder()) { fields ->
         description = fields.text(Keys.DESCRIPTION)
-        content.putAll(fields.entries(Keys.CONTENT).mapped(::mediaType))
+        content.putAll(content(fields))
         isRequired = fields.flag(Keys.REQUIRED)
     }
 
@@ -66,5 +77,8 @@ internal object ContentReader {
         style = ParameterReader.styleOf(fields)
         isExploded = fields.flagOrNull(Keys.EXPLODE)
         isReservedAllowed = fields.flag(Keys.ALLOW_RESERVED)
+        encoding.putAll(fields.entries(Keys.ENCODING).mapped(::encoding))
+        prefixEncoding.addAll(fields.items(Keys.PREFIX_ENCODING).map(::encoding))
+        itemEncoding = fields.cursor(Keys.ITEM_ENCODING)?.let(::encoding)
     }
 }

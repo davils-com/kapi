@@ -33,5 +33,38 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
 
     public val isReservedAllowed: Boolean = builder.isReservedAllowed
 
-    override val identity: List<Any?> get() = listOf(contentType, headers, style, isExploded, isReservedAllowed)
+    /**
+     * The encodings of the properties of a nested multipart part, by name; empty before OpenAPI 3.2.
+     *
+     * A reading reports it beside [prefixEncoding] or [itemEncoding].
+     *
+     * @since 1.0.0
+     */
+    public val encoding: Map<String, Encoding> = builder.encoding.toMap()
+
+    /**
+     * The encodings of the leading items of a nested part, by position; empty before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.toList()
+
+    /**
+     * The encoding of every item of a nested part that [prefixEncoding] does not cover; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val itemEncoding: Encoding? = builder.itemEncoding
+
+    override val identity: List<Any?>
+        get() = listOf(
+            contentType,
+            headers,
+            style,
+            isExploded,
+            isReservedAllowed,
+            encoding,
+            prefixEncoding,
+            itemEncoding,
+        )
 }

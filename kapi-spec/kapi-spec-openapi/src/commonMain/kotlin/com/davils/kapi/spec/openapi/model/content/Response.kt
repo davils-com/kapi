@@ -26,7 +26,7 @@ public class Response internal constructor(builder: ResponseBuilder) :
 
     public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
 
-    public val content: Map<String, MediaType> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
 
     public val links: Map<String, Referable<Link>> = builder.links.toMap()
 

@@ -45,7 +45,7 @@ public class Parameter internal constructor(builder: ParameterBuilder) :
 
     public val schema: Schema? = builder.schema
 
-    public val content: Map<String, MediaType> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
 
     public val example: Value? = builder.example
 

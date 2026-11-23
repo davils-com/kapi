@@ -40,7 +40,7 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
 
     public var schema: Schema? = null
 
-    internal val content: MutableMap<String, MediaType> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
     public var example: Value? = null
 

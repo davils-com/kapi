@@ -29,7 +29,7 @@ public class ResponseBuilder internal constructor() : ElementBuilder<Response>()
 
     internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
 
-    internal val content: MutableMap<String, MediaType> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
     internal val links: MutableMap<String, Referable<Link>> = linkedMapOf()
 

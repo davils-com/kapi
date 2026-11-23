@@ -20,6 +20,7 @@ import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.content.Example
 import com.davils.kapi.spec.openapi.model.content.Link
+import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.RequestBody
 import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.parameter.Header
@@ -53,6 +54,8 @@ public class ComponentsBuilder internal constructor() : ElementBuilder<Component
     internal val callbacks: MutableMap<String, Referable<Callback>> = linkedMapOf()
 
     internal val pathItems: MutableMap<String, PathItem> = linkedMapOf()
+
+    internal val mediaTypes: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
     override fun assemble(): Components = Components(this)
 }
