@@ -156,7 +156,8 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
 ## Build
 
 - A library module applies exactly one plugin, `id("kapi.kotlin-library")`, `id("kapi.serialization-library")` for a
-  multiplatform module with `@Serializable` types or, for a module only the JVM offers, `id("kapi.jvm-library")`, and declares nothing but its description and its dependencies; the Gradle plugin applies
+  multiplatform module with `@Serializable` types or, for a module only the JVM offers, `id("kapi.jvm-library")` or
+  `id("kapi.jvm-serialization-library")`, and declares nothing but its description and its dependencies; the Gradle plugin applies
   `id("kapi.gradle-plugin")` and the BOM `id("kapi.bom")`.
 - `build-logic` holds no Kotlin classes, no tasks and no Gradle API calls beyond reading the version catalog. Every
   plugin configures one concern and applies `kapi.base`:
@@ -181,7 +182,7 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
   | `kapi.tool-classpaths` | The version floors on the class paths of the build tools |
   | `kapi.changelog` | The changelog check |
   | `kapi.license-header` | The license header check |
-  | `kapi.serialization` | The kotlinx.serialization compiler plugin, composed by `kapi.serialization-library` |
+  | `kapi.serialization` | The kotlinx.serialization compiler plugin, composed by `kapi.serialization-library` and `kapi.jvm-serialization-library` |
   | `kapi.bom` | The Java platform of the BOM and its publication |
 
 - Dependencies are declared in `gradle/libs.versions.toml`. Libraries of JetBrains (Ktor and kotlinx included) and of
