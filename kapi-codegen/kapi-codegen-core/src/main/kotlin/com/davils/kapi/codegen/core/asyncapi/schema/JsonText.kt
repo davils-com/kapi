@@ -59,8 +59,10 @@ internal object JsonText {
                 "components" to Value.Mapping(mapOf("schemas" to components)),
             ),
         )
-        return buildString { write(root) }
+        return text(root)
     }
+
+    fun text(value: Value): String = buildString { write(value) }
 
     private fun StringBuilder.write(value: Value) {
         when (value) {

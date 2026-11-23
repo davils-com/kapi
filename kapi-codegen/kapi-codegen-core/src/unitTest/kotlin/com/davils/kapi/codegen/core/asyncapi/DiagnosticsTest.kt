@@ -24,6 +24,7 @@ import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val NAME: String = "t.yaml"
@@ -49,10 +50,11 @@ private fun document(
     operations: String = SEND,
     components: String = "{}",
     servers: String = "{local: {host: localhost, protocol: ws}}",
-): String = listOf(
+    contentType: String? = "application/json",
+): String = listOfNotNull(
     "asyncapi: 3.0.0",
     "info: {title: T, version: '1'}",
-    "defaultContentType: application/json",
+    contentType?.let { type -> "defaultContentType: $type" },
     "servers: $servers",
     "channels: {room: $channel}",
     "operations: $operations",
@@ -126,6 +128,49 @@ private val refused: Map<String, Pair<String, ViolationCode>> = mapOf(
     "an address with a query" to (
         document("{address: '/room?x=1', messages: {$TEXT}}") to GenerationCodes.CHANNEL_ADDRESS
         ),
+    "an inline security scheme" to (
+        document(
+            channel = messages(TEXT),
+            operations = operation(action = "send", extra = "security: [{type: http, scheme: bearer}]"),
+        ) to GenerationCodes.SECURITY_UNSUPPORTED
+        ),
+    "an http scheme other than bearer or basic" to (
+        document(
+            channel = messages(TEXT),
+            operations = operation(action = "send", extra = secured("digest")),
+            components = "{securitySchemes: {digest: {type: http, scheme: digest}}}",
+        ) to GenerationCodes.SECURITY_UNSUPPORTED
+        ),
+    "a header that is no field name" to (
+        document(bound("{headers: {type: object, properties: {'X Y': {type: string}}}}")) to
+            GenerationCodes.HANDSHAKE_UNSUPPORTED
+        ),
+    "a subprotocol without values" to (
+        document(bound("{headers: {type: object, properties: {Sec-WebSocket-Protocol: {type: string}}}}")) to
+            GenerationCodes.HANDSHAKE_UNSUPPORTED
+        ),
+    "a subprotocol that is no token" to (
+        document(bound("{headers: {type: object, properties: {Sec-WebSocket-Protocol: {enum: ['a b', 1]}}}}")) to
+            GenerationCodes.HANDSHAKE_UNSUPPORTED
+        ),
+    "a message of another channel" to (
+        document(
+            channel = messages(TEXT),
+            operations = "{send: {action: send, channel: $ROOM, messages: [{$REF: '#/components/messages/m'}]}}",
+            components = "{messages: {m: {payload: {type: string}}}}",
+        ) to GenerationCodes.MESSAGE_FOREIGN
+        ),
+    "two channels with one Kotlin name" to (
+        listOf(
+            "asyncapi: 3.0.0",
+            "info: {title: T, version: '1'}",
+            "defaultContentType: application/json",
+            "channels: {a-b: {address: /x, messages: {$TEXT}, bindings: {ws: {}}}, " +
+                "a_b: {address: /y, messages: {$TEXT}, bindings: {ws: {}}}}",
+            "operations: {x: {action: send, channel: {$REF: '#/channels/a-b'}}, " +
+                "y: {action: send, channel: {$REF: '#/channels/a_b'}}}",
+        ).joinToString(separator = "\n") to GenerationCodes.NAME_COLLISION
+        ),
     "two messages with one Kotlin name" to (
         document(
             messages(
@@ -152,6 +197,12 @@ private val warned: Map<String, Pair<String, ViolationCode>> = mapOf(
     "a request the server sends" to (
         document(channel = messages(TEXT), operations = operation(action = "send", extra = REPLY)) to
             GenerationCodes.REPLY_UNPAIRED
+        ),
+    "a channel without an address" to (
+        document("{messages: {$TEXT}}") to GenerationCodes.CHANNEL_SKIPPED
+        ),
+    "a message without a content type" to (
+        document(messages(TEXT), contentType = null) to GenerationCodes.CONTENT_TYPE_ASSUMED
         ),
     "a channel no operation names" to (document(messages(TEXT), operations = "{}") to GenerationCodes.CHANNEL_SKIPPED),
     "keywords beside a reference" to (
@@ -192,6 +243,25 @@ class DiagnosticsTest : FunSpec({
 
         located?.run { pointer.text } shouldBe "/components/schemas/A/properties/b"
         located?.run { position?.line } shouldBe COMPONENT_LINE
+    }
+
+    test("a channel bound to WebSocket in a document without servers is generated without findings") {
+        val text = document(bound("{method: GET}"), servers = "{}")
+
+        generationOf(NAME, text).diagnostics shouldBe emptyList()
+    }
+
+    test("a handshake follows references to the schemas of its parameters") {
+        val query = "{query: {$REF: '#/components/schemas/Query'}}"
+        val schemas = "{schemas: {Query: {type: object, required: [n], " +
+            "properties: {n: {$REF: '#/components/schemas/N'}, " +
+            "e: {type: string, enum: [a, b]}}}, N: {type: integer, format: int32}}}"
+        val text = document(bound(query), components = schemas)
+        val files = generationOf(NAME, text).shouldBeInstanceOf<Generation.Generated>().files
+        val kotlin = files.joinToString("\n") { file -> file.content }
+
+        kotlin shouldContain "n: Int,"
+        kotlin shouldContain "e: String? = null,"
     }
 
     test("the chat names the Kafka channel it skips") {
