@@ -35,4 +35,10 @@ dependencies {
 
 configurations.matching { configuration -> configuration.name == "unitTestImplementation" }.configureEach {
     dependencies.add(project.dependencies.project(":kapi-spec:kapi-spec-testing"))
+    dependencies.add(project.dependencies.project(":kapi-runtime:kapi-runtime-client"))
+    dependencies.add(project.dependencies.project(":kapi-runtime:kapi-runtime-server"))
+    dependencies.add(project.dependencies.create(libs.ktor.server.cio.get()))
+    dependencies.add(project.dependencies.create(libs.ktor.client.cio.get()))
+    dependencies.add(project.dependencies.create(libs.kotlin.compiler.embeddable.get()))
+    dependencies.add(project.dependencies.create(libs.kotlin.serialization.compiler.plugin.embeddable.get()))
 }
