@@ -1,0 +1,36 @@
+/*
+ * Copyright 2026 Davils
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@file:OptIn(DavilsInternal::class)
+
+package com.davils.kapi.runtime.client.pipeline
+
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.text.SafeText
+
+/**
+ * An [Interceptor] of the client in its [phase], under its [name].
+ *
+ * An interception is immutable; [toString] names the phase and the name, never the interceptor.
+ *
+ * @property phase the phase the interceptor runs in.
+ * @property name the name that [com.davils.kapi.runtime.client.call.CallFailure.Aborted] reports when it fails.
+ * @property interceptor the interceptor.
+ * @since 1.0.0
+ */
+public class Interception(public val phase: CallPhase, public val name: String, public val interceptor: Interceptor) {
+    override fun toString(): String = "Interception($phase, ${SafeText.text(name)})"
+}
