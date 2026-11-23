@@ -22,6 +22,7 @@ kreate {
     platform {
         multiplatform {
             toolsFromSettingsRepositories = true
+            npmResolutions = mapOf("ws" to "8.21.0")
         }
     }
 }
