@@ -158,7 +158,10 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
 - A library module applies exactly one plugin, `id("kapi.kotlin-library")`, `id("kapi.serialization-library")` for a
   multiplatform module with `@Serializable` types or, for a module only the JVM offers, `id("kapi.jvm-library")` or
   `id("kapi.jvm-serialization-library")`, and declares nothing but its description and its dependencies; the Gradle plugin applies
-  `id("kapi.gradle-plugin")` and the BOM `id("kapi.bom")`.
+  `id("kapi.gradle-plugin")` and declares its `gradlePlugin { }` block and the Gradle API and TestKit for its tests
+  as well, and the BOM applies `id("kapi.bom")`. The Gradle plugin is compiled against the Kotlin that Gradle embeds
+  and therefore needs Gradle 9.9 or later; it depends on nothing but the Gradle API at runtime, and the generator runs
+  in a worker process on a class path of its own.
 - `build-logic` holds no Kotlin classes, no tasks and no Gradle API calls beyond reading the version catalog. Every
   plugin configures one concern and applies `kapi.base`:
 
@@ -183,6 +186,7 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
   | `kapi.changelog` | The changelog check |
   | `kapi.license-header` | The license header check |
   | `kapi.serialization` | The kotlinx.serialization compiler plugin, composed by `kapi.serialization-library` and `kapi.jvm-serialization-library` |
+  | `kapi.gradle-plugin` | `java-gradle-plugin` on top of `kapi.jvm-library`, for `kapi-codegen-gradle` |
   | `kapi.bom` | The Java platform of the BOM and its publication |
 
 - Dependencies are declared in `gradle/libs.versions.toml`. Libraries of JetBrains (Ktor and kotlinx included) and of
