@@ -173,11 +173,11 @@ class OpenApi32Test : FunSpec({
             kotlinOf(text = unnamed, name = CLIENT) shouldContain "public suspend fun purgePets("
         }
 
-        test("is refused for a method in lower case, which the runtimes would send in upper case") {
-            val refused = generationOf(custom("purge"))
+        test("keeps a method in lower case as written, because methods are case-sensitive") {
+            val lower = custom("purge")
 
-            refused.codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
-            refused.diagnostics.single().message shouldContain "\"purge\""
+            kotlinOf(text = lower, name = CLIENT) shouldContain """apiCall("copyPet", "purge")"""
+            kotlinOf(text = lower, name = ROUTES) shouldContain """method = "purge","""
         }
 
         test("is left out when it is ignored") {

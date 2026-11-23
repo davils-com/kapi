@@ -110,8 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **OpenAPI 3.2 in the generator**: a `querystring` parameter of JSON, `application/json` or a `+json` type, is sent
   with `CallBuilder.queryString` and read with `Input.queryString` of its media type, beside the form it already
   supported; the operations of `additionalOperations` are generated for clients, senders and servers with their
-  method as the document names it, and a key that is no method token in upper case is refused with a located
-  `codegen.operation.unsupported`.
+  method exactly as the document names it, lower case included, since the reader already refuses a key that is no
+  method token or names a method with a field of its own.
 - **Generated servers** stream typed server-sent events with `ReplyBuilder.events(serializer, items)` and read the
   parts of a multipart body and the fields of a form with `Input.part`, `Input.partItems` and `Input.field`, so every
   value is decoded by the codecs of the server, validated and reported under `body.<name>`; repeated parts of numbers

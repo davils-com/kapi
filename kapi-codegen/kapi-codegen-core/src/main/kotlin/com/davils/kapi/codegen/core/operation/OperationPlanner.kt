@@ -31,12 +31,9 @@ import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.options.GeneratorOptions
-import com.davils.kapi.codegen.core.pipeline.shown
-import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.openapi.model.path.Method
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.PathTemplate
@@ -47,8 +44,6 @@ private const val DEFAULT_GROUP: String = "Default"
 private const val PAGES: String = "Pages"
 
 private const val STREAM: String = "Stream"
-
-private val standard: Set<String> = Method.entries.map { method -> method.keyword.uppercase() }.toSet()
 
 internal class OperationPlanner(
     private val scope: PlanScope,
@@ -87,22 +82,8 @@ internal class OperationPlanner(
         val standard = item.operations.entries.sortedBy { (method, _) -> method.ordinal }
         val named = standard.map { (method, operation) -> method.keyword.uppercase() to operation }
         val additional = item.additionalOperations.entries.sortedBy { (method, _) -> method }
-        val served = additional.filter { (method, operation) -> isServed(method, operation) }
-        val all = named + served.map { (method, operation) -> method to operation }
+        val all = named + additional.map { (method, operation) -> method to operation }
         return all.filterNot { (_, operation) -> isIgnored(operation) }
-    }
-
-    private fun isServed(method: String, operation: Operation): Boolean {
-        val isServed = FieldSyntax.isToken(method) && method.none(Char::isLowerCase) && method !in standard
-        if (!isServed) {
-            scope.findings.error(
-                CodegenCodes.OPERATION_UNSUPPORTED,
-                "The key ${shown(method)} of additionalOperations is no method token in upper case without a " +
-                    "field of its own, which is how the runtimes send and serve a method",
-                operation.location,
-            )
-        }
-        return isServed
     }
 
     fun declaredName(operation: Operation): String? = text(operation, Keywords.NAME) ?: operation.operationId
