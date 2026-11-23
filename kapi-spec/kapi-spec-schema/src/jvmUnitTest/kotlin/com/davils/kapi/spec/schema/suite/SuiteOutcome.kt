@@ -16,4 +16,9 @@
 
 package com.davils.kapi.spec.schema.suite
 
-class SuiteOutcome(val passed: Int, val skipped: Int, val unexpected: List<String>, val staleSkips: List<String>)
+internal data class SuiteOutcome(
+    val passed: Int,
+    val skipped: Int,
+    val unexpected: List<String>,
+    val staleSkips: List<String>,
+)

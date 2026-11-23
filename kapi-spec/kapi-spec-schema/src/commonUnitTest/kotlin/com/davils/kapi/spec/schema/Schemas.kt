@@ -46,6 +46,8 @@ suspend fun codesOf(schema: String, block: CompilerBuilder.() -> Unit = {}): Lis
     return diagnostics.map { it.code }
 }
 
+fun Diagnostic.pointerText(): String? = location?.run { pointer.text }
+
 fun CompiledSchema.keywordsOf(instance: String): List<String> {
     val errors = errorsOf(instance)
     return errors.map { it.keywordLocation.text }

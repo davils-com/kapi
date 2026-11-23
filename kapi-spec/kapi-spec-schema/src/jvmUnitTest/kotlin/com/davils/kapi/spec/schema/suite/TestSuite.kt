@@ -36,10 +36,14 @@ import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.io.path.relativeTo
 
-object TestSuite {
+internal object TestSuite {
     const val COMMIT: String = "245a45abc90190c0bff04d97e6d2b541b4bb9f12"
 
     private const val REMOTE_BASE: String = "http://localhost:1234/"
+
+    private const val TESTS: String = "tests"
+
+    private const val DESCRIPTION: String = "description"
 
     private val OPTIONAL: List<String> = listOf("bignum.json", "ecmascript-regex.json", "float-overflow.json")
 
@@ -48,7 +52,8 @@ object TestSuite {
     )
 
     private val remotes: List<Pair<DocumentUri, JsonElement>> = Files.walk(root.resolve("remotes")).use { paths ->
-        paths.filter { it.isRegularFile() && it.extension == "json" }.toList().map { path ->
+        val files = paths.filter { it.isRegularFile() && it.extension == "json" }.toList()
+        files.map { path ->
             val relative = path.relativeTo(root.resolve("remotes")).invariantSeparatorsPathString
             DocumentUri(REMOTE_BASE + relative) to Json.parseToJsonElement(path.readText())
         }
@@ -60,14 +65,14 @@ object TestSuite {
     }
 
     fun files(draft: SuiteDraft): List<Path> {
-        val folder = root.resolve("tests").resolve(draft.folder)
+        val folder = root.resolve(TESTS).resolve(draft.folder)
         val required = Files.list(folder).use { paths -> paths.filter { it.isRegularFile() }.toList() }
         val optional = OPTIONAL.map { name -> folder.resolve("optional").resolve(name) }.filter { it.isRegularFile() }
         return (required + optional).sortedBy { it.relativeTo(folder).invariantSeparatorsPathString }
     }
 
     fun nameOf(draft: SuiteDraft, file: Path): String =
-        file.relativeTo(root.resolve("tests").resolve(draft.folder)).invariantSeparatorsPathString
+        file.relativeTo(root.resolve(TESTS).resolve(draft.folder)).invariantSeparatorsPathString
 
     suspend fun run(compiler: Compiler, draft: SuiteDraft, file: Path): SuiteOutcome {
         val groups = Json.parseToJsonElement(file.readText()) as JsonArray
@@ -78,24 +83,24 @@ object TestSuite {
         groups.forEach { element ->
             val group = element as JsonObject
             val compilation = compiler.compile(checkNotNull(group["schema"]))
-            val tests = group["tests"] as JsonArray
+            val tests = group.getValue(TESTS) as JsonArray
             tests.forEach { test ->
                 val case = test as JsonObject
                 val key = listOf(
                     draft.folder,
                     nameOf(draft, file),
-                    textOf(group["description"]),
-                    textOf(case["description"]),
+                    textOf(group.getValue(DESCRIPTION)),
+                    textOf(case.getValue(DESCRIPTION)),
                 ).joinToString(" / ")
-                val expected = (case["valid"] as JsonPrimitive).content == "true"
+                val isValidExpected = (case.getValue("valid") as JsonPrimitive).content == "true"
                 val schema = (compilation as? Compilation.Compiled)?.schema
                 val actual = schema?.validate(checkNotNull(case["data"]))
                 val flag = schema?.validate(checkNotNull(case["data"]), OutputFormat.Flag)
-                val isExpected = actual?.isValid == expected && flag?.isValid == expected
+                val isExpected = actual?.isValid == isValidExpected && flag?.isValid == isValidExpected
                 val reason = SkipList.reasonOf(
-                    nameOf(draft, file),
-                    textOf(group["description"]),
-                    textOf(case["description"]),
+                    file = nameOf(draft, file),
+                    group = textOf(group.getValue(DESCRIPTION)),
+                    test = textOf(case.getValue(DESCRIPTION)),
                 )
                 skipped += 1.takeIf { reason != null } ?: 0
                 passed += 1.takeIf { reason == null && isExpected } ?: 0
@@ -103,12 +108,12 @@ object TestSuite {
                 if (reason == null &&
                     !isExpected
                 ) {
-                    unexpected += "$key: expected valid=$expected, got ${actual ?: compilation}"
+                    unexpected += "$key: expected valid=$isValidExpected, got ${actual ?: compilation}"
                 }
             }
         }
-        return SuiteOutcome(passed, skipped, unexpected, stale)
+        return SuiteOutcome(passed = passed, skipped = skipped, unexpected = unexpected, staleSkips = stale)
     }
 
-    private fun textOf(element: JsonElement?): String = (element as JsonPrimitive).content
+    private fun textOf(element: JsonElement): String = (element as JsonPrimitive).content
 }

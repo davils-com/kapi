@@ -24,11 +24,13 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+private const val FAILING_KEYWORDS: Int = 3
+
 class ValidationTest : FunSpec({
     test("an output unit names the keyword through every reference, its absolute location and the value") {
         val compiled = schemaOf(
-            """{"${'$'}id": "https://example.com/pet", "properties": {"name": {"${'$'}ref": "#/${'$'}defs/name"}},
-               "${'$'}defs": {"name": {"type": "string"}}}""",
+            """{"${'$'}id": "https://example.com/pet", "properties": {"name": {"${'$'}ref": "#/${'$'}defs/name"}}, """ +
+                """"${'$'}defs": {"name": {"type": "string"}}}""",
         )
         val error = compiled.errorsOf("""{"name": 1}""").single()
         error.keywordLocation.text shouldBe "/properties/name/\$ref/type"
@@ -40,7 +42,7 @@ class ValidationTest : FunSpec({
 
     test("the basic format lists every failing keyword") {
         val compiled = schemaOf("""{"type": "object", "required": ["a", "b"], "properties": {"c": {"minimum": 3}}}""")
-        compiled.errorsOf("""{"c": 1}""") shouldHaveSize 3
+        compiled.errorsOf("""{"c": 1}""") shouldHaveSize FAILING_KEYWORDS
     }
 
     test("the flag format reports no errors and stops early") {

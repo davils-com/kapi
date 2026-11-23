@@ -70,20 +70,21 @@ class DecimalTest : FunSpec({
 
     test("divides exactly") {
         val cases = listOf(
-            Triple("10", "2", true), Triple("10", "4", false), Triple("0.3", "0.1", true), Triple("0.07", "0.01", true),
-            Triple("1e308", "0.123456789", false), Triple("1e308", "0.5", true), Triple("0", "7", true),
-            Triple("7", "7e-400", true), Triple("1e-400", "7e-400", false), Triple("100", "1e3", false),
-            Triple("123456789012345678901234567890", "123456789012345678901", false),
-            Triple("246913578024691357802", "123456789012345678901", true),
-            Triple("40", "8", true), Triple("1e3", "16", false), Triple("1e4", "16", true), Triple("125", "25", true),
+            "10" to "2" to true, "10" to "4" to false, "0.3" to "0.1" to true, "0.07" to "0.01" to true,
+            "1e308" to "0.123456789" to false, "1e308" to "0.5" to true, "0" to "7" to true,
+            "7" to "7e-400" to true, "1e-400" to "7e-400" to false, "100" to "1e3" to false,
+            "123456789012345678901234567890" to "123456789012345678901" to false,
+            "246913578024691357802" to "123456789012345678901" to true,
+            "40" to "8" to true, "1e3" to "16" to false, "1e4" to "16" to true, "125" to "25" to true,
         )
-        cases.forEach { (value, divisor, expected) ->
-            Divisibility.isMultiple(decimal(value), decimal(divisor), FREE) shouldBe expected
+        cases.forEach { (operands, expected) ->
+            val (value, divisor) = operands
+            Divisibility.isMultiple(value = decimal(value), divisor = decimal(divisor), meter = FREE) shouldBe expected
         }
     }
 
     test("counts code points and escapes pointer tokens") {
-        Texts.codePoints("a💩b") shouldBe 3
+        Texts.codePoints("a💩b") shouldBe "a💩b".length - 1
         Texts.codePoints("\uD83D") shouldBe 1
         Texts.escapedToken("a/b~c") shouldBe "a~1b~0c"
     }

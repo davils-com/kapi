@@ -25,6 +25,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+private const val ERRORS: Int = 5
+
 private val REMOTE: DocumentUri = DocumentUri("https://example.com/schemas/name.json")
 
 class CompilerTest : FunSpec({
@@ -36,10 +38,10 @@ class CompilerTest : FunSpec({
         val configured = JsonSchema.compiler {
             defaultDialect = Dialect.Draft07
             isFormatAsserted = true
-            limits { maximumErrors = 5 }
+            limits { maximumErrors = ERRORS }
         }
         configured.defaultDialect shouldBe Dialect.Draft07
-        configured.limits.maximumErrors shouldBe 5
+        configured.limits.maximumErrors shouldBe ERRORS
         configured.toString() shouldContain "Draft07"
     }
 
@@ -64,8 +66,8 @@ class CompilerTest : FunSpec({
         val asked = ArrayList<String>()
         val compiled =
             schemaOf(
-                """{"anyOf": [{"${'$'}ref": "https://example.com/a.json"},
-            {"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""",
+                """{"anyOf": [{"${'$'}ref": "https://example.com/a.json"}, """ +
+                    """{"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""",
             ) {
                 loader = SchemaLoader { uri ->
                     asked += uri.value
@@ -81,11 +83,7 @@ class CompilerTest : FunSpec({
     test("an unknown remote reference is a located compile error") {
         val diagnostics = diagnosticsOf("""{"properties": {"a": {"${'$'}ref": "https://example.com/missing.json"}}}""")
         diagnostics.map { it.code } shouldContain DiagnosticCodes.REFERENCE_UNRESOLVED
-        diagnostics
-            .first()
-            .location
-            ?.pointer
-            ?.text shouldBe "/properties/a/\$ref"
+        diagnostics.first().pointerText() shouldBe "/properties/a/\$ref"
     }
 
     test("a loader that returns nothing leaves the reference unresolved") {
@@ -104,7 +102,7 @@ class CompilerTest : FunSpec({
 
     test("a keyword of the wrong shape is reported at its pointer") {
         val diagnostics = diagnosticsOf("""{"properties": {"a": {"minLength": -1, "type": 5}}}""")
-        diagnostics.map { it.location?.pointer?.text } shouldBe listOf("/properties/a/minLength", "/properties/a/type")
+        diagnostics.map { it.pointerText() } shouldBe listOf("/properties/a/minLength", "/properties/a/type")
         diagnostics.map { it.code }.toSet() shouldBe setOf(DiagnosticCodes.KEYWORD_INVALID)
     }
 
@@ -129,8 +127,8 @@ class CompilerTest : FunSpec({
         codesOf("""{"${'$'}anchor": "1a"}""") shouldBe listOf(DiagnosticCodes.ANCHOR_INVALID)
         codesOf("""{"${'$'}id": "https://example.com/a#frag"}""") shouldContain
             DiagnosticCodes.ID_INVALID
-        val duplicate = """{"${'$'}defs": {"a": {"${'$'}id": "https://example.com/x"},
-            "b": {"${'$'}id": "https://example.com/x"}}}"""
+        val duplicate = """{"${'$'}defs": {"a": {"${'$'}id": "https://example.com/x"}, """ +
+            """"b": {"${'$'}id": "https://example.com/x"}}}"""
         codesOf(duplicate) shouldContain DiagnosticCodes.ID_DUPLICATE
         val anchors = """{"${'$'}defs": {"a": {"${'$'}anchor": "x"}, "b": {"${'$'}anchor": "x"}}}"""
         codesOf(anchors) shouldContain DiagnosticCodes.ID_DUPLICATE
@@ -139,11 +137,7 @@ class CompilerTest : FunSpec({
     test("an unknown meta-schema is reported") {
         val diagnostics = diagnosticsOf("""{"${'$'}schema": "https://example.com/meta"}""")
         diagnostics.map { it.code } shouldBe listOf(DiagnosticCodes.DIALECT_UNKNOWN)
-        diagnostics
-            .first()
-            .location
-            ?.pointer
-            ?.text shouldBe "/\$schema"
+        diagnostics.first().pointerText() shouldBe "/\$schema"
     }
 
     test("a schema compiles from YAML") {
