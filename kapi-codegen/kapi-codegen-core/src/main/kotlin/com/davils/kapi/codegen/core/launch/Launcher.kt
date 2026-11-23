@@ -41,5 +41,19 @@ public object Launcher {
      * @throws java.io.IOException if an output cannot be written.
      * @since 1.0.0
      */
-    public fun run(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request).run() }
+    public fun run(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, isLint = false).run() }
+
+    /**
+     * Lints the document of [request], blocking the calling thread until it is done.
+     *
+     * A lint reads the document and audits it with the generator exactly as [run] does, so it finds every diagnostic
+     * a generation would, but it writes only the JSON report and the SARIF log: the folders of the generated code are
+     * never touched. Its verdict judges the acknowledgements as a generation does.
+     *
+     * @param request what to lint and where the reports go.
+     * @return the verdict, which the plugin turns into a passing or failing task.
+     * @throws java.io.IOException if a report cannot be written.
+     * @since 1.0.0
+     */
+    public fun lint(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, isLint = true).run() }
 }

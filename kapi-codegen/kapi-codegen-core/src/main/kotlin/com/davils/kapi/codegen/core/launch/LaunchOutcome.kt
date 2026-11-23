@@ -45,4 +45,11 @@ public enum class LaunchOutcome {
      * @since 1.0.0
      */
     Failed,
+
+    /**
+     * The document was read and audited by a lint, which writes no code.
+     *
+     * @since 1.0.0
+     */
+    Audited,
 }

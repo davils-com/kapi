@@ -25,6 +25,7 @@ import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.codegen.core.options.Visibility
+import com.davils.kapi.spec.asyncapi.AsyncApi
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.OpenApi
@@ -38,6 +39,7 @@ import kotlinx.serialization.json.JsonObject
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
+import com.davils.kapi.spec.asyncapi.Reading as ChannelReading
 
 private const val MAXIMUM_DOCUMENT_LENGTH: Int = 16 * 1024 * 1024
 
@@ -45,7 +47,7 @@ private const val MAXIMUM_MESSAGE_LENGTH: Int = 1024
 
 private val readable: Json = Json { prettyPrint = true }
 
-internal class Launch(private val request: LaunchRequest) {
+internal class Launch(private val request: LaunchRequest, private val isLint: Boolean) {
     private val root: Path = request.root.toAbsolutePath().normalize()
 
     suspend fun run(): LaunchVerdict {
@@ -67,14 +69,21 @@ internal class Launch(private val request: LaunchRequest) {
         val isVisibilityUnknown = Visibility.entries.none { known -> known.name == request.visibility }
         val specification = request.specification.toAbsolutePath()
         val isOutside = !specification.normalize().startsWith(root)
+        val isOverlaid = request.kind == LaunchKind.AsyncApi && request.overlays.isNotEmpty()
         return listOfNotNull(
             "The artifacts ${unknown.joinToString()} are unknown".takeIf { unknown.isNotEmpty() },
+            "An AsyncAPI document takes no overlays".takeIf { isOverlaid },
             "The visibility ${request.visibility} is unknown".takeIf { isVisibilityUnknown },
             "The document ${request.specification} lies outside its root $root".takeIf { isOutside },
         ).firstOrNull()
     }
 
-    private suspend fun read(): LaunchReport {
+    private suspend fun read(): LaunchReport = when (request.kind) {
+        LaunchKind.OpenApi -> readOpenApi()
+        LaunchKind.AsyncApi -> readAsyncApi()
+    }
+
+    private suspend fun readOpenApi(): LaunchReport {
         val reader = OpenApi.reader {
             resolver = PathResolver(root, MAXIMUM_DOCUMENT_LENGTH)
             references { this.root = PathResolver.uriOf(this@Launch.root.resolve(".")) }
@@ -101,16 +110,48 @@ internal class Launch(private val request: LaunchRequest) {
         } catch (failure: ValidationException) {
             return failed(failure.message)
         }
-        return when (val generation = generator.generate(reading.document, reading.sources)) {
-            is Generation.Generated -> written(generation, reading.diagnostics)
-            is Generation.Refused -> refused(reading.diagnostics + generation.diagnostics)
+        return judged(generator.generate(reading.document, reading.sources), reading.diagnostics)
+    }
+
+    private suspend fun readAsyncApi(): LaunchReport {
+        val reader = AsyncApi.reader {
+            resolver = PathResolver(root, MAXIMUM_DOCUMENT_LENGTH)
+            references { this.root = PathResolver.uriOf(this@Launch.root.resolve(".")) }
+        }
+        val reading = reader.read(Source.Located(PathResolver.uriOf(request.specification)))
+        return when (reading) {
+            is ChannelReading.Read -> channels(reading)
+            is ChannelReading.Invalid -> refused(reading.diagnostics)
+            is ChannelReading.Malformed -> refused(reading.diagnostics)
         }
     }
 
+    private suspend fun channels(reading: ChannelReading.Read): LaunchReport {
+        val generator = try {
+            Codegen.asyncApi {
+                packageName = request.packageName
+                apiName = request.apiName
+                typePrefix = request.typePrefix
+                artifacts = request.artifacts.map(Artifact::valueOf).toSet()
+                visibility = Visibility.valueOf(request.visibility)
+                generatorVersion = request.generatorVersion
+            }
+        } catch (failure: ValidationException) {
+            return failed(failure.message)
+        }
+        return judged(generator.generate(reading.document, reading.sources), reading.diagnostics)
+    }
+
+    private fun judged(generation: Generation, read: List<Diagnostic>): LaunchReport = when (generation) {
+        is Generation.Generated -> written(generation, read)
+        is Generation.Refused -> refused(read + generation.diagnostics)
+    }
+
     private fun written(generation: Generation.Generated, read: List<Diagnostic>): LaunchReport {
-        generation.files.forEach(::writeFile)
+        val outcome = LaunchOutcome.Audited.takeIf { isLint } ?: LaunchOutcome.Generated
+        if (!isLint) generation.files.forEach(::writeFile)
         return LaunchReport(
-            outcome = LaunchOutcome.Generated,
+            outcome = outcome,
             reason = null,
             diagnostics = (read + generation.diagnostics).map(::diagnosticOf),
             files = generation.files.map(GeneratedFile::path),

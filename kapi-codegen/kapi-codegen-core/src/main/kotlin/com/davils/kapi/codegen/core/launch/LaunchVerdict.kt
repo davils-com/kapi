@@ -69,7 +69,8 @@ public class LaunchVerdict(
             val errors = report.diagnostics.filter(LaunchDiagnostic::isError)
             val open = warnings.filter { warning -> acknowledgements[warning.code].isNullOrBlank() }
             val unmatched = acknowledgements.keys.filter { code -> warnings.none { warning -> warning.code == code } }
-            val unused = unmatched.takeIf { report.outcome == LaunchOutcome.Generated }.orEmpty()
+            val isComplete = report.outcome == LaunchOutcome.Generated || report.outcome == LaunchOutcome.Audited
+            val unused = unmatched.takeIf { isComplete }.orEmpty()
             val blank = acknowledgements.filterValues(String::isBlank).keys
             val failures = listOfNotNull(report.reason) +
                 errors.map(LaunchDiagnostic::render) +
