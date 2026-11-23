@@ -20,6 +20,7 @@ import com.davils.kaml.core.YamlParseResult
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.yaml
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
@@ -38,6 +39,16 @@ suspend fun schemaOf(schema: String, block: CompilerBuilder.() -> Unit = {}): Co
 suspend fun diagnosticsOf(schema: String, block: CompilerBuilder.() -> Unit = {}): List<Diagnostic> {
     val compilation = compile(schema, block)
     return checkNotNull((compilation as? Compilation.Invalid)?.diagnostics) { "The schema compiled: $compilation" }
+}
+
+suspend fun codesOf(schema: String, block: CompilerBuilder.() -> Unit = {}): List<ViolationCode> {
+    val diagnostics = diagnosticsOf(schema, block)
+    return diagnostics.map { it.code }
+}
+
+fun CompiledSchema.keywordsOf(instance: String): List<String> {
+    val errors = errorsOf(instance)
+    return errors.map { it.keywordLocation.text }
 }
 
 fun CompiledSchema.accepts(instance: String): Boolean = validate(json(instance)).isValid

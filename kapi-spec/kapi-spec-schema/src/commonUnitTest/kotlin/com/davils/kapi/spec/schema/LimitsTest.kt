@@ -30,7 +30,10 @@ import kotlinx.serialization.json.JsonPrimitive
 
 private fun limited(block: SchemaLimitsBuilder.() -> Unit): CompilerBuilder.() -> Unit = { limits(block) }
 
-private fun arrays(depth: Int): JsonElement = (1..depth).fold(JsonPrimitive(1) as JsonElement) { inner, _ -> JsonArray(listOf(inner)) }
+private fun arrays(depth: Int): JsonElement {
+    val leaf: JsonElement = JsonPrimitive(1)
+    return (1..depth).fold(leaf) { inner, _ -> JsonArray(listOf(inner)) }
+}
 
 class LimitsTest : FunSpec({
     test("every limit lies between 1 and its ceiling") {
@@ -74,13 +77,13 @@ class LimitsTest : FunSpec({
     test("the schema depth") {
         val schema = nested("""{"not": """, "{}", "}", 5)
         schemaOf(schema, limited { maximumSchemaDepth = 5 }).accepts("1") shouldBe false
-        diagnosticsOf(schema, limited { maximumSchemaDepth = 4 }).map { it.code } shouldBe listOf(DiagnosticCodes.LIMIT_EXCEEDED)
+        codesOf(schema, limited { maximumSchemaDepth = 4 }) shouldBe listOf(DiagnosticCodes.LIMIT_EXCEEDED)
     }
 
     test("the number of subschemas") {
         val schema = """{"allOf": [{}, {}, {}]}"""
         schemaOf(schema, limited { maximumSubschemas = 4 }).subschemas shouldBe 4
-        diagnosticsOf(schema, limited { maximumSubschemas = 3 }).map { it.code } shouldBe listOf(DiagnosticCodes.LIMIT_EXCEEDED)
+        codesOf(schema, limited { maximumSubschemas = 3 }) shouldBe listOf(DiagnosticCodes.LIMIT_EXCEEDED)
     }
 
     test("the number of documents") {
@@ -93,7 +96,7 @@ class LimitsTest : FunSpec({
             }
         }
         schemaOf(schema, documents(3)).accepts("1") shouldBe true
-        diagnosticsOf(schema, documents(2)).map { it.code } shouldContain DiagnosticCodes.LIMIT_EXCEEDED
+        codesOf(schema, documents(2)) shouldContain DiagnosticCodes.LIMIT_EXCEEDED
     }
 
     test("the evaluation steps") {
@@ -142,14 +145,16 @@ class LimitsTest : FunSpec({
     test("the nodes of a YAML value") {
         val compiled = schemaOf("{}", limited { maximumInstanceNodes = 3 })
         compiled.validate(yamlOf("[1, 2]")).isValid shouldBe true
-        compiled.validate(yamlOf("[1, 2, 3]")).shouldBeInstanceOf<Validation.Refused>().reason shouldBe RefusalReason.InstanceSize
+        val refused = compiled.validate(yamlOf("[1, 2, 3]")).shouldBeInstanceOf<Validation.Refused>()
+        refused.reason shouldBe RefusalReason.InstanceSize
     }
 
     test("the reported errors") {
         val schema = """{"items": {"type": "string"}}"""
         schemaOf(schema, limited { maximumErrors = 3 }).errorsOf("[1, 2, 3]").size shouldBe 3
-        schemaOf(schema, limited { maximumErrors = 2 }).refusalOf(json("[1, 2, 3]")).reason shouldBe RefusalReason.ReportedErrors
-        schemaOf(schema, limited { maximumErrors = 2 }).validate(json("[1, 2, 3]"), OutputFormat.Flag).isValid shouldBe false
+        val strict = schemaOf(schema, limited { maximumErrors = 2 })
+        strict.refusalOf(json("[1, 2, 3]")).reason shouldBe RefusalReason.ReportedErrors
+        strict.validate(json("[1, 2, 3]"), OutputFormat.Flag).isValid shouldBe false
     }
 
     test("the diagnostics of a compilation") {
@@ -174,16 +179,16 @@ class LimitsTest : FunSpec({
 
     test("the length of a pattern") {
         schemaOf("""{"pattern": "abc"}""", limited { maximumPatternLength = 3 }).accepts("\"abc\"") shouldBe true
-        diagnosticsOf("""{"pattern": "abcd"}""", limited { maximumPatternLength = 3 }).map { it.code } shouldBe
+        codesOf("""{"pattern": "abcd"}""", limited { maximumPatternLength = 3 }) shouldBe
             listOf(DiagnosticCodes.LIMIT_EXCEEDED)
     }
 
     test("the values of an enumeration and the nodes of a literal") {
         schemaOf("""{"enum": [1, 2]}""", limited { maximumEnumValues = 2 }).accepts("2") shouldBe true
-        diagnosticsOf("""{"enum": [1, 2, 3]}""", limited { maximumEnumValues = 2 }).map { it.code } shouldBe
+        codesOf("""{"enum": [1, 2, 3]}""", limited { maximumEnumValues = 2 }) shouldBe
             listOf(DiagnosticCodes.LIMIT_EXCEEDED)
         schemaOf("""{"const": [1, 2]}""", limited { maximumLiteralNodes = 3 }).accepts("[1, 2]") shouldBe true
-        diagnosticsOf("""{"const": [1, 2, 3]}""", limited { maximumLiteralNodes = 3 }).map { it.code } shouldBe
+        codesOf("""{"const": [1, 2, 3]}""", limited { maximumLiteralNodes = 3 }) shouldBe
             listOf(DiagnosticCodes.LIMIT_EXCEEDED)
     }
 })

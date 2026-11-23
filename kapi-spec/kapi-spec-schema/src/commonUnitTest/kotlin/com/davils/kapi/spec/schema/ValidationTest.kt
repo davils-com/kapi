@@ -52,14 +52,14 @@ class ValidationTest : FunSpec({
 
     test("anyOf reports the errors of every branch, a successful branch none") {
         val compiled = schemaOf("""{"anyOf": [{"type": "string"}, {"minimum": 5}]}""")
-        compiled.errorsOf("1").map { it.keywordLocation.text } shouldBe listOf("/anyOf/0/type", "/anyOf/1/minimum", "/anyOf")
+        compiled.keywordsOf("1") shouldBe listOf("/anyOf/0/type", "/anyOf/1/minimum", "/anyOf")
         compiled.accepts("7") shouldBe true
     }
 
     test("oneOf tells a value that matches none from one that matches several") {
         val compiled = schemaOf("""{"oneOf": [{"type": "integer"}, {"minimum": 0}]}""")
         compiled.errorsOf("1").single().error shouldContain "0 and 1"
-        compiled.errorsOf("-1.5").map { it.keywordLocation.text } shouldBe listOf("/oneOf/0/type", "/oneOf/1/minimum", "/oneOf")
+        compiled.keywordsOf("-1.5") shouldBe listOf("/oneOf/0/type", "/oneOf/1/minimum", "/oneOf")
         compiled.accepts("-1") shouldBe true
     }
 

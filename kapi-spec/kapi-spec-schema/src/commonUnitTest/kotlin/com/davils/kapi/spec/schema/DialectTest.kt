@@ -46,18 +46,29 @@ class DialectTest : FunSpec({
 
         test("id names resources, a reference replaces its siblings and booleans are no schemas") {
             verify(
-                """{"id": "http://example.com/root", "definitions": {"a": {"id": "#a", "type": "string"}}, "properties": {"x": {"${'$'}ref": "#a", "type": "integer"}}}""",
+                """{"id": "http://example.com/root", "definitions": {"a": {"id": "#a", "type": "string"}},
+                    "properties": {"x": {"${'$'}ref": "#a", "type": "integer"}}}""",
                 listOf("""{"x": "s"}"""),
                 listOf("""{"x": 1}"""),
                 DRAFT_04,
             )
-            diagnosticsOf("""{"not": true}""", DRAFT_04).map { it.code } shouldBe listOf(DiagnosticCodes.NOT_A_SCHEMA)
+            codesOf("""{"not": true}""", DRAFT_04) shouldBe listOf(DiagnosticCodes.NOT_A_SCHEMA)
             verify("""{"additionalProperties": false}""", listOf("{}"), listOf("""{"a": 1}"""), DRAFT_04)
         }
 
         test("items as an array with additionalItems, and dependencies") {
-            verify("""{"items": [{"type": "integer"}], "additionalItems": false}""", listOf("[1]"), listOf("[1, 2]", "[\"a\"]"), DRAFT_04)
-            verify("""{"items": {"type": "integer"}, "additionalItems": false}""", listOf("[1, 2]"), emptyList(), DRAFT_04)
+            verify(
+                """{"items": [{"type": "integer"}], "additionalItems": false}""",
+                listOf("[1]"),
+                listOf("[1, 2]", "[\"a\"]"),
+                DRAFT_04,
+            )
+            verify(
+                """{"items": {"type": "integer"}, "additionalItems": false}""",
+                listOf("[1, 2]"),
+                emptyList(),
+                DRAFT_04,
+            )
             verify(
                 """{"dependencies": {"a": ["b"], "c": {"required": ["d"]}}}""",
                 listOf("{}", """{"a": 1, "b": 1}""", """{"c": 1, "d": 1}"""),
@@ -67,7 +78,12 @@ class DialectTest : FunSpec({
         }
 
         test("newer keywords are unknown") {
-            verify("""{"const": 1, "contains": false, "propertyNames": false, "if": false}""", listOf("2", "[1]", """{"a": 1}"""), emptyList(), DRAFT_04)
+            verify(
+                """{"const": 1, "contains": false, "propertyNames": false, "if": false}""",
+                listOf("2", "[1]", """{"a": 1}"""),
+                emptyList(),
+                DRAFT_04,
+            )
         }
     }
 
@@ -90,7 +106,12 @@ class DialectTest : FunSpec({
                 listOf("1"),
                 DRAFT_07,
             )
-            verify("""{"dependentRequired": {"a": ["b"]}, "minContains": 5, "contains": true}""", listOf("""{"a": 1}""", "[1]"), emptyList(), DRAFT_07)
+            verify(
+                """{"dependentRequired": {"a": ["b"]}, "minContains": 5, "contains": true}""",
+                listOf("""{"a": 1}""", "[1]"),
+                emptyList(),
+                DRAFT_07,
+            )
         }
     }
 
@@ -103,35 +124,59 @@ class DialectTest : FunSpec({
                 listOf("\"long\""),
                 DRAFT_2019,
             )
-            verify("""{"contains": {"type": "string"}, "unevaluatedItems": false}""", emptyList(), listOf("[\"a\"]"), DRAFT_2019)
+            verify(
+                """{"contains": {"type": "string"}, "unevaluatedItems": false}""",
+                emptyList(),
+                listOf("[\"a\"]"),
+                DRAFT_2019,
+            )
             verify("""{"contains": {"type": "string"}, "unevaluatedItems": false}""", listOf("[\"a\"]"), emptyList())
         }
 
         test("a recursive reference follows the outermost recursive anchor") {
-            val tree = """{"${'$'}id": "https://example.com/tree", "${'$'}recursiveAnchor": true, "type": "object", "properties": {"children": {"type": "array", "items": {"${'$'}recursiveRef": "#"}}}}"""
-            val strict = """{"${'$'}id": "https://example.com/strict", "${'$'}recursiveAnchor": true, "${'$'}ref": "tree", "unevaluatedProperties": false}"""
+            val tree = """{"${'$'}id": "https://example.com/tree", "${'$'}recursiveAnchor": true,
+                "type": "object", "properties": {"children": {"type": "array",
+                "items": {"${'$'}recursiveRef": "#"}}}}"""
+            val strict = """{"${'$'}id": "https://example.com/strict", "${'$'}recursiveAnchor": true,
+                "${'$'}ref": "tree", "unevaluatedProperties": false}"""
             val register: CompilerBuilder.() -> Unit = {
                 defaultDialect = Dialect.Draft201909
                 schema(DocumentUri("https://example.com/tree"), json(tree))
             }
-            verify(strict, listOf("""{"children": [{"children": []}]}"""), listOf("""{"children": [{"child": []}]}"""), register)
+            verify(
+                strict,
+                listOf("""{"children": [{"children": []}]}"""),
+                listOf("""{"children": [{"child": []}]}"""),
+                register,
+            )
             verify(tree, listOf("""{"children": [{"child": []}]}"""), emptyList(), DRAFT_2019)
         }
     }
 
     context("2020-12") {
         test("items is a single schema") {
-            diagnosticsOf("""{"items": [true]}""").map { it.code } shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
+            codesOf("""{"items": [true]}""") shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
         }
 
         test("the dialect follows the schema keyword over the default") {
-            verify("""{"${'$'}schema": "http://json-schema.org/draft-04/schema#", "type": "integer"}""", emptyList(), listOf("1.0"))
-            verify("""{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema", "type": "integer"}""", listOf("1.0"), emptyList(), DRAFT_04)
+            verify(
+                """{"${'$'}schema": "http://json-schema.org/draft-04/schema#", "type": "integer"}""",
+                emptyList(),
+                listOf("1.0"),
+            )
+            verify(
+                """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema", "type": "integer"}""",
+                listOf("1.0"),
+                emptyList(),
+                DRAFT_04,
+            )
         }
 
         test("an embedded resource may change the dialect") {
             verify(
-                """{"${'$'}defs": {"old": {"${'$'}id": "https://example.com/old", "${'$'}schema": "http://json-schema.org/draft-07/schema#", "dependentRequired": {"a": ["b"]}}}, "${'$'}ref": "https://example.com/old"}""",
+                """{"${'$'}defs": {"old": {"${'$'}id": "https://example.com/old",
+                    "${'$'}schema": "http://json-schema.org/draft-07/schema#",
+                    "dependentRequired": {"a": ["b"]}}}, "${'$'}ref": "https://example.com/old"}""",
                 listOf("""{"a": 1}"""),
                 emptyList(),
             )
@@ -140,16 +185,22 @@ class DialectTest : FunSpec({
 
     context("vocabularies") {
         test("a custom meta-schema without the validation vocabulary turns off validation keywords") {
-            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema", "${'$'}id": "https://example.com/meta", "${'$'}vocabulary": {"https://json-schema.org/draft/2020-12/vocab/core": true, "https://json-schema.org/draft/2020-12/vocab/applicator": true, "https://example.com/vocab/optional": false}}"""
+            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema",
+                "${'$'}id": "https://example.com/meta",
+                "${'$'}vocabulary": {"https://json-schema.org/draft/2020-12/vocab/core": true,
+                "https://json-schema.org/draft/2020-12/vocab/applicator": true,
+                "https://example.com/vocab/optional": false}}"""
             verify(
-                """{"${'$'}schema": "https://example.com/meta", "properties": {"a": {"minimum": 10}}, "additionalProperties": false}""",
+                """{"${'$'}schema": "https://example.com/meta", "properties": {"a": {"minimum": 10}},
+                    "additionalProperties": false}""",
                 listOf("""{"a": 1}"""),
                 listOf("""{"b": 1}"""),
             ) { schema(DocumentUri("https://example.com/meta"), json(meta)) }
         }
 
         test("a meta-schema that requires an unknown vocabulary is refused") {
-            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema", "${'$'}vocabulary": {"https://example.com/vocab/required": true}}"""
+            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema",
+                "${'$'}vocabulary": {"https://example.com/vocab/required": true}}"""
             val diagnostics = diagnosticsOf("""{"${'$'}schema": "https://example.com/meta"}""") {
                 schema(DocumentUri("https://example.com/meta"), json(meta))
             }
@@ -157,8 +208,11 @@ class DialectTest : FunSpec({
         }
 
         test("the format-assertion vocabulary asserts formats") {
-            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema", "${'$'}vocabulary": {"https://json-schema.org/draft/2020-12/vocab/core": true, "https://json-schema.org/draft/2020-12/vocab/format-assertion": true}}"""
-            verify("""{"${'$'}schema": "https://example.com/meta", "format": "ipv4"}""", listOf("\"1.2.3.4\""), listOf("\"1.2.3\"")) {
+            val meta = """{"${'$'}schema": "https://json-schema.org/draft/2020-12/schema",
+                "${'$'}vocabulary": {"https://json-schema.org/draft/2020-12/vocab/core": true,
+                "https://json-schema.org/draft/2020-12/vocab/format-assertion": true}}"""
+            val schema = """{"${'$'}schema": "https://example.com/meta", "format": "ipv4"}"""
+            verify(schema, listOf("\"1.2.3.4\""), listOf("\"1.2.3\"")) {
                 schema(DocumentUri("https://example.com/meta"), json(meta))
             }
         }
@@ -197,20 +251,27 @@ class DialectTest : FunSpec({
             verify("""{"type": "string", "nullable": true}""", listOf("null", "\"a\""), listOf("1"), OPENAPI_30)
             verify("""{"type": "string"}""", listOf("\"a\""), listOf("null"), OPENAPI_30)
             verify("""{"maximum": 1, "exclusiveMaximum": true}""", listOf("0"), listOf("1"), OPENAPI_30)
-            diagnosticsOf("""{"type": ["string", "null"]}""", OPENAPI_30).map { it.code } shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
-            diagnosticsOf("""{"nullable": "yes"}""", OPENAPI_30).map { it.code } shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
+            codesOf("""{"type": ["string", "null"]}""", OPENAPI_30) shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
+            codesOf("""{"nullable": "yes"}""", OPENAPI_30) shouldBe listOf(DiagnosticCodes.KEYWORD_INVALID)
             verify(
-                """{"properties": {"a": {"${'$'}ref": "#/components/a", "maxLength": 1}}, "components": {"a": {"type": "string"}}}""",
+                """{"properties": {"a": {"${'$'}ref": "#/components/a", "maxLength": 1}},
+                    "components": {"a": {"type": "string"}}}""",
                 listOf("""{"a": "long"}"""),
                 listOf("""{"a": 1}"""),
                 OPENAPI_30,
             )
-            verify("""{"discriminator": {"propertyName": "kind"}, "example": 1, "xml": {}, "externalDocs": {}}""", listOf("1"), emptyList(), OPENAPI_30)
+            verify(
+                """{"discriminator": {"propertyName": "kind"}, "example": 1, "xml": {}, "externalDocs": {}}""",
+                listOf("1"),
+                emptyList(),
+                OPENAPI_30,
+            )
         }
 
         test("3.1 is 2020-12 with annotations of its own") {
             verify(
-                """{"${'$'}schema": "https://spec.openapis.org/oas/3.1/dialect/base", "type": ["string", "null"], "discriminator": {"propertyName": "kind"}, "example": 1}""",
+                """{"${'$'}schema": "https://spec.openapis.org/oas/3.1/dialect/base", "type": ["string",
+                    "null"], "discriminator": {"propertyName": "kind"}, "example": 1}""",
                 listOf("null", "\"a\""),
                 listOf("1"),
             )

@@ -28,18 +28,20 @@ private const val WIDE: Int = 20_000
 class HostileTest : FunSpec({
     test("a schema nested far too deep is refused, not overflowed") {
         val schema = nested("""{"items": """, "{}", "}", 300)
-        diagnosticsOf(schema).map { it.code } shouldContain DiagnosticCodes.LIMIT_EXCEEDED
+        codesOf(schema) shouldContain DiagnosticCodes.LIMIT_EXCEEDED
     }
 
     test("a reference to itself that reads nothing is refused") {
         listOf(
             """{"${'$'}ref": "#"}""",
-            """{"${'$'}defs": {"a": {"${'$'}ref": "#/${'$'}defs/b"}, "b": {"allOf": [{"${'$'}ref": "#/${'$'}defs/a"}]}}, "${'$'}ref": "#/${'$'}defs/a"}""",
+            """{"${'$'}defs": {"a": {"${'$'}ref": "#/${'$'}defs/b"},
+                "b": {"allOf": [{"${'$'}ref": "#/${'$'}defs/a"}]}}, "${'$'}ref": "#/${'$'}defs/a"}""",
             """{"${'$'}dynamicAnchor": "x", "anyOf": [{"${'$'}dynamicRef": "#x"}]}""",
         ).forEach { schema ->
             schemaOf(schema).refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
         }
-        val legacy = schemaOf("""{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}}, "${'$'}ref": "#/definitions/a"}""") {
+        val legacy = schemaOf("""{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}},
+            "${'$'}ref": "#/definitions/a"}""") {
             defaultDialect = Dialect.Draft07
         }
         legacy.refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
@@ -52,9 +54,12 @@ class HostileTest : FunSpec({
 
     test("a long chain of dynamic references is bounded") {
         val definitions = (0 until 200).joinToString(", ") { index ->
-            """"d$index": {"${'$'}id": "https://example.com/d$index", "${'$'}dynamicAnchor": "n", "${'$'}ref": "https://example.com/d${index + 1}"}"""
+            """"d$index": {"${'$'}id": "https://example.com/d$index", "${'$'}dynamicAnchor": "n",
+                "${'$'}ref": "https://example.com/d${index + 1}"}"""
         }
-        val schema = """{"${'$'}defs": {$definitions, "d200": {"${'$'}id": "https://example.com/d200", "${'$'}dynamicAnchor": "n", "items": {"${'$'}dynamicRef": "#n"}}}, "${'$'}ref": "https://example.com/d0"}"""
+        val schema = """{"${'$'}defs": {$definitions, "d200": {"${'$'}id": "https://example.com/d200",
+            "${'$'}dynamicAnchor": "n", "items": {"${'$'}dynamicRef": "#n"}}},
+            "${'$'}ref": "https://example.com/d0"}"""
         val compiled = schemaOf(schema) { limits { maximumEvaluationDepth = SchemaLimits.CEILING_EVALUATION_DEPTH } }
         compiled.accepts("[1]") shouldBe true
         schemaOf(schema) { limits { maximumEvaluationDepth = 100 } }.refusalOf(json("[1]")).reason shouldBe
@@ -73,7 +78,8 @@ class HostileTest : FunSpec({
 
     test("nested alternatives that all fail run out of steps instead of time") {
         val schema = nested("""{"anyOf": [{"type": "string"}, """, """{"type": "string"}""", "]}", 40)
-            .replace("""{"anyOf": [{"type": "string"}, {"type": "string"}]}""", """{"anyOf": [{"type": "string"}, {"type": "boolean"}]}""")
+            .replace("""{"anyOf": [{"type": "string"}, {"type": "string"}]}""", """{"anyOf": [{"type": "string"},
+                {"type": "boolean"}]}""")
         val compiled = schemaOf(schema) { limits { maximumEvaluationSteps = 100_000L } }
         compiled.accepts("\"a\"") shouldBe true
         compiled.validate(json("1")).isValid shouldBe false
@@ -100,7 +106,8 @@ class HostileTest : FunSpec({
 
     test("keys an attacker chose do not slow lookups") {
         val keys = (0 until WIDE).joinToString(", ") { """"k${"0".repeat(20)}$it": $it""" }
-        val compiled = schemaOf("""{"required": ["k${"0".repeat(20)}19999", "missing"], "propertyNames": {"maxLength": 40}}""")
+        val compiled = schemaOf("""{"required": ["k${"0".repeat(20)}19999", "missing"],
+            "propertyNames": {"maxLength": 40}}""")
         compiled.errorsOf("{$keys}").single().error.contains("missing") shouldBe true
     }
 })

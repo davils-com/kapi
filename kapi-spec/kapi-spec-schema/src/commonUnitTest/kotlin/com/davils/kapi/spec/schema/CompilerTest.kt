@@ -62,7 +62,8 @@ class CompilerTest : FunSpec({
 
     test("a reference resolves through the loader, which is asked once per document") {
         val asked = ArrayList<String>()
-        val compiled = schemaOf("""{"anyOf": [{"${'$'}ref": "https://example.com/a.json"}, {"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""") {
+        val compiled = schemaOf("""{"anyOf": [{"${'$'}ref": "https://example.com/a.json"},
+            {"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""") {
             loader = SchemaLoader { uri ->
                 asked += uri.value
                 json("""{"type": "integer", "${'$'}defs": {"b": {"type": "string"}}}""")
@@ -118,13 +119,14 @@ class CompilerTest : FunSpec({
     }
 
     test("identifiers and anchors are checked") {
-        diagnosticsOf("""{"${'$'}anchor": "1a"}""").map { it.code } shouldBe listOf(DiagnosticCodes.ANCHOR_INVALID)
-        diagnosticsOf("""{"${'$'}id": "https://example.com/a#frag"}""").map { it.code } shouldContain
+        codesOf("""{"${'$'}anchor": "1a"}""") shouldBe listOf(DiagnosticCodes.ANCHOR_INVALID)
+        codesOf("""{"${'$'}id": "https://example.com/a#frag"}""") shouldContain
             DiagnosticCodes.ID_INVALID
-        val duplicate = """{"${'$'}defs": {"a": {"${'$'}id": "https://example.com/x"}, "b": {"${'$'}id": "https://example.com/x"}}}"""
-        diagnosticsOf(duplicate).map { it.code } shouldContain DiagnosticCodes.ID_DUPLICATE
+        val duplicate = """{"${'$'}defs": {"a": {"${'$'}id": "https://example.com/x"},
+            "b": {"${'$'}id": "https://example.com/x"}}}"""
+        codesOf(duplicate) shouldContain DiagnosticCodes.ID_DUPLICATE
         val anchors = """{"${'$'}defs": {"a": {"${'$'}anchor": "x"}, "b": {"${'$'}anchor": "x"}}}"""
-        diagnosticsOf(anchors).map { it.code } shouldContain DiagnosticCodes.ID_DUPLICATE
+        codesOf(anchors) shouldContain DiagnosticCodes.ID_DUPLICATE
     }
 
     test("an unknown meta-schema is reported") {
@@ -157,7 +159,8 @@ class CompilerTest : FunSpec({
 
     test("a relative reference resolves against the URI the schema was compiled with") {
         val compiler = JsonSchema.compiler { schema(REMOTE, json("""{"type": "string"}""")) }
-        val compiled = compiler.compile(json("""{"${'$'}ref": "name.json"}"""), DocumentUri("https://example.com/schemas/root.json"))
+        val root = DocumentUri("https://example.com/schemas/root.json")
+        val compiled = compiler.compile(json("""{"${'$'}ref": "name.json"}"""), root)
         compiled.shouldBeInstanceOf<Compilation.Compiled>().schema.accepts("\"x\"") shouldBe true
     }
 })

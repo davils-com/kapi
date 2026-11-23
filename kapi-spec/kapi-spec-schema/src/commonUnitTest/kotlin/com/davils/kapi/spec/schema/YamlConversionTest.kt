@@ -39,7 +39,8 @@ class YamlConversionTest : FunSpec({
     }
 
     test("keys with the same text are refused") {
-        JsonSchema.json(yamlOf("1: a\n'1': b\n")).shouldBeInstanceOf<YamlConversion.Refused>().reason shouldContain "twice"
+        val refused = JsonSchema.json(yamlOf("1: a\n'1': b\n")).shouldBeInstanceOf<YamlConversion.Refused>()
+        refused.reason shouldContain "twice"
     }
 
     test("depth and nodes are bounded") {
