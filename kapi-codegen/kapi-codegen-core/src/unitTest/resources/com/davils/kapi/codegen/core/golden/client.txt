@@ -1838,11 +1838,8 @@ public interface PetstoreAuthService {
 ===== com/example/petstore/server/PetstorePetsRoutes.kt
 package com.example.petstore.server
 
-import com.davils.kapi.runtime.core.codec.Codecs
-import com.davils.kapi.runtime.core.codec.Decoding
 import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.conditional.RepresentationState
-import com.davils.kapi.runtime.core.framing.ServerSentEvent
 import com.davils.kapi.runtime.core.negotiation.MediaRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
@@ -1883,7 +1880,6 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
-import kotlinx.io.bytestring.decodeToString
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -2099,10 +2095,10 @@ public class PetstorePetsRoutes(
         val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
         val parts = input.parts(true)
         val photo = parts?.firstOrNull { part -> part.name == "photo" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
-        val caption = parts?.firstOrNull { part -> part.name == "caption" }?.let { part -> part.content.decodeToString() }
-        val meta = parts?.firstOrNull { part -> part.name == "meta" }?.let { part -> Codecs.Default.decode(PetstoreUploadPhotoRequestMeta.serializer(), part.content, "application/json") }
-        if (!input.isValid || petId == null || photo == null || (meta != null && meta !is Decoding.Decoded)) return input.refused()
-        return when (val response = service.uploadPhoto(petId = petId, photo = photo, caption = caption, meta = meta?.value)) {
+        val caption = input.part(parts, "caption", String.serializer(), false, MediaType.parse("text/plain"))
+        val meta = input.part(parts, "meta", PetstoreUploadPhotoRequestMeta.serializer(), false, MediaType.parse("application/json"))
+        if (!input.isValid || petId == null || photo == null) return input.refused()
+        return when (val response = service.uploadPhoto(petId = petId, photo = photo, caption = caption, meta = meta)) {
             is PetstoreUploadPhotoResponse.NoContent -> reply(204)
         }
     }
@@ -2112,9 +2108,7 @@ public class PetstorePetsRoutes(
         if (!input.isValid) return input.refused()
         return when (val response = service.watchPets()) {
             is PetstoreWatchPetsResponse.Ok -> reply(200) {
-                events {
-                    response.items.collect { item -> send(ServerSentEvent(data = Codecs.Default.json.encodeToString(PetstorePet.serializer(), item))) }
-                }
+                events(PetstorePet.serializer(), response.items)
             }
         }
     }

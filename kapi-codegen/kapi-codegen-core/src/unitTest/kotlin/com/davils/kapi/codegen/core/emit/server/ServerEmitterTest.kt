@@ -75,7 +75,6 @@ private const val MULTIPART: String =
 private val refused: Map<String, List<String>> = mapOf(
     "a parameter that is a map spread over the query" to
         parameters("name: filter, in: query, schema: {type: object, additionalProperties: {type: string}}"),
-    "parts that are texts but no strings" to get(LIST_PETS, "$MULTIPART{a: {type: array, items: {type: integer}}}}}}}"),
 )
 
 class ServerEmitterTest : FunSpec({
@@ -213,8 +212,9 @@ class ServerEmitterTest : FunSpec({
 
             kotlin shouldContain "private class ListPetsForm("
             kotlin shouldContain "val form = input.body(ListPetsForm.serializer(), true,"
-            kotlin shouldContain "val b = form?.b?.let { text -> Codecs.Default.decode("
-            kotlin shouldContain "service.listPets(a = form.a, b = b?.value)"
+            kotlin shouldContain "val b = input.field(\"b\", form?.b, "
+            kotlin shouldContain "MediaType.parse(\"application/json\"))"
+            kotlin shouldContain "service.listPets(a = form.a, b = b)"
         }
 
         test("reads the parts of a multipart body by their names") {
@@ -223,8 +223,11 @@ class ServerEmitterTest : FunSpec({
 
             kotlin shouldContain "val parts = input.parts(true)"
             kotlin shouldContain "val f = parts?.firstOrNull { part -> part.name == \"f\" }?.let { part -> FilePart("
-            kotlin shouldContain "Codecs.Default.decode(Long.serializer(), part.content, \"text/plain\")"
-            kotlin shouldContain "f == null || (n != null && n !is Decoding.Decoded)"
+            kotlin shouldContain
+                """val n = input.part(parts, "n", Long.serializer(), false, MediaType.parse("text/plain"))"""
+            kotlin shouldContain "val t = input.part(parts, \"t\", String.serializer(), false, "
+            kotlin shouldContain "if (!input.isValid || f == null) return input.refused()"
+            kotlin shouldNotContain "Codecs"
         }
 
         test("reads repeated parts as texts and a form whose fields are all optional") {
@@ -234,8 +237,14 @@ class ServerEmitterTest : FunSpec({
                 get(LIST_PETS, "requestBody: {content: {application/x-www-form-urlencoded: {schema: $form}}}"),
             )
 
-            tags shouldContain "val tags = parts?.filter { part -> part.name == \"tags\" }?.map { part ->"
+            tags shouldContain "val tags = input.partItems(parts, \"tags\", String.serializer())"
             optional shouldContain "service.listPets(a = form.a)"
+        }
+
+        test("reads repeated parts that are numbers, each by the codecs of the server") {
+            val numbers = serverOf(get(LIST_PETS, "$MULTIPART{a: {type: array, items: {type: integer}}}}}}}"))
+
+            numbers shouldContain "val a = input.partItems(parts, \"a\", Long.serializer())"
         }
 
         test("streams the bytes of a response as they come") {
@@ -248,7 +257,7 @@ class ServerEmitterTest : FunSpec({
             val events = "'200': {description: ok, content: {text/event-stream: {schema: {type: string}}}}"
             val lines = "'200': {description: ok, content: {application/x-ndjson: {schema: {type: string}}}}"
 
-            serverOf(responses(events)) shouldContain "events {\n"
+            serverOf(responses(events)) shouldContain "events(String.serializer(), response.items)"
             serverOf(responses(lines)) shouldContain "lines(String.serializer(), response.items, MediaType.parse("
         }
     }

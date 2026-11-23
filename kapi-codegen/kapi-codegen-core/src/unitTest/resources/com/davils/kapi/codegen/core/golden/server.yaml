@@ -179,6 +179,58 @@ paths:
           description: Gone
         '404':
           description: Unknown
+  /pets/events:
+    get:
+      operationId: watchPets
+      tags: [pets]
+      responses:
+        '200':
+          description: Every pet
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Pet'
+  /pets/{petId}/photo:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    post:
+      operationId: uploadPhoto
+      tags: [pets]
+      security:
+        - oauth: [pets:write]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [photo, rank]
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                rank:
+                  type: integer
+                  format: int32
+                tags:
+                  type: array
+                  items:
+                    type: integer
+                meta:
+                  type: object
+                  required: [title]
+                  properties:
+                    title:
+                      type: string
+                      minLength: 2
+      responses:
+        '204':
+          description: Stored
   /pets/{petId}/avatar:
     parameters:
       - name: petId

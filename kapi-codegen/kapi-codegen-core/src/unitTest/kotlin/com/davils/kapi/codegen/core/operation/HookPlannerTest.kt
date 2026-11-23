@@ -192,14 +192,14 @@ class HookPlannerTest : FunSpec({
             generation.diagnostics.single().message shouldContain "which the generated sender uses itself"
         }
 
-        test("is refused on the receiving side for what a server does not serve yet") {
+        test("reads on the receiving side parts that are numbers, as the sending side writes them") {
             val form = "requestBody: {content: {multipart/form-data: {schema: {type: object, " +
                 "properties: {ids: {type: array, items: {type: integer}}}}}}}"
             val senders = hookGenerationOf(webhook(ADOPTED, NAMED, form), models + Artifact.Senders)
             val receivers = hookGenerationOf(webhook(ADOPTED, NAMED, form), models + Artifact.Receivers)
 
             senders.codes() shouldBe emptyList()
-            receivers.codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
+            receivers.codes() shouldBe emptyList()
         }
     }
 })

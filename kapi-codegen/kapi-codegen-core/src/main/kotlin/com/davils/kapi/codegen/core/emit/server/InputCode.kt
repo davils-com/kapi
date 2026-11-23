@@ -110,13 +110,12 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         val arguments = body.fields.map { field ->
             val isDecoded = isDecoded(field)
             if (isDecoded) {
-                val content = CodeBlock.of("text.%M()", ServerTypes.encodeToByteString)
-                val decoding = decoding(field, content, JSON)
-                code.add("val %N = %N?.%N?.let { text -> %L }\n", field.name, FORM, field.name, decoding)
-                checks += decodedChecks(field)
+                val text = CodeBlock.of("%N?.%N", FORM, field.name)
+                code.add(DECLARED, field.name, decoded("field", CodeBlock.of("%S, %L", field.wireName, text), field))
+                checks += required(field)
             }
             val value = CodeBlock.of("%N.%N", FORM, field.name)
-            field.name to (decodedArgument(field).takeIf { isDecoded } ?: value)
+            field.name to (CodeBlock.of("%N", field.name).takeIf { isDecoded } ?: value)
         }
         return Reading(code.build(), checks, arguments)
     }
@@ -127,8 +126,8 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         val checks = mutableListOf<CodeBlock>()
         val arguments = body.fields.map { field ->
             code.add(DECLARED, field.name, part(field))
-            checks += partChecks(field)
-            field.name to partArgument(field)
+            checks += required(field)
+            field.name to CodeBlock.of("%N", field.name)
         }
         return Reading(code.build(), checks, arguments)
     }
@@ -141,62 +140,38 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
             "%T(part.content, part.filename, part.contentType?.toString())",
             ServerTypes.filePart,
         )
-        val text = CodeBlock.of("part.content.%M()", ServerTypes.decodeToString)
-        val content = CodeBlock.of("part.content")
+        val source = CodeBlock.of("%N, %S", PARTS, field.wireName)
         return when (field.kind) {
             FieldKind.File -> CodeBlock.of(LET, single, file)
-
             FieldKind.Files -> CodeBlock.of(MAP, many, file)
-
-            FieldKind.Text -> CodeBlock.of(
-                LET,
-                single,
-                text.takeUnless { isDecoded(field) } ?: decoding(field, content, TEXT),
-            )
-
-            FieldKind.Texts -> CodeBlock.of(MAP, many, text)
-
-            FieldKind.Json -> CodeBlock.of(
-                LET,
-                single,
-                decoding(field, content, field.contentType ?: JSON),
-            )
+            FieldKind.Text -> decoded("part", source, field)
+            FieldKind.Texts -> items(source, field)
+            FieldKind.Json -> decoded("part", source, field)
         }
     }
 
-    private fun decoding(field: FieldPlan, content: CodeBlock, mediaType: String): CodeBlock = CodeBlock.of(
-        "%T.Default.decode(%L, %L, %S)",
-        ServerTypes.codecs,
+    private fun decoded(function: String, source: CodeBlock, field: FieldPlan): CodeBlock = CodeBlock.of(
+        "%N.%L(%L, %L, %L, %L)",
+        INPUT,
+        function,
+        source,
         serializer(field.type),
-        content,
-        mediaType,
+        !field.type.isNullable,
+        ServerTypes.mediaType(mediaTypeOf(field)),
     )
 
-    private fun isDecoded(field: FieldPlan): Boolean {
-        if (field.kind == FieldKind.Json) return true
-        val shape = field.type.shape
-        return field.kind == FieldKind.Text && (shape as? TypeShape.Scalar)?.kind != ScalarKind.Text
+    private fun items(source: CodeBlock, field: FieldPlan): CodeBlock {
+        val item = (field.type.shape as? TypeShape.Items)?.item ?: field.type
+        return CodeBlock.of("%N.partItems(%L, %L)", INPUT, source, serializer(item))
     }
 
-    private fun partChecks(field: FieldPlan): List<CodeBlock> {
-        if (isDecoded(field)) return decodedChecks(field)
-        return listOf(CodeBlock.of(ABSENT, field.name)).filter { !field.type.isNullable }
+    private fun mediaTypeOf(field: FieldPlan): String {
+        val declared = field.contentType ?: JSON
+        return TEXT.takeIf { field.kind == FieldKind.Text } ?: declared
     }
 
-    private fun partArgument(field: FieldPlan): CodeBlock {
-        if (isDecoded(field)) return decodedArgument(field)
-        return CodeBlock.of("%N", field.name)
-    }
-
-    private fun decodedChecks(field: FieldPlan): List<CodeBlock> {
-        if (!field.type.isNullable) return listOf(CodeBlock.of("%N !is %T", field.name, ServerTypes.decoded))
-        return listOf(CodeBlock.of("(%N != null && %N !is %T)", field.name, field.name, ServerTypes.decoded))
-    }
-
-    private fun decodedArgument(field: FieldPlan): CodeBlock {
-        if (!field.type.isNullable) return CodeBlock.of("%N.value", field.name)
-        return CodeBlock.of("%N?.value", field.name)
-    }
+    private fun required(field: FieldPlan): List<CodeBlock> =
+        listOf(CodeBlock.of(ABSENT, field.name)).filter { !field.type.isNullable }
 
     private fun isRequired(body: BodyPlan): Boolean =
         !body.type.isNullable || body.fields.any { field -> !field.type.isNullable }
@@ -272,6 +247,12 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
     )
 
     companion object {
+        fun isDecoded(field: FieldPlan): Boolean {
+            if (field.kind == FieldKind.Json) return true
+            val shape = field.type.shape
+            return field.kind == FieldKind.Text && (shape as? TypeShape.Scalar)?.kind != ScalarKind.Text
+        }
+
         fun isObject(shape: TypeShape): Boolean =
             shape is TypeShape.Entries || (shape as? TypeShape.Named)?.kind == ModelKind.Object
     }

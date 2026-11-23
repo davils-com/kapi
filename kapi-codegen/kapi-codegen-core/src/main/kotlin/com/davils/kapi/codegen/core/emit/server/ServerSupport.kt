@@ -19,11 +19,7 @@ package com.davils.kapi.codegen.core.emit.server
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.emit.client.SignatureNames
-import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
-import com.davils.kapi.codegen.core.operation.plan.BodyKind
-import com.davils.kapi.codegen.core.operation.plan.FieldKind
-import com.davils.kapi.codegen.core.operation.plan.FieldPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
@@ -45,9 +41,6 @@ internal class ServerSupport(private val findings: Findings) {
 
     private fun unsupported(operation: OperationPlan): List<String> {
         val maps = operation.parameters.filter(::isSpreadMap)
-        val body = operation.body
-        val parts = body?.takeIf { plan -> plan.kind == BodyKind.Multipart }?.fields.orEmpty()
-        val partTexts = parts.filter { field -> field.kind == FieldKind.Texts && !isText(field) }
         val upgrades = listOfNotNull(operation.upgrade)
         val headers = operation.responses
             .flatMap { response -> response.headers }
@@ -55,7 +48,6 @@ internal class ServerSupport(private val findings: Findings) {
         return maps.map { parameter ->
             "the parameter ${parameter.wireName}, a map spread over the query, on a server"
         } +
-            partTexts.map { field -> "the parts ${field.wireName}, which are texts but no strings, on a server" } +
             upgrades.map { "a connection that is upgraded on a server" } +
             headers.map { header ->
                 "the response header ${header.wireName}, whose name is no token of HTTP, on a server"
@@ -70,12 +62,6 @@ internal class ServerSupport(private val findings: Findings) {
 
     private fun isToken(name: String): Boolean =
         name.isNotEmpty() && name.all { char -> char in TOKEN_MARKS || (char.code < ASCII && char.isLetterOrDigit()) }
-
-    private fun isText(field: FieldPlan): Boolean {
-        val shape = field.type.shape
-        val single = (shape as? TypeShape.Items)?.run { item.shape } ?: shape
-        return (single as? TypeShape.Scalar)?.kind == ScalarKind.Text
-    }
 
     private fun refuse(operation: OperationPlan, what: String) {
         findings.error(

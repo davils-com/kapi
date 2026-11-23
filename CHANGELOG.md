@@ -76,3 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   supported; the operations of `additionalOperations` are generated for clients, senders and servers with their
   method as the document names it, and a key that is no method token in upper case is refused with a located
   `codegen.operation.unsupported`.
+- **Generated servers** stream typed server-sent events with `ReplyBuilder.events(serializer, items)` and read the
+  parts of a multipart body and the fields of a form with `Input.part`, `Input.partItems` and `Input.field`, so every
+  value is decoded by the codecs of the server, validated and reported under `body.<name>`; repeated parts of numbers
+  or flags are served instead of refused.

@@ -26,7 +26,6 @@ import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
-import com.davils.kapi.codegen.core.operation.plan.FieldKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
@@ -206,7 +205,7 @@ internal class ServerEmitter(
     }
 
     private fun formType(field: FieldPlan): TypeName {
-        if (field.kind != FieldKind.Json) return types.of(field.type)
+        if (!InputCode.isDecoded(field)) return types.of(field.type)
         return STRING.copy(nullable = field.type.isNullable)
     }
 

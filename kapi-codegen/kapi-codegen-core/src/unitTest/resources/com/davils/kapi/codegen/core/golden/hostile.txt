@@ -361,6 +361,7 @@ public sealed interface PetstoreValResult {
 ===== com/example/petstore/server/PetstoreDefaultRoutes.kt
 package com.example.petstore.server
 
+import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.core.wire.FilePart
@@ -377,7 +378,6 @@ import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.operation.PetstoreValResponse
 import kotlin.String
 import kotlin.collections.List
-import kotlinx.io.bytestring.decodeToString
 import kotlinx.serialization.builtins.serializer
 
 @DavilsGenerated(
@@ -402,7 +402,7 @@ public class PetstoreDefaultRoutes(
         val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
         val parts = input.parts(true)
         val fileName = parts?.firstOrNull { part -> part.name == "file\"name" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
-        val pwned = parts?.firstOrNull { part -> part.name == "${'$'}{pwned}" }?.let { part -> part.content.decodeToString() }
+        val pwned = input.part(parts, "${'$'}{pwned}", String.serializer(), false, MediaType.parse("text/plain"))
         if (!input.isValid || id == null) return input.refused()
         return when (val response = service.`val`(id = id, fileName = fileName, pwned = pwned)) {
             is PetstoreValResponse.NoContent -> reply(204)
