@@ -1,0 +1,441 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kapi-runtime-testing>
+final enum class com.davils.kapi.runtime.testing.contract/ExchangeSide : kotlin/Enum<com.davils.kapi.runtime.testing.contract/ExchangeSide> { // com.davils.kapi.runtime.testing.contract/ExchangeSide|null[0]
+    enum entry Request // com.davils.kapi.runtime.testing.contract/ExchangeSide.Request|null[0]
+    enum entry Response // com.davils.kapi.runtime.testing.contract/ExchangeSide.Response|null[0]
+
+    final val entries // com.davils.kapi.runtime.testing.contract/ExchangeSide.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.testing.contract/ExchangeSide> // com.davils.kapi.runtime.testing.contract/ExchangeSide.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.testing.contract/ExchangeSide // com.davils.kapi.runtime.testing.contract/ExchangeSide.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.testing.contract/ExchangeSide> // com.davils.kapi.runtime.testing.contract/ExchangeSide.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.runtime.testing.oauth/DevicePoll : kotlin/Enum<com.davils.kapi.runtime.testing.oauth/DevicePoll> { // com.davils.kapi.runtime.testing.oauth/DevicePoll|null[0]
+    enum entry Denied // com.davils.kapi.runtime.testing.oauth/DevicePoll.Denied|null[0]
+    enum entry Expired // com.davils.kapi.runtime.testing.oauth/DevicePoll.Expired|null[0]
+    enum entry Pending // com.davils.kapi.runtime.testing.oauth/DevicePoll.Pending|null[0]
+    enum entry SlowDown // com.davils.kapi.runtime.testing.oauth/DevicePoll.SlowDown|null[0]
+
+    final val entries // com.davils.kapi.runtime.testing.oauth/DevicePoll.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.testing.oauth/DevicePoll> // com.davils.kapi.runtime.testing.oauth/DevicePoll.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val error // com.davils.kapi.runtime.testing.oauth/DevicePoll.error|{}error[0]
+        final fun <get-error>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/DevicePoll.error.<get-error>|<get-error>(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.testing.oauth/DevicePoll // com.davils.kapi.runtime.testing.oauth/DevicePoll.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.testing.oauth/DevicePoll> // com.davils.kapi.runtime.testing.oauth/DevicePoll.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.runtime.testing.oauth/Endpoint : kotlin/Enum<com.davils.kapi.runtime.testing.oauth/Endpoint> { // com.davils.kapi.runtime.testing.oauth/Endpoint|null[0]
+    enum entry DeviceAuthorization // com.davils.kapi.runtime.testing.oauth/Endpoint.DeviceAuthorization|null[0]
+    enum entry Metadata // com.davils.kapi.runtime.testing.oauth/Endpoint.Metadata|null[0]
+    enum entry Revocation // com.davils.kapi.runtime.testing.oauth/Endpoint.Revocation|null[0]
+    enum entry Token // com.davils.kapi.runtime.testing.oauth/Endpoint.Token|null[0]
+    enum entry Unknown // com.davils.kapi.runtime.testing.oauth/Endpoint.Unknown|null[0]
+
+    final val entries // com.davils.kapi.runtime.testing.oauth/Endpoint.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.testing.oauth/Endpoint> // com.davils.kapi.runtime.testing.oauth/Endpoint.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.testing.oauth/Endpoint // com.davils.kapi.runtime.testing.oauth/Endpoint.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.testing.oauth/Endpoint> // com.davils.kapi.runtime.testing.oauth/Endpoint.values|values#static(){}[0]
+}
+
+sealed interface com.davils.kapi.runtime.testing.fake/RefreshOutcome { // com.davils.kapi.runtime.testing.fake/RefreshOutcome|null[0]
+    final class Fail : com.davils.kapi.runtime.testing.fake/RefreshOutcome { // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.<init>|<init>(kotlin.String){}[0]
+
+        final val message // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.message|{}message[0]
+            final fun <get-message>(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.message.<get-message>|<get-message>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Fail.toString|toString(){}[0]
+    }
+
+    final class Rotate : com.davils.kapi.runtime.testing.fake/RefreshOutcome { // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.<init>|<init>(kotlin.String){}[0]
+
+        final val token // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.token|{}token[0]
+            final fun <get-token>(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.token.<get-token>|<get-token>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Rotate.toString|toString(){}[0]
+    }
+
+    final object Keep : com.davils.kapi.runtime.testing.fake/RefreshOutcome { // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Keep|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Keep.toString|toString(){}[0]
+    }
+
+    final object Refuse : com.davils.kapi.runtime.testing.fake/RefreshOutcome { // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Refuse|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/RefreshOutcome.Refuse.toString|toString(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.testing.contract/ContractCheck : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.testing.contract/ContractCheck|null[0]
+    final val basePath // com.davils.kapi.runtime.testing.contract/ContractCheck.basePath|{}basePath[0]
+        final fun <get-basePath>(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractCheck.basePath.<get-basePath>|<get-basePath>(){}[0]
+    final val document // com.davils.kapi.runtime.testing.contract/ContractCheck.document|{}document[0]
+        final fun <get-document>(): com.davils.kapi.spec.openapi/Document // com.davils.kapi.runtime.testing.contract/ContractCheck.document.<get-document>|<get-document>(){}[0]
+    final val isFormatAsserted // com.davils.kapi.runtime.testing.contract/ContractCheck.isFormatAsserted|{}isFormatAsserted[0]
+        final fun <get-isFormatAsserted>(): kotlin/Boolean // com.davils.kapi.runtime.testing.contract/ContractCheck.isFormatAsserted.<get-isFormatAsserted>|<get-isFormatAsserted>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.testing.contract/ContractCheck.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractCheck.toString|toString(){}[0]
+    final suspend fun check(com.davils.kapi.runtime.testing.mock/RecordedExchange): com.davils.kapi.runtime.testing.contract/ContractReport // com.davils.kapi.runtime.testing.contract/ContractCheck.check|check(com.davils.kapi.runtime.testing.mock.RecordedExchange){}[0]
+    final suspend fun check(kotlin.collections/List<com.davils.kapi.runtime.testing.mock/RecordedExchange>): com.davils.kapi.runtime.testing.contract/ContractReport // com.davils.kapi.runtime.testing.contract/ContractCheck.check|check(kotlin.collections.List<com.davils.kapi.runtime.testing.mock.RecordedExchange>){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.contract/ContractCheckBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.testing.contract/ContractCheck> { // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder|null[0]
+    final var basePath // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.basePath|{}basePath[0]
+        final fun <get-basePath>(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.basePath.<get-basePath>|<get-basePath>(){}[0]
+        final fun <set-basePath>(kotlin/String) // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.basePath.<set-basePath>|<set-basePath>(kotlin.String){}[0]
+    final var isFormatAsserted // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.isFormatAsserted|{}isFormatAsserted[0]
+        final fun <get-isFormatAsserted>(): kotlin/Boolean // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.isFormatAsserted.<get-isFormatAsserted>|<get-isFormatAsserted>(){}[0]
+        final fun <set-isFormatAsserted>(kotlin/Boolean) // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.isFormatAsserted.<set-isFormatAsserted>|<set-isFormatAsserted>(kotlin.Boolean){}[0]
+
+    final fun limits(kotlin/Function1<com.davils.kapi.spec.schema/SchemaLimitsBuilder, kotlin/Unit>) // com.davils.kapi.runtime.testing.contract/ContractCheckBuilder.limits|limits(kotlin.Function1<com.davils.kapi.spec.schema.SchemaLimitsBuilder,kotlin.Unit>){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.contract/ContractFinding { // com.davils.kapi.runtime.testing.contract/ContractFinding|null[0]
+    constructor <init>(com.davils.kore.core.validation.violation/ViolationCode, kotlin/String, kotlin/Int, com.davils.kapi.runtime.testing.contract/ExchangeSide, kotlin/String, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ..., com.davils.kaml.document.pointer/JsonPointer? = ...) // com.davils.kapi.runtime.testing.contract/ContractFinding.<init>|<init>(com.davils.kore.core.validation.violation.ViolationCode;kotlin.String;kotlin.Int;com.davils.kapi.runtime.testing.contract.ExchangeSide;kotlin.String;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kaml.document.pointer.JsonPointer?){}[0]
+
+    final val code // com.davils.kapi.runtime.testing.contract/ContractFinding.code|{}code[0]
+        final fun <get-code>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractFinding.code.<get-code>|<get-code>(){}[0]
+    final val exchange // com.davils.kapi.runtime.testing.contract/ContractFinding.exchange|{}exchange[0]
+        final fun <get-exchange>(): kotlin/Int // com.davils.kapi.runtime.testing.contract/ContractFinding.exchange.<get-exchange>|<get-exchange>(){}[0]
+    final val instance // com.davils.kapi.runtime.testing.contract/ContractFinding.instance|{}instance[0]
+        final fun <get-instance>(): com.davils.kaml.document.pointer/JsonPointer? // com.davils.kapi.runtime.testing.contract/ContractFinding.instance.<get-instance>|<get-instance>(){}[0]
+    final val location // com.davils.kapi.runtime.testing.contract/ContractFinding.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.runtime.testing.contract/ContractFinding.location.<get-location>|<get-location>(){}[0]
+    final val message // com.davils.kapi.runtime.testing.contract/ContractFinding.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractFinding.message.<get-message>|<get-message>(){}[0]
+    final val operation // com.davils.kapi.runtime.testing.contract/ContractFinding.operation|{}operation[0]
+        final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractFinding.operation.<get-operation>|<get-operation>(){}[0]
+    final val side // com.davils.kapi.runtime.testing.contract/ContractFinding.side|{}side[0]
+        final fun <get-side>(): com.davils.kapi.runtime.testing.contract/ExchangeSide // com.davils.kapi.runtime.testing.contract/ContractFinding.side.<get-side>|<get-side>(){}[0]
+    final val subject // com.davils.kapi.runtime.testing.contract/ContractFinding.subject|{}subject[0]
+        final fun <get-subject>(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractFinding.subject.<get-subject>|<get-subject>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.contract/ContractFinding.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.contract/ContractFinding.hashCode|hashCode(){}[0]
+    final fun render(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractFinding.render|render(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractFinding.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.contract/ContractReport { // com.davils.kapi.runtime.testing.contract/ContractReport|null[0]
+    constructor <init>(kotlin.collections/List<com.davils.kapi.runtime.testing.contract/ContractFinding>, kotlin/Int) // com.davils.kapi.runtime.testing.contract/ContractReport.<init>|<init>(kotlin.collections.List<com.davils.kapi.runtime.testing.contract.ContractFinding>;kotlin.Int){}[0]
+
+    final val codes // com.davils.kapi.runtime.testing.contract/ContractReport.codes|{}codes[0]
+        final fun <get-codes>(): kotlin.collections/List<com.davils.kore.core.validation.violation/ViolationCode> // com.davils.kapi.runtime.testing.contract/ContractReport.codes.<get-codes>|<get-codes>(){}[0]
+    final val exchanges // com.davils.kapi.runtime.testing.contract/ContractReport.exchanges|{}exchanges[0]
+        final fun <get-exchanges>(): kotlin/Int // com.davils.kapi.runtime.testing.contract/ContractReport.exchanges.<get-exchanges>|<get-exchanges>(){}[0]
+    final val findings // com.davils.kapi.runtime.testing.contract/ContractReport.findings|{}findings[0]
+        final fun <get-findings>(): kotlin.collections/List<com.davils.kapi.runtime.testing.contract/ContractFinding> // com.davils.kapi.runtime.testing.contract/ContractReport.findings.<get-findings>|<get-findings>(){}[0]
+    final val isConforming // com.davils.kapi.runtime.testing.contract/ContractReport.isConforming|{}isConforming[0]
+        final fun <get-isConforming>(): kotlin/Boolean // com.davils.kapi.runtime.testing.contract/ContractReport.isConforming.<get-isConforming>|<get-isConforming>(){}[0]
+
+    final fun assertConforms() // com.davils.kapi.runtime.testing.contract/ContractReport.assertConforms|assertConforms(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.contract/ContractReport.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.contract/ContractReport.hashCode|hashCode(){}[0]
+    final fun render(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractReport.render|render(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.contract/ContractReport.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.fake/CountingRandom : com.davils.krypt.core/RandomSource { // com.davils.kapi.runtime.testing.fake/CountingRandom|null[0]
+    constructor <init>(kotlin/Int = ...) // com.davils.kapi.runtime.testing.fake/CountingRandom.<init>|<init>(kotlin.Int){}[0]
+
+    final val drawn // com.davils.kapi.runtime.testing.fake/CountingRandom.drawn|{}drawn[0]
+        final fun <get-drawn>(): kotlin/Long // com.davils.kapi.runtime.testing.fake/CountingRandom.drawn.<get-drawn>|<get-drawn>(){}[0]
+
+    final fun fill(kotlin/ByteArray) // com.davils.kapi.runtime.testing.fake/CountingRandom.fill|fill(kotlin.ByteArray){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/CountingRandom.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.fake/FakeTokenSource : com.davils.kapi.runtime.core.security/RefreshingTokenSource { // com.davils.kapi.runtime.testing.fake/FakeTokenSource|null[0]
+    constructor <init>(kotlin/String?, kotlin.collections/List<com.davils.kapi.runtime.testing.fake/RefreshOutcome> = ...) // com.davils.kapi.runtime.testing.fake/FakeTokenSource.<init>|<init>(kotlin.String?;kotlin.collections.List<com.davils.kapi.runtime.testing.fake.RefreshOutcome>){}[0]
+
+    final val current // com.davils.kapi.runtime.testing.fake/FakeTokenSource.current|{}current[0]
+        final fun <get-current>(): kotlin/String? // com.davils.kapi.runtime.testing.fake/FakeTokenSource.current.<get-current>|<get-current>(){}[0]
+    final val refreshRequests // com.davils.kapi.runtime.testing.fake/FakeTokenSource.refreshRequests|{}refreshRequests[0]
+        final fun <get-refreshRequests>(): kotlin/Int // com.davils.kapi.runtime.testing.fake/FakeTokenSource.refreshRequests.<get-refreshRequests>|<get-refreshRequests>(){}[0]
+    final val rejected // com.davils.kapi.runtime.testing.fake/FakeTokenSource.rejected|{}rejected[0]
+        final fun <get-rejected>(): kotlin.collections/List<com.davils.kapi.runtime.core.security/Secret?> // com.davils.kapi.runtime.testing.fake/FakeTokenSource.rejected.<get-rejected>|<get-rejected>(){}[0]
+    final val tokenRequests // com.davils.kapi.runtime.testing.fake/FakeTokenSource.tokenRequests|{}tokenRequests[0]
+        final fun <get-tokenRequests>(): kotlin/Int // com.davils.kapi.runtime.testing.fake/FakeTokenSource.tokenRequests.<get-tokenRequests>|<get-tokenRequests>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/FakeTokenSource.toString|toString(){}[0]
+    final suspend fun refresh(com.davils.kapi.runtime.core.security/Secret?): kotlin/Boolean // com.davils.kapi.runtime.testing.fake/FakeTokenSource.refresh|refresh(com.davils.kapi.runtime.core.security.Secret?){}[0]
+    final suspend fun token(): com.davils.kapi.runtime.core.security/Secret? // com.davils.kapi.runtime.testing.fake/FakeTokenSource.token|token(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.fake/ManualClock : kotlin.time/Clock, kotlin.time/TimeSource.WithComparableMarks { // com.davils.kapi.runtime.testing.fake/ManualClock|null[0]
+    constructor <init>(kotlin.time/Instant = ...) // com.davils.kapi.runtime.testing.fake/ManualClock.<init>|<init>(kotlin.time.Instant){}[0]
+
+    final fun advance(kotlin.time/Duration) // com.davils.kapi.runtime.testing.fake/ManualClock.advance|advance(kotlin.time.Duration){}[0]
+    final fun markNow(): kotlin.time/ComparableTimeMark // com.davils.kapi.runtime.testing.fake/ManualClock.markNow|markNow(){}[0]
+    final fun now(): kotlin.time/Instant // com.davils.kapi.runtime.testing.fake/ManualClock.now|now(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.fake/ManualClock.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.testing.fake/ManualClock.Companion|null[0]
+        final val DEFAULT_START // com.davils.kapi.runtime.testing.fake/ManualClock.Companion.DEFAULT_START|{}DEFAULT_START[0]
+            final fun <get-DEFAULT_START>(): kotlin.time/Instant // com.davils.kapi.runtime.testing.fake/ManualClock.Companion.DEFAULT_START.<get-DEFAULT_START>|<get-DEFAULT_START>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.testing.mock/MockApi : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.testing.mock/MockApi|null[0]
+    final val basePath // com.davils.kapi.runtime.testing.mock/MockApi.basePath|{}basePath[0]
+        final fun <get-basePath>(): kotlin/String // com.davils.kapi.runtime.testing.mock/MockApi.basePath.<get-basePath>|<get-basePath>(){}[0]
+    final val codecs // com.davils.kapi.runtime.testing.mock/MockApi.codecs|{}codecs[0]
+        final fun <get-codecs>(): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.testing.mock/MockApi.codecs.<get-codecs>|<get-codecs>(){}[0]
+    final val engine // com.davils.kapi.runtime.testing.mock/MockApi.engine|{}engine[0]
+        final fun <get-engine>(): io.ktor.client.engine.mock/MockEngine // com.davils.kapi.runtime.testing.mock/MockApi.engine.<get-engine>|<get-engine>(){}[0]
+    final val exchanges // com.davils.kapi.runtime.testing.mock/MockApi.exchanges|{}exchanges[0]
+        final fun <get-exchanges>(): kotlin.collections/List<com.davils.kapi.runtime.testing.mock/RecordedExchange> // com.davils.kapi.runtime.testing.mock/MockApi.exchanges.<get-exchanges>|<get-exchanges>(){}[0]
+    final val failures // com.davils.kapi.runtime.testing.mock/MockApi.failures|{}failures[0]
+        final fun <get-failures>(): kotlin.collections/List<kotlin/Throwable> // com.davils.kapi.runtime.testing.mock/MockApi.failures.<get-failures>|<get-failures>(){}[0]
+    final val requests // com.davils.kapi.runtime.testing.mock/MockApi.requests|{}requests[0]
+        final fun <get-requests>(): kotlin.collections/List<com.davils.kapi.runtime.testing.mock/RecordedRequest> // com.davils.kapi.runtime.testing.mock/MockApi.requests.<get-requests>|<get-requests>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.testing.mock/MockApi.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun clear() // com.davils.kapi.runtime.testing.mock/MockApi.clear|clear(){}[0]
+    final fun exchangesOf(kotlin/String, kotlin/String): kotlin.collections/List<com.davils.kapi.runtime.testing.mock/RecordedExchange> // com.davils.kapi.runtime.testing.mock/MockApi.exchangesOf|exchangesOf(kotlin.String;kotlin.String){}[0]
+    final fun httpClient(kotlin/Function1<io.ktor.client/HttpClientConfig<*>, kotlin/Unit> = ...): io.ktor.client/HttpClient // com.davils.kapi.runtime.testing.mock/MockApi.httpClient|httpClient(kotlin.Function1<io.ktor.client.HttpClientConfig<*>,kotlin.Unit>){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.mock/MockApi.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.mock/MockApiBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.testing.mock/MockApi> { // com.davils.kapi.runtime.testing.mock/MockApiBuilder|null[0]
+    final var basePath // com.davils.kapi.runtime.testing.mock/MockApiBuilder.basePath|{}basePath[0]
+        final fun <get-basePath>(): kotlin/String // com.davils.kapi.runtime.testing.mock/MockApiBuilder.basePath.<get-basePath>|<get-basePath>(){}[0]
+        final fun <set-basePath>(kotlin/String) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.basePath.<set-basePath>|<set-basePath>(kotlin.String){}[0]
+    final var codecs // com.davils.kapi.runtime.testing.mock/MockApiBuilder.codecs|{}codecs[0]
+        final fun <get-codecs>(): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.testing.mock/MockApiBuilder.codecs.<get-codecs>|<get-codecs>(){}[0]
+        final fun <set-codecs>(com.davils.kapi.runtime.core.codec/Codecs) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.codecs.<set-codecs>|<set-codecs>(com.davils.kapi.runtime.core.codec.Codecs){}[0]
+
+    final fun delete(kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.delete|delete(kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+    final fun get(kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.get|get(kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+    final fun on(kotlin/String, kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.on|on(kotlin.String;kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+    final fun patch(kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.patch|patch(kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+    final fun post(kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.post|post(kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+    final fun put(kotlin/String, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.testing.mock/Responder, kotlin/Unit>) // com.davils.kapi.runtime.testing.mock/MockApiBuilder.put|put(kotlin.String;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.testing.mock.Responder,kotlin.Unit>){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.mock/RecordedExchange { // com.davils.kapi.runtime.testing.mock/RecordedExchange|null[0]
+    constructor <init>(com.davils.kapi.runtime.testing.mock/RecordedRequest, com.davils.kapi.runtime.testing.mock/RecordedResponse, kotlin/String? = ...) // com.davils.kapi.runtime.testing.mock/RecordedExchange.<init>|<init>(com.davils.kapi.runtime.testing.mock.RecordedRequest;com.davils.kapi.runtime.testing.mock.RecordedResponse;kotlin.String?){}[0]
+
+    final val request // com.davils.kapi.runtime.testing.mock/RecordedExchange.request|{}request[0]
+        final fun <get-request>(): com.davils.kapi.runtime.testing.mock/RecordedRequest // com.davils.kapi.runtime.testing.mock/RecordedExchange.request.<get-request>|<get-request>(){}[0]
+    final val response // com.davils.kapi.runtime.testing.mock/RecordedExchange.response|{}response[0]
+        final fun <get-response>(): com.davils.kapi.runtime.testing.mock/RecordedResponse // com.davils.kapi.runtime.testing.mock/RecordedExchange.response.<get-response>|<get-response>(){}[0]
+    final val route // com.davils.kapi.runtime.testing.mock/RecordedExchange.route|{}route[0]
+        final fun <get-route>(): kotlin/String? // com.davils.kapi.runtime.testing.mock/RecordedExchange.route.<get-route>|<get-route>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.mock/RecordedExchange.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.mock/RecordedExchange.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedExchange.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.mock/RecordedRequest { // com.davils.kapi.runtime.testing.mock/RecordedRequest|null[0]
+    constructor <init>(kotlin/String, io.ktor.http/Url, io.ktor.http/Headers, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.testing.mock/RecordedRequest.<init>|<init>(kotlin.String;io.ktor.http.Url;io.ktor.http.Headers;kotlinx.io.bytestring.ByteString){}[0]
+
+    final val body // com.davils.kapi.runtime.testing.mock/RecordedRequest.body|{}body[0]
+        final fun <get-body>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.testing.mock/RecordedRequest.body.<get-body>|<get-body>(){}[0]
+    final val contentType // com.davils.kapi.runtime.testing.mock/RecordedRequest.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // com.davils.kapi.runtime.testing.mock/RecordedRequest.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val headers // com.davils.kapi.runtime.testing.mock/RecordedRequest.headers|{}headers[0]
+        final fun <get-headers>(): io.ktor.http/Headers // com.davils.kapi.runtime.testing.mock/RecordedRequest.headers.<get-headers>|<get-headers>(){}[0]
+    final val method // com.davils.kapi.runtime.testing.mock/RecordedRequest.method|{}method[0]
+        final fun <get-method>(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedRequest.method.<get-method>|<get-method>(){}[0]
+    final val path // com.davils.kapi.runtime.testing.mock/RecordedRequest.path|{}path[0]
+        final fun <get-path>(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedRequest.path.<get-path>|<get-path>(){}[0]
+    final val text // com.davils.kapi.runtime.testing.mock/RecordedRequest.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedRequest.text.<get-text>|<get-text>(){}[0]
+    final val url // com.davils.kapi.runtime.testing.mock/RecordedRequest.url|{}url[0]
+        final fun <get-url>(): io.ktor.http/Url // com.davils.kapi.runtime.testing.mock/RecordedRequest.url.<get-url>|<get-url>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.mock/RecordedRequest.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.mock/RecordedRequest.hashCode|hashCode(){}[0]
+    final fun header(kotlin/String): kotlin/String? // com.davils.kapi.runtime.testing.mock/RecordedRequest.header|header(kotlin.String){}[0]
+    final fun query(kotlin/String): kotlin/String? // com.davils.kapi.runtime.testing.mock/RecordedRequest.query|query(kotlin.String){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedRequest.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.mock/RecordedResponse { // com.davils.kapi.runtime.testing.mock/RecordedResponse|null[0]
+    constructor <init>(kotlin/Int, io.ktor.http/Headers, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.testing.mock/RecordedResponse.<init>|<init>(kotlin.Int;io.ktor.http.Headers;kotlinx.io.bytestring.ByteString){}[0]
+
+    final val body // com.davils.kapi.runtime.testing.mock/RecordedResponse.body|{}body[0]
+        final fun <get-body>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.testing.mock/RecordedResponse.body.<get-body>|<get-body>(){}[0]
+    final val contentType // com.davils.kapi.runtime.testing.mock/RecordedResponse.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // com.davils.kapi.runtime.testing.mock/RecordedResponse.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val headers // com.davils.kapi.runtime.testing.mock/RecordedResponse.headers|{}headers[0]
+        final fun <get-headers>(): io.ktor.http/Headers // com.davils.kapi.runtime.testing.mock/RecordedResponse.headers.<get-headers>|<get-headers>(){}[0]
+    final val status // com.davils.kapi.runtime.testing.mock/RecordedResponse.status|{}status[0]
+        final fun <get-status>(): kotlin/Int // com.davils.kapi.runtime.testing.mock/RecordedResponse.status.<get-status>|<get-status>(){}[0]
+    final val text // com.davils.kapi.runtime.testing.mock/RecordedResponse.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedResponse.text.<get-text>|<get-text>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.mock/RecordedResponse.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.mock/RecordedResponse.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.mock/RecordedResponse.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.mock/Responder { // com.davils.kapi.runtime.testing.mock/Responder|null[0]
+    final val codecs // com.davils.kapi.runtime.testing.mock/Responder.codecs|{}codecs[0]
+        final fun <get-codecs>(): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.testing.mock/Responder.codecs.<get-codecs>|<get-codecs>(){}[0]
+    final val pathParameters // com.davils.kapi.runtime.testing.mock/Responder.pathParameters|{}pathParameters[0]
+        final fun <get-pathParameters>(): kotlin.collections/Map<kotlin/String, kotlin/String> // com.davils.kapi.runtime.testing.mock/Responder.pathParameters.<get-pathParameters>|<get-pathParameters>(){}[0]
+    final val request // com.davils.kapi.runtime.testing.mock/Responder.request|{}request[0]
+        final fun <get-request>(): com.davils.kapi.runtime.testing.mock/RecordedRequest // com.davils.kapi.runtime.testing.mock/Responder.request.<get-request>|<get-request>(){}[0]
+
+    final fun <#A1: kotlin/Any?> body(kotlinx.serialization/DeserializationStrategy<#A1>): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.testing.mock/Responder.body|body(kotlinx.serialization.DeserializationStrategy<0:0>){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> respond(kotlin/Int, kotlinx.serialization/SerializationStrategy<#A1>, #A1, com.davils.kapi.runtime.core.negotiation/MediaType = ...) // com.davils.kapi.runtime.testing.mock/Responder.respond|respond(kotlin.Int;kotlinx.serialization.SerializationStrategy<0:0>;0:0;com.davils.kapi.runtime.core.negotiation.MediaType){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> respondRecords(kotlinx.serialization/SerializationStrategy<#A1>, kotlin.collections/List<#A1>, com.davils.kapi.runtime.core.negotiation/MediaType = ..., kotlin/Int = ...) // com.davils.kapi.runtime.testing.mock/Responder.respondRecords|respondRecords(kotlinx.serialization.SerializationStrategy<0:0>;kotlin.collections.List<0:0>;com.davils.kapi.runtime.core.negotiation.MediaType;kotlin.Int){0§<kotlin.Any?>}[0]
+    final fun header(kotlin/String, kotlin/String) // com.davils.kapi.runtime.testing.mock/Responder.header|header(kotlin.String;kotlin.String){}[0]
+    final fun respond(kotlin/Int, kotlinx.io.bytestring/ByteString = ..., com.davils.kapi.runtime.core.negotiation/MediaType? = ...) // com.davils.kapi.runtime.testing.mock/Responder.respond|respond(kotlin.Int;kotlinx.io.bytestring.ByteString;com.davils.kapi.runtime.core.negotiation.MediaType?){}[0]
+    final fun respondEvents(kotlin.collections/List<com.davils.kapi.runtime.core.framing/ServerSentEvent>, kotlin/Int = ...) // com.davils.kapi.runtime.testing.mock/Responder.respondEvents|respondEvents(kotlin.collections.List<com.davils.kapi.runtime.core.framing.ServerSentEvent>;kotlin.Int){}[0]
+    final fun respondProblem(com.davils.kapi.runtime.core.problem/Problem, kotlin/Int = ...) // com.davils.kapi.runtime.testing.mock/Responder.respondProblem|respondProblem(com.davils.kapi.runtime.core.problem.Problem;kotlin.Int){}[0]
+    final fun respondText(kotlin/Int, kotlin/String, com.davils.kapi.runtime.core.negotiation/MediaType = ...) // com.davils.kapi.runtime.testing.mock/Responder.respondText|respondText(kotlin.Int;kotlin.String;com.davils.kapi.runtime.core.negotiation.MediaType){}[0]
+    final inline fun <#A1: reified kotlin/Any?> body(): #A1? // com.davils.kapi.runtime.testing.mock/Responder.body|body(){0§<kotlin.Any?>}[0]
+    final inline fun <#A1: reified kotlin/Any?> respond(kotlin/Int, #A1) // com.davils.kapi.runtime.testing.mock/Responder.respond|respond(kotlin.Int;0:0){0§<kotlin.Any?>}[0]
+}
+
+final class com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer> { // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder|null[0]
+    final var clientId // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final fun <set-clientId>(kotlin/String) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientId.<set-clientId>|<set-clientId>(kotlin.String){}[0]
+    final var clientSecret // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientSecret|{}clientSecret[0]
+        final fun <get-clientSecret>(): kotlin/String? // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientSecret.<get-clientSecret>|<get-clientSecret>(){}[0]
+        final fun <set-clientSecret>(kotlin/String?) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.clientSecret.<set-clientSecret>|<set-clientSecret>(kotlin.String?){}[0]
+    final var deviceLifetime // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.deviceLifetime|{}deviceLifetime[0]
+        final fun <get-deviceLifetime>(): kotlin.time/Duration // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.deviceLifetime.<get-deviceLifetime>|<get-deviceLifetime>(){}[0]
+        final fun <set-deviceLifetime>(kotlin.time/Duration) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.deviceLifetime.<set-deviceLifetime>|<set-deviceLifetime>(kotlin.time.Duration){}[0]
+    final var devicePolls // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.devicePolls|{}devicePolls[0]
+        final fun <get-devicePolls>(): kotlin.collections/List<com.davils.kapi.runtime.testing.oauth/DevicePoll> // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.devicePolls.<get-devicePolls>|<get-devicePolls>(){}[0]
+        final fun <set-devicePolls>(kotlin.collections/List<com.davils.kapi.runtime.testing.oauth/DevicePoll>) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.devicePolls.<set-devicePolls>|<set-devicePolls>(kotlin.collections.List<com.davils.kapi.runtime.testing.oauth.DevicePoll>){}[0]
+    final var interval // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.interval|{}interval[0]
+        final fun <get-interval>(): kotlin.time/Duration // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.interval.<get-interval>|<get-interval>(){}[0]
+        final fun <set-interval>(kotlin.time/Duration) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.interval.<set-interval>|<set-interval>(kotlin.time.Duration){}[0]
+    final var isRefreshTokenIssued // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.isRefreshTokenIssued|{}isRefreshTokenIssued[0]
+        final fun <get-isRefreshTokenIssued>(): kotlin/Boolean // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.isRefreshTokenIssued.<get-isRefreshTokenIssued>|<get-isRefreshTokenIssued>(){}[0]
+        final fun <set-isRefreshTokenIssued>(kotlin/Boolean) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.isRefreshTokenIssued.<set-isRefreshTokenIssued>|<set-isRefreshTokenIssued>(kotlin.Boolean){}[0]
+    final var issuer // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.issuer.<get-issuer>|<get-issuer>(){}[0]
+        final fun <set-issuer>(kotlin/String) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.issuer.<set-issuer>|<set-issuer>(kotlin.String){}[0]
+    final var lifetime // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.lifetime|{}lifetime[0]
+        final fun <get-lifetime>(): kotlin.time/Duration? // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.lifetime.<get-lifetime>|<get-lifetime>(){}[0]
+        final fun <set-lifetime>(kotlin.time/Duration?) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.lifetime.<set-lifetime>|<set-lifetime>(kotlin.time.Duration?){}[0]
+    final var refreshTokens // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.refreshTokens|{}refreshTokens[0]
+        final fun <get-refreshTokens>(): kotlin.collections/Set<kotlin/String> // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.refreshTokens.<get-refreshTokens>|<get-refreshTokens>(){}[0]
+        final fun <set-refreshTokens>(kotlin.collections/Set<kotlin/String>) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.refreshTokens.<set-refreshTokens>|<set-refreshTokens>(kotlin.collections.Set<kotlin.String>){}[0]
+    final var tokenType // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.tokenType|{}tokenType[0]
+        final fun <get-tokenType>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.tokenType.<get-tokenType>|<get-tokenType>(){}[0]
+        final fun <set-tokenType>(kotlin/String) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.tokenType.<set-tokenType>|<set-tokenType>(kotlin.String){}[0]
+
+    final fun refuse(kotlin/String, kotlin/String = ...) // com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder.refuse|refuse(kotlin.String;kotlin.String){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.oauth/EndpointRequest { // com.davils.kapi.runtime.testing.oauth/EndpointRequest|null[0]
+    constructor <init>(com.davils.kapi.runtime.testing.oauth/Endpoint, kotlin/String, kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>>, kotlin/String?, kotlin/Boolean) // com.davils.kapi.runtime.testing.oauth/EndpointRequest.<init>|<init>(com.davils.kapi.runtime.testing.oauth.Endpoint;kotlin.String;kotlin.collections.List<kotlin.Pair<kotlin.String,kotlin.String>>;kotlin.String?;kotlin.Boolean){}[0]
+
+    final val clientId // com.davils.kapi.runtime.testing.oauth/EndpointRequest.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String? // com.davils.kapi.runtime.testing.oauth/EndpointRequest.clientId.<get-clientId>|<get-clientId>(){}[0]
+    final val endpoint // com.davils.kapi.runtime.testing.oauth/EndpointRequest.endpoint|{}endpoint[0]
+        final fun <get-endpoint>(): com.davils.kapi.runtime.testing.oauth/Endpoint // com.davils.kapi.runtime.testing.oauth/EndpointRequest.endpoint.<get-endpoint>|<get-endpoint>(){}[0]
+    final val fields // com.davils.kapi.runtime.testing.oauth/EndpointRequest.fields|{}fields[0]
+        final fun <get-fields>(): kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>> // com.davils.kapi.runtime.testing.oauth/EndpointRequest.fields.<get-fields>|<get-fields>(){}[0]
+    final val grantType // com.davils.kapi.runtime.testing.oauth/EndpointRequest.grantType|{}grantType[0]
+        final fun <get-grantType>(): kotlin/String? // com.davils.kapi.runtime.testing.oauth/EndpointRequest.grantType.<get-grantType>|<get-grantType>(){}[0]
+    final val isAuthenticated // com.davils.kapi.runtime.testing.oauth/EndpointRequest.isAuthenticated|{}isAuthenticated[0]
+        final fun <get-isAuthenticated>(): kotlin/Boolean // com.davils.kapi.runtime.testing.oauth/EndpointRequest.isAuthenticated.<get-isAuthenticated>|<get-isAuthenticated>(){}[0]
+    final val url // com.davils.kapi.runtime.testing.oauth/EndpointRequest.url|{}url[0]
+        final fun <get-url>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/EndpointRequest.url.<get-url>|<get-url>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.testing.oauth/EndpointRequest.equals|equals(kotlin.Any?){}[0]
+    final fun field(kotlin/String): kotlin/String? // com.davils.kapi.runtime.testing.oauth/EndpointRequest.field|field(kotlin.String){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.testing.oauth/EndpointRequest.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.oauth/EndpointRequest.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer|null[0]
+    final val authorizationUrl // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.authorizationUrl|{}authorizationUrl[0]
+        final fun <get-authorizationUrl>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.authorizationUrl.<get-authorizationUrl>|<get-authorizationUrl>(){}[0]
+    final val clientId // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.clientId.<get-clientId>|<get-clientId>(){}[0]
+    final val deviceAuthorizationUrl // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.deviceAuthorizationUrl|{}deviceAuthorizationUrl[0]
+        final fun <get-deviceAuthorizationUrl>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.deviceAuthorizationUrl.<get-deviceAuthorizationUrl>|<get-deviceAuthorizationUrl>(){}[0]
+    final val engine // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.engine|{}engine[0]
+        final fun <get-engine>(): io.ktor.client.engine.mock/MockEngine // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.engine.<get-engine>|<get-engine>(){}[0]
+    final val issuedTokens // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.issuedTokens|{}issuedTokens[0]
+        final fun <get-issuedTokens>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.issuedTokens.<get-issuedTokens>|<get-issuedTokens>(){}[0]
+    final val issuer // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.issuer.<get-issuer>|<get-issuer>(){}[0]
+    final val redirect // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.redirect|{}redirect[0]
+        final fun <get-redirect>(): com.davils.kapi.runtime.client.oauth/AuthorizationRedirect // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.redirect.<get-redirect>|<get-redirect>(){}[0]
+    final val requests // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.requests|{}requests[0]
+        final fun <get-requests>(): kotlin.collections/List<com.davils.kapi.runtime.testing.oauth/EndpointRequest> // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.requests.<get-requests>|<get-requests>(){}[0]
+    final val revocationUrl // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.revocationUrl|{}revocationUrl[0]
+        final fun <get-revocationUrl>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.revocationUrl.<get-revocationUrl>|<get-revocationUrl>(){}[0]
+    final val revokedTokens // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.revokedTokens|{}revokedTokens[0]
+        final fun <get-revokedTokens>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.revokedTokens.<get-revokedTokens>|<get-revokedTokens>(){}[0]
+    final val tokenUrl // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.tokenUrl|{}tokenUrl[0]
+        final fun <get-tokenUrl>(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.tokenUrl.<get-tokenUrl>|<get-tokenUrl>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun httpClient(kotlin/Function1<io.ktor.client/HttpClientConfig<*>, kotlin/Unit> = ...): io.ktor.client/HttpClient // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.httpClient|httpClient(kotlin.Function1<io.ktor.client.HttpClientConfig<*>,kotlin.Unit>){}[0]
+    final fun requestsTo(com.davils.kapi.runtime.testing.oauth/Endpoint): kotlin.collections/List<com.davils.kapi.runtime.testing.oauth/EndpointRequest> // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.requestsTo|requestsTo(com.davils.kapi.runtime.testing.oauth.Endpoint){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.toString|toString(){}[0]
+    final fun tokens(io.ktor.client/HttpClient, com.davils.kapi.runtime.client.oauth/Grant = ..., kotlin/Function1<com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client.oauth/OAuthTokens // com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer.tokens|tokens(io.ktor.client.HttpClient;com.davils.kapi.runtime.client.oauth.Grant;kotlin.Function1<com.davils.kapi.runtime.client.oauth.OAuthSettingsBuilder,kotlin.Unit>){}[0]
+}
+
+final object com.davils.kapi.runtime.testing.contract/ContractCodes { // com.davils.kapi.runtime.testing.contract/ContractCodes|null[0]
+    final val BODY_INVALID // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_INVALID|{}BODY_INVALID[0]
+        final fun <get-BODY_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_INVALID.<get-BODY_INVALID>|<get-BODY_INVALID>(){}[0]
+    final val BODY_MALFORMED // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_MALFORMED|{}BODY_MALFORMED[0]
+        final fun <get-BODY_MALFORMED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_MALFORMED.<get-BODY_MALFORMED>|<get-BODY_MALFORMED>(){}[0]
+    final val BODY_MISSING // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_MISSING|{}BODY_MISSING[0]
+        final fun <get-BODY_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_MISSING.<get-BODY_MISSING>|<get-BODY_MISSING>(){}[0]
+    final val BODY_UNDECLARED // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_UNDECLARED|{}BODY_UNDECLARED[0]
+        final fun <get-BODY_UNDECLARED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.BODY_UNDECLARED.<get-BODY_UNDECLARED>|<get-BODY_UNDECLARED>(){}[0]
+    final val CONTENT_TYPE_MISSING // com.davils.kapi.runtime.testing.contract/ContractCodes.CONTENT_TYPE_MISSING|{}CONTENT_TYPE_MISSING[0]
+        final fun <get-CONTENT_TYPE_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.CONTENT_TYPE_MISSING.<get-CONTENT_TYPE_MISSING>|<get-CONTENT_TYPE_MISSING>(){}[0]
+    final val CONTENT_TYPE_UNDECLARED // com.davils.kapi.runtime.testing.contract/ContractCodes.CONTENT_TYPE_UNDECLARED|{}CONTENT_TYPE_UNDECLARED[0]
+        final fun <get-CONTENT_TYPE_UNDECLARED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.CONTENT_TYPE_UNDECLARED.<get-CONTENT_TYPE_UNDECLARED>|<get-CONTENT_TYPE_UNDECLARED>(){}[0]
+    final val HEADER_INVALID // com.davils.kapi.runtime.testing.contract/ContractCodes.HEADER_INVALID|{}HEADER_INVALID[0]
+        final fun <get-HEADER_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.HEADER_INVALID.<get-HEADER_INVALID>|<get-HEADER_INVALID>(){}[0]
+    final val HEADER_MISSING // com.davils.kapi.runtime.testing.contract/ContractCodes.HEADER_MISSING|{}HEADER_MISSING[0]
+        final fun <get-HEADER_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.HEADER_MISSING.<get-HEADER_MISSING>|<get-HEADER_MISSING>(){}[0]
+    final val METHOD_UNDECLARED // com.davils.kapi.runtime.testing.contract/ContractCodes.METHOD_UNDECLARED|{}METHOD_UNDECLARED[0]
+        final fun <get-METHOD_UNDECLARED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.METHOD_UNDECLARED.<get-METHOD_UNDECLARED>|<get-METHOD_UNDECLARED>(){}[0]
+    final val OPERATION_UNKNOWN // com.davils.kapi.runtime.testing.contract/ContractCodes.OPERATION_UNKNOWN|{}OPERATION_UNKNOWN[0]
+        final fun <get-OPERATION_UNKNOWN>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.OPERATION_UNKNOWN.<get-OPERATION_UNKNOWN>|<get-OPERATION_UNKNOWN>(){}[0]
+    final val PARAMETER_INVALID // com.davils.kapi.runtime.testing.contract/ContractCodes.PARAMETER_INVALID|{}PARAMETER_INVALID[0]
+        final fun <get-PARAMETER_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.PARAMETER_INVALID.<get-PARAMETER_INVALID>|<get-PARAMETER_INVALID>(){}[0]
+    final val PARAMETER_MISSING // com.davils.kapi.runtime.testing.contract/ContractCodes.PARAMETER_MISSING|{}PARAMETER_MISSING[0]
+        final fun <get-PARAMETER_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.PARAMETER_MISSING.<get-PARAMETER_MISSING>|<get-PARAMETER_MISSING>(){}[0]
+    final val REFERENCE_UNRESOLVED // com.davils.kapi.runtime.testing.contract/ContractCodes.REFERENCE_UNRESOLVED|{}REFERENCE_UNRESOLVED[0]
+        final fun <get-REFERENCE_UNRESOLVED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.REFERENCE_UNRESOLVED.<get-REFERENCE_UNRESOLVED>|<get-REFERENCE_UNRESOLVED>(){}[0]
+    final val SCHEMA_INVALID // com.davils.kapi.runtime.testing.contract/ContractCodes.SCHEMA_INVALID|{}SCHEMA_INVALID[0]
+        final fun <get-SCHEMA_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.SCHEMA_INVALID.<get-SCHEMA_INVALID>|<get-SCHEMA_INVALID>(){}[0]
+    final val STATUS_UNDOCUMENTED // com.davils.kapi.runtime.testing.contract/ContractCodes.STATUS_UNDOCUMENTED|{}STATUS_UNDOCUMENTED[0]
+        final fun <get-STATUS_UNDOCUMENTED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.STATUS_UNDOCUMENTED.<get-STATUS_UNDOCUMENTED>|<get-STATUS_UNDOCUMENTED>(){}[0]
+    final val VALIDATION_REFUSED // com.davils.kapi.runtime.testing.contract/ContractCodes.VALIDATION_REFUSED|{}VALIDATION_REFUSED[0]
+        final fun <get-VALIDATION_REFUSED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.testing.contract/ContractCodes.VALIDATION_REFUSED.<get-VALIDATION_REFUSED>|<get-VALIDATION_REFUSED>(){}[0]
+}
+
+final object com.davils.kapi.runtime.testing/TestingContract { // com.davils.kapi.runtime.testing/TestingContract|null[0]
+    final const val VERSION // com.davils.kapi.runtime.testing/TestingContract.VERSION|{}VERSION[0]
+        final fun <get-VERSION>(): kotlin/Int // com.davils.kapi.runtime.testing/TestingContract.VERSION.<get-VERSION>|<get-VERSION>(){}[0]
+}
+
+final fun com.davils.kapi.runtime.testing.contract/contractCheck(com.davils.kapi.spec.openapi/Document, kotlin/Function1<com.davils.kapi.runtime.testing.contract/ContractCheckBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.testing.contract/ContractCheck // com.davils.kapi.runtime.testing.contract/contractCheck|contractCheck(com.davils.kapi.spec.openapi.Document;kotlin.Function1<com.davils.kapi.runtime.testing.contract.ContractCheckBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.testing.fake/deterministicCrypto(kotlin.time/Clock = ..., com.davils.krypt.core/RandomSource = ...): com.davils.krypt.primitive/Crypto // com.davils.kapi.runtime.testing.fake/deterministicCrypto|deterministicCrypto(kotlin.time.Clock;com.davils.krypt.core.RandomSource){}[0]
+final fun com.davils.kapi.runtime.testing.mock/mockApi(kotlin/Function1<com.davils.kapi.runtime.testing.mock/MockApiBuilder, kotlin/Unit>): com.davils.kapi.runtime.testing.mock/MockApi // com.davils.kapi.runtime.testing.mock/mockApi|mockApi(kotlin.Function1<com.davils.kapi.runtime.testing.mock.MockApiBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.testing.oauth/fakeAuthorizationServer(kotlin/Function1<com.davils.kapi.runtime.testing.oauth/AuthorizationServerBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.testing.oauth/FakeAuthorizationServer // com.davils.kapi.runtime.testing.oauth/fakeAuthorizationServer|fakeAuthorizationServer(kotlin.Function1<com.davils.kapi.runtime.testing.oauth.AuthorizationServerBuilder,kotlin.Unit>){}[0]
+final suspend fun (com.davils.kapi.runtime.testing.contract/ContractCheck).com.davils.kapi.runtime.testing.contract/assertConforms(kotlin.collections/List<com.davils.kapi.runtime.testing.mock/RecordedExchange>): com.davils.kapi.runtime.testing.contract/ContractReport // com.davils.kapi.runtime.testing.contract/assertConforms|assertConforms@com.davils.kapi.runtime.testing.contract.ContractCheck(kotlin.collections.List<com.davils.kapi.runtime.testing.mock.RecordedExchange>){}[0]
+final suspend fun (com.davils.kapi.runtime.testing.mock/MockApi).com.davils.kapi.runtime.testing.contract/assertConforms(com.davils.kapi.spec.openapi/Document, kotlin/Function1<com.davils.kapi.runtime.testing.contract/ContractCheckBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.testing.contract/ContractReport // com.davils.kapi.runtime.testing.contract/assertConforms|assertConforms@com.davils.kapi.runtime.testing.mock.MockApi(com.davils.kapi.spec.openapi.Document;kotlin.Function1<com.davils.kapi.runtime.testing.contract.ContractCheckBuilder,kotlin.Unit>){}[0]

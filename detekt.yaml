@@ -164,6 +164,8 @@ libraries:
       - '**/runtime/server/security/PresentedCredential.kt'
       - '**/runtime/server/webhook/Verdict.kt'
       - '**/runtime/server/webhook/VerificationKey.kt'
+      - '**/runtime/testing/fake/RefreshOutcome.kt'
+      - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -293,6 +295,8 @@ style:
       - '**/runtime/server/security/PresentedCredential.kt'
       - '**/runtime/server/webhook/Verdict.kt'
       - '**/runtime/server/webhook/VerificationKey.kt'
+      - '**/runtime/testing/fake/RefreshOutcome.kt'
+      - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false
