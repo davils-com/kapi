@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
-import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.UNMATCHED
 import com.davils.kapi.codegen.core.fixture.codes
 import com.davils.kapi.codegen.core.fixture.mockGenerationOf

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.naming
 
-import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.spec.core.diagnostic.Location
 
 internal class NameTable(private val findings: Findings) {
     private val claims: MutableMap<String, NameClaim> = linkedMapOf()

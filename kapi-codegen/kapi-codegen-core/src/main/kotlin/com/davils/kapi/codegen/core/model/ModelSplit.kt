@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.codegen.core.ModelKind
@@ -34,7 +33,7 @@ internal class ModelSplit(private val scope: PlanScope) {
         val objects = plans.filterIsInstance<ModelPlan.ObjectPlan>()
         val direct = objects.filter { plan -> hasOneWay(plan) || uses(plan).any(TypeShape.Named::hasForeignWrite) }
         val split = grown(plans, direct.map(ModelPlan::name).toSet())
-        split.forEach { name -> scope.claimName(name + WRITE, "The write shape of $name") }
+        split.forEach { name -> scope.claimName(name = name + WRITE, origin = "The write shape of $name") }
         writes = split
         val all = plans.flatMap { plan -> shapes(plan, split) }
         return all.sortedBy(ModelPlan::name)

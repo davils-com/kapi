@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.spec.openapi.model.schema.Schema
@@ -28,7 +27,9 @@ internal class Composition(private val scope: PlanScope) {
     fun shapeOf(definition: SchemaDefinition): ObjectShape {
         if (!composing.add(definition)) return refused(definition, "allOf that leads back to itself")
         val own = ObjectShape(definition.properties, definition.required.toSet(), definition.dependentRequired)
-        val shape = definition.allOf.fold(own) { shape, member -> merged(definition, shape, member(member)) }
+        val shape = definition.allOf.fold(own) { shape, member ->
+            merged(owner = definition, first = shape, second = member(member))
+        }
         composing.remove(definition)
         return shape
     }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.codegen.core.Generation
+import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.UNMATCHED
 import com.davils.kapi.codegen.core.fixture.codes
 import com.davils.kapi.codegen.core.fixture.generator
@@ -31,8 +30,8 @@ import com.davils.kapi.codegen.core.fixture.readWith
 import com.davils.kapi.codegen.core.fixture.samplesOf
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.textOf
-import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.options.Artifact
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain

@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 import kotlinx.serialization.Serializable
 
+/**
+ * A model a generation emitted, as another generation finds it in a [ModelCatalog].
+ *
+ * @property type the simple name of the generated type, such as `PetstorePet`.
+ * @property kind whether the type is an object, an enumeration or a union.
+ * @property hasWriteShape whether the type has a shape of its own to write, named after it with `Write`.
+ * @since 1.0.0
+ */
 @Serializable
-public data class CatalogModel(
+public class CatalogModel(
     public val type: String,
     public val kind: ModelKind,
     public val hasWriteShape: Boolean,
-)
+) {
+    override fun equals(other: Any?): Boolean =
+        other is CatalogModel && type == other.type && kind == other.kind && hasWriteShape == other.hasWriteShape
+
+    override fun hashCode(): Int = listOf(type, kind, hasWriteShape).hashCode()
+
+    override fun toString(): String = "CatalogModel($type, $kind, hasWriteShape=$hasWriteShape)"
+}

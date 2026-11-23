@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
-import com.davils.kapi.spec.core.value.NumberValue
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
+import com.davils.kapi.spec.core.value.NumberValue
+import com.davils.kapi.spec.core.value.Value
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.math.BigDecimal

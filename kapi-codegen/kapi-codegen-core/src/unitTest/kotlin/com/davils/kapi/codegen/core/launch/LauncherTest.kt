@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 @file:OptIn(DavilsInternal::class)
 
 package com.davils.kapi.codegen.core.launch
@@ -31,6 +30,12 @@ import kotlin.io.path.createTempDirectory
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
+
+private const val LAUNCH: String = "kapi-launch"
+
+private const val COMMON: String = "out/common"
+
+private const val LINE: String = "\n"
 
 private const val PETSTORE: String = """openapi: 3.1.0
 info:
@@ -64,15 +69,17 @@ private fun requestIn(
     document: String = PETSTORE,
     artifacts: Set<String> = setOf("Models", "Client", "Server"),
     acknowledgements: Map<String, String> = emptyMap(),
+    visibility: String = "Public",
+    folder: String = "api",
 ): LaunchRequest {
     val root = Files.createDirectories(base.resolve("api"))
-    val specification = root.resolve("petstore.yaml")
+    val specification = Files.createDirectories(base.resolve(folder)).resolve("petstore.yaml")
     specification.writeText(document)
     return LaunchRequest(
         specification = specification,
         root = root,
         overlays = emptyList(),
-        commonKotlin = base.resolve("out/common"),
+        commonKotlin = base.resolve(COMMON),
         jvmKotlin = base.resolve("out/jvm"),
         resources = base.resolve("out/resources"),
         report = base.resolve("report/report.json"),
@@ -81,42 +88,48 @@ private fun requestIn(
         apiName = "Petstore",
         typePrefix = "",
         artifacts = artifacts,
-        visibility = "Public",
+        visibility = visibility,
         generatorVersion = "test",
         acknowledgements = acknowledgements,
     )
 }
 
+private fun request(base: Path): LaunchRequest = requestIn(base)
+
 class LauncherTest : FunSpec({
     context("a run") {
         test("writes common code, jvm code, the provenance and both reports") {
-            val base = createTempDirectory("kapi-launch")
+            val base = createTempDirectory(LAUNCH)
             val request = requestIn(base)
 
             val verdict = Launcher.run(request)
 
             verdict.isAccepted shouldBe true
-            Files.walk(base.resolve("out/common")).anyMatch { path -> path.toString().endsWith("Pet.kt") } shouldBe true
+            Files.walk(base.resolve(COMMON)).anyMatch { path -> path.toString().endsWith("Pet.kt") } shouldBe true
             Files.walk(base.resolve("out/jvm")).anyMatch { path -> path.toString().contains("server") } shouldBe true
             base.resolve("out/resources/META-INF/kapi/openapi/petstore.provenance.json").exists() shouldBe true
-            request.report.readText() shouldContain "\"outcome\": \"Generated\""
-            request.sarif.readText() shouldContain "\"version\": \"2.1.0\""
+            request.report.readText() shouldContain """"outcome": "Generated""""
+            request.sarif.readText() shouldContain """"version": "2.1.0""""
         }
 
         test("fails on an error of the document and writes nothing but the reports") {
-            val base = createTempDirectory("kapi-launch")
-            val request = requestIn(base, document = "openapi: 3.1.0\ninfo: {title: A, version: '1'}\npaths: {}\ninof: x\n")
+            val base = createTempDirectory(LAUNCH)
+            val request = requestIn(
+                base,
+                document = listOf("openapi: 3.1.0", "info: {title: A, version: '1'}", "paths: {}", "inof: x", "")
+                    .joinToString(LINE),
+            )
 
             val verdict = Launcher.run(request)
 
             verdict.isAccepted shouldBe false
             verdict.failures.joinToString() shouldContain UNKNOWN_FIELD
-            base.resolve("out/common").exists() shouldBe false
+            base.resolve(COMMON).exists() shouldBe false
             request.sarif.readText() shouldContain UNKNOWN_FIELD
         }
 
         test("fails before reading on an unknown artifact") {
-            val base = createTempDirectory("kapi-launch")
+            val base = createTempDirectory(LAUNCH)
 
             val verdict = Launcher.run(requestIn(base, artifacts = setOf("Everything")))
 
@@ -124,9 +137,9 @@ class LauncherTest : FunSpec({
         }
 
         test("refuses a reference that leaves the root") {
-            val base = createTempDirectory("kapi-launch")
+            val base = createTempDirectory(LAUNCH)
             base.resolve("secret.yaml").writeText("Pet: {type: object}\n")
-            val document = PETSTORE.replace("'#/components/schemas/Pet'", "'../secret.yaml#/Pet'")
+            val document = PETSTORE.replace(oldValue = "'#/components/schemas/Pet'", newValue = "'../secret.yaml#/Pet'")
 
             val verdict = Launcher.run(requestIn(base, document = document))
 
@@ -134,9 +147,42 @@ class LauncherTest : FunSpec({
         }
     }
 
+    context("a run that cannot generate") {
+        test("fails before reading on an unknown visibility and on a document outside its root") {
+            val base = createTempDirectory(LAUNCH)
+
+            Launcher.run(requestIn(base, visibility = "Secret")).failures shouldContain
+                "The visibility Secret is unknown"
+            Launcher.run(requestIn(base, folder = "elsewhere")).isAccepted shouldBe false
+        }
+
+        test("refuses a document that is no YAML and one the generator has no Kotlin for") {
+            val base = createTempDirectory(LAUNCH)
+            val unsupported = PETSTORE.replace(oldValue = "type: object", newValue = "type: [object, string]")
+
+            Launcher.run(requestIn(base, document = "openapi: [")).isAccepted shouldBe false
+            Launcher.run(requestIn(base, document = unsupported)).isAccepted shouldBe false
+            request(base).report.readText() shouldContain "codegen.schema.unsupported"
+        }
+
+        test("reports the warnings of the document with their location in both reports") {
+            val base = createTempDirectory(LAUNCH)
+            val accept = "      parameters: [{name: Accept, in: header, schema: {type: string}}]\n      responses:"
+            val warned = PETSTORE.replaceFirst(oldValue = "      responses:", newValue = accept)
+
+            Launcher.run(requestIn(base, document = warned)).isAccepted shouldBe false
+            request(base).sarif.readText() shouldContain """"level": "warning""""
+        }
+    }
+
     context("a verdict") {
         test("asks for a reason for every acknowledgement and refuses unused ones") {
-            val report = LaunchReport(LaunchOutcome.Generated, null, emptyList(), emptyList())
+            val report = LaunchReport(
+                outcome = LaunchOutcome.Generated,
+                reason = null,
+                diagnostics = emptyList(),
+                files = emptyList(),
+            )
 
             val verdict = LaunchVerdict.of(report, mapOf("openapi.a" to "", "openapi.b" to "because"))
 
@@ -145,8 +191,20 @@ class LauncherTest : FunSpec({
         }
 
         test("accepts a warning that is acknowledged with a reason") {
-            val warning = LaunchDiagnostic("openapi.w", isError = false, message = "m", file = null, line = null, column = null)
-            val report = LaunchReport(LaunchOutcome.Generated, null, listOf(warning), emptyList())
+            val warning = LaunchDiagnostic(
+                code = "openapi.w",
+                isError = false,
+                message = "m",
+                file = null,
+                line = null,
+                column = null,
+            )
+            val report = LaunchReport(
+                outcome = LaunchOutcome.Generated,
+                reason = null,
+                diagnostics = listOf(warning),
+                files = emptyList(),
+            )
 
             val verdict = LaunchVerdict.of(report, mapOf("openapi.w" to "known"))
 

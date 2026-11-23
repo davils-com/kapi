@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model.plan
 
 internal data class PropertyPlan(

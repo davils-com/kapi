@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 import com.davils.kapi.codegen.core.options.GeneratorBuilder

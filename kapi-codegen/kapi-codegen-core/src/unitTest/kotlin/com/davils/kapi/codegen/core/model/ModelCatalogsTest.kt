@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.codegen.core.CatalogModel
-import com.davils.kapi.codegen.core.Generation
+import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.ModelCatalog
 import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.codegen.core.fixture.codes
@@ -30,7 +29,7 @@ import com.davils.kapi.codegen.core.fixture.readAt
 import com.davils.kapi.codegen.core.fixture.readWith
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.textOf
-import com.davils.kapi.codegen.core.Codegen
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -114,7 +113,7 @@ class ModelCatalogsTest : FunSpec({
         }
 
         test("gets a shape to write when the model it uses has one") {
-            val write = kotlinOf("a: {\$ref: '${TO_SHARED}Account'}", "PetstorePetWrite")
+            val write = kotlinOf(property = "a: {\$ref: '${TO_SHARED}Account'}", name = "PetstorePetWrite")
 
             write shouldContain "import com.example.shared.model.SharedAccountWrite"
             write shouldContain "public val a: SharedAccountWrite? = null"

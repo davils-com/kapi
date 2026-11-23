@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.options
 
+/**
+ * The visibility of the generated declarations.
+ *
+ * @since 1.0.0
+ */
 public enum class Visibility {
+    /**
+     * Public: the generated code is API of its module.
+     *
+     * @since 1.0.0
+     */
     Public,
+
+    /**
+     * Internal: the generated code stays inside its module.
+     *
+     * @since 1.0.0
+     */
     Internal,
 }

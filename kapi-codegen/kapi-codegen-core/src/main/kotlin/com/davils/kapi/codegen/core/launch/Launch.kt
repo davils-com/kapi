@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 @file:OptIn(DavilsInternal::class)
 
 package com.davils.kapi.codegen.core.launch
@@ -64,12 +63,13 @@ internal class Launch(private val request: LaunchRequest) {
 
     private fun problemOf(): String? {
         val unknown = request.artifacts.filter { name -> Artifact.entries.none { artifact -> artifact.name == name } }
-        val visibility = Visibility.entries.none { known -> known.name == request.visibility }
-        val outside = !request.specification.toAbsolutePath().normalize().startsWith(root)
+        val isVisibilityUnknown = Visibility.entries.none { known -> known.name == request.visibility }
+        val specification = request.specification.toAbsolutePath()
+        val isOutside = !specification.normalize().startsWith(root)
         return listOfNotNull(
             "The artifacts ${unknown.joinToString()} are unknown".takeIf { unknown.isNotEmpty() },
-            "The visibility ${request.visibility} is unknown".takeIf { visibility },
-            "The document ${request.specification} lies outside its root $root".takeIf { outside },
+            "The visibility ${request.visibility} is unknown".takeIf { isVisibilityUnknown },
+            "The document ${request.specification} lies outside its root $root".takeIf { isOutside },
         ).firstOrNull()
     }
 
@@ -117,7 +117,8 @@ internal class Launch(private val request: LaunchRequest) {
     }
 
     private fun writeFile(file: GeneratedFile) {
-        val folder = folderOf(file).toAbsolutePath().normalize()
+        val absolute = folderOf(file).toAbsolutePath()
+        val folder = absolute.normalize()
         val target = folder.resolve(file.path).normalize()
         check(target.startsWith(folder)) { "The generated file ${SafeText.quoted(file.path)} leaves its folder" }
         Files.createDirectories(target.parent)
@@ -157,7 +158,8 @@ internal class Launch(private val request: LaunchRequest) {
     }
 
     private fun relative(uri: String): String {
-        val path = Path.of(URI(uri)).toAbsolutePath().normalize()
+        val absolute = Path.of(URI(uri)).toAbsolutePath()
+        val path = absolute.normalize()
         val inside = path.takeIf { found -> found.startsWith(root) } ?: return uri
         return root.relativize(inside).joinToString("/")
     }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.naming
 
 import com.davils.kapi.codegen.core.pipeline.Findings
@@ -30,8 +29,8 @@ class NameTableTest : FunSpec({
         test("names the first owner without a place when it has none") {
             val findings = Findings()
             val table = NameTable(findings)
-            table.claim(NameClaim(NAME, OWNER, location = null))
-            table.claim(NameClaim(NAME, "The schema pet", location = null))
+            table.claim(NameClaim(name = NAME, origin = OWNER, location = null))
+            table.claim(NameClaim(name = NAME, origin = "The schema pet", location = null))
 
             findings.sorted().single().message shouldBe
                 "The schema pet becomes Pet, which The schema Pet already is as Pet; " +
@@ -41,8 +40,8 @@ class NameTableTest : FunSpec({
         test("gives every distinct name to its first claim") {
             val findings = Findings()
             val table = NameTable(findings)
-            table.claim(NameClaim(NAME, OWNER, location = null))
-            table.claim(NameClaim("Order", "The schema Order", location = null))
+            table.claim(NameClaim(name = NAME, origin = OWNER, location = null))
+            table.claim(NameClaim(name = "Order", origin = "The schema Order", location = null))
 
             findings.hasErrors shouldBe false
         }

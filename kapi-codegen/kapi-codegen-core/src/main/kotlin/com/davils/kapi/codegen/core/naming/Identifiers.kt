@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.naming
 
 private const val DOT: Char = '.'
@@ -45,7 +44,7 @@ internal object Identifiers {
 
     fun type(raw: String): String {
         val joined = words(raw).joinToString("", transform = ::capitalized)
-        return leading(joined.ifEmpty { "Value" }, "Type")
+        return leading(name = joined.ifEmpty { "Value" }, prefix = "Type")
     }
 
     fun member(raw: String): String {
@@ -53,12 +52,12 @@ internal object Identifiers {
         val first = words.firstOrNull().orEmpty()
         val head = first.lowercase().ifEmpty { "value" }
         val tail = words.drop(1).joinToString("", transform = ::capitalized)
-        return leading(head + tail, "n")
+        return leading(name = head + tail, prefix = "n")
     }
 
     fun constant(raw: String): String {
         val joined = words(raw).joinToString(UNDERSCORE.toString(), transform = String::uppercase)
-        return leading(joined.ifEmpty { "EMPTY" }, "N")
+        return leading(name = joined.ifEmpty { "EMPTY" }, prefix = "N")
     }
 
     fun isIdentifier(raw: String): Boolean {

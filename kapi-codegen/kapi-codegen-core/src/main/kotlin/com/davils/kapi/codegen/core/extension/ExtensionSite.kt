@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.extension
 
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
+import kotlin.reflect.KClass
 import com.davils.kapi.spec.openapi.model.content.MediaType as MediaTypeElement
 import com.davils.kapi.spec.openapi.model.parameter.Header as HeaderElement
 import com.davils.kapi.spec.openapi.model.parameter.Parameter as ParameterElement
 import com.davils.kapi.spec.openapi.model.path.Operation as OperationElement
 import com.davils.kapi.spec.openapi.model.path.PathItem as PathItemElement
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import kotlin.reflect.KClass
 
 internal enum class ExtensionSite {
     Schema,

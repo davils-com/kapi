@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.extension
 
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.spec.core.value.Value
 import kotlin.time.Duration
 
 private const val TYPE: String = "type"

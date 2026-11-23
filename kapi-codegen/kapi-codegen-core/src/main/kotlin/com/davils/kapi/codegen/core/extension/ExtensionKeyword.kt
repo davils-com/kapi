@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.extension
 
 import com.davils.kapi.spec.core.value.ExtensionName

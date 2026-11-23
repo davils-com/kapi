@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 @file:OptIn(DavilsInternal::class)
 
 package com.davils.kapi.codegen.core.launch
@@ -37,8 +36,11 @@ public class LaunchReport(
     public val diagnostics: List<LaunchDiagnostic>,
     public val files: List<String>,
 ) {
-    override fun equals(other: Any?): Boolean = other is LaunchReport && outcome == other.outcome &&
-        reason == other.reason && diagnostics == other.diagnostics && files == other.files
+    override fun equals(other: Any?): Boolean = other is LaunchReport &&
+        outcome == other.outcome &&
+        reason == other.reason &&
+        diagnostics == other.diagnostics &&
+        files == other.files
 
     override fun hashCode(): Int = listOf(outcome, reason, diagnostics, files).hashCode()
 

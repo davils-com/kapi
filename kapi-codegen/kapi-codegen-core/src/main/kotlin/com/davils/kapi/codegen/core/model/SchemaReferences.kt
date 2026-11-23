@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.core.model.Reference
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
+import com.davils.kapi.spec.core.model.Reference
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 private val json: TypeUse = TypeUse(TypeShape.Scalar(ScalarKind.Json))
 

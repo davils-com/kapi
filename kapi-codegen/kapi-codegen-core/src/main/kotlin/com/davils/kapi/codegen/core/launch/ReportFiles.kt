@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 @file:OptIn(DavilsInternal::class)
 
 package com.davils.kapi.codegen.core.launch
 
 import com.davils.kore.core.annotation.DavilsInternal
-
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -41,17 +39,17 @@ private const val INFORMATION: String = "https://github.com/davils-com/kapi"
 
 internal object ReportFiles {
     fun json(report: LaunchReport, verdict: LaunchVerdict): JsonObject = buildJsonObject {
-        put("outcome", report.outcome.name)
-        put("reason", report.reason)
-        put("accepted", verdict.isAccepted)
-        put("diagnostics", JsonArray(report.diagnostics.map(::diagnostic)))
-        put("files", JsonArray(report.files.map(::JsonPrimitive)))
-        put("failures", JsonArray(verdict.failures.map(::JsonPrimitive)))
+        put(key = "outcome", value = report.outcome.name)
+        put(key = "reason", value = report.reason)
+        put(key = "accepted", value = verdict.isAccepted)
+        put(key = "diagnostics", element = JsonArray(report.diagnostics.map(::diagnostic)))
+        put(key = "files", element = JsonArray(report.files.map(::JsonPrimitive)))
+        put(key = "failures", element = JsonArray(verdict.failures.map(::JsonPrimitive)))
     }
 
     fun sarif(report: LaunchReport, version: String): JsonObject = buildJsonObject {
-        put("\$schema", SARIF_SCHEMA)
-        put("version", SARIF_VERSION)
+        put(key = "\$schema", value = SARIF_SCHEMA)
+        put(key = "version", value = SARIF_VERSION)
         putJsonArray("runs") {
             add(run(report, version))
         }
@@ -60,24 +58,25 @@ internal object ReportFiles {
     private fun run(report: LaunchReport, version: String): JsonObject = buildJsonObject {
         putJsonObject("tool") {
             putJsonObject("driver") {
-                put("name", TOOL)
-                put("version", version)
-                put("informationUri", INFORMATION)
-                put("rules", JsonArray(report.diagnostics.map { it.code }.distinct().map(::rule)))
+                put(key = "name", value = TOOL)
+                put(key = "version", value = version)
+                put(key = "informationUri", value = INFORMATION)
+                val codes = report.diagnostics.map { diagnostic -> diagnostic.code }
+                put(key = "rules", element = JsonArray(codes.distinct().map(::rule)))
             }
         }
-        put("results", JsonArray(report.diagnostics.map(::result)))
+        put(key = "results", element = JsonArray(report.diagnostics.map(::result)))
     }
 
     private fun rule(code: String): JsonObject = buildJsonObject {
-        put("id", code)
+        put(key = "id", value = code)
     }
 
     private fun result(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
-        put("ruleId", diagnostic.code)
-        put("level", "error".takeIf { diagnostic.isError } ?: "warning")
-        putJsonObject("message") { put("text", diagnostic.message) }
-        put("locations", locations(diagnostic))
+        put(key = "ruleId", value = diagnostic.code)
+        put(key = "level", value = "error".takeIf { diagnostic.isError } ?: "warning")
+        putJsonObject("message") { put(key = "text", value = diagnostic.message) }
+        put(key = "locations", element = locations(diagnostic))
     }
 
     private fun locations(diagnostic: LaunchDiagnostic): JsonElement {
@@ -86,8 +85,8 @@ internal object ReportFiles {
             add(
                 buildJsonObject {
                     putJsonObject("physicalLocation") {
-                        putJsonObject("artifactLocation") { put("uri", file) }
-                        put("region", region(diagnostic))
+                        putJsonObject("artifactLocation") { put(key = "uri", value = file) }
+                        put(key = "region", element = region(diagnostic))
                     }
                 },
             )
@@ -95,16 +94,16 @@ internal object ReportFiles {
     }
 
     private fun region(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
-        put("startLine", diagnostic.line ?: 1)
-        diagnostic.column?.let { column -> put("startColumn", column) }
+        put(key = "startLine", value = diagnostic.line ?: 1)
+        diagnostic.column?.let { column -> put(key = "startColumn", value = column) }
     }
 
     private fun diagnostic(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
-        put("code", diagnostic.code)
-        put("severity", "error".takeIf { diagnostic.isError } ?: "warning")
-        put("message", diagnostic.message)
-        put("file", diagnostic.file)
-        put("line", diagnostic.line)
-        put("column", diagnostic.column)
+        put(key = "code", value = diagnostic.code)
+        put(key = "severity", value = "error".takeIf { diagnostic.isError } ?: "warning")
+        put(key = "message", value = diagnostic.message)
+        put(key = "file", value = diagnostic.file)
+        put(key = "line", value = diagnostic.line)
+        put(key = "column", value = diagnostic.column)
     }
 }

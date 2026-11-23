@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
@@ -29,7 +28,9 @@ internal class ModelPatches(private val scope: PlanScope) {
     fun plan(models: List<ModelPlan>, bodies: List<TypeUse>): List<ModelPlan> {
         val names = bodies.mapNotNull { body -> (body.shape as? TypeShape.Named)?.name }.toSet()
         val sources = models.filterIsInstance<ModelPlan.ObjectPlan>().filter { plan -> plan.name in names }
-        sources.forEach { plan -> scope.claimName(nameOf(plan.name), "The patch shape of ${plan.name}") }
+        sources.forEach { plan ->
+            scope.claimName(name = nameOf(plan.name), origin = "The patch shape of ${plan.name}")
+        }
         return sources.map(::patch)
     }
 

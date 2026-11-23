@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.core.value.Value
-import com.davils.kapi.spec.core.value.ValueKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
+import com.davils.kapi.spec.core.value.Value
+import com.davils.kapi.spec.core.value.ValueKind
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 private val plain: Map<ValueKind, ScalarKind> = mapOf(
     ValueKind.Text to ScalarKind.Text,

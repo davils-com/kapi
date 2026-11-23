@@ -14,14 +14,53 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.options
 
+/**
+ * What a generation emits.
+ *
+ * @since 1.0.0
+ */
 public enum class Artifact {
+    /**
+     * The models of the schemas, common Kotlin with kotlinx.serialization.
+     *
+     * @since 1.0.0
+     */
     Models,
+
+    /**
+     * A client per group of operations on the client runtime, common Kotlin.
+     *
+     * @since 1.0.0
+     */
     Client,
+
+    /**
+     * Routes and a service per group of operations on the server runtime, for the JVM.
+     *
+     * @since 1.0.0
+     */
     Server,
+
+    /**
+     * Services that answer every operation with samples of its documented success, for the JVM.
+     *
+     * @since 1.0.0
+     */
     Mocks,
+
+    /**
+     * Clients that deliver the webhooks and callbacks of the document, common Kotlin.
+     *
+     * @since 1.0.0
+     */
     Senders,
+
+    /**
+     * Routes that receive the webhooks and callbacks of the document, for the JVM.
+     *
+     * @since 1.0.0
+     */
     Receivers,
 }

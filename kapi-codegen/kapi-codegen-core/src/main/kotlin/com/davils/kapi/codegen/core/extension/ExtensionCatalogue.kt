@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.extension
 
-import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.codegen.core.Keywords
+import com.davils.kapi.spec.core.value.ExtensionName
 
 internal object ExtensionCatalogue {
     const val NAMESPACE: String = "x-kapi-"
