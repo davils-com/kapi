@@ -30,8 +30,7 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
 
     val isTrackingAnnotations: Boolean get() = graph.isTrackingAnnotations
 
-    var trail: Trail? = null
-        private set
+    private var trail: Trail? = null
 
     override fun charge(steps: Long) {
         this.steps += steps

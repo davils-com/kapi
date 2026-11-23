@@ -28,7 +28,7 @@ internal class ContainsKeyword(
     private val isMarking: Boolean,
 ) : Keyword("contains") {
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         val count = matches(frame, items)
         val hasMinimum = count >= minimum ||
             frame.fail(keyword = minimumName, message = "The array has $count matching items but needs $minimum")

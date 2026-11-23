@@ -26,6 +26,17 @@ internal class Visit(
     val scope: Scope?,
     val chain: Chain?,
 ) {
+    fun outermostFirst(): List<Int> {
+        val resources = ArrayList<Int>()
+        var current = scope
+        while (current != null) {
+            resources += current.resource
+            current = current.parent
+        }
+        resources.reverse()
+        return resources
+    }
+
     fun entering(resource: Int): Visit {
         if (scope?.resource == resource) return this
         return Visit(

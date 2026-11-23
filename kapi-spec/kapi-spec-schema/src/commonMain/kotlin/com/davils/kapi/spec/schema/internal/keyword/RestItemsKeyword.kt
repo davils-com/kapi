@@ -22,7 +22,7 @@ import com.davils.kapi.spec.schema.internal.value.Instance
 
 internal class RestItemsKeyword(name: String, private val start: Int, private val child: Int) : Keyword(name) {
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         var isValid = true
         for (index in start until items.size) {
             val isPassed = frame.descend(

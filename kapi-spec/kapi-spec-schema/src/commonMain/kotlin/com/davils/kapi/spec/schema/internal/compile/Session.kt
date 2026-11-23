@@ -99,7 +99,7 @@ internal class Session(
 
     private fun aliasOrCreate(uri: String, target: Target, existing: Int?): Int {
         val index = existing ?: resources.size
-        val resource = existing?.let(resources::get)
+        val resource = resources.getOrNull(index)
             ?: Resource(index = index, uri = uri, document = target.document, pointer = target.pointer)
         if (existing == null) resources += resource
         resource.uri = uri
@@ -137,7 +137,8 @@ internal class Session(
 
     fun locate(absolute: String): Target? {
         val uri = Uris.withoutFragment(absolute)
-        val resource = resourcesByUri[uri]?.let(resources::get) ?: return null
+        val index = resourcesByUri[uri] ?: return null
+        val resource = resources[index]
         return targetIn(resource, Uris.fragmentOf(absolute))
     }
 

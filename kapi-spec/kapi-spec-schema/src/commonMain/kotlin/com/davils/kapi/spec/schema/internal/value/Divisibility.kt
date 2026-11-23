@@ -104,7 +104,7 @@ internal object Divisibility {
         var index = remainder.size - 1
         var order = 0
         while (index >= 0 && order == 0) {
-            val other = divisor.getOrElse(index) { 0 }
+            val other = divisor.getOrNull(index) ?: 0
             order = remainder[index].compareTo(other)
             index--
         }
@@ -114,7 +114,7 @@ internal object Divisibility {
     private fun subtract(remainder: IntArray, divisor: IntArray) {
         var borrow = 0
         remainder.indices.forEach { index ->
-            val difference = remainder[index] - divisor.getOrElse(index) { 0 } - borrow
+            val difference = remainder[index] - (divisor.getOrNull(index) ?: 0) - borrow
             borrow = 1.takeIf { difference < 0 } ?: 0
             remainder[index] = difference + RADIX * borrow
         }

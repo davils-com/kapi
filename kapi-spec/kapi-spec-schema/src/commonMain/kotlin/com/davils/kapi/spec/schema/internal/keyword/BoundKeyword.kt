@@ -28,7 +28,7 @@ internal class BoundKeyword(
     private val isExclusive: Boolean,
 ) : Keyword(name) {
     override fun evaluate(frame: Frame): Boolean {
-        val number = (frame.instance as? Instance.NumberValue)?.value ?: return true
+        val number = (frame.instance as? Instance.NumberValue ?: return true).value
         val order = number.compareTo(limit) * (1.takeIf { isMaximum } ?: -1)
         val isWithin = order < 0 || (order == 0 && !isExclusive)
         val relation =

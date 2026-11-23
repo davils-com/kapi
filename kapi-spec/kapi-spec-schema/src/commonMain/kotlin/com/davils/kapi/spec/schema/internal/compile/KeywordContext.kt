@@ -156,7 +156,7 @@ internal class KeywordContext(
         val isSmall = number.digits.length + number.exponent <= MAXIMUM_LONG_DIGITS
         val zeros = "0".repeat(number.exponent.toInt().coerceAtLeast(0))
         val text = (number.digits.ifEmpty { "0" } + zeros).takeIf { isSmall }
-        return text?.toLongOrNull() ?: Long.MAX_VALUE
+        return text?.toLong() ?: Long.MAX_VALUE
     }
 
     private companion object {

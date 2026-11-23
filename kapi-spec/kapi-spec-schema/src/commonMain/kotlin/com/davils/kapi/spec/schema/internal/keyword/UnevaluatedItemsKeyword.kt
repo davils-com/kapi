@@ -24,7 +24,7 @@ internal class UnevaluatedItemsKeyword(private val child: Int) : Keyword("uneval
     override val isUnevaluated: Boolean get() = true
 
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         var isValid = true
         for ((index, item) in items.withIndex()) {
             val isPassed = frame.evaluated.isMarked(index) || checked(frame, index, item)

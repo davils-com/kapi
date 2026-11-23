@@ -21,9 +21,7 @@ import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 
 internal class RecursiveRefKeyword(private val initial: Int) : Keyword("\$recursiveRef") {
     override fun evaluate(frame: Frame): Boolean {
-        val scope = frame.visit.scope
-            ?.outermostFirst()
-            .orEmpty()
+        val scope = frame.visit.outermostFirst()
         frame.run.charge(scope.size.toLong())
         val dynamic = scope.firstNotNullOfOrNull { resource -> frame.run.resource(resource).recursiveRoot }
         val result = frame.referenced(dynamic ?: initial, frame.trail(name))

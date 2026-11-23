@@ -23,7 +23,7 @@ import com.davils.kapi.spec.schema.internal.value.Instance
 
 internal class UniqueItemsKeyword : Keyword("uniqueItems") {
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         val keys = items.map { item -> Canonical.of(item, frame.run) }
         frame.run.charge(items.size.toLong())
         val order = keys.indices.sortedBy { index -> keys[index] }

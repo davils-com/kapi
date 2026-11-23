@@ -48,6 +48,6 @@ internal class DependenciesKeyword(name: String, private val entries: List<Depen
         val schema = entry.schema ?: return missing.isEmpty()
         val result = frame.inPlace(index = schema, keywordTrail = frame.trail(name, entry.property), sink = frame.sink)
         frame.merge(result)
-        return missing.isEmpty() && result != null
+        return result != null
     }
 }

@@ -24,7 +24,7 @@ import com.davils.kapi.spec.schema.internal.value.Instance
 
 internal class MultipleOfKeyword(private val divisor: Decimal) : Keyword("multipleOf") {
     override fun evaluate(frame: Frame): Boolean {
-        val number = (frame.instance as? Instance.NumberValue)?.value ?: return true
+        val number = (frame.instance as? Instance.NumberValue ?: return true).value
         val isMultiple = Divisibility.isMultiple(number, divisor, frame.run)
         return isMultiple || failed(frame, "The number $number is no multiple of $divisor")
     }

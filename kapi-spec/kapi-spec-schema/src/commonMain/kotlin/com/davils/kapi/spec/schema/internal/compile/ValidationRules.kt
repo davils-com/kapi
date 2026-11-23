@@ -56,8 +56,8 @@ internal object ValidationRules {
         val isOpenApi = context.draft == Draft.OpenApi30
         val single = (element as? JsonPrimitive)?.takeIf { it.isString }?.content
         val many = (element as? JsonArray)?.takeIf { !isOpenApi }
-        val names = single?.let(::listOf) ?: many?.let { context.texts("type", it) }
-        val isValid = names != null && names.isNotEmpty() && names.all { name -> Types.bitOf(name) != null }
+        val names = many?.let { context.texts("type", it) } ?: listOfNotNull(single)
+        val isValid = names.isNotEmpty() && names.all { name -> Types.bitOf(name) != null }
         if (!isValid) return context.report(keyword = "type", message = "The keyword type must name the types of JSON")
         val isNullable = isOpenApi && (context.members["nullable"] as? JsonPrimitive)?.content == "true"
         val all = names.plus("null").takeIf { isNullable } ?: names

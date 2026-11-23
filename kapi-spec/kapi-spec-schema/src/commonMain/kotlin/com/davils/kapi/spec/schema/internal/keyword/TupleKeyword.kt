@@ -22,7 +22,7 @@ import com.davils.kapi.spec.schema.internal.value.Instance
 
 internal class TupleKeyword(name: String, private val children: List<Int>) : Keyword(name) {
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         var isValid = true
         for (index in 0 until items.size.coerceAtMost(children.size)) {
             val token = index.toString()

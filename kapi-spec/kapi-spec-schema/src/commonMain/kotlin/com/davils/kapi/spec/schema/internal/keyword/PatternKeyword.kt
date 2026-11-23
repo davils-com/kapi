@@ -29,7 +29,7 @@ internal class PatternKeyword(
     private val matcher: (CharSequence) -> Boolean,
 ) : Keyword("pattern") {
     override fun evaluate(frame: Frame): Boolean {
-        val text = (frame.instance as? Instance.StringValue)?.value ?: return true
+        val text = (frame.instance as? Instance.StringValue ?: return true).value
         val isMatching = Patterns.matches(matcher, text, frame.run)
         return isMatching || failed(frame, "The string does not match the pattern ${SafeText.quoted(source)}")
     }

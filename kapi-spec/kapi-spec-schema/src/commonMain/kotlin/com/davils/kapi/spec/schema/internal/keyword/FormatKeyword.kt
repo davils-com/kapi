@@ -29,7 +29,7 @@ private const val CHARACTERS_PER_STEP: Int = 16
 
 internal class FormatKeyword(private val format: String) : Keyword("format") {
     override fun evaluate(frame: Frame): Boolean {
-        val text = (frame.instance as? Instance.StringValue)?.value ?: return true
+        val text = (frame.instance as? Instance.StringValue ?: return true).value
         frame.run.refuseLongText(text)
         frame.run.charge(text.length.toLong() / CHARACTERS_PER_STEP + 1L)
         val isValid = FormatAssertions.check(format, text) != false

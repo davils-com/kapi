@@ -72,7 +72,7 @@ internal class NodeFactory(private val session: Session) {
     }
 
     fun graph(): Graph {
-        val compiled = nodes.map(::checkNotNull)
+        val compiled = nodes.filterNotNull()
         val resources = session.resources.map { resource -> infoOf(resource) }
         return Graph(compiled, resources, isTrackingAnnotations)
     }
@@ -114,7 +114,7 @@ internal class NodeFactory(private val session: Session) {
 
     private fun compiled(target: Target): Node {
         val element = checkNotNull(session.elementAt(target)) { "A subschema is compiled only where a value is" }
-        val entry = session.locationOf(target) ?: detached(target)
+        val entry = session.locationOf(target) ?: detached(target, element)
         val keywords = keywordsOf(element, target, entry)
         isTrackingAnnotations = isTrackingAnnotations || keywords.any { it.isUnevaluated }
         return Node(entry.resource, session.absoluteOf(entry.resource, target.pointer), keywords)
@@ -155,11 +155,18 @@ internal class NodeFactory(private val session: Session) {
         return (content == "true").takeIf { isFlag }
     }
 
-    private fun detached(target: Target): LocationEntry {
-        val ancestor = (target.pointer.size - 1 downTo 0).firstNotNullOf { length ->
-            session.locationOf(Target(target.document, target.pointer.take(length)))
+    private fun ancestorOf(target: Target): LocationEntry {
+        var length = target.pointer.size
+        var ancestor: LocationEntry? = null
+        while (ancestor == null) {
+            length--
+            ancestor = session.locationOf(Target(target.document, target.pointer.take(length)))
         }
-        val element = checkNotNull(session.elementAt(target))
+        return ancestor
+    }
+
+    private fun detached(target: Target, element: JsonElement): LocationEntry {
+        val ancestor = ancestorOf(target)
         val isStrict = session.isStrict
         session.isStrict = false
         val scanned = runCatching {
