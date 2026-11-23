@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.HandshakePlace
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeKind
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeUsePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
+import com.davils.kapi.codegen.core.emit.Texts
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock

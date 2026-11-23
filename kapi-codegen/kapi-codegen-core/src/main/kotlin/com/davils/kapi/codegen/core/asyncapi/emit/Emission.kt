@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
 import com.davils.kapi.codegen.core.asyncapi.schema.PayloadTypes
+import com.davils.kapi.codegen.core.emit.Texts
 import com.davils.kapi.codegen.core.options.Visibility
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName

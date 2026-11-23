@@ -16,11 +16,11 @@
 
 package com.davils.kapi.codegen.core.asyncapi
 
-import com.davils.kapi.codegen.core.asyncapi.emit.Texts
 import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.read.Addresses
 import com.davils.kapi.codegen.core.asyncapi.read.ContentTypes
 import com.davils.kapi.codegen.core.asyncapi.read.Correlations
+import com.davils.kapi.codegen.core.emit.Texts
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
