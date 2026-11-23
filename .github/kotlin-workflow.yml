@@ -29,18 +29,21 @@ check:
       - ":kapi-spec:kapi-spec-openapi:clean"
       - ":kapi-runtime:kapi-runtime-core:clean"
       - ":kapi-codegen:kapi-codegen-core:clean"
+      - ":kapi-codegen:kapi-codegen-gradle:clean"
     tasks:
       - ":kapi-spec:kapi-spec-core:jvmJar"
       - ":kapi-spec:kapi-spec-schema:jvmJar"
       - ":kapi-spec:kapi-spec-openapi:jvmJar"
       - ":kapi-runtime:kapi-runtime-core:jvmJar"
       - ":kapi-codegen:kapi-codegen-core:jar"
+      - ":kapi-codegen:kapi-codegen-gradle:jar"
     artifacts:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
       - "kapi-spec/kapi-spec-schema/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
+      - "kapi-codegen/kapi-codegen-gradle/build/libs/*.jar"
 
 policy:
   # Line breaks, paths and timers differ on Windows, and kapi reads documents from files and serves real sockets in
@@ -74,6 +77,7 @@ publish:
     - ":kapi-spec:kapi-spec-openapi:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-core:publishAllPublicationsToDavilsRepository"
+    - ":kapi-codegen:kapi-codegen-gradle:publishAllPublicationsToDavilsRepository"
 
 snapshot:
   # kapi's own build makes every build without a release tag a snapshot.
@@ -123,6 +127,12 @@ release:
       - path: com/davils/kapi-codegen-core
         artifact: kapi-codegen-core
         task: ":kapi-codegen:kapi-codegen-core:publishMavenPublicationToDavilsRepository"
+      - path: com/davils/kapi-codegen-gradle
+        artifact: kapi-codegen-gradle
+        task: ":kapi-codegen:kapi-codegen-gradle:publishPluginMavenPublicationToDavilsRepository"
+      - path: com/davils/kapi/com.davils.kapi.gradle.plugin
+        artifact: com.davils.kapi.gradle.plugin
+        task: ":kapi-codegen:kapi-codegen-gradle:publishKapiPluginMarkerMavenPublicationToDavilsRepository"
   attest:
     subjects:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
@@ -134,6 +144,7 @@ release:
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.klib"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
+      - "kapi-codegen/kapi-codegen-gradle/build/libs/*.jar"
   github-release:
     enabled: false
 

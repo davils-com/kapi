@@ -14,6 +14,8 @@
 /kapi-runtime/kapi-runtime-core/src/jvmMain/java/@davils-com/maintainers
 /kapi-codegen/kapi-codegen-core/api/        @davils-com/maintainers
 /kapi-codegen/kapi-codegen-core/src/main/java/@davils-com/maintainers
+/kapi-codegen/kapi-codegen-gradle/api/      @davils-com/maintainers
+/kapi-codegen/kapi-codegen-gradle/src/main/java/@davils-com/maintainers
 
 # Anything that decides what CI trusts or what leaves the build.
 /.github/workflows/                     @davils-com/maintainers
