@@ -84,6 +84,37 @@ class WritingTest : FunSpec({
             written shouldNotContain "paths:"
         }
 
+        test("keeps every field of OpenAPI 3.2 and reads back as the document it was written from") {
+            val (first, second) = rewritten(Corpus.source("openapi-32"))
+            val written = OpenApi.write(first)
+            val fields = listOf(
+                "\$self:",
+                "query:",
+                "additionalOperations:",
+                "in: querystring",
+                "style: cookie",
+                "itemSchema:",
+                "prefixEncoding:",
+                "itemEncoding:",
+                "mediaTypes:",
+                "parent: catalog",
+                "kind: nav",
+                "name: production",
+                "summary: Copied",
+                "oauth2MetadataUrl:",
+                "deviceAuthorization:",
+                "deviceAuthorizationUrl:",
+                "deprecated: true",
+                "defaultMapping: Item",
+                "dataValue:",
+                "serializedValue:",
+                "nodeType: attribute",
+            )
+
+            second shouldBe first
+            fields.filterNot { field -> field in written } shouldBe emptyList()
+        }
+
         test("reads back as the document it was written from, for the document that uses every object") {
             val source = Source.Text(Resources.text("everything.yaml"), petstoreUri)
             val (first, second) = rewritten(source)

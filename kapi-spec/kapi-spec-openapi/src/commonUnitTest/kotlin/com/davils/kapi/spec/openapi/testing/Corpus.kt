@@ -30,6 +30,7 @@ internal object Corpus {
         "mail-routes",
         "mail",
         "neutral",
+        "openapi-32",
         "openobject",
         "outbound",
         "parameters-constraints",
