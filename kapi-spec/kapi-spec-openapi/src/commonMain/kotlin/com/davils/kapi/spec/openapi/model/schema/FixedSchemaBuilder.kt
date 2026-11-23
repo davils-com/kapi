@@ -19,11 +19,23 @@ package com.davils.kapi.spec.openapi.model.schema
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [FixedSchema], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the schema it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class FixedSchemaBuilder internal constructor() :
     ElementBuilder<FixedSchema>() {
     override val subject: String get() = "openapi boolean schema"
 
+    /**
+     * Whether the schema is `true`; `false` until it is set.
+     *
+     * @since 1.0.0
+     */
     public var isAccepting: Boolean = false
 
     override fun assemble(): FixedSchema = FixedSchema(this)

@@ -19,32 +19,54 @@ package com.davils.kapi.spec.openapi.model.info
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Tag], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the tag it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
     override val subject: String get() = "openapi tag"
 
+    /**
+     * The value of `name`, the name of the tag; empty until it is set.
+     *
+     * @since 1.0.0
+     */
     public var name: String = ""
 
     /**
-     * A short summary of the tag, written from OpenAPI 3.2 on.
+     * The value of `summary`, a short summary of the tag, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var summary: String? = null
 
+    /**
+     * The value of `description`, the description of the tag.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
+    /**
+     * The value of `externalDocs`, the external documentation of the tag.
+     *
+     * @since 1.0.0
+     */
     public var externalDocs: ExternalDocs? = null
 
     /**
-     * The name of the tag this tag is nested in, written from OpenAPI 3.2 on.
+     * The value of `parent`, the name of the tag this tag is nested in, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var parent: String? = null
 
     /**
-     * What the tag is for, such as `nav`, written from OpenAPI 3.2 on.
+     * The value of `kind`, what the tag is for, such as `nav`, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */

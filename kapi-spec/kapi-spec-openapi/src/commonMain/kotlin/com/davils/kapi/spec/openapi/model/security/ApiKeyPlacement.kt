@@ -16,13 +16,48 @@
 
 package com.davils.kapi.spec.openapi.model.security
 
+/**
+ * Where an API key is sent, the `in` of an `apiKey` security scheme.
+ *
+ * @property keyword the value of `in` in a document.
+ * @since 1.0.0
+ */
 public enum class ApiKeyPlacement(public val keyword: String) {
+    /**
+     * A parameter of the query string.
+     *
+     * @since 1.0.0
+     */
     Query("query"),
+
+    /**
+     * A header of the request.
+     *
+     * @since 1.0.0
+     */
     Header("header"),
+
+    /**
+     * A cookie of the request.
+     *
+     * @since 1.0.0
+     */
     Cookie("cookie"),
     ;
 
+    /**
+     * Finds placements of API keys.
+     *
+     * @since 1.0.0
+     */
     public companion object {
+        /**
+         * Returns the placement written as [keyword].
+         *
+         * @param keyword the value of `in`, which may be any text; it is compared exactly.
+         * @return the placement, or `null` if [keyword] names none.
+         * @since 1.0.0
+         */
         public fun fromKeyword(keyword: String): ApiKeyPlacement? = entries.firstOrNull { it.keyword == keyword }
     }
 }

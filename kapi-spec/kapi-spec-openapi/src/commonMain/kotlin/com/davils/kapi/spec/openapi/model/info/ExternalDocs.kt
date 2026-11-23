@@ -18,10 +18,29 @@ package com.davils.kapi.spec.openapi.model.info
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * The `externalDocs` object: a reference to documentation outside the document, which a document, an operation, a
+ * tag or a schema may name.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class ExternalDocs internal constructor(builder: ExternalDocsBuilder) :
     Element(builder) {
+    /**
+     * The `url` of the documentation, as it was written and not checked; required by OpenAPI, so a reading reports
+     * external documentation that leaves it out and keeps it empty here.
+     *
+     * @since 1.0.0
+     */
     public val url: String = builder.url
 
+    /**
+     * The `description` of the documentation, which may use CommonMark; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val description: String? = builder.description
 
     override val identity: List<Any?> get() = listOf(url, description)

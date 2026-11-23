@@ -19,21 +19,43 @@ package com.davils.kapi.spec.openapi.model.security
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of an [OAuthFlow], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the flow it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>() {
     override val subject: String get() = "openapi oauth flow"
 
+    /**
+     * The value of `authorizationUrl`, the authorization endpoint.
+     *
+     * @since 1.0.0
+     */
     public var authorizationUrl: String? = null
 
     /**
-     * The device authorization endpoint of the device authorization flow, written from OpenAPI 3.2 on.
+     * The value of `deviceAuthorizationUrl`, the device authorization endpoint, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var deviceAuthorizationUrl: String? = null
 
+    /**
+     * The value of `tokenUrl`, the token endpoint.
+     *
+     * @since 1.0.0
+     */
     public var tokenUrl: String? = null
 
+    /**
+     * The value of `refreshUrl`, the endpoint that refreshes a token.
+     *
+     * @since 1.0.0
+     */
     public var refreshUrl: String? = null
 
     internal val scopes: MutableMap<String, String> = linkedMapOf()

@@ -18,8 +18,25 @@ package com.davils.kapi.spec.openapi.model.security
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * A security requirement object: the security schemes a request must satisfy together. Of the requirements of a
+ * document or an operation, a request meets one.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class SecurityRequirement internal constructor(builder: SecurityRequirementBuilder) :
     Element(builder) {
+    /**
+     * The names of the security schemes of the components, each with the scopes or roles it needs, in the order of the
+     * document; empty for the requirement `{}`, which lets a request through without security.
+     *
+     * A reading reports a name that is no security scheme of the components and, before OpenAPI 3.1, scopes for a
+     * scheme other than `oauth2` and `openIdConnect`.
+     *
+     * @since 1.0.0
+     */
     public val schemes: Map<String, List<String>> = builder.schemes.toMap()
 
     override val identity: List<Any?> get() = listOf(schemes)

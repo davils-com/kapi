@@ -19,17 +19,30 @@ package com.davils.kapi.spec.openapi.model.schema
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Discriminator], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the discriminator it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class DiscriminatorBuilder internal constructor() :
     ElementBuilder<Discriminator>() {
     override val subject: String get() = "openapi discriminator"
 
+    /**
+     * The value of `propertyName`, the discriminating property; empty until it is set.
+     *
+     * @since 1.0.0
+     */
     public var propertyName: String = ""
 
     internal val mapping: MutableMap<String, String> = linkedMapOf()
 
     /**
-     * The schema of a value that maps to no other schema, written from OpenAPI 3.2 on.
+     * The value of `defaultMapping`, the schema of a value that maps to no other schema, written from OpenAPI 3.2
+     * on.
      *
      * @since 1.0.0
      */

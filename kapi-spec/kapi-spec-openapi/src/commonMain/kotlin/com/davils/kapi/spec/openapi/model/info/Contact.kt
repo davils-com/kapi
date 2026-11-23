@@ -18,11 +18,33 @@ package com.davils.kapi.spec.openapi.model.info
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * The `contact` object of an info: who to contact about the API.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class Contact internal constructor(builder: ContactBuilder) : Element(builder) {
+    /**
+     * The `name` of the person or organization to contact; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val name: String? = builder.name
 
+    /**
+     * The `url` of the contact information, as it was written and not checked; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val url: String? = builder.url
 
+    /**
+     * The `email` address of the contact, as it was written and not checked; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val email: String? = builder.email
 
     override val identity: List<Any?> get() = listOf(name, url, email)

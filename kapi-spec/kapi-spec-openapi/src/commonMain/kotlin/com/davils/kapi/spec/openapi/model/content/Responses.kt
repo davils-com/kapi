@@ -19,8 +19,21 @@ package com.davils.kapi.spec.openapi.model.content
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 
+/**
+ * The `responses` object of an operation: its expected responses by status.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class Responses internal constructor(builder: ResponsesBuilder) :
     Element(builder) {
+    /**
+     * The responses by status, inline or by reference, in the order of the document; empty when the operation declares
+     * none, which a reading reports.
+     *
+     * @since 1.0.0
+     */
     public val entries: Map<ResponseStatus, Referable<Response>> =
         builder.entries.toMap()
 

@@ -21,19 +21,26 @@ import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Response], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the response it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class ResponseBuilder internal constructor() : ElementBuilder<Response>() {
     override val subject: String get() = "openapi response"
 
     /**
-     * A short summary of the response, written from OpenAPI 3.2 on.
+     * The value of `summary`, a short summary of the response, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var summary: String? = null
 
     /**
-     * The description of the response, which OpenAPI requires before 3.2.
+     * The value of `description`, the description of the response, which OpenAPI requires before 3.2.
      *
      * @since 1.0.0
      */

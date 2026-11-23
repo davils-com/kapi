@@ -31,6 +31,13 @@ import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.security.SecurityScheme
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of [Components], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the components it builds are.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class ComponentsBuilder internal constructor() : ElementBuilder<Components>() {
     override val subject: String get() = "openapi components"

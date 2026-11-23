@@ -16,8 +16,21 @@
 
 package com.davils.kapi.spec.openapi.model.schema
 
+/**
+ * A schema written as `true` or `false`, which JSON Schema 2020-12 and so OpenAPI 3.1 and 3.2 allow wherever a
+ * schema stands.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class FixedSchema internal constructor(builder: FixedSchemaBuilder) :
     Schema(builder) {
+    /**
+     * Whether the schema is `true`, which accepts every value; `false` accepts none.
+     *
+     * @since 1.0.0
+     */
     public val isAccepting: Boolean = builder.isAccepting
 
     override val identity: List<Any?> get() = listOf(isAccepting)

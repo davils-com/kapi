@@ -16,19 +16,39 @@
 
 package com.davils.kapi.spec.openapi.model.security
 
+/**
+ * A security scheme of `type` `apiKey`: a key sent in a header, a query parameter or a cookie.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class ApiKeyScheme internal constructor(builder: ApiKeySchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
     /**
-     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     * Whether the scheme is `deprecated` and should no longer be used; `false` when the document leaves it out and
+     * before OpenAPI 3.2.
      *
      * @since 1.0.0
      */
     public override val isDeprecated: Boolean = builder.isDeprecated
 
+    /**
+     * The `name` of the header, query parameter or cookie that carries the key; required by OpenAPI, so a reading
+     * reports a scheme that leaves it out and keeps it empty here.
+     *
+     * @since 1.0.0
+     */
     public val name: String = builder.name
 
+    /**
+     * Where the key is sent, from `in`; required by OpenAPI, so a reading reports a scheme that leaves it out or names
+     * an unknown place and keeps [ApiKeyPlacement.Header] here.
+     *
+     * @since 1.0.0
+     */
     public val placement: ApiKeyPlacement = builder.placement
 
     override val identity: List<Any?> get() = listOf(description, name, placement, isDeprecated)

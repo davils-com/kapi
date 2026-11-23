@@ -18,7 +18,21 @@ package com.davils.kapi.spec.openapi.model.path
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * The `paths` object of a document: the endpoints of the API and the operations they offer.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class Paths internal constructor(builder: PathsBuilder) : Element(builder) {
+    /**
+     * The path items by their path template, in the order of the document; empty when the document declares none.
+     *
+     * A reading leaves out a key that does not start with `/` and reports it.
+     *
+     * @since 1.0.0
+     */
     public val items: Map<PathTemplate, PathItem> = builder.items.toMap()
 
     override val identity: List<Any?> get() = listOf(items)

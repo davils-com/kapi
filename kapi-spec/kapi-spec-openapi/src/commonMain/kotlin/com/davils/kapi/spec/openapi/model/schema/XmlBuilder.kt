@@ -19,22 +19,54 @@ package com.davils.kapi.spec.openapi.model.schema
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of an [Xml], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the XML object it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
     override val subject: String get() = "openapi xml"
 
+    /**
+     * The value of `name`, the name of the element or attribute.
+     *
+     * @since 1.0.0
+     */
     public var name: String? = null
 
+    /**
+     * The value of `namespace`, the namespace of the element or attribute.
+     *
+     * @since 1.0.0
+     */
     public var namespace: String? = null
 
+    /**
+     * The value of `prefix`, the prefix of the namespace.
+     *
+     * @since 1.0.0
+     */
     public var prefix: String? = null
 
+    /**
+     * The value of `attribute`, whether the property is an attribute.
+     *
+     * @since 1.0.0
+     */
     public var isAttribute: Boolean = false
 
+    /**
+     * The value of `wrapped`, whether the items of an array are wrapped.
+     *
+     * @since 1.0.0
+     */
     public var isWrapped: Boolean = false
 
     /**
-     * The kind of node the schema maps to, written from OpenAPI 3.2 on.
+     * The value of `nodeType`, the kind of node the schema maps to, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */

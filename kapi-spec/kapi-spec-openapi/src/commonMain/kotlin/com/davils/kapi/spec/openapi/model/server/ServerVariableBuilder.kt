@@ -19,15 +19,32 @@ package com.davils.kapi.spec.openapi.model.server
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [ServerVariable], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the variable it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class ServerVariableBuilder internal constructor() :
     ElementBuilder<ServerVariable>() {
     override val subject: String get() = "openapi server variable"
 
+    /**
+     * The value of `default`, the value used when no other is given; empty until it is set.
+     *
+     * @since 1.0.0
+     */
     public var default: String = ""
 
     internal val enumeration: MutableList<String> = mutableListOf()
 
+    /**
+     * The value of `description`, the description of the variable.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     override fun assemble(): ServerVariable = ServerVariable(this)

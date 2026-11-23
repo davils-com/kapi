@@ -18,18 +18,47 @@ package com.davils.kapi.spec.openapi.model.security
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * The OAuth flows object of an [OAuth2Scheme]: the grants of OAuth 2.0 it supports, each `null` when the document
+ * leaves it out.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class OAuthFlows internal constructor(builder: OAuthFlowsBuilder) :
     Element(builder) {
+    /**
+     * The `implicit` flow; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val implicit: OAuthFlow? = builder.implicit
 
+    /**
+     * The `password` flow, the resource owner password credentials grant; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val password: OAuthFlow? = builder.password
 
+    /**
+     * The `clientCredentials` flow; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val clientCredentials: OAuthFlow? = builder.clientCredentials
 
+    /**
+     * The `authorizationCode` flow; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val authorizationCode: OAuthFlow? = builder.authorizationCode
 
     /**
-     * The device authorization flow of RFC 8628; `null` before OpenAPI 3.2.
+     * The `deviceAuthorization` flow of RFC 8628; `null` when the document leaves it out and before OpenAPI 3.2.
+
      *
      * @since 1.0.0
      */

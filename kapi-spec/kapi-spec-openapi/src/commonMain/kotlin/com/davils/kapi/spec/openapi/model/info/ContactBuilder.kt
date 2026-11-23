@@ -19,14 +19,36 @@ package com.davils.kapi.spec.openapi.model.info
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Contact], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the contact it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class ContactBuilder internal constructor() : ElementBuilder<Contact>() {
     override val subject: String get() = "openapi contact"
 
+    /**
+     * The value of `name`, the person or organization to contact.
+     *
+     * @since 1.0.0
+     */
     public var name: String? = null
 
+    /**
+     * The value of `url`, the URL of the contact information.
+     *
+     * @since 1.0.0
+     */
     public var url: String? = null
 
+    /**
+     * The value of `email`, the email address of the contact.
+     *
+     * @since 1.0.0
+     */
     public var email: String? = null
 
     override fun assemble(): Contact = Contact(this)
