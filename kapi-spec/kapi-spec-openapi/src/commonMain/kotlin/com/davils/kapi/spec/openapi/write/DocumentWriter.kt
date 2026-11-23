@@ -1,0 +1,63 @@
+/*
+ * Copyright 2026 Davils
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.davils.kapi.spec.openapi.write
+
+import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.Document
+import com.davils.kapi.spec.openapi.VersionFamily
+import com.davils.kapi.spec.openapi.model.component.Components
+import com.davils.kapi.spec.openapi.read.shape.Keys
+
+internal class DocumentWriter(family: VersionFamily) {
+    private val schemas: SchemaWriter = SchemaWriter(family)
+
+    private val content: ContentWriter = ContentWriter(schemas)
+
+    private val responses: ResponseWriter = ResponseWriter(content)
+
+    private val paths: PathWriter = PathWriter(content, responses)
+
+    fun document(document: Document): YamlNode {
+        val out = Out()
+        out.text(Keys.OPENAPI, document.version.literal)
+        out.node(Keys.INFO, InfoWriter.info(document.info))
+        out.text(Keys.JSON_SCHEMA_DIALECT, document.jsonSchemaDialect)
+        out.list(Keys.SERVERS, document.servers, InfoWriter::server)
+        out.node(Keys.PATHS, document.paths?.let(paths::paths))
+        out.map(Keys.WEBHOOKS, document.webhooks, paths::pathItem)
+        out.node(Keys.COMPONENTS, document.components?.let(::components))
+        out.list(Keys.SECURITY, document.security, SecurityWriter::requirement)
+        out.list(Keys.TAGS, document.tags, InfoWriter::tag)
+        out.node(Keys.EXTERNAL_DOCS, document.externalDocs?.let(InfoWriter::externalDocs))
+        return out.build(document)
+    }
+
+    private fun components(components: Components): YamlNode {
+        val out = Out()
+        out.map(Keys.SCHEMAS, components.schemas, schemas::schema)
+        out.map(Keys.RESPONSES, components.responses, ReferenceWriter.referables(responses::response))
+        out.map(Keys.PARAMETERS, components.parameters, ReferenceWriter.referables(content::parameter))
+        out.map(Keys.EXAMPLES, components.examples, ReferenceWriter.referables(content::example))
+        out.map(Keys.REQUEST_BODIES, components.requestBodies, ReferenceWriter.referables(content::requestBody))
+        out.map(Keys.HEADERS, components.headers, ReferenceWriter.referables(content::header))
+        out.map(Keys.SECURITY_SCHEMES, components.securitySchemes, ReferenceWriter.referables(SecurityWriter::scheme))
+        out.map(Keys.LINKS, components.links, ReferenceWriter.referables(responses::link))
+        out.map(Keys.CALLBACKS, components.callbacks, ReferenceWriter.referables(paths::callback))
+        out.map(Keys.PATH_ITEMS, components.pathItems, paths::pathItem)
+        return out.build(components)
+    }
+}
