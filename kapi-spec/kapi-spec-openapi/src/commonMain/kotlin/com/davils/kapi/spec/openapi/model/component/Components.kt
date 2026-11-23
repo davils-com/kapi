@@ -30,31 +30,92 @@ import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.security.SecurityScheme
 
+/**
+ * The `components` object of a document: reusable objects that other parts of the document refer to by `$ref`.
+ *
+ * The element is immutable and safe to share between threads. Every map keeps the order of the document and is
+ * empty when the document declares nothing of its kind. A reading reports a name that holds other characters than
+ * letters, digits, `.`, `-` and `_`.
+ *
+ * @since 1.0.0
+ */
 public class Components internal constructor(builder: ComponentsBuilder) :
     Element(builder) {
+    /**
+     * The `schemas` by name; a schema that refers to another holds the reference itself.
+     *
+     * @since 1.0.0
+     */
     public val schemas: Map<String, Schema> = builder.schemas.toMap()
 
+    /**
+     * The `responses` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val responses: Map<String, Referable<Response>> = builder.responses.toMap()
 
+    /**
+     * The `parameters` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val parameters: Map<String, Referable<Parameter>> = builder.parameters.toMap()
 
+    /**
+     * The `examples` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val examples: Map<String, Referable<Example>> = builder.examples.toMap()
 
+    /**
+     * The `requestBodies` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val requestBodies: Map<String, Referable<RequestBody>> = builder.requestBodies.toMap()
 
+    /**
+     * The `headers` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
 
+    /**
+     * The `securitySchemes` by name, inline or by reference, which security requirements name.
+     *
+     * @since 1.0.0
+     */
     public val securitySchemes: Map<String, Referable<SecurityScheme>> =
         builder.securitySchemes.toMap()
 
+    /**
+     * The `links` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val links: Map<String, Referable<Link>> = builder.links.toMap()
 
+    /**
+     * The `callbacks` by name, inline or by reference.
+     *
+     * @since 1.0.0
+     */
     public val callbacks: Map<String, Referable<Callback>> = builder.callbacks.toMap()
 
+    /**
+     * The `pathItems` by name; a path item that refers to another holds the reference itself. Empty before
+     * OpenAPI 3.1.
+     *
+     * @since 1.0.0
+     */
     public val pathItems: Map<String, PathItem> = builder.pathItems.toMap()
 
     /**
-     * The media types that content refers to by `$ref`, by name; empty before OpenAPI 3.2.
+     * The `mediaTypes` by name, inline or by reference, which content refers to by `$ref`; empty before OpenAPI 3.2.
+
      *
      * @since 1.0.0
      */

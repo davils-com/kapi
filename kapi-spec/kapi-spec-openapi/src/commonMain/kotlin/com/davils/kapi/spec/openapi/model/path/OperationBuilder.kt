@@ -27,30 +27,77 @@ import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of an [Operation], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the operation it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class OperationBuilder internal constructor() : ElementBuilder<Operation>() {
     override val subject: String get() = "openapi operation"
 
+    /**
+     * The value of `operationId`, the id of the operation.
+     *
+     * @since 1.0.0
+     */
     public var operationId: String? = null
 
+    /**
+     * The value of `summary`, the summary of the operation.
+     *
+     * @since 1.0.0
+     */
     public var summary: String? = null
 
+    /**
+     * The value of `description`, the description of the operation.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     internal val tags: MutableList<String> = mutableListOf()
 
+    /**
+     * The value of `externalDocs`, the external documentation of the operation.
+     *
+     * @since 1.0.0
+     */
     public var externalDocs: ExternalDocs? = null
 
     internal val parameters: MutableList<Referable<Parameter>> = mutableListOf()
 
+    /**
+     * The value of `requestBody`, the request body of the operation.
+     *
+     * @since 1.0.0
+     */
     public var requestBody: Referable<RequestBody>? = null
 
+    /**
+     * The value of `responses`, the responses of the operation; without any response until it is set.
+     *
+     * @since 1.0.0
+     */
     public var responses: Responses = ResponsesBuilder().build()
 
     internal val callbacks: MutableMap<String, Referable<Callback>> = linkedMapOf()
 
+    /**
+     * The value of `deprecated`, whether the operation should no longer be used.
+     *
+     * @since 1.0.0
+     */
     public var isDeprecated: Boolean = false
 
+    /**
+     * The value of `security`, the security requirements of the operation; `null` to take over those of the document.
+     *
+     * @since 1.0.0
+     */
     public var security: List<SecurityRequirement>? = null
 
     internal val servers: MutableList<Server> = mutableListOf()

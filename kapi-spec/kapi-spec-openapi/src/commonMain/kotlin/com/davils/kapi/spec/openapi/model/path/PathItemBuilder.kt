@@ -23,14 +23,36 @@ import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [PathItem], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the path item it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>() {
     override val subject: String get() = "openapi path item"
 
+    /**
+     * The value of `$ref`, the path item this one refers to.
+     *
+     * @since 1.0.0
+     */
     public var reference: Reference? = null
 
+    /**
+     * The value of `summary`, the summary of the path item.
+     *
+     * @since 1.0.0
+     */
     public var summary: String? = null
 
+    /**
+     * The value of `description`, the description of the path item.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     internal val operations: MutableMap<Method, Operation> = linkedMapOf()

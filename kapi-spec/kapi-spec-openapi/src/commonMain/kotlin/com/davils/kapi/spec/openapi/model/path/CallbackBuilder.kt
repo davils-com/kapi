@@ -19,6 +19,13 @@ package com.davils.kapi.spec.openapi.model.path
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Callback], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the callback it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class CallbackBuilder internal constructor() : ElementBuilder<Callback>() {
     override val subject: String get() = "openapi callback"

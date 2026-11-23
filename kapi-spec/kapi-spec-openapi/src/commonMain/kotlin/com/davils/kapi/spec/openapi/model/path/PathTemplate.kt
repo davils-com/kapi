@@ -22,12 +22,29 @@ private const val ROOT: String = "/"
 
 private val parameterPattern: Regex = Regex("""\{([^{}/]+)}""")
 
+/**
+ * A key of the `paths` object: the path of an endpoint relative to the address of the server, such as
+ * `/pets/{petId}`, in which every name between braces is a path parameter.
+ *
+ * Only the leading slash is checked when a template is created; a reading reports a template that names a parameter
+ * twice or has a stray brace, and templates that differ only by the names of their parameters.
+ *
+ * @property value the template as it was written.
+ * @throws IllegalArgumentException if [value] does not start with `/`.
+ * @since 1.0.0
+ */
 @JvmInline
 public value class PathTemplate(public val value: String) {
     init {
         require(value.startsWith(ROOT)) { "'$value' is no path template such as /pets/{petId}" }
     }
 
+    /**
+     * The names of the path parameters between braces, in the order they appear; empty for a template without
+     * parameters.
+     *
+     * @since 1.0.0
+     */
     public val parameters: List<String>
         get() {
             val matches = parameterPattern.findAll(value)
@@ -36,7 +53,19 @@ public value class PathTemplate(public val value: String) {
 
     override fun toString(): String = value
 
+    /**
+     * Creates path templates from text.
+     *
+     * @since 1.0.0
+     */
     public companion object {
+        /**
+         * Returns [text] as a path template, or `null` instead of throwing.
+         *
+         * @param text the key of the `paths` object as it was written.
+         * @return the template, or `null` if [text] does not start with `/`.
+         * @since 1.0.0
+         */
         public fun parseOrNull(text: String): PathTemplate? {
             if (!text.startsWith(ROOT)) return null
             return PathTemplate(text)

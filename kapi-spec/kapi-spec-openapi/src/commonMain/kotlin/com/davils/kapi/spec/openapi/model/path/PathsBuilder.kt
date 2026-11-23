@@ -19,6 +19,13 @@ package com.davils.kapi.spec.openapi.model.path
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of [Paths], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the paths it builds are.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class PathsBuilder internal constructor() : ElementBuilder<Paths>() {
     override val subject: String get() = "openapi paths"
