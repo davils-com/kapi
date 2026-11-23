@@ -25,12 +25,15 @@ check:
   reproducible:
     clean-tasks:
       - ":kapi-spec:kapi-spec-core:clean"
+      - ":kapi-spec:kapi-spec-schema:clean"
       - ":kapi-spec:kapi-spec-openapi:clean"
     tasks:
       - ":kapi-spec:kapi-spec-core:jvmJar"
+      - ":kapi-spec:kapi-spec-schema:jvmJar"
       - ":kapi-spec:kapi-spec-openapi:jvmJar"
     artifacts:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
+      - "kapi-spec/kapi-spec-schema/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
 
 policy:
@@ -61,6 +64,7 @@ publish:
   build-tasks: [assemble]
   tasks:
     - ":kapi-spec:kapi-spec-core:publishAllPublicationsToDavilsRepository"
+    - ":kapi-spec:kapi-spec-schema:publishAllPublicationsToDavilsRepository"
     - ":kapi-spec:kapi-spec-openapi:publishAllPublicationsToDavilsRepository"
 
 snapshot:
@@ -81,6 +85,15 @@ release:
       - path: com/davils/kapi-spec-core
         artifact: kapi-spec-core
         task: ":kapi-spec:kapi-spec-core:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-schema-jvm
+        artifact: kapi-spec-schema-jvm
+        task: ":kapi-spec:kapi-spec-schema:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-schema-wasm-js
+        artifact: kapi-spec-schema-wasm-js
+        task: ":kapi-spec:kapi-spec-schema:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-schema
+        artifact: kapi-spec-schema
+        task: ":kapi-spec:kapi-spec-schema:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kapi-spec-openapi-jvm
         artifact: kapi-spec-openapi-jvm
         task: ":kapi-spec:kapi-spec-openapi:publishJvmPublicationToDavilsRepository"
@@ -94,6 +107,8 @@ release:
     subjects:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
       - "kapi-spec/kapi-spec-core/build/libs/*.klib"
+      - "kapi-spec/kapi-spec-schema/build/libs/*.jar"
+      - "kapi-spec/kapi-spec-schema/build/libs/*.klib"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.klib"
   github-release:

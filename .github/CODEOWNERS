@@ -6,6 +6,8 @@
 /gradle/                                @davils-com/maintainers
 /kapi-spec/kapi-spec-core/api/              @davils-com/maintainers
 /kapi-spec/kapi-spec-core/src/jvmMain/java/ @davils-com/maintainers
+/kapi-spec/kapi-spec-schema/api/            @davils-com/maintainers
+/kapi-spec/kapi-spec-schema/src/jvmMain/java/@davils-com/maintainers
 /kapi-spec/kapi-spec-openapi/api/           @davils-com/maintainers
 /kapi-spec/kapi-spec-openapi/src/jvmMain/java/@davils-com/maintainers
 
