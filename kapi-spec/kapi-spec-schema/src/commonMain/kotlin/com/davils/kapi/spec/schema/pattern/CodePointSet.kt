@@ -63,7 +63,7 @@ internal class CodePointSet private constructor(private val bounds: IntArray) {
         private var size: Int = 0
 
         fun add(first: Int, last: Int) {
-            if (size == packed.size) packed = packed.copyOf(packed.size * 2)
+            if (size == packed.size) compact()
             packed[size] = (first.toLong() shl END_BITS) or (last + 1).toLong()
             size++
         }
@@ -80,7 +80,23 @@ internal class CodePointSet private constructor(private val bounds: IntArray) {
             }
         }
 
-        fun toSet(): CodePointSet {
+        fun toSet(): CodePointSet = CodePointSet(merged())
+
+        private fun compact() {
+            val bounds = merged()
+            val isCrowded = bounds.size >= packed.size
+            val factor = 2.takeIf { isCrowded } ?: 1
+            packed = LongArray(packed.size * factor)
+            size = 0
+            var index = 0
+            while (index < bounds.size) {
+                packed[size] = (bounds[index].toLong() shl END_BITS) or bounds[index + 1].toLong()
+                size++
+                index += 2
+            }
+        }
+
+        private fun merged(): IntArray {
             val sorted = packed.copyOf(size)
             sorted.sort()
             val merged = IntArray(size * 2)
@@ -96,7 +112,7 @@ internal class CodePointSet private constructor(private val bounds: IntArray) {
                     count += 2
                 }
             }
-            return CodePointSet(merged.copyOf(count))
+            return merged.copyOf(count)
         }
 
         private companion object {

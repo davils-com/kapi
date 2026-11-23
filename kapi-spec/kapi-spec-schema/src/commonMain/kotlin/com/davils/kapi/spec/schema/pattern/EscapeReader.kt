@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.pattern
+
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedMap
 
 private const val SYNTAX_CHARACTERS: String = "^$\\.*+?()[]{}|/"
 private const val CONTROL_ESCAPES: String = "fnrtv"
@@ -29,6 +34,8 @@ private const val REFERENCE_DETAIL: String = "a back reference cannot run in the
 private const val UNSUPPORTED_PROPERTY_DETAIL: String = "a property escape names a property without a table"
 
 internal class EscapeReader(private val cursor: PatternCursor, private val scan: GroupScan) {
+    private val properties: OrderedMap<String, PropertyLookup> = OrderedMap()
+
     fun reference(start: Int): PatternNode? = decimalReference(start) ?: namedReference(start)
 
     fun escapeSet(start: Int): CodePointSet? {
@@ -80,7 +87,9 @@ internal class EscapeReader(private val cursor: PatternCursor, private val scan:
         val text = cursor.source.substring(startIndex = nameStart, endIndex = cursor.index)
         cursor.index++
         if (!isPropertyShape(text)) cursor.fail(start, "a property escape has no valid name")
-        return when (val lookup = PropertyNames.lookup(text)) {
+        val lookup = properties[text] ?: PropertyNames.lookup(text)
+        properties[text] = lookup
+        return when (lookup) {
             is PropertyLookup.Found -> lookup.set
             PropertyLookup.Unsupported -> unsupportedProperty(start)
             PropertyLookup.Unknown -> cursor.fail(start, "a property escape names no property of ECMA-262")

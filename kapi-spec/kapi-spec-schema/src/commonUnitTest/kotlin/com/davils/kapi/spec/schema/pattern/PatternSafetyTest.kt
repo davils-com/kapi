@@ -21,10 +21,12 @@ import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 private const val LONG_INPUT: Int = 10_000
+private val SLOW_COMPILATION: Duration = 5.seconds
 private const val MEDIUM_INPUT: Int = 5_000
 private const val WORD_COUNT: Int = 2_000
 private const val OPTIONAL_COUNT: Int = 30
@@ -58,6 +60,21 @@ class PatternSafetyTest : FunSpec({
 
                 start.elapsedNow() shouldBeLessThan 1.seconds
             }
+        }
+
+        test("many property escapes at the hard source length compile quickly in bounded memory") {
+            val limits = patternLimits {
+                maximumSourceLength = PatternLimitsBuilder.HARD_SOURCE_LENGTH
+                maximumStates = PatternLimitsBuilder.HARD_STATES
+            }
+            val escapes = """\p{L}\P{Lu}\p{sc=Grek}"""
+            val count = PatternLimitsBuilder.HARD_SOURCE_LENGTH / escapes.length - 1
+            val start = TimeSource.Monotonic.markNow()
+
+            compiled("[${escapes.repeat(count)}]", limits).containsMatchIn("é") shouldBe true
+            compiled(escapes.repeat(count), limits).containsMatchIn("é") shouldBe false
+
+            start.elapsedNow() shouldBeLessThan SLOW_COMPILATION
         }
 
         test("the classic nested quantifier answers correctly") {
