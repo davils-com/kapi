@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.UnicodeData
-import com.davils.kapi.spec.schema.pattern.appendPoint
+import com.davils.kapi.runtime.core.pattern.UnicodeData
+import com.davils.kapi.runtime.core.pattern.appendPoint
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val MAXIMUM_LABEL_LENGTH: Int = 63
 private const val MAXIMUM_NAME_LENGTH: Int = 253

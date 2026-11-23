@@ -18,9 +18,9 @@
 
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.appendPoint
-import com.davils.kapi.spec.schema.pattern.charCount
-import com.davils.kapi.spec.schema.pattern.codePointAt
+import com.davils.kapi.runtime.core.pattern.appendPoint
+import com.davils.kapi.runtime.core.pattern.charCount
+import com.davils.kapi.runtime.core.pattern.codePointAt
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.uri.UriReference
 

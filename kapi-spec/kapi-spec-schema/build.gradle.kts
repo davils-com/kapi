@@ -28,5 +28,6 @@ kreate {
 
 dependencies {
     commonMainApi(project(":kapi-spec:kapi-spec-core"))
+    commonMainApi(project(":kapi-runtime:kapi-runtime-core"))
     commonMainApi(libs.kotlinx.serialization.json)
 }

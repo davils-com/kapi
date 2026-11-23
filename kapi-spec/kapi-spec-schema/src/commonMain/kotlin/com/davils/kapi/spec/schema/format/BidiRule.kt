@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.UnicodeData
+import com.davils.kapi.runtime.core.pattern.UnicodeData
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object BidiRule {
     private val rightToLeft: Set<String> = setOf("R", "AL", "AN")

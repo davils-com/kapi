@@ -26,3 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interface and sealed responses, mounted with `mount(...)`; mocks on the server runtime; senders and receivers of
   webhooks and callbacks. The `QUERY` method and `querystring` parameters of OpenAPI 3.2 are generated, and every
   text of a document is escaped where it is written, invisible characters included.
+
+### Changed
+
+- **The linear pattern engine** moved from `kapi-spec-schema` to `kapi-runtime-core` as
+  `com.davils.kapi.runtime.core.pattern`, so generated models validate `pattern` with it: `Pattern.compileOrThrow`
+  compiles a known-good pattern once and `Constraints.matches` checks a text against it, reporting
+  `kapi.runtime.constraint.pattern`.

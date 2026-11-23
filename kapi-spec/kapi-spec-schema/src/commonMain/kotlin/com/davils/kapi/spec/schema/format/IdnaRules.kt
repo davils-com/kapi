@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.CodePointSet
-import com.davils.kapi.spec.schema.pattern.UnicodeData
+import com.davils.kapi.runtime.core.pattern.CodePointSet
+import com.davils.kapi.runtime.core.pattern.UnicodeData
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val HEX_RADIX: Int = 16
 private const val PVALID_EXCEPTIONS: String = "00DF 03C2 06FD 06FE 0F0B 3007"

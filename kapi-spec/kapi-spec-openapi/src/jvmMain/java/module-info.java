@@ -23,6 +23,7 @@ module com.davils.kapi.spec.openapi {
     requires transitive kotlin.stdlib;
     requires transitive com.davils.kapi.spec.core;
     requires com.davils.kapi.spec.schema;
+    requires com.davils.kapi.runtime.core;
 
     exports com.davils.kapi.spec.openapi;
     exports com.davils.kapi.spec.openapi.model.component;

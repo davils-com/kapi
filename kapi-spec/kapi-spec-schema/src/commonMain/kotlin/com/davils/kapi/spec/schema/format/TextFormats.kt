@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.PatternReading
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val UUID_LENGTH: Int = 36
 private const val UUID_HYPHENS: String = "8 13 18 23"
@@ -43,7 +46,7 @@ internal object TextFormats {
     }
 
     fun regex(value: String): String? {
-        val issue = PatternReading.syntaxIssue(value)
-        return issue?.let { "the regular expression is invalid at offset ${it.offset}: ${it.detail}" }
+        val issue = Pattern.syntaxIssue(value)
+        return issue?.let { "the regular expression is invalid $it" }
     }
 }

@@ -16,9 +16,9 @@
 
 package com.davils.kapi.spec.schema.internal
 
-import com.davils.kapi.spec.schema.pattern.Pattern
-import com.davils.kapi.spec.schema.pattern.PatternCompilation
-import com.davils.kapi.spec.schema.pattern.patternLimits
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.pattern.PatternCompilation
+import com.davils.kapi.runtime.core.pattern.patternLimits
 
 internal object Patterns {
     fun compile(source: String, maximumSourceLength: Int, maximumInputLength: Int): ((CharSequence) -> Boolean)? {

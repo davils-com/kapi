@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.charCount
-import com.davils.kapi.spec.schema.pattern.codePointAt
+import com.davils.kapi.runtime.core.pattern.charCount
+import com.davils.kapi.runtime.core.pattern.codePointAt
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val DECIMAL_RADIX: Int = 10
 

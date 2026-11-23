@@ -16,12 +16,12 @@
 
 package com.davils.kapi.spec.openapi.validation
 
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.pattern.PatternCompilation
+import com.davils.kapi.runtime.core.pattern.PatternLimits
+import com.davils.kapi.runtime.core.pattern.patternLimits
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.schema.pattern.Pattern
-import com.davils.kapi.spec.schema.pattern.PatternCompilation
-import com.davils.kapi.spec.schema.pattern.PatternLimits
-import com.davils.kapi.spec.schema.pattern.patternLimits
 
 internal object PatternRules {
     private const val INVALID: String = "A pattern is no regular expression of ECMA-262"

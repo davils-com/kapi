@@ -27,8 +27,8 @@ module com.davils.kapi.spec.schema {
     requires transitive com.davils.kaml.core;
     requires transitive com.davils.kaml.document;
     requires transitive com.davils.kapi.spec.core;
+    requires transitive com.davils.kapi.runtime.core;
 
     exports com.davils.kapi.spec.schema;
     exports com.davils.kapi.spec.schema.format;
-    exports com.davils.kapi.spec.schema.pattern;
 }

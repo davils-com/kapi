@@ -6,25 +6,6 @@
 // - Show declarations: true
 
 // Library unique name: <com.davils:kapi-spec-schema>
-final enum class com.davils.kapi.spec.schema.pattern/PatternRefusal : kotlin/Enum<com.davils.kapi.spec.schema.pattern/PatternRefusal> { // com.davils.kapi.spec.schema.pattern/PatternRefusal|null[0]
-    enum entry Backreference // com.davils.kapi.spec.schema.pattern/PatternRefusal.Backreference|null[0]
-    enum entry Flags // com.davils.kapi.spec.schema.pattern/PatternRefusal.Flags|null[0]
-    enum entry Lookaround // com.davils.kapi.spec.schema.pattern/PatternRefusal.Lookaround|null[0]
-    enum entry Syntax // com.davils.kapi.spec.schema.pattern/PatternRefusal.Syntax|null[0]
-    enum entry TooDeep // com.davils.kapi.spec.schema.pattern/PatternRefusal.TooDeep|null[0]
-    enum entry TooLong // com.davils.kapi.spec.schema.pattern/PatternRefusal.TooLong|null[0]
-    enum entry TooManyStates // com.davils.kapi.spec.schema.pattern/PatternRefusal.TooManyStates|null[0]
-    enum entry UnsupportedProperty // com.davils.kapi.spec.schema.pattern/PatternRefusal.UnsupportedProperty|null[0]
-
-    final val entries // com.davils.kapi.spec.schema.pattern/PatternRefusal.entries|#static{}entries[0]
-        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.schema.pattern/PatternRefusal> // com.davils.kapi.spec.schema.pattern/PatternRefusal.entries.<get-entries>|<get-entries>#static(){}[0]
-    final val isValidSyntax // com.davils.kapi.spec.schema.pattern/PatternRefusal.isValidSyntax|{}isValidSyntax[0]
-        final fun <get-isValidSyntax>(): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/PatternRefusal.isValidSyntax.<get-isValidSyntax>|<get-isValidSyntax>(){}[0]
-
-    final fun valueOf(kotlin/String): com.davils.kapi.spec.schema.pattern/PatternRefusal // com.davils.kapi.spec.schema.pattern/PatternRefusal.valueOf|valueOf#static(kotlin.String){}[0]
-    final fun values(): kotlin/Array<com.davils.kapi.spec.schema.pattern/PatternRefusal> // com.davils.kapi.spec.schema.pattern/PatternRefusal.values|values#static(){}[0]
-}
-
 final enum class com.davils.kapi.spec.schema/Dialect : kotlin/Enum<com.davils.kapi.spec.schema/Dialect> { // com.davils.kapi.spec.schema/Dialect|null[0]
     enum entry Draft04 // com.davils.kapi.spec.schema/Dialect.Draft04|null[0]
     enum entry Draft06 // com.davils.kapi.spec.schema/Dialect.Draft06|null[0]
@@ -93,34 +74,6 @@ sealed interface com.davils.kapi.spec.schema.format/FormatCheck { // com.davils.
 
     final object Valid : com.davils.kapi.spec.schema.format/FormatCheck { // com.davils.kapi.spec.schema.format/FormatCheck.Valid|null[0]
         final fun toString(): kotlin/String // com.davils.kapi.spec.schema.format/FormatCheck.Valid.toString|toString(){}[0]
-    }
-}
-
-sealed interface com.davils.kapi.spec.schema.pattern/PatternCompilation { // com.davils.kapi.spec.schema.pattern/PatternCompilation|null[0]
-    final class Compiled : com.davils.kapi.spec.schema.pattern/PatternCompilation { // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled|null[0]
-        constructor <init>(com.davils.kapi.spec.schema.pattern/Pattern) // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.<init>|<init>(com.davils.kapi.spec.schema.pattern.Pattern){}[0]
-
-        final val pattern // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.pattern|{}pattern[0]
-            final fun <get-pattern>(): com.davils.kapi.spec.schema.pattern/Pattern // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.pattern.<get-pattern>|<get-pattern>(){}[0]
-
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.davils.kapi.spec.schema.pattern/PatternCompilation.Compiled.toString|toString(){}[0]
-    }
-
-    final class Refused : com.davils.kapi.spec.schema.pattern/PatternCompilation { // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused|null[0]
-        constructor <init>(com.davils.kapi.spec.schema.pattern/PatternRefusal, kotlin/Int, kotlin/String) // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.<init>|<init>(com.davils.kapi.spec.schema.pattern.PatternRefusal;kotlin.Int;kotlin.String){}[0]
-
-        final val message // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.message|{}message[0]
-            final fun <get-message>(): kotlin/String // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.message.<get-message>|<get-message>(){}[0]
-        final val offset // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.offset|{}offset[0]
-            final fun <get-offset>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.offset.<get-offset>|<get-offset>(){}[0]
-        final val reason // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.reason|{}reason[0]
-            final fun <get-reason>(): com.davils.kapi.spec.schema.pattern/PatternRefusal // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.reason.<get-reason>|<get-reason>(){}[0]
-
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.davils.kapi.spec.schema.pattern/PatternCompilation.Refused.toString|toString(){}[0]
     }
 }
 
@@ -201,78 +154,6 @@ sealed interface com.davils.kapi.spec.schema/YamlConversion { // com.davils.kapi
         final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.schema/YamlConversion.Refused.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.davils.kapi.spec.schema/YamlConversion.Refused.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.davils.kapi.spec.schema/YamlConversion.Refused.toString|toString(){}[0]
-    }
-}
-
-final class com.davils.kapi.spec.schema.pattern/Pattern { // com.davils.kapi.spec.schema.pattern/Pattern|null[0]
-    final val limits // com.davils.kapi.spec.schema.pattern/Pattern.limits|{}limits[0]
-        final fun <get-limits>(): com.davils.kapi.spec.schema.pattern/PatternLimits // com.davils.kapi.spec.schema.pattern/Pattern.limits.<get-limits>|<get-limits>(){}[0]
-    final val source // com.davils.kapi.spec.schema.pattern/Pattern.source|{}source[0]
-        final fun <get-source>(): kotlin/String // com.davils.kapi.spec.schema.pattern/Pattern.source.<get-source>|<get-source>(){}[0]
-
-    final fun containsMatchIn(kotlin/CharSequence): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/Pattern.containsMatchIn|containsMatchIn(kotlin.CharSequence){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/Pattern.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.schema.pattern/Pattern.hashCode|hashCode(){}[0]
-    final fun matchesEntirely(kotlin/CharSequence): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/Pattern.matchesEntirely|matchesEntirely(kotlin.CharSequence){}[0]
-    final fun toString(): kotlin/String // com.davils.kapi.spec.schema.pattern/Pattern.toString|toString(){}[0]
-
-    final object Companion { // com.davils.kapi.spec.schema.pattern/Pattern.Companion|null[0]
-        final fun compile(kotlin/String, com.davils.kapi.spec.schema.pattern/PatternLimits = ...): com.davils.kapi.spec.schema.pattern/PatternCompilation // com.davils.kapi.spec.schema.pattern/Pattern.Companion.compile|compile(kotlin.String;com.davils.kapi.spec.schema.pattern.PatternLimits){}[0]
-    }
-}
-
-final class com.davils.kapi.spec.schema.pattern/PatternLimits : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.schema.pattern/PatternLimits|null[0]
-    final val maximumInputLength // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumInputLength|{}maximumInputLength[0]
-        final fun <get-maximumInputLength>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumInputLength.<get-maximumInputLength>|<get-maximumInputLength>(){}[0]
-    final val maximumNesting // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumNesting|{}maximumNesting[0]
-        final fun <get-maximumNesting>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumNesting.<get-maximumNesting>|<get-maximumNesting>(){}[0]
-    final val maximumSourceLength // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumSourceLength|{}maximumSourceLength[0]
-        final fun <get-maximumSourceLength>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumSourceLength.<get-maximumSourceLength>|<get-maximumSourceLength>(){}[0]
-    final val maximumStates // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumStates|{}maximumStates[0]
-        final fun <get-maximumStates>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimits.maximumStates.<get-maximumStates>|<get-maximumStates>(){}[0]
-
-    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.schema.pattern/PatternLimits.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.schema.pattern/PatternLimits.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimits.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.davils.kapi.spec.schema.pattern/PatternLimits.toString|toString(){}[0]
-
-    final object Companion { // com.davils.kapi.spec.schema.pattern/PatternLimits.Companion|null[0]
-        final val Default // com.davils.kapi.spec.schema.pattern/PatternLimits.Companion.Default|{}Default[0]
-            final fun <get-Default>(): com.davils.kapi.spec.schema.pattern/PatternLimits // com.davils.kapi.spec.schema.pattern/PatternLimits.Companion.Default.<get-Default>|<get-Default>(){}[0]
-    }
-}
-
-final class com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.spec.schema.pattern/PatternLimits> { // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder|null[0]
-    final var maximumInputLength // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumInputLength|{}maximumInputLength[0]
-        final fun <get-maximumInputLength>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumInputLength.<get-maximumInputLength>|<get-maximumInputLength>(){}[0]
-        final fun <set-maximumInputLength>(kotlin/Int) // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumInputLength.<set-maximumInputLength>|<set-maximumInputLength>(kotlin.Int){}[0]
-    final var maximumNesting // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumNesting|{}maximumNesting[0]
-        final fun <get-maximumNesting>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumNesting.<get-maximumNesting>|<get-maximumNesting>(){}[0]
-        final fun <set-maximumNesting>(kotlin/Int) // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumNesting.<set-maximumNesting>|<set-maximumNesting>(kotlin.Int){}[0]
-    final var maximumSourceLength // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumSourceLength|{}maximumSourceLength[0]
-        final fun <get-maximumSourceLength>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumSourceLength.<get-maximumSourceLength>|<get-maximumSourceLength>(){}[0]
-        final fun <set-maximumSourceLength>(kotlin/Int) // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumSourceLength.<set-maximumSourceLength>|<set-maximumSourceLength>(kotlin.Int){}[0]
-    final var maximumStates // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumStates|{}maximumStates[0]
-        final fun <get-maximumStates>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumStates.<get-maximumStates>|<get-maximumStates>(){}[0]
-        final fun <set-maximumStates>(kotlin/Int) // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.maximumStates.<set-maximumStates>|<set-maximumStates>(kotlin.Int){}[0]
-
-    final object Companion { // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion|null[0]
-        final const val DEFAULT_INPUT_LENGTH // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_INPUT_LENGTH|{}DEFAULT_INPUT_LENGTH[0]
-            final fun <get-DEFAULT_INPUT_LENGTH>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_INPUT_LENGTH.<get-DEFAULT_INPUT_LENGTH>|<get-DEFAULT_INPUT_LENGTH>(){}[0]
-        final const val DEFAULT_NESTING // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_NESTING|{}DEFAULT_NESTING[0]
-            final fun <get-DEFAULT_NESTING>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_NESTING.<get-DEFAULT_NESTING>|<get-DEFAULT_NESTING>(){}[0]
-        final const val DEFAULT_SOURCE_LENGTH // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_SOURCE_LENGTH|{}DEFAULT_SOURCE_LENGTH[0]
-            final fun <get-DEFAULT_SOURCE_LENGTH>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_SOURCE_LENGTH.<get-DEFAULT_SOURCE_LENGTH>|<get-DEFAULT_SOURCE_LENGTH>(){}[0]
-        final const val DEFAULT_STATES // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_STATES|{}DEFAULT_STATES[0]
-            final fun <get-DEFAULT_STATES>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.DEFAULT_STATES.<get-DEFAULT_STATES>|<get-DEFAULT_STATES>(){}[0]
-        final const val HARD_INPUT_LENGTH // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_INPUT_LENGTH|{}HARD_INPUT_LENGTH[0]
-            final fun <get-HARD_INPUT_LENGTH>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_INPUT_LENGTH.<get-HARD_INPUT_LENGTH>|<get-HARD_INPUT_LENGTH>(){}[0]
-        final const val HARD_NESTING // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_NESTING|{}HARD_NESTING[0]
-            final fun <get-HARD_NESTING>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_NESTING.<get-HARD_NESTING>|<get-HARD_NESTING>(){}[0]
-        final const val HARD_SOURCE_LENGTH // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_SOURCE_LENGTH|{}HARD_SOURCE_LENGTH[0]
-            final fun <get-HARD_SOURCE_LENGTH>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_SOURCE_LENGTH.<get-HARD_SOURCE_LENGTH>|<get-HARD_SOURCE_LENGTH>(){}[0]
-        final const val HARD_STATES // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_STATES|{}HARD_STATES[0]
-            final fun <get-HARD_STATES>(): kotlin/Int // com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder.Companion.HARD_STATES.<get-HARD_STATES>|<get-HARD_STATES>(){}[0]
     }
 }
 
@@ -505,5 +386,3 @@ final object com.davils.kapi.spec.schema/JsonSchema { // com.davils.kapi.spec.sc
     final fun compiler(kotlin/Function1<com.davils.kapi.spec.schema/CompilerBuilder, kotlin/Unit> = ...): com.davils.kapi.spec.schema/Compiler // com.davils.kapi.spec.schema/JsonSchema.compiler|compiler(kotlin.Function1<com.davils.kapi.spec.schema.CompilerBuilder,kotlin.Unit>){}[0]
     final fun json(com.davils.kaml.core.node/YamlNode, kotlin/Int = ..., kotlin/Int = ...): com.davils.kapi.spec.schema/YamlConversion // com.davils.kapi.spec.schema/JsonSchema.json|json(com.davils.kaml.core.node.YamlNode;kotlin.Int;kotlin.Int){}[0]
 }
-
-final fun com.davils.kapi.spec.schema.pattern/patternLimits(kotlin/Function1<com.davils.kapi.spec.schema.pattern/PatternLimitsBuilder, kotlin/Unit>): com.davils.kapi.spec.schema.pattern/PatternLimits // com.davils.kapi.spec.schema.pattern/patternLimits|patternLimits(kotlin.Function1<com.davils.kapi.spec.schema.pattern.PatternLimitsBuilder,kotlin.Unit>){}[0]

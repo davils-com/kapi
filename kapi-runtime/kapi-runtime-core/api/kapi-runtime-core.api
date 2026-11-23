@@ -1115,6 +1115,132 @@ public final class com/davils/kapi/runtime/core/parameter/QueryString {
 	public final fun read (Ljava/lang/String;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Lcom/davils/kapi/runtime/core/parameter/ParameterReading;
 }
 
+public final class com/davils/kapi/runtime/core/pattern/CodePointSet {
+	public final fun contains (I)Z
+}
+
+public final class com/davils/kapi/runtime/core/pattern/CodePointSet$Ranges {
+	public fun <init> ()V
+	public final fun add (II)V
+	public final fun toSet ()Lcom/davils/kapi/runtime/core/pattern/CodePointSet;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/CodePointSetKt {
+	public static final field LAST_CODE_POINT I
+}
+
+public final class com/davils/kapi/runtime/core/pattern/CodePointsKt {
+	public static final fun appendPoint (Ljava/lang/StringBuilder;I)Ljava/lang/StringBuilder;
+	public static final fun charCount (I)I
+	public static final fun codePointAt (Ljava/lang/CharSequence;I)I
+}
+
+public final class com/davils/kapi/runtime/core/pattern/Pattern {
+	public static final field Companion Lcom/davils/kapi/runtime/core/pattern/Pattern$Companion;
+	public final fun containsMatchIn (Ljava/lang/CharSequence;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLimits ()Lcom/davils/kapi/runtime/core/pattern/PatternLimits;
+	public final fun getSource ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun matchesEntirely (Ljava/lang/CharSequence;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/Pattern$Companion {
+	public final fun compile (Ljava/lang/String;Lcom/davils/kapi/runtime/core/pattern/PatternLimits;)Lcom/davils/kapi/runtime/core/pattern/PatternCompilation;
+	public static synthetic fun compile$default (Lcom/davils/kapi/runtime/core/pattern/Pattern$Companion;Ljava/lang/String;Lcom/davils/kapi/runtime/core/pattern/PatternLimits;ILjava/lang/Object;)Lcom/davils/kapi/runtime/core/pattern/PatternCompilation;
+	public final fun compileOrThrow (Ljava/lang/String;Lcom/davils/kapi/runtime/core/pattern/PatternLimits;)Lcom/davils/kapi/runtime/core/pattern/Pattern;
+	public static synthetic fun compileOrThrow$default (Lcom/davils/kapi/runtime/core/pattern/Pattern$Companion;Ljava/lang/String;Lcom/davils/kapi/runtime/core/pattern/PatternLimits;ILjava/lang/Object;)Lcom/davils/kapi/runtime/core/pattern/Pattern;
+	public final fun syntaxIssue (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/core/pattern/PatternCompilation {
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternCompilation$Compiled : com/davils/kapi/runtime/core/pattern/PatternCompilation {
+	public fun <init> (Lcom/davils/kapi/runtime/core/pattern/Pattern;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPattern ()Lcom/davils/kapi/runtime/core/pattern/Pattern;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternCompilation$Refused : com/davils/kapi/runtime/core/pattern/PatternCompilation {
+	public fun <init> (Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;ILjava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getOffset ()I
+	public final fun getReason ()Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternLimits : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/core/pattern/PatternLimits$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaximumInputLength ()I
+	public final fun getMaximumNesting ()I
+	public final fun getMaximumSourceLength ()I
+	public final fun getMaximumStates ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternLimits$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/runtime/core/pattern/PatternLimits;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternLimitsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/runtime/core/pattern/PatternLimitsBuilder$Companion;
+	public static final field DEFAULT_INPUT_LENGTH I
+	public static final field DEFAULT_NESTING I
+	public static final field DEFAULT_SOURCE_LENGTH I
+	public static final field DEFAULT_STATES I
+	public static final field HARD_INPUT_LENGTH I
+	public static final field HARD_NESTING I
+	public static final field HARD_SOURCE_LENGTH I
+	public static final field HARD_STATES I
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getMaximumInputLength ()I
+	public final fun getMaximumNesting ()I
+	public final fun getMaximumSourceLength ()I
+	public final fun getMaximumStates ()I
+	public final fun setMaximumInputLength (I)V
+	public final fun setMaximumNesting (I)V
+	public final fun setMaximumSourceLength (I)V
+	public final fun setMaximumStates (I)V
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternLimitsBuilder$Companion {
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternLimitsDslKt {
+	public static final fun patternLimits (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/core/pattern/PatternLimits;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/PatternRefusal : java/lang/Enum {
+	public static final field Backreference Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field Flags Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field Lookaround Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field Syntax Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field TooDeep Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field TooLong Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field TooManyStates Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static final field UnsupportedProperty Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isValidSyntax ()Z
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+	public static fun values ()[Lcom/davils/kapi/runtime/core/pattern/PatternRefusal;
+}
+
+public final class com/davils/kapi/runtime/core/pattern/UnicodeData {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/core/pattern/UnicodeData;
+	public final fun bidiClassOf (I)Ljava/lang/String;
+	public final fun categoryOf (I)Ljava/lang/String;
+	public final fun scriptOf (I)Ljava/lang/String;
+}
+
 public final class com/davils/kapi/runtime/core/problem/Problem {
 	public static final field BLANK_TYPE Ljava/lang/String;
 	public static final field Companion Lcom/davils/kapi/runtime/core/problem/Problem$Companion;
@@ -1596,6 +1722,7 @@ public final class com/davils/kapi/runtime/core/validation/Constraints {
 	public final fun isMultipleOf (Lcom/davils/kapi/runtime/core/validation/Decimal;Lcom/davils/kapi/runtime/core/validation/Decimal;)Z
 	public final fun isUnique (Ljava/util/Collection;)Z
 	public final fun length (Ljava/lang/String;)I
+	public final fun matches (Ljava/lang/String;Lcom/davils/kapi/runtime/core/pattern/Pattern;)Z
 }
 
 public final class com/davils/kapi/runtime/core/validation/Decimal : java/lang/Comparable {
