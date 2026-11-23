@@ -35,6 +35,10 @@ private const val LAUNCH: String = "kapi-launch"
 
 private const val COMMON: String = "out/common"
 
+private const val JVM: String = "out/jvm"
+
+private const val MODELS: String = "Models"
+
 private const val LINE: String = "\n"
 
 private const val PETSTORE: String = """openapi: 3.1.0
@@ -99,7 +103,12 @@ components:
         text: {type: string}
 """
 
-private fun chatIn(base: Path, document: String = CHAT, overlays: List<Path> = emptyList()): LaunchRequest {
+private fun chatIn(
+    base: Path,
+    document: String = CHAT,
+    overlays: List<Path> = emptyList(),
+    artifacts: Set<String> = setOf(MODELS, "Client", "Server"),
+): LaunchRequest {
     val request = requestIn(base, document = document)
     return LaunchRequest(
         specification = request.specification,
@@ -113,7 +122,7 @@ private fun chatIn(base: Path, document: String = CHAT, overlays: List<Path> = e
         packageName = "com.example.chat",
         apiName = "Chat",
         typePrefix = "",
-        artifacts = setOf("Models", "Client", "Server"),
+        artifacts = artifacts,
         visibility = "Public",
         generatorVersion = "test",
         acknowledgements = emptyMap(),
@@ -124,7 +133,7 @@ private fun chatIn(base: Path, document: String = CHAT, overlays: List<Path> = e
 private fun requestIn(
     base: Path,
     document: String = PETSTORE,
-    artifacts: Set<String> = setOf("Models", "Client", "Server"),
+    artifacts: Set<String> = setOf(MODELS, "Client", "Server"),
     acknowledgements: Map<String, String> = emptyMap(),
     visibility: String = "Public",
     folder: String = "api",
@@ -138,7 +147,7 @@ private fun requestIn(
         root = root,
         overlays = emptyList(),
         commonKotlin = base.resolve(COMMON),
-        jvmKotlin = base.resolve("out/jvm"),
+        jvmKotlin = base.resolve(JVM),
         resources = base.resolve("out/resources"),
         report = base.resolve("report/report.json"),
         sarif = base.resolve("report/report.sarif"),
@@ -164,7 +173,7 @@ class LauncherTest : FunSpec({
 
             verdict.isAccepted shouldBe true
             Files.walk(base.resolve(COMMON)).anyMatch { path -> path.toString().endsWith("Pet.kt") } shouldBe true
-            Files.walk(base.resolve("out/jvm")).anyMatch { path -> path.toString().contains("server") } shouldBe true
+            Files.walk(base.resolve(JVM)).anyMatch { path -> path.toString().contains("server") } shouldBe true
             base.resolve("out/resources/META-INF/kapi/openapi/petstore.provenance.json").exists() shouldBe true
             request.report.readText() shouldContain """"outcome": "Generated""""
             request.sarif.readText() shouldContain """"version": "2.1.0""""
@@ -214,7 +223,7 @@ class LauncherTest : FunSpec({
 
             verdict.failures.shouldBeEmpty()
             Files.walk(base.resolve(COMMON)).anyMatch { path -> path.toString().endsWith("Say.kt") } shouldBe true
-            base.resolve("out/jvm").exists() shouldBe true
+            base.resolve(JVM).exists() shouldBe true
             request.toString() shouldContain "AsyncApi"
         }
 
@@ -227,6 +236,8 @@ class LauncherTest : FunSpec({
             Launcher.run(chatIn(base, document = "asyncapi: [")).isAccepted shouldBe false
             val unknown = CHAT.replace(oldValue = "  room:", newValue = "  room:\n    x: 1")
             Launcher.run(chatIn(base, document = unknown)).isAccepted shouldBe false
+            val mocks = Launcher.run(chatIn(base, artifacts = setOf(MODELS, "Mocks")))
+            mocks.failures.joinToString() shouldContain "which AsyncAPI does not describe"
         }
     }
 
@@ -250,7 +261,8 @@ class LauncherTest : FunSpec({
             Launcher.lint(request).isAccepted shouldBe true
             base.resolve(COMMON).exists() shouldBe false
             val unused = requestIn(base, acknowledgements = mapOf("openapi.x" to "known"))
-            Launcher.lint(unused).failures shouldContain "The acknowledgement of openapi.x matches no warning and has to go"
+            val failures = Launcher.lint(unused).failures
+            failures shouldContain "The acknowledgement of openapi.x matches no warning and has to go"
         }
     }
 
