@@ -18,17 +18,22 @@ package com.davils.kapi.spec.openapi
 
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.read.ReadSession
+import com.davils.kapi.spec.openapi.structure.OfficialSchemas
 
 /**
  * Reads OpenAPI documents with one [configuration]; built by [OpenApi.reader].
  *
- * A reader holds no state between readings and is safe to share between threads; each reading loads its documents
- * through the resolver of the configuration, from the coroutine of the caller.
+ * A reader is safe to share between threads; each reading loads its documents through the resolver of the
+ * configuration, from the coroutine of the caller. The only state a reader keeps between readings are the official
+ * JSON Schemas of OpenAPI that [StructureCheck.ReaderAndOfficialSchema] validates against: each is compiled once, on
+ * the first reading of its version family, within the limits of the configuration, and shared by every later reading.
  *
  * @property configuration the configuration of every reading.
  * @since 1.0.0
  */
 public class Reader internal constructor(public val configuration: ReaderConfiguration) {
+    private val schemas: OfficialSchemas = OfficialSchemas(configuration.limits)
+
     /**
      * Reads [source].
      *
@@ -47,7 +52,7 @@ public class Reader internal constructor(public val configuration: ReaderConfigu
      * @since 1.0.0
      */
     public suspend fun read(source: Source, overlays: List<Source>): Reading =
-        ReadSession(configuration, source, overlays).run()
+        ReadSession(configuration = configuration, schemas = schemas, source = source, overlays = overlays).run()
 
     override fun toString(): String = "Reader($configuration)"
 }
