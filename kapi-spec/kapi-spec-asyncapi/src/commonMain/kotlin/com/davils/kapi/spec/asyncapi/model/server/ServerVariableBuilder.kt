@@ -38,6 +38,10 @@ public class ServerVariableBuilder internal constructor() : ElementBuilder<Serve
      * @since 1.0.0
      */
     public var default: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -45,6 +49,10 @@ public class ServerVariableBuilder internal constructor() : ElementBuilder<Serve
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val examples: MutableList<String> = mutableListOf()
 

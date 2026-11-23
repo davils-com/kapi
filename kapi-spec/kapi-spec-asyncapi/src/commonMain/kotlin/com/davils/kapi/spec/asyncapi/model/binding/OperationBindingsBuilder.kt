@@ -37,6 +37,10 @@ public class OperationBindingsBuilder internal constructor() : ElementBuilder<Op
      * @since 1.0.0
      */
     public var hasWebSocket: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val protocols: MutableMap<String, Value> = linkedMapOf()
 

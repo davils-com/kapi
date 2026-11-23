@@ -44,6 +44,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.Buffer
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.readByteArray
+import kotlinx.serialization.json.JsonElement
 import kotlin.time.Duration
 
 private const val TEXT: String = "text"
@@ -98,6 +99,10 @@ internal class ChannelEngine<S, R : Any>(
 
     suspend fun send(message: S): Boolean {
         val encoded = contained { codec.encode(spec.sendSerializer, message) }.getOrNull() ?: return false
+        return sent(encoded)
+    }
+
+    private suspend fun sent(encoded: ByteString): Boolean {
         val bytes = encoded.toByteArray()
         val frame = when (isText) {
             true -> Frame.Text(fin = true, data = bytes)
@@ -107,10 +112,11 @@ internal class ChannelEngine<S, R : Any>(
     }
 
     suspend fun request(message: S, timeout: Duration): ChannelReply<R> {
-        val correlation = spec.correlation
-        val id = correlation?.let { found -> contained { found.sent(message) }.getOrNull() }
+        val encoded = contained { codec.encode(spec.sendSerializer, message) }.getOrNull()
+        val id = sentId(message, encoded)
         val waiter = id?.let { found -> registered(found) } ?: return ChannelReply.Refused
-        if (!send(message)) waiter.complete(null)
+        val isSent = encoded != null && sent(encoded)
+        if (!isSent) waiter.complete(null)
         val waited = withTimeoutOrNull(timeout) { Result.success(waiter.await()) }
         lock.withLock { pending.remove(id) }
         val reply = waited?.getOrNull()?.let { value -> ChannelReply.Received(value) }
@@ -163,7 +169,7 @@ internal class ChannelEngine<S, R : Any>(
     private suspend fun delivered(bytes: ByteArray): ChannelClose? =
         when (val decoding = codec.decode(spec.receiveDeserializer, ByteString(bytes))) {
             is Decoding.Decoded -> {
-                routed(decoding.value)
+                routed(decoding.value, ByteString(bytes))
                 null
             }
 
@@ -172,9 +178,30 @@ internal class ChannelEngine<S, R : Any>(
             }
         }
 
-    private suspend fun routed(message: R) {
-        val correlation = spec.correlation
-        val id = correlation?.let { found -> contained { found.received(message) }.getOrNull() }
+    private fun sentId(message: S, encoded: ByteString?): String? {
+        val correlation = spec.correlation ?: return null
+        val sentJson = correlation.json?.sent
+        val found = contained { correlation.sent(message) }.getOrNull()
+        val typed = found.takeIf { sentJson == null }
+        return typed ?: encoded?.let { bytes -> jsonId(bytes, sentJson) }
+    }
+
+    private fun receivedId(message: R, bytes: ByteString): String? {
+        val correlation = spec.correlation ?: return null
+        val receivedJson = correlation.json?.received
+        val found = contained { correlation.received(message) }.getOrNull()
+        val typed = found.takeIf { receivedJson == null }
+        return typed ?: jsonId(bytes, receivedJson)
+    }
+
+    private fun jsonId(bytes: ByteString, id: ((JsonElement) -> String?)?): String? {
+        val decoded = (codec.decode(JsonElement.serializer(), bytes) as? Decoding.Decoded)?.value
+        val element = decoded?.takeIf { id != null } ?: return null
+        return contained { id?.invoke(element) }.getOrNull()
+    }
+
+    private suspend fun routed(message: R, bytes: ByteString) {
+        val id = receivedId(message, bytes)
         val waiter = id?.let { found -> lock.withLock { pending.remove(found) } }
         if (waiter == null) received.send(message)
         waiter?.complete(message)

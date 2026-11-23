@@ -133,6 +133,25 @@ final enum class com.davils.kapi.runtime.core.parameter/ParameterStyle : kotlin/
     final fun values(): kotlin/Array<com.davils.kapi.runtime.core.parameter/ParameterStyle> // com.davils.kapi.runtime.core.parameter/ParameterStyle.values|values#static(){}[0]
 }
 
+final enum class com.davils.kapi.runtime.core.pattern/PatternRefusal : kotlin/Enum<com.davils.kapi.runtime.core.pattern/PatternRefusal> { // com.davils.kapi.runtime.core.pattern/PatternRefusal|null[0]
+    enum entry Backreference // com.davils.kapi.runtime.core.pattern/PatternRefusal.Backreference|null[0]
+    enum entry Flags // com.davils.kapi.runtime.core.pattern/PatternRefusal.Flags|null[0]
+    enum entry Lookaround // com.davils.kapi.runtime.core.pattern/PatternRefusal.Lookaround|null[0]
+    enum entry Syntax // com.davils.kapi.runtime.core.pattern/PatternRefusal.Syntax|null[0]
+    enum entry TooDeep // com.davils.kapi.runtime.core.pattern/PatternRefusal.TooDeep|null[0]
+    enum entry TooLong // com.davils.kapi.runtime.core.pattern/PatternRefusal.TooLong|null[0]
+    enum entry TooManyStates // com.davils.kapi.runtime.core.pattern/PatternRefusal.TooManyStates|null[0]
+    enum entry UnsupportedProperty // com.davils.kapi.runtime.core.pattern/PatternRefusal.UnsupportedProperty|null[0]
+
+    final val entries // com.davils.kapi.runtime.core.pattern/PatternRefusal.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.core.pattern/PatternRefusal> // com.davils.kapi.runtime.core.pattern/PatternRefusal.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val isValidSyntax // com.davils.kapi.runtime.core.pattern/PatternRefusal.isValidSyntax|{}isValidSyntax[0]
+        final fun <get-isValidSyntax>(): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/PatternRefusal.isValidSyntax.<get-isValidSyntax>|<get-isValidSyntax>(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.core.pattern/PatternRefusal // com.davils.kapi.runtime.core.pattern/PatternRefusal.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.core.pattern/PatternRefusal> // com.davils.kapi.runtime.core.pattern/PatternRefusal.values|values#static(){}[0]
+}
+
 final enum class com.davils.kapi.runtime.core.ratelimit/QuotaUnit : kotlin/Enum<com.davils.kapi.runtime.core.ratelimit/QuotaUnit> { // com.davils.kapi.runtime.core.ratelimit/QuotaUnit|null[0]
     enum entry ConcurrentRequests // com.davils.kapi.runtime.core.ratelimit/QuotaUnit.ConcurrentRequests|null[0]
     enum entry ContentBytes // com.davils.kapi.runtime.core.ratelimit/QuotaUnit.ContentBytes|null[0]
@@ -453,6 +472,34 @@ sealed interface com.davils.kapi.runtime.core.parameter/ParameterValue { // com.
         final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.parameter/ParameterValue.Text.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.parameter/ParameterValue.Text.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.davils.kapi.runtime.core.parameter/ParameterValue.Text.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.core.pattern/PatternCompilation { // com.davils.kapi.runtime.core.pattern/PatternCompilation|null[0]
+    final class Compiled : com.davils.kapi.runtime.core.pattern/PatternCompilation { // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.pattern/Pattern) // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.<init>|<init>(com.davils.kapi.runtime.core.pattern.Pattern){}[0]
+
+        final val pattern // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.pattern|{}pattern[0]
+            final fun <get-pattern>(): com.davils.kapi.runtime.core.pattern/Pattern // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.pattern.<get-pattern>|<get-pattern>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.core.pattern/PatternCompilation.Compiled.toString|toString(){}[0]
+    }
+
+    final class Refused : com.davils.kapi.runtime.core.pattern/PatternCompilation { // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.pattern/PatternRefusal, kotlin/Int, kotlin/String) // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.<init>|<init>(com.davils.kapi.runtime.core.pattern.PatternRefusal;kotlin.Int;kotlin.String){}[0]
+
+        final val message // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.message|{}message[0]
+            final fun <get-message>(): kotlin/String // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.message.<get-message>|<get-message>(){}[0]
+        final val offset // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.offset|{}offset[0]
+            final fun <get-offset>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.offset.<get-offset>|<get-offset>(){}[0]
+        final val reason // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.reason|{}reason[0]
+            final fun <get-reason>(): com.davils.kapi.runtime.core.pattern/PatternRefusal // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.core.pattern/PatternCompilation.Refused.toString|toString(){}[0]
     }
 }
 
@@ -955,6 +1002,7 @@ final class com.davils.kapi.runtime.core.codec/Codecs : com.davils.kore.core.val
         final fun <get-maxDepth>(): kotlin/Int // com.davils.kapi.runtime.core.codec/Codecs.maxDepth.<get-maxDepth>|<get-maxDepth>(){}[0]
 
     final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.core.codec/Codecs.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun <#A1: kotlin/Any?> decode(kotlinx.serialization/DeserializationStrategy<#A1>, kotlinx.io.bytestring/ByteString, com.davils.kapi.runtime.core.negotiation/MediaType): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.core.codec/Codecs.decode|decode(kotlinx.serialization.DeserializationStrategy<0:0>;kotlinx.io.bytestring.ByteString;com.davils.kapi.runtime.core.negotiation.MediaType){0§<kotlin.Any?>}[0]
     final fun <#A1: kotlin/Any?> decode(kotlinx.serialization/DeserializationStrategy<#A1>, kotlinx.io.bytestring/ByteString, kotlin/String?): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.core.codec/Codecs.decode|decode(kotlinx.serialization.DeserializationStrategy<0:0>;kotlinx.io.bytestring.ByteString;kotlin.String?){0§<kotlin.Any?>}[0]
     final fun codecFor(com.davils.kapi.runtime.core.negotiation/MediaType): com.davils.kapi.runtime.core.codec/Codec? // com.davils.kapi.runtime.core.codec/Codecs.codecFor|codecFor(com.davils.kapi.runtime.core.negotiation.MediaType){}[0]
     final fun codecFor(kotlin/String?): com.davils.kapi.runtime.core.codec/Codec? // com.davils.kapi.runtime.core.codec/Codecs.codecFor|codecFor(kotlin.String?){}[0]
@@ -1351,6 +1399,91 @@ final class com.davils.kapi.runtime.core.parameter/ParameterFormat { // com.davi
     final fun toString(): kotlin/String // com.davils.kapi.runtime.core.parameter/ParameterFormat.toString|toString(){}[0]
 }
 
+final class com.davils.kapi.runtime.core.pattern/CodePointSet { // com.davils.kapi.runtime.core.pattern/CodePointSet|null[0]
+    final fun contains(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/CodePointSet.contains|contains(kotlin.Int){}[0]
+
+    final class Ranges { // com.davils.kapi.runtime.core.pattern/CodePointSet.Ranges|null[0]
+        constructor <init>() // com.davils.kapi.runtime.core.pattern/CodePointSet.Ranges.<init>|<init>(){}[0]
+
+        final fun add(kotlin/Int, kotlin/Int) // com.davils.kapi.runtime.core.pattern/CodePointSet.Ranges.add|add(kotlin.Int;kotlin.Int){}[0]
+        final fun toSet(): com.davils.kapi.runtime.core.pattern/CodePointSet // com.davils.kapi.runtime.core.pattern/CodePointSet.Ranges.toSet|toSet(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.core.pattern/Pattern { // com.davils.kapi.runtime.core.pattern/Pattern|null[0]
+    final val limits // com.davils.kapi.runtime.core.pattern/Pattern.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kapi.runtime.core.pattern/PatternLimits // com.davils.kapi.runtime.core.pattern/Pattern.limits.<get-limits>|<get-limits>(){}[0]
+    final val source // com.davils.kapi.runtime.core.pattern/Pattern.source|{}source[0]
+        final fun <get-source>(): kotlin/String // com.davils.kapi.runtime.core.pattern/Pattern.source.<get-source>|<get-source>(){}[0]
+
+    final fun containsMatchIn(kotlin/CharSequence): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/Pattern.containsMatchIn|containsMatchIn(kotlin.CharSequence){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/Pattern.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.pattern/Pattern.hashCode|hashCode(){}[0]
+    final fun matchesEntirely(kotlin/CharSequence): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/Pattern.matchesEntirely|matchesEntirely(kotlin.CharSequence){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.core.pattern/Pattern.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.core.pattern/Pattern.Companion|null[0]
+        final fun compile(kotlin/String, com.davils.kapi.runtime.core.pattern/PatternLimits = ...): com.davils.kapi.runtime.core.pattern/PatternCompilation // com.davils.kapi.runtime.core.pattern/Pattern.Companion.compile|compile(kotlin.String;com.davils.kapi.runtime.core.pattern.PatternLimits){}[0]
+        final fun compileOrThrow(kotlin/String, com.davils.kapi.runtime.core.pattern/PatternLimits = ...): com.davils.kapi.runtime.core.pattern/Pattern // com.davils.kapi.runtime.core.pattern/Pattern.Companion.compileOrThrow|compileOrThrow(kotlin.String;com.davils.kapi.runtime.core.pattern.PatternLimits){}[0]
+        final fun syntaxIssue(kotlin/String): kotlin/String? // com.davils.kapi.runtime.core.pattern/Pattern.Companion.syntaxIssue|syntaxIssue(kotlin.String){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.core.pattern/PatternLimits : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.core.pattern/PatternLimits|null[0]
+    final val maximumInputLength // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumInputLength|{}maximumInputLength[0]
+        final fun <get-maximumInputLength>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumInputLength.<get-maximumInputLength>|<get-maximumInputLength>(){}[0]
+    final val maximumNesting // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumNesting|{}maximumNesting[0]
+        final fun <get-maximumNesting>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumNesting.<get-maximumNesting>|<get-maximumNesting>(){}[0]
+    final val maximumSourceLength // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumSourceLength|{}maximumSourceLength[0]
+        final fun <get-maximumSourceLength>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumSourceLength.<get-maximumSourceLength>|<get-maximumSourceLength>(){}[0]
+    final val maximumStates // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumStates|{}maximumStates[0]
+        final fun <get-maximumStates>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimits.maximumStates.<get-maximumStates>|<get-maximumStates>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.core.pattern/PatternLimits.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/PatternLimits.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimits.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.core.pattern/PatternLimits.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.core.pattern/PatternLimits.Companion|null[0]
+        final val Default // com.davils.kapi.runtime.core.pattern/PatternLimits.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.runtime.core.pattern/PatternLimits // com.davils.kapi.runtime.core.pattern/PatternLimits.Companion.Default.<get-Default>|<get-Default>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.core.pattern/PatternLimits> { // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder|null[0]
+    final var maximumInputLength // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumInputLength|{}maximumInputLength[0]
+        final fun <get-maximumInputLength>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumInputLength.<get-maximumInputLength>|<get-maximumInputLength>(){}[0]
+        final fun <set-maximumInputLength>(kotlin/Int) // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumInputLength.<set-maximumInputLength>|<set-maximumInputLength>(kotlin.Int){}[0]
+    final var maximumNesting // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumNesting|{}maximumNesting[0]
+        final fun <get-maximumNesting>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumNesting.<get-maximumNesting>|<get-maximumNesting>(){}[0]
+        final fun <set-maximumNesting>(kotlin/Int) // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumNesting.<set-maximumNesting>|<set-maximumNesting>(kotlin.Int){}[0]
+    final var maximumSourceLength // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumSourceLength|{}maximumSourceLength[0]
+        final fun <get-maximumSourceLength>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumSourceLength.<get-maximumSourceLength>|<get-maximumSourceLength>(){}[0]
+        final fun <set-maximumSourceLength>(kotlin/Int) // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumSourceLength.<set-maximumSourceLength>|<set-maximumSourceLength>(kotlin.Int){}[0]
+    final var maximumStates // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumStates|{}maximumStates[0]
+        final fun <get-maximumStates>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumStates.<get-maximumStates>|<get-maximumStates>(){}[0]
+        final fun <set-maximumStates>(kotlin/Int) // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.maximumStates.<set-maximumStates>|<set-maximumStates>(kotlin.Int){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion|null[0]
+        final const val DEFAULT_INPUT_LENGTH // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_INPUT_LENGTH|{}DEFAULT_INPUT_LENGTH[0]
+            final fun <get-DEFAULT_INPUT_LENGTH>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_INPUT_LENGTH.<get-DEFAULT_INPUT_LENGTH>|<get-DEFAULT_INPUT_LENGTH>(){}[0]
+        final const val DEFAULT_NESTING // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_NESTING|{}DEFAULT_NESTING[0]
+            final fun <get-DEFAULT_NESTING>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_NESTING.<get-DEFAULT_NESTING>|<get-DEFAULT_NESTING>(){}[0]
+        final const val DEFAULT_SOURCE_LENGTH // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_SOURCE_LENGTH|{}DEFAULT_SOURCE_LENGTH[0]
+            final fun <get-DEFAULT_SOURCE_LENGTH>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_SOURCE_LENGTH.<get-DEFAULT_SOURCE_LENGTH>|<get-DEFAULT_SOURCE_LENGTH>(){}[0]
+        final const val DEFAULT_STATES // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_STATES|{}DEFAULT_STATES[0]
+            final fun <get-DEFAULT_STATES>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.DEFAULT_STATES.<get-DEFAULT_STATES>|<get-DEFAULT_STATES>(){}[0]
+        final const val HARD_INPUT_LENGTH // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_INPUT_LENGTH|{}HARD_INPUT_LENGTH[0]
+            final fun <get-HARD_INPUT_LENGTH>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_INPUT_LENGTH.<get-HARD_INPUT_LENGTH>|<get-HARD_INPUT_LENGTH>(){}[0]
+        final const val HARD_NESTING // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_NESTING|{}HARD_NESTING[0]
+            final fun <get-HARD_NESTING>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_NESTING.<get-HARD_NESTING>|<get-HARD_NESTING>(){}[0]
+        final const val HARD_SOURCE_LENGTH // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_SOURCE_LENGTH|{}HARD_SOURCE_LENGTH[0]
+            final fun <get-HARD_SOURCE_LENGTH>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_SOURCE_LENGTH.<get-HARD_SOURCE_LENGTH>|<get-HARD_SOURCE_LENGTH>(){}[0]
+        final const val HARD_STATES // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_STATES|{}HARD_STATES[0]
+            final fun <get-HARD_STATES>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder.Companion.HARD_STATES.<get-HARD_STATES>|<get-HARD_STATES>(){}[0]
+    }
+}
+
 final class com.davils.kapi.runtime.core.problem/Problem { // com.davils.kapi.runtime.core.problem/Problem|null[0]
     constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<com.davils.kapi.runtime.core.problem/ProblemViolation> = ..., kotlin.collections/Map<kotlin/String, kotlinx.serialization.json/JsonElement> = ...) // com.davils.kapi.runtime.core.problem/Problem.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.collections.List<com.davils.kapi.runtime.core.problem.ProblemViolation>;kotlin.collections.Map<kotlin.String,kotlinx.serialization.json.JsonElement>){}[0]
 
@@ -1498,6 +1631,7 @@ final class com.davils.kapi.runtime.core.response/Headers { // com.davils.kapi.r
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.response/Headers.equals|equals(kotlin.Any?){}[0]
     final fun get(kotlin/String): kotlin/String? // com.davils.kapi.runtime.core.response/Headers.get|get(kotlin.String){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.response/Headers.hashCode|hashCode(){}[0]
+    final fun joined(kotlin/String): kotlin/String? // com.davils.kapi.runtime.core.response/Headers.joined|joined(kotlin.String){}[0]
     final fun masked(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // com.davils.kapi.runtime.core.response/Headers.masked|masked(){}[0]
     final fun toMap(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // com.davils.kapi.runtime.core.response/Headers.toMap|toMap(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.runtime.core.response/Headers.toString|toString(){}[0]
@@ -1807,6 +1941,13 @@ final object com.davils.kapi.runtime.core.framing/ServerSentEvents { // com.davi
     final fun frame(com.davils.kapi.runtime.core.framing/ServerSentEvent): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.core.framing/ServerSentEvents.frame|frame(com.davils.kapi.runtime.core.framing.ServerSentEvent){}[0]
 }
 
+final object com.davils.kapi.runtime.core.header/FieldSyntax { // com.davils.kapi.runtime.core.header/FieldSyntax|null[0]
+    final fun isControl(kotlin/Char): kotlin/Boolean // com.davils.kapi.runtime.core.header/FieldSyntax.isControl|isControl(kotlin.Char){}[0]
+    final fun isFieldValue(kotlin/String): kotlin/Boolean // com.davils.kapi.runtime.core.header/FieldSyntax.isFieldValue|isFieldValue(kotlin.String){}[0]
+    final fun isToken(kotlin/String): kotlin/Boolean // com.davils.kapi.runtime.core.header/FieldSyntax.isToken|isToken(kotlin.String){}[0]
+    final fun isTokenChar(kotlin/Char): kotlin/Boolean // com.davils.kapi.runtime.core.header/FieldSyntax.isTokenChar|isTokenChar(kotlin.Char){}[0]
+}
+
 final object com.davils.kapi.runtime.core.header/Links { // com.davils.kapi.runtime.core.header/Links|null[0]
     final const val FIRST // com.davils.kapi.runtime.core.header/Links.FIRST|{}FIRST[0]
         final fun <get-FIRST>(): kotlin/String // com.davils.kapi.runtime.core.header/Links.FIRST.<get-FIRST>|<get-FIRST>(){}[0]
@@ -1842,6 +1983,12 @@ final object com.davils.kapi.runtime.core.parameter/QueryString { // com.davils.
     final fun read(kotlin/String?, com.davils.kapi.runtime.core.negotiation/MediaType): com.davils.kapi.runtime.core.parameter/ParameterReading // com.davils.kapi.runtime.core.parameter/QueryString.read|read(kotlin.String?;com.davils.kapi.runtime.core.negotiation.MediaType){}[0]
 }
 
+final object com.davils.kapi.runtime.core.pattern/UnicodeData { // com.davils.kapi.runtime.core.pattern/UnicodeData|null[0]
+    final fun bidiClassOf(kotlin/Int): kotlin/String // com.davils.kapi.runtime.core.pattern/UnicodeData.bidiClassOf|bidiClassOf(kotlin.Int){}[0]
+    final fun categoryOf(kotlin/Int): kotlin/String // com.davils.kapi.runtime.core.pattern/UnicodeData.categoryOf|categoryOf(kotlin.Int){}[0]
+    final fun scriptOf(kotlin/Int): kotlin/String // com.davils.kapi.runtime.core.pattern/UnicodeData.scriptOf|scriptOf(kotlin.Int){}[0]
+}
+
 final object com.davils.kapi.runtime.core.problem/ProblemSerializer : kotlinx.serialization/KSerializer<com.davils.kapi.runtime.core.problem/Problem> { // com.davils.kapi.runtime.core.problem/ProblemSerializer|null[0]
     final val descriptor // com.davils.kapi.runtime.core.problem/ProblemSerializer.descriptor|{}descriptor[0]
         final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.davils.kapi.runtime.core.problem/ProblemSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -1860,6 +2007,86 @@ final object com.davils.kapi.runtime.core.ratelimit/RateLimits { // com.davils.k
     final fun formatPolicies(kotlin.collections/List<com.davils.kapi.runtime.core.ratelimit/RateLimitPolicy>): kotlin/String // com.davils.kapi.runtime.core.ratelimit/RateLimits.formatPolicies|formatPolicies(kotlin.collections.List<com.davils.kapi.runtime.core.ratelimit.RateLimitPolicy>){}[0]
     final fun parseLimits(kotlin/String, com.davils.kapi.runtime.core/FieldLimits = ...): kotlin.collections/List<com.davils.kapi.runtime.core.ratelimit/RateLimit>? // com.davils.kapi.runtime.core.ratelimit/RateLimits.parseLimits|parseLimits(kotlin.String;com.davils.kapi.runtime.core.FieldLimits){}[0]
     final fun parsePolicies(kotlin/String, com.davils.kapi.runtime.core/FieldLimits = ...): kotlin.collections/List<com.davils.kapi.runtime.core.ratelimit/RateLimitPolicy>? // com.davils.kapi.runtime.core.ratelimit/RateLimits.parsePolicies|parsePolicies(kotlin.String;com.davils.kapi.runtime.core.FieldLimits){}[0]
+}
+
+final object com.davils.kapi.runtime.core.response/HttpStatus { // com.davils.kapi.runtime.core.response/HttpStatus|null[0]
+    final const val ACCEPTED // com.davils.kapi.runtime.core.response/HttpStatus.ACCEPTED|{}ACCEPTED[0]
+        final fun <get-ACCEPTED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.ACCEPTED.<get-ACCEPTED>|<get-ACCEPTED>(){}[0]
+    final const val BAD_GATEWAY // com.davils.kapi.runtime.core.response/HttpStatus.BAD_GATEWAY|{}BAD_GATEWAY[0]
+        final fun <get-BAD_GATEWAY>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.BAD_GATEWAY.<get-BAD_GATEWAY>|<get-BAD_GATEWAY>(){}[0]
+    final const val BAD_REQUEST // com.davils.kapi.runtime.core.response/HttpStatus.BAD_REQUEST|{}BAD_REQUEST[0]
+        final fun <get-BAD_REQUEST>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.BAD_REQUEST.<get-BAD_REQUEST>|<get-BAD_REQUEST>(){}[0]
+    final const val CONFLICT // com.davils.kapi.runtime.core.response/HttpStatus.CONFLICT|{}CONFLICT[0]
+        final fun <get-CONFLICT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.CONFLICT.<get-CONFLICT>|<get-CONFLICT>(){}[0]
+    final const val CONTENT_TOO_LARGE // com.davils.kapi.runtime.core.response/HttpStatus.CONTENT_TOO_LARGE|{}CONTENT_TOO_LARGE[0]
+        final fun <get-CONTENT_TOO_LARGE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.CONTENT_TOO_LARGE.<get-CONTENT_TOO_LARGE>|<get-CONTENT_TOO_LARGE>(){}[0]
+    final const val CREATED // com.davils.kapi.runtime.core.response/HttpStatus.CREATED|{}CREATED[0]
+        final fun <get-CREATED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.CREATED.<get-CREATED>|<get-CREATED>(){}[0]
+    final const val FORBIDDEN // com.davils.kapi.runtime.core.response/HttpStatus.FORBIDDEN|{}FORBIDDEN[0]
+        final fun <get-FORBIDDEN>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.FORBIDDEN.<get-FORBIDDEN>|<get-FORBIDDEN>(){}[0]
+    final const val FOUND // com.davils.kapi.runtime.core.response/HttpStatus.FOUND|{}FOUND[0]
+        final fun <get-FOUND>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.FOUND.<get-FOUND>|<get-FOUND>(){}[0]
+    final const val GATEWAY_TIMEOUT // com.davils.kapi.runtime.core.response/HttpStatus.GATEWAY_TIMEOUT|{}GATEWAY_TIMEOUT[0]
+        final fun <get-GATEWAY_TIMEOUT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.GATEWAY_TIMEOUT.<get-GATEWAY_TIMEOUT>|<get-GATEWAY_TIMEOUT>(){}[0]
+    final const val GONE // com.davils.kapi.runtime.core.response/HttpStatus.GONE|{}GONE[0]
+        final fun <get-GONE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.GONE.<get-GONE>|<get-GONE>(){}[0]
+    final const val INTERNAL_SERVER_ERROR // com.davils.kapi.runtime.core.response/HttpStatus.INTERNAL_SERVER_ERROR|{}INTERNAL_SERVER_ERROR[0]
+        final fun <get-INTERNAL_SERVER_ERROR>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.INTERNAL_SERVER_ERROR.<get-INTERNAL_SERVER_ERROR>|<get-INTERNAL_SERVER_ERROR>(){}[0]
+    final const val METHOD_NOT_ALLOWED // com.davils.kapi.runtime.core.response/HttpStatus.METHOD_NOT_ALLOWED|{}METHOD_NOT_ALLOWED[0]
+        final fun <get-METHOD_NOT_ALLOWED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.METHOD_NOT_ALLOWED.<get-METHOD_NOT_ALLOWED>|<get-METHOD_NOT_ALLOWED>(){}[0]
+    final const val MOVED_PERMANENTLY // com.davils.kapi.runtime.core.response/HttpStatus.MOVED_PERMANENTLY|{}MOVED_PERMANENTLY[0]
+        final fun <get-MOVED_PERMANENTLY>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.MOVED_PERMANENTLY.<get-MOVED_PERMANENTLY>|<get-MOVED_PERMANENTLY>(){}[0]
+    final const val NOT_ACCEPTABLE // com.davils.kapi.runtime.core.response/HttpStatus.NOT_ACCEPTABLE|{}NOT_ACCEPTABLE[0]
+        final fun <get-NOT_ACCEPTABLE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.NOT_ACCEPTABLE.<get-NOT_ACCEPTABLE>|<get-NOT_ACCEPTABLE>(){}[0]
+    final const val NOT_FOUND // com.davils.kapi.runtime.core.response/HttpStatus.NOT_FOUND|{}NOT_FOUND[0]
+        final fun <get-NOT_FOUND>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.NOT_FOUND.<get-NOT_FOUND>|<get-NOT_FOUND>(){}[0]
+    final const val NOT_IMPLEMENTED // com.davils.kapi.runtime.core.response/HttpStatus.NOT_IMPLEMENTED|{}NOT_IMPLEMENTED[0]
+        final fun <get-NOT_IMPLEMENTED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.NOT_IMPLEMENTED.<get-NOT_IMPLEMENTED>|<get-NOT_IMPLEMENTED>(){}[0]
+    final const val NOT_MODIFIED // com.davils.kapi.runtime.core.response/HttpStatus.NOT_MODIFIED|{}NOT_MODIFIED[0]
+        final fun <get-NOT_MODIFIED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.NOT_MODIFIED.<get-NOT_MODIFIED>|<get-NOT_MODIFIED>(){}[0]
+    final const val NO_CONTENT // com.davils.kapi.runtime.core.response/HttpStatus.NO_CONTENT|{}NO_CONTENT[0]
+        final fun <get-NO_CONTENT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.NO_CONTENT.<get-NO_CONTENT>|<get-NO_CONTENT>(){}[0]
+    final const val OK // com.davils.kapi.runtime.core.response/HttpStatus.OK|{}OK[0]
+        final fun <get-OK>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.OK.<get-OK>|<get-OK>(){}[0]
+    final const val PARTIAL_CONTENT // com.davils.kapi.runtime.core.response/HttpStatus.PARTIAL_CONTENT|{}PARTIAL_CONTENT[0]
+        final fun <get-PARTIAL_CONTENT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.PARTIAL_CONTENT.<get-PARTIAL_CONTENT>|<get-PARTIAL_CONTENT>(){}[0]
+    final const val PERMANENT_REDIRECT // com.davils.kapi.runtime.core.response/HttpStatus.PERMANENT_REDIRECT|{}PERMANENT_REDIRECT[0]
+        final fun <get-PERMANENT_REDIRECT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.PERMANENT_REDIRECT.<get-PERMANENT_REDIRECT>|<get-PERMANENT_REDIRECT>(){}[0]
+    final const val PRECONDITION_FAILED // com.davils.kapi.runtime.core.response/HttpStatus.PRECONDITION_FAILED|{}PRECONDITION_FAILED[0]
+        final fun <get-PRECONDITION_FAILED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.PRECONDITION_FAILED.<get-PRECONDITION_FAILED>|<get-PRECONDITION_FAILED>(){}[0]
+    final const val PRECONDITION_REQUIRED // com.davils.kapi.runtime.core.response/HttpStatus.PRECONDITION_REQUIRED|{}PRECONDITION_REQUIRED[0]
+        final fun <get-PRECONDITION_REQUIRED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.PRECONDITION_REQUIRED.<get-PRECONDITION_REQUIRED>|<get-PRECONDITION_REQUIRED>(){}[0]
+    final const val RANGE_NOT_SATISFIABLE // com.davils.kapi.runtime.core.response/HttpStatus.RANGE_NOT_SATISFIABLE|{}RANGE_NOT_SATISFIABLE[0]
+        final fun <get-RANGE_NOT_SATISFIABLE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.RANGE_NOT_SATISFIABLE.<get-RANGE_NOT_SATISFIABLE>|<get-RANGE_NOT_SATISFIABLE>(){}[0]
+    final const val REQUEST_HEADER_FIELDS_TOO_LARGE // com.davils.kapi.runtime.core.response/HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE|{}REQUEST_HEADER_FIELDS_TOO_LARGE[0]
+        final fun <get-REQUEST_HEADER_FIELDS_TOO_LARGE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE.<get-REQUEST_HEADER_FIELDS_TOO_LARGE>|<get-REQUEST_HEADER_FIELDS_TOO_LARGE>(){}[0]
+    final const val SEE_OTHER // com.davils.kapi.runtime.core.response/HttpStatus.SEE_OTHER|{}SEE_OTHER[0]
+        final fun <get-SEE_OTHER>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.SEE_OTHER.<get-SEE_OTHER>|<get-SEE_OTHER>(){}[0]
+    final const val SERVICE_UNAVAILABLE // com.davils.kapi.runtime.core.response/HttpStatus.SERVICE_UNAVAILABLE|{}SERVICE_UNAVAILABLE[0]
+        final fun <get-SERVICE_UNAVAILABLE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.SERVICE_UNAVAILABLE.<get-SERVICE_UNAVAILABLE>|<get-SERVICE_UNAVAILABLE>(){}[0]
+    final const val SWITCHING_PROTOCOLS // com.davils.kapi.runtime.core.response/HttpStatus.SWITCHING_PROTOCOLS|{}SWITCHING_PROTOCOLS[0]
+        final fun <get-SWITCHING_PROTOCOLS>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.SWITCHING_PROTOCOLS.<get-SWITCHING_PROTOCOLS>|<get-SWITCHING_PROTOCOLS>(){}[0]
+    final const val TEMPORARY_REDIRECT // com.davils.kapi.runtime.core.response/HttpStatus.TEMPORARY_REDIRECT|{}TEMPORARY_REDIRECT[0]
+        final fun <get-TEMPORARY_REDIRECT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.TEMPORARY_REDIRECT.<get-TEMPORARY_REDIRECT>|<get-TEMPORARY_REDIRECT>(){}[0]
+    final const val TOO_MANY_REQUESTS // com.davils.kapi.runtime.core.response/HttpStatus.TOO_MANY_REQUESTS|{}TOO_MANY_REQUESTS[0]
+        final fun <get-TOO_MANY_REQUESTS>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.TOO_MANY_REQUESTS.<get-TOO_MANY_REQUESTS>|<get-TOO_MANY_REQUESTS>(){}[0]
+    final const val UNAUTHORIZED // com.davils.kapi.runtime.core.response/HttpStatus.UNAUTHORIZED|{}UNAUTHORIZED[0]
+        final fun <get-UNAUTHORIZED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.UNAUTHORIZED.<get-UNAUTHORIZED>|<get-UNAUTHORIZED>(){}[0]
+    final const val UNPROCESSABLE_CONTENT // com.davils.kapi.runtime.core.response/HttpStatus.UNPROCESSABLE_CONTENT|{}UNPROCESSABLE_CONTENT[0]
+        final fun <get-UNPROCESSABLE_CONTENT>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.UNPROCESSABLE_CONTENT.<get-UNPROCESSABLE_CONTENT>|<get-UNPROCESSABLE_CONTENT>(){}[0]
+    final const val UNSUPPORTED_MEDIA_TYPE // com.davils.kapi.runtime.core.response/HttpStatus.UNSUPPORTED_MEDIA_TYPE|{}UNSUPPORTED_MEDIA_TYPE[0]
+        final fun <get-UNSUPPORTED_MEDIA_TYPE>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.UNSUPPORTED_MEDIA_TYPE.<get-UNSUPPORTED_MEDIA_TYPE>|<get-UNSUPPORTED_MEDIA_TYPE>(){}[0]
+    final const val UPGRADE_REQUIRED // com.davils.kapi.runtime.core.response/HttpStatus.UPGRADE_REQUIRED|{}UPGRADE_REQUIRED[0]
+        final fun <get-UPGRADE_REQUIRED>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.UPGRADE_REQUIRED.<get-UPGRADE_REQUIRED>|<get-UPGRADE_REQUIRED>(){}[0]
+    final const val URI_TOO_LONG // com.davils.kapi.runtime.core.response/HttpStatus.URI_TOO_LONG|{}URI_TOO_LONG[0]
+        final fun <get-URI_TOO_LONG>(): kotlin/Int // com.davils.kapi.runtime.core.response/HttpStatus.URI_TOO_LONG.<get-URI_TOO_LONG>|<get-URI_TOO_LONG>(){}[0]
+
+    final fun isClientError(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isClientError|isClientError(kotlin.Int){}[0]
+    final fun isInformational(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isInformational|isInformational(kotlin.Int){}[0]
+    final fun isRedirection(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isRedirection|isRedirection(kotlin.Int){}[0]
+    final fun isServerError(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isServerError|isServerError(kotlin.Int){}[0]
+    final fun isSuccess(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isSuccess|isSuccess(kotlin.Int){}[0]
+    final fun isValid(kotlin/Int): kotlin/Boolean // com.davils.kapi.runtime.core.response/HttpStatus.isValid|isValid(kotlin.Int){}[0]
 }
 
 final object com.davils.kapi.runtime.core.security/CredentialsViolationCodes { // com.davils.kapi.runtime.core.security/CredentialsViolationCodes|null[0]
@@ -1921,6 +2148,7 @@ final object com.davils.kapi.runtime.core.validation/Constraints { // com.davils
     final fun isMultipleOf(kotlin/Long, kotlin/Long): kotlin/Boolean // com.davils.kapi.runtime.core.validation/Constraints.isMultipleOf|isMultipleOf(kotlin.Long;kotlin.Long){}[0]
     final fun isUnique(kotlin.collections/Collection<*>): kotlin/Boolean // com.davils.kapi.runtime.core.validation/Constraints.isUnique|isUnique(kotlin.collections.Collection<*>){}[0]
     final fun length(kotlin/String): kotlin/Int // com.davils.kapi.runtime.core.validation/Constraints.length|length(kotlin.String){}[0]
+    final fun matches(kotlin/String, com.davils.kapi.runtime.core.pattern/Pattern): kotlin/Boolean // com.davils.kapi.runtime.core.validation/Constraints.matches|matches(kotlin.String;com.davils.kapi.runtime.core.pattern.Pattern){}[0]
 }
 
 final object com.davils.kapi.runtime.core.wire/Base64Serializer : kotlinx.serialization/KSerializer<kotlinx.io.bytestring/ByteString> { // com.davils.kapi.runtime.core.wire/Base64Serializer|null[0]
@@ -1951,6 +2179,9 @@ final object com.davils.kapi.runtime.core/RuntimeContract { // com.davils.kapi.r
         final fun <get-VERSION>(): kotlin/Int // com.davils.kapi.runtime.core/RuntimeContract.VERSION.<get-VERSION>|<get-VERSION>(){}[0]
 }
 
+final const val com.davils.kapi.runtime.core.pattern/LAST_CODE_POINT // com.davils.kapi.runtime.core.pattern/LAST_CODE_POINT|{}LAST_CODE_POINT[0]
+    final fun <get-LAST_CODE_POINT>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/LAST_CODE_POINT.<get-LAST_CODE_POINT>|<get-LAST_CODE_POINT>(){}[0]
+
 final val com.davils.kapi.runtime.core.response/isSuccess // com.davils.kapi.runtime.core.response/isSuccess|@com.davils.kapi.runtime.core.response.Response{}isSuccess[0]
     final fun (com.davils.kapi.runtime.core.response/Response).<get-isSuccess>(): kotlin/Boolean // com.davils.kapi.runtime.core.response/isSuccess.<get-isSuccess>|<get-isSuccess>@com.davils.kapi.runtime.core.response.Response(){}[0]
 
@@ -1969,11 +2200,16 @@ final fun (com.davils.kapi.runtime.core.response/Headers).com.davils.kapi.runtim
 final fun (com.davils.kapi.runtime.core.response/Headers).com.davils.kapi.runtime.core.response/float(kotlin/String): kotlin/Float? // com.davils.kapi.runtime.core.response/float|float@com.davils.kapi.runtime.core.response.Headers(kotlin.String){}[0]
 final fun (com.davils.kapi.runtime.core.response/Headers).com.davils.kapi.runtime.core.response/int(kotlin/String): kotlin/Int? // com.davils.kapi.runtime.core.response/int|int@com.davils.kapi.runtime.core.response.Headers(kotlin.String){}[0]
 final fun (com.davils.kapi.runtime.core.response/Headers).com.davils.kapi.runtime.core.response/long(kotlin/String): kotlin/Long? // com.davils.kapi.runtime.core.response/long|long@com.davils.kapi.runtime.core.response.Headers(kotlin.String){}[0]
+final fun (com.davils.kore.core.validation/ValidationScope).com.davils.kapi.runtime.core/bounded(kotlin.reflect/KProperty0<kotlin/Number>, kotlin/Long) // com.davils.kapi.runtime.core/bounded|bounded@com.davils.kore.core.validation.ValidationScope(kotlin.reflect.KProperty0<kotlin.Number>;kotlin.Long){}[0]
+final fun (kotlin.text/StringBuilder).com.davils.kapi.runtime.core.pattern/appendPoint(kotlin/Int): kotlin.text/StringBuilder // com.davils.kapi.runtime.core.pattern/appendPoint|appendPoint@kotlin.text.StringBuilder(kotlin.Int){}[0]
 final fun com.davils.kapi.runtime.core.codec.form/formLimits(kotlin/Function1<com.davils.kapi.runtime.core.codec.form/FormLimitsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.codec.form/FormLimits // com.davils.kapi.runtime.core.codec.form/formLimits|formLimits(kotlin.Function1<com.davils.kapi.runtime.core.codec.form.FormLimitsBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core.codec.multipart/multipartLimits(kotlin/Function1<com.davils.kapi.runtime.core.codec.multipart/MultipartLimitsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.codec.multipart/MultipartLimits // com.davils.kapi.runtime.core.codec.multipart/multipartLimits|multipartLimits(kotlin.Function1<com.davils.kapi.runtime.core.codec.multipart.MultipartLimitsBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core.codec/codecs(kotlin/Function1<com.davils.kapi.runtime.core.codec/CodecsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.core.codec/codecs|codecs(kotlin.Function1<com.davils.kapi.runtime.core.codec.CodecsBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core.destination/destinationPolicy(kotlin/Function1<com.davils.kapi.runtime.core.destination/DestinationPolicyBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.destination/DestinationPolicy // com.davils.kapi.runtime.core.destination/destinationPolicy|destinationPolicy(kotlin.Function1<com.davils.kapi.runtime.core.destination.DestinationPolicyBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core.framing/framingLimits(kotlin/Function1<com.davils.kapi.runtime.core.framing/FramingLimitsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.framing/FramingLimits // com.davils.kapi.runtime.core.framing/framingLimits|framingLimits(kotlin.Function1<com.davils.kapi.runtime.core.framing.FramingLimitsBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.core.pattern/charCount(kotlin/Int): kotlin/Int // com.davils.kapi.runtime.core.pattern/charCount|charCount(kotlin.Int){}[0]
+final fun com.davils.kapi.runtime.core.pattern/codePointAt(kotlin/CharSequence, kotlin/Int): kotlin/Int // com.davils.kapi.runtime.core.pattern/codePointAt|codePointAt(kotlin.CharSequence;kotlin.Int){}[0]
+final fun com.davils.kapi.runtime.core.pattern/patternLimits(kotlin/Function1<com.davils.kapi.runtime.core.pattern/PatternLimitsBuilder, kotlin/Unit>): com.davils.kapi.runtime.core.pattern/PatternLimits // com.davils.kapi.runtime.core.pattern/patternLimits|patternLimits(kotlin.Function1<com.davils.kapi.runtime.core.pattern.PatternLimitsBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core.response/headersOf(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin.collections/Set<kotlin/String> = ...): com.davils.kapi.runtime.core.response/Headers // com.davils.kapi.runtime.core.response/headersOf|headersOf(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.collections.Set<kotlin.String>){}[0]
 final fun com.davils.kapi.runtime.core.security/credentials(kotlin/Function1<com.davils.kapi.runtime.core.security/CredentialsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core.security/Credentials // com.davils.kapi.runtime.core.security/credentials|credentials(kotlin.Function1<com.davils.kapi.runtime.core.security.CredentialsBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kapi.runtime.core/fieldLimits(kotlin/Function1<com.davils.kapi.runtime.core/FieldLimitsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.core/FieldLimits // com.davils.kapi.runtime.core/fieldLimits|fieldLimits(kotlin.Function1<com.davils.kapi.runtime.core.FieldLimitsBuilder,kotlin.Unit>){}[0]

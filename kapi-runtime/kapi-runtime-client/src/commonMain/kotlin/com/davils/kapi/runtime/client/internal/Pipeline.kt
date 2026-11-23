@@ -71,8 +71,11 @@ internal class Pipeline(
 
     private suspend fun intercepted(interception: Interception, trip: RoundTrip): Passage {
         val next = attempted { interception.interceptor.intercept(trip) }.getOrNull()
-        val aborted = trip.withExchange(Exchange.Failed(CallFailure.Aborted(interception.name)))
-        return next?.let { found -> Passage(found) } ?: Passage(aborted, isStopped = true)
+        val isUnsent = interception.phase == CallPhase.Receive && next != null && next.exchange == null
+        val unsent = CallFailure.Unsent(interception.name).takeIf { isUnsent }
+        val stopped = trip.withExchange(Exchange.Failed(unsent ?: CallFailure.Aborted(interception.name)))
+        val passed = next?.takeUnless { isUnsent }
+        return passed?.let { found -> Passage(found) } ?: Passage(stopped, isStopped = true)
     }
 
     private data class Passage(val trip: RoundTrip, val isStopped: Boolean = false)

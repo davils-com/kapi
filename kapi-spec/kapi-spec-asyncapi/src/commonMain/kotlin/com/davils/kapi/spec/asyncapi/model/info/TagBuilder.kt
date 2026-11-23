@@ -37,6 +37,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -44,6 +48,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Further documentation, written inline or as a reference.
@@ -51,6 +59,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Tag = Tag(this)
 }

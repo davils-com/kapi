@@ -36,6 +36,10 @@ public class FormLimitsBuilder internal constructor() : ValidatingBuilder<FormLi
      * @since 1.0.0
      */
     public var maxLength: Int = DEFAULT_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most fields of a body.
@@ -43,6 +47,10 @@ public class FormLimitsBuilder internal constructor() : ValidatingBuilder<FormLi
      * @since 1.0.0
      */
     public var maxFields: Int = DEFAULT_FIELDS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most characters of the encoded name or value of one field.
@@ -50,6 +58,10 @@ public class FormLimitsBuilder internal constructor() : ValidatingBuilder<FormLi
      * @since 1.0.0
      */
     public var maxFieldLength: Int = DEFAULT_FIELD_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): FormLimits = FormLimits(this)
 

@@ -40,6 +40,10 @@ public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>()
      * @since 1.0.0
      */
     public var reference: Reference? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `summary`, the summary of the path item.
@@ -47,6 +51,10 @@ public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>()
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the path item.
@@ -54,6 +62,10 @@ public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>()
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val operations: MutableMap<Method, Operation> = linkedMapOf()
 

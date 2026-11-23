@@ -36,6 +36,10 @@ public class SimpleSchemeBuilder internal constructor() : ElementBuilder<SimpleS
      * @since 1.0.0
      */
     public var type: SecuritySchemeType = SecuritySchemeType.UserPassword
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description of the scheme, which may use CommonMark.
@@ -43,6 +47,10 @@ public class SimpleSchemeBuilder internal constructor() : ElementBuilder<SimpleS
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): SimpleScheme = SimpleScheme(this)
 }

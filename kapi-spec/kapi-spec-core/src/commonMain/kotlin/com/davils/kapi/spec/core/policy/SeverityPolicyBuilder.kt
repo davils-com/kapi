@@ -39,6 +39,10 @@ public class SeverityPolicyBuilder : ValidatingBuilder<SeverityPolicy>() {
      * @since 1.0.0
      */
     public var areWarningsErrors: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val downgrades: Map<String, String> get() = declared
 
@@ -51,6 +55,7 @@ public class SeverityPolicyBuilder : ValidatingBuilder<SeverityPolicy>() {
      * @since 1.0.0
      */
     public fun downgrade(code: ViolationCode, reason: String) {
+        checkOpen()
         declared[code.value] = reason
     }
 

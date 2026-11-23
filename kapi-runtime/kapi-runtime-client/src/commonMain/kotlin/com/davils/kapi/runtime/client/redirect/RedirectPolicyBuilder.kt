@@ -36,6 +36,10 @@ public class RedirectPolicyBuilder internal constructor() : ValidatingBuilder<Re
      * @since 1.0.0
      */
     public var maxHops: Int = DEFAULT_HOPS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether a hop to another origin is followed, without the credentials and cookies of the call; `true` by
@@ -44,6 +48,10 @@ public class RedirectPolicyBuilder internal constructor() : ValidatingBuilder<Re
      * @since 1.0.0
      */
     public var isCrossOriginAllowed: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): RedirectPolicy = RedirectPolicy(this)
 

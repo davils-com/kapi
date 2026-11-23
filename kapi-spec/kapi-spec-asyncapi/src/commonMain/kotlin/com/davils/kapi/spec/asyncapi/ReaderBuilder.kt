@@ -44,6 +44,10 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public var resolver: Resolver = Resolver.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether the merge key `<<` of YAML 1.1 is honoured; off by default, so a merge key is a finding.
@@ -51,6 +55,10 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public var hasMergeKeys: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The limits of a reading.
@@ -58,6 +66,10 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public var limits: ReadLimits = ReadLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Which documents references may lead to.
@@ -65,6 +77,10 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public var references: ReferencePolicy = ReferencePolicy.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How severe the findings of a reading are.
@@ -72,6 +88,10 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public var severities: SeverityPolicy = SeverityPolicy.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Configures the [limits].
@@ -80,6 +100,7 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public fun limits(configure: ReadLimitsBuilder.() -> Unit) {
+        checkOpen()
         nested(ReadLimitsBuilder(), ::limits, configure)?.let { built -> limits = built }
     }
 
@@ -90,6 +111,7 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public fun references(configure: ReferencePolicyBuilder.() -> Unit) {
+        checkOpen()
         nested(ReferencePolicyBuilder(), ::references, configure)?.let { built -> references = built }
     }
 
@@ -100,6 +122,7 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
      * @since 1.0.0
      */
     public fun severities(configure: SeverityPolicyBuilder.() -> Unit) {
+        checkOpen()
         nested(SeverityPolicyBuilder(), ::severities, configure)?.let { built -> severities = built }
     }
 

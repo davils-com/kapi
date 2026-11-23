@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.server.internal
 
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.ApiServer
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.problem.ServerCodes
@@ -71,5 +72,5 @@ internal object Deliveries {
     }
 
     private fun unverified(server: ApiServer): Reply =
-        server.context.problems.problem(Statuses.UNAUTHORIZED, ServerCodes.UNVERIFIED)
+        server.context.problems.problem(HttpStatus.UNAUTHORIZED, ServerCodes.UNVERIFIED)
 }

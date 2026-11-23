@@ -36,6 +36,10 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
      * @since 1.0.0
      */
     public var implicit: OAuthFlow? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `password`, the resource owner password credentials flow.
@@ -43,6 +47,10 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
      * @since 1.0.0
      */
     public var password: OAuthFlow? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `clientCredentials`, the client credentials flow.
@@ -50,6 +58,10 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
      * @since 1.0.0
      */
     public var clientCredentials: OAuthFlow? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `authorizationCode`, the authorization code flow.
@@ -57,6 +69,10 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
      * @since 1.0.0
      */
     public var authorizationCode: OAuthFlow? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `deviceAuthorization`, the device authorization flow, written from OpenAPI 3.2 on.
@@ -64,6 +80,10 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
      * @since 1.0.0
      */
     public var deviceAuthorization: OAuthFlow? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): OAuthFlows = OAuthFlows(this)
 }

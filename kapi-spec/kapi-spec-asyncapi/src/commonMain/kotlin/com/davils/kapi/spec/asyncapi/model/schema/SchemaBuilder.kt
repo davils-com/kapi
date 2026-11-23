@@ -37,6 +37,10 @@ public class SchemaBuilder internal constructor() : ElementBuilder<Schema>() {
      * @since 1.0.0
      */
     public var format: SchemaFormat = SchemaFormat.AsyncApi
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `schemaFormat` as it was written, such as `application/vnd.apache.avro;version=1.9.0`; `null` for a schema
@@ -45,6 +49,10 @@ public class SchemaBuilder internal constructor() : ElementBuilder<Schema>() {
      * @since 1.0.0
      */
     public var schemaFormat: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The schema as it was written.
@@ -52,6 +60,10 @@ public class SchemaBuilder internal constructor() : ElementBuilder<Schema>() {
      * @since 1.0.0
      */
     public var definition: Value = Value.Mapping(emptyMap())
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Schema = Schema(this)
 }

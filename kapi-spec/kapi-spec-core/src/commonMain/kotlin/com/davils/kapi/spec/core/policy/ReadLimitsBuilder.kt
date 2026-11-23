@@ -36,6 +36,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumDocumentLength: Int = DEFAULT_DOCUMENT_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most documents one reading may load, the root and every referenced document, from 1 to
@@ -44,6 +48,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumDocuments: Int = DEFAULT_DOCUMENTS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The deepest nesting of a document, from 1 to [ReadLimits.HARD_DEPTH].
@@ -51,6 +59,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumDepth: Int = DEFAULT_DEPTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most nodes of one document, from 1 to [ReadLimits.HARD_NODES].
@@ -58,6 +70,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumNodes: Long = DEFAULT_NODES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most nodes that aliases of one document may expand to, from 1 to [ReadLimits.HARD_ALIAS_EXPANSION].
@@ -65,6 +81,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumAliasExpansion: Long = DEFAULT_ALIAS_EXPANSION
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest chain of references a reading follows, from 1 to [ReadLimits.HARD_REFERENCE_HOPS].
@@ -72,6 +92,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumReferenceHops: Int = DEFAULT_REFERENCE_HOPS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest scalar of a document, in characters, from 1 to [ReadLimits.HARD_SCALAR_LENGTH].
@@ -79,6 +103,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumScalarLength: Int = DEFAULT_SCALAR_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest regular expression of a schema, in characters, from 1 to [ReadLimits.HARD_PATTERN_LENGTH].
@@ -86,6 +114,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumPatternLength: Int = DEFAULT_PATTERN_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most diagnostics a reading reports before it stops reporting, from 1 to [ReadLimits.HARD_DIAGNOSTICS].
@@ -93,6 +125,10 @@ public class ReadLimitsBuilder : ValidatingBuilder<ReadLimits>() {
      * @since 1.0.0
      */
     public var maximumDiagnostics: Int = DEFAULT_DIAGNOSTICS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ReadLimits = ReadLimits(this)
 

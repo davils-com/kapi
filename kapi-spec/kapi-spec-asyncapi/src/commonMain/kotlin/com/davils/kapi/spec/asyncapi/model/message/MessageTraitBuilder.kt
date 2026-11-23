@@ -41,6 +41,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var headers: Referable<Schema>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Where the correlation id of the message is found.
@@ -48,6 +52,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var correlationId: Referable<CorrelationId>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The media type of the payload, such as `application/json`.
@@ -55,6 +63,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var contentType: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A machine-friendly name of the message.
@@ -62,6 +74,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var name: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A human-friendly title.
@@ -69,6 +85,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var title: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A short summary of what it is about.
@@ -76,6 +96,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -83,6 +107,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val tags: MutableList<Referable<Tag>> = mutableListOf()
 
@@ -92,6 +120,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The protocol-specific details the trait gives a message.
@@ -99,6 +131,10 @@ public class MessageTraitBuilder internal constructor() : ElementBuilder<Message
      * @since 1.0.0
      */
     public var bindings: Referable<MessageBindings>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val examples: MutableList<MessageExample> = mutableListOf()
 

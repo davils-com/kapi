@@ -40,6 +40,10 @@ public class ContractCheckBuilder internal constructor(internal val document: Do
      * @since 1.0.0
      */
     public var basePath: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether `format` asserts, so that a string that is no valid date, for instance, is a finding; `false` by
@@ -48,6 +52,10 @@ public class ContractCheckBuilder internal constructor(internal val document: Do
      * @since 1.0.0
      */
     public var isFormatAsserted: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal var limits: SchemaLimitsBuilder.() -> Unit = {}
         private set

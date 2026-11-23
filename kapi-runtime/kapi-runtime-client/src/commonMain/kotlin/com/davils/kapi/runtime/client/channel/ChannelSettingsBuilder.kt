@@ -39,6 +39,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var subprotocols: List<String> = emptyList()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The media type of the messages, which picks the codec: text frames for text and JSON, binary frames for
@@ -47,6 +51,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var mediaType: MediaType = MediaType.Json
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The largest frame the client reads, in bytes; 1 MiB by default.
@@ -54,6 +62,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var maxFrameBytes: Long = DEFAULT_FRAME_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The largest message the client assembles from its frames, in bytes; 4 MiB by default.
@@ -61,6 +73,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var maxMessageBytes: Long = DEFAULT_MESSAGE_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The time between two pings that keep the channel alive; zero for none; 30 seconds by default.
@@ -68,6 +84,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var pingInterval: Duration = 30.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How long the client waits for a pong before it closes the channel; 15 seconds by default.
@@ -75,6 +95,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var pongTimeout: Duration = 15.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How long the client waits for the close frame of the peer after its own; 5 seconds by default.
@@ -82,6 +106,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var closeTimeout: Duration = 5.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The messages the client holds for a slow collector of [ChannelSession.incoming] before it stops reading, which
@@ -90,6 +118,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var incomingCapacity: Int = DEFAULT_CAPACITY
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most requests that wait for their replies at once; 256 by default.
@@ -97,6 +129,10 @@ public class ChannelSettingsBuilder internal constructor() : ValidatingBuilder<C
      * @since 1.0.0
      */
     public var maxPendingRequests: Int = DEFAULT_PENDING
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ChannelSettings = ChannelSettings(this)
 

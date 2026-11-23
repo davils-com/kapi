@@ -42,6 +42,10 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public var basePath: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The codecs that write and read bodies; [Codecs.Default] by default, the codecs of a client runtime that is
@@ -50,6 +54,10 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public var codecs: Codecs = Codecs.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Answers requests of [method] to [path] with [answer].
@@ -78,6 +86,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public fun get(path: String, answer: suspend Responder.() -> Unit) {
+        checkOpen()
         on(method = "GET", path = path, answer = answer)
     }
 
@@ -90,6 +99,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public fun post(path: String, answer: suspend Responder.() -> Unit) {
+        checkOpen()
         on(method = "POST", path = path, answer = answer)
     }
 
@@ -102,6 +112,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public fun put(path: String, answer: suspend Responder.() -> Unit) {
+        checkOpen()
         on(method = "PUT", path = path, answer = answer)
     }
 
@@ -114,6 +125,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public fun patch(path: String, answer: suspend Responder.() -> Unit) {
+        checkOpen()
         on(method = "PATCH", path = path, answer = answer)
     }
 
@@ -126,6 +138,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * @since 1.0.0
      */
     public fun delete(path: String, answer: suspend Responder.() -> Unit) {
+        checkOpen()
         on(method = "DELETE", path = path, answer = answer)
     }
 

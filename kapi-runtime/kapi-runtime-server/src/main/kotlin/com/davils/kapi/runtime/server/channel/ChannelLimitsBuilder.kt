@@ -38,6 +38,10 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
      * @since 1.0.0
      */
     public var maxFrameBytes: Int = DEFAULT_FRAME_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ChannelLimits.maxMessageBytes].
@@ -45,6 +49,10 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
      * @since 1.0.0
      */
     public var maxMessageBytes: Int = DEFAULT_MESSAGE_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ChannelLimits.pingInterval].
@@ -52,6 +60,10 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
      * @since 1.0.0
      */
     public var pingInterval: Duration = DEFAULT_PING_SECONDS.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ChannelLimits.timeout].
@@ -59,6 +71,21 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
      * @since 1.0.0
      */
     public var timeout: Duration = DEFAULT_TIMEOUT_SECONDS.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
+     * See [ChannelLimits.maxHeldMessages].
+     *
+     * @since 1.0.0
+     */
+    public var maxHeldMessages: Int = DEFAULT_HELD_MESSAGES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ChannelLimits = ChannelLimits(this)
 
@@ -67,6 +94,7 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
         const val DEFAULT_MESSAGE_BYTES: Int = 1_024 * 1_024
         const val DEFAULT_PING_SECONDS: Int = 30
         const val DEFAULT_TIMEOUT_SECONDS: Int = 15
+        const val DEFAULT_HELD_MESSAGES: Int = 64
     }
 }
 

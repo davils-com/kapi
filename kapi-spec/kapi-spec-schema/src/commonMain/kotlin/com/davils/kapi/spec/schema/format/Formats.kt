@@ -40,7 +40,7 @@ package com.davils.kapi.spec.schema.format
  *   `ucschar` and, in the query, of `iprivate`.
  * - `uuid` in the textual form of RFC 9562, of any version and case.
  * - `uri-template` of RFC 6570, `json-pointer` of RFC 6901 and `relative-json-pointer`.
- * - `regex`: valid syntax of ECMA-262 in Unicode mode, as [com.davils.kapi.spec.schema.pattern.Pattern] reads it. A
+ * - `regex`: valid syntax of ECMA-262 in Unicode mode, as [com.davils.kapi.runtime.core.pattern.Pattern] reads it. A
  *   regular expression that is valid but cannot run in the linear engine, such as one with a back reference or a
  *   lookaround, is [FormatCheck.Valid] here; compile it with `Pattern.compile` to tell these apart.
  * - The formats of OpenAPI: `int32` and `int64`, a JSON number with an integral value in the range of the type, `float`

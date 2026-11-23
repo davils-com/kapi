@@ -17,6 +17,7 @@
 package com.davils.kapi.runtime.client.channel.fixture
 
 import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.ClientSettingsBuilder
 import com.davils.kapi.runtime.client.apiClient
 import com.davils.kapi.runtime.client.call.Timeout
 import com.davils.kapi.runtime.core.destination.destinationPolicy
@@ -27,6 +28,7 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.request.queryString
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -49,7 +51,11 @@ private const val HOST: String = "127.0.0.1"
 
 private const val TIMEOUT_SECONDS: Int = 10
 
-internal suspend fun <T> withServer(timeout: Duration = TIMEOUT_SECONDS.seconds, block: suspend (ApiClient) -> T): T {
+internal suspend fun <T> withServer(
+    timeout: Duration = TIMEOUT_SECONDS.seconds,
+    configure: ClientSettingsBuilder.() -> Unit = {},
+    block: suspend (ApiClient) -> T,
+): T {
     val server = embeddedServer(CIO, port = 0, host = HOST) {
         install(ServerWebSockets)
         routing {
@@ -67,6 +73,14 @@ internal suspend fun <T> withServer(timeout: Duration = TIMEOUT_SECONDS.seconds,
             webSocket("/gone", protocol = PROTOCOL) {
                 close(CloseReason(GONE, "gone"))
             }
+            webSocket("/proof", protocol = PROTOCOL) {
+                val request = call.request
+                val authorization = request.headers["Authorization"].orEmpty()
+                val hasProof = request.headers["DPoP"] != null
+                val line = "$authorization|$hasProof|${request.queryString()}"
+                outgoing.send(Frame.Text("""{"text":"$line"}"""))
+                incoming.receiveCatching()
+            }
         }
     }
     server.start(wait = false)
@@ -76,13 +90,18 @@ internal suspend fun <T> withServer(timeout: Duration = TIMEOUT_SECONDS.seconds,
         return HttpClient(ClientEngine) {
             followRedirects = false
             install(WebSockets)
-        }.use { http -> block(clientOf(http = http, port = port, timeout = timeout)) }
+        }.use { http -> block(clientOf(http = http, port = port, timeout = timeout, configure = configure)) }
     } finally {
         server.stop(gracePeriodMillis = 0, timeoutMillis = 0)
     }
 }
 
-private fun clientOf(http: HttpClient, port: Int, timeout: Duration): ApiClient = apiClient(http) {
+private fun clientOf(
+    http: HttpClient,
+    port: Int,
+    timeout: Duration,
+    configure: ClientSettingsBuilder.() -> Unit,
+): ApiClient = apiClient(http) {
     baseUrl = "http://$HOST:$port"
     this.timeout = Timeout(request = timeout)
     destinations = destinationPolicy {
@@ -90,4 +109,5 @@ private fun clientOf(http: HttpClient, port: Int, timeout: Duration): ApiClient 
         hosts = setOf(HOST)
     }
     credentials = credentials { scheme("bearer") { Secret("t1") } }
+    configure()
 }

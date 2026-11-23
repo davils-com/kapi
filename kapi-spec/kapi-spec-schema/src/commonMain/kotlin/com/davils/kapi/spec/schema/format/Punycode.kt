@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.schema.format
 
-import com.davils.kapi.spec.schema.pattern.LAST_CODE_POINT
+import com.davils.kapi.runtime.core.pattern.LAST_CODE_POINT
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val BASE: Int = 36
 private const val MINIMUM_THRESHOLD: Int = 1

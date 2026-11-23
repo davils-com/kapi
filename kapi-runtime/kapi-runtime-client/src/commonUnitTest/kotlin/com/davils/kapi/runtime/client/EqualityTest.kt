@@ -225,9 +225,9 @@ class EqualityTest : FunSpec({
                 RangeOutcome.Partial(range, ByteString()),
             )
             distinct(
-                RangeOutcome.Ranges(answered()),
-                RangeOutcome.Ranges(answered()),
-                RangeOutcome.Ranges(answered(tag = "b")),
+                RangeOutcome.Ranges(answered(), emptyList()),
+                RangeOutcome.Ranges(answered(), emptyList()),
+                RangeOutcome.Ranges(answered(tag = "b"), emptyList()),
             )
             distinct(
                 RangeOutcome.Full(answered()),

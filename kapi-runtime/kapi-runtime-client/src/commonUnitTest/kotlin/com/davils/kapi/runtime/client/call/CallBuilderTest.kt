@@ -16,6 +16,8 @@
 
 package com.davils.kapi.runtime.client.call
 
+import com.davils.kapi.runtime.client.fixture.BASE
+import com.davils.kapi.runtime.client.fixture.Exchanges
 import com.davils.kapi.runtime.client.fixture.JSON
 import com.davils.kapi.runtime.core.codec.multipart.Boundary
 import com.davils.kapi.runtime.core.header.IdempotencyKey
@@ -40,6 +42,10 @@ import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
 import kotlin.time.Duration.Companion.seconds
+
+private const val QUERY_STRING: String = "querystring"
+
+private const val PETS: String = "/pets"
 
 private const val ID: String = "id"
 
@@ -132,6 +138,47 @@ class CallBuilderTest : FunSpec({
             cookie.cookies.shouldBeEmpty()
         }
 
+        test("sends a query string encoded strictly, before its query parameters") {
+            val call = apiCall(operation = GET_PET, method = "GET") {
+                path(PETS)
+                queryString("""{"a":"x y&z=1#é~"}""")
+                query(name = "page", value = "2")
+            }
+            val exchanges = Exchanges()
+
+            call.queryString shouldBe "%7B%22a%22%3A%22x%20y%26z%3D1%23%C3%A9~%22%7D"
+            exchanges.execute(call)
+
+            exchanges.urls shouldBe listOf("$BASE/pets?%7B%22a%22%3A%22x%20y%26z%3D1%23%C3%A9~%22%7D&page=2")
+        }
+
+        test("sends no query for an empty query string and keeps it through a change") {
+            val empty = apiCall(operation = GET_PET, method = "GET") { queryString("") }
+            val exchanges = Exchanges()
+
+            exchanges.execute(empty.change { path(PETS) })
+
+            empty.queryString shouldBe ""
+            empty.change { }.queryString shouldBe ""
+            exchanges.urls shouldBe listOf("$BASE/pets")
+        }
+
+        test("refuses a query string without UTF-8 and a second one") {
+            val lone = apiCall(operation = GET_PET, method = "GET") { queryString("a\uD800") }
+            val swapped = apiCall(operation = GET_PET, method = "GET") { queryString("\uDC00\uD800") }
+            val twice = apiCall(operation = GET_PET, method = "GET") {
+                queryString("a")
+                queryString("b")
+            }
+            val paired = apiCall(operation = GET_PET, method = "GET") { queryString("😀") }
+
+            lone.refusal shouldBe CallFailure.ParameterRefused(QUERY_STRING)
+            swapped.refusal shouldBe CallFailure.ParameterRefused(QUERY_STRING)
+            twice.refusal shouldBe CallFailure.ParameterRefused(QUERY_STRING)
+            twice.queryString shouldBe "a"
+            paired.queryString shouldBe "%F0%9F%98%80"
+        }
+
         test("is idempotent by its method or by its document, and retryable with a key as well") {
             val get = apiCall(operation = GET_PET, method = "GET")
             val post = apiCall(operation = GET_PET, method = "POST")
@@ -165,12 +212,12 @@ class CallBuilderTest : FunSpec({
     context("a call that is changed") {
         test("keeps what it held and adds what the change adds") {
             val call = apiCall(operation = GET_PET, method = "GET") {
-                path("/pets")
+                path(PETS)
                 header(name = TRACE, value = "t1")
             }
             val changed = call.change { header(name = OTHER, value = "o") }
 
-            changed.path shouldBe "/pets"
+            changed.path shouldBe PETS
             changed.headers shouldBe entries(TRACE to "t1", OTHER to "o")
             call.change { } shouldBe call
             call.hashCode() shouldBe call.change { }.hashCode()

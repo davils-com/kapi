@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server.channel
 
+import com.davils.kapi.runtime.core.bounded
 import com.davils.kapi.runtime.server.ServerViolationCodes
-import com.davils.kapi.runtime.server.internal.bounded
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.time.Duration
@@ -61,15 +64,24 @@ public class ChannelLimits internal constructor(builder: ChannelLimitsBuilder) :
      */
     public val timeout: Duration = builder.timeout
 
+    /**
+     * The most messages a session holds for a later receive while it waits for the reply to a request it sent, at
+     * most [HARD_HELD_MESSAGES].
+     *
+     * @since 1.0.0
+     */
+    public val maxHeldMessages: Int = builder.maxHeldMessages
+
     override fun ValidationScope.validate() {
         bounded(::maxFrameBytes, HARD_FRAME_BYTES.toLong())
         bounded(::maxMessageBytes, HARD_MESSAGE_BYTES.toLong())
+        bounded(::maxHeldMessages, HARD_HELD_MESSAGES.toLong())
         if (!pingInterval.isPositive()) fail(::pingInterval, POSITIVE, ServerViolationCodes.DURATION_INVALID)
         if (!timeout.isPositive()) fail(::timeout, POSITIVE, ServerViolationCodes.DURATION_INVALID)
     }
 
     override fun toString(): String = "ChannelLimits(frameBytes=$maxFrameBytes, messageBytes=$maxMessageBytes, " +
-        "pingInterval=$pingInterval, timeout=$timeout)"
+        "pingInterval=$pingInterval, timeout=$timeout, heldMessages=$maxHeldMessages)"
 
     /**
      * The default limits and the hard ceilings.
@@ -94,7 +106,15 @@ public class ChannelLimits internal constructor(builder: ChannelLimitsBuilder) :
         public const val HARD_MESSAGE_BYTES: Int = 64 * 1_024 * 1_024
 
         /**
-         * The default limits: 64 KiB per frame, 1 MiB per message, a ping every 30 seconds and a timeout of 15.
+         * The hard ceiling of [maxHeldMessages], 4096.
+         *
+         * @since 1.0.0
+         */
+        public const val HARD_HELD_MESSAGES: Int = 4_096
+
+        /**
+         * The default limits: 64 KiB per frame, 1 MiB per message, a ping every 30 seconds, a timeout of 15 and 64
+         * held messages.
          *
          * @since 1.0.0
          */

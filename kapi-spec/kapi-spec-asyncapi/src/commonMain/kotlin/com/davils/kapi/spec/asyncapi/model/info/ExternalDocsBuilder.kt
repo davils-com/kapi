@@ -36,6 +36,10 @@ public class ExternalDocsBuilder internal constructor() : ElementBuilder<Externa
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The address of the documentation.
@@ -43,6 +47,10 @@ public class ExternalDocsBuilder internal constructor() : ElementBuilder<Externa
      * @since 1.0.0
      */
     public var url: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ExternalDocs = ExternalDocs(this)
 }

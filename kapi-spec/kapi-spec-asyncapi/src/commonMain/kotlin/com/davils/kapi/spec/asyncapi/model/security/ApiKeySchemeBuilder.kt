@@ -36,6 +36,10 @@ public class ApiKeySchemeBuilder internal constructor() : ElementBuilder<ApiKeyS
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Where the key is sent.
@@ -43,6 +47,10 @@ public class ApiKeySchemeBuilder internal constructor() : ElementBuilder<ApiKeyS
      * @since 1.0.0
      */
     public var placement: ApiKeyPlacement = ApiKeyPlacement.User
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ApiKeyScheme = ApiKeyScheme(this)
 }

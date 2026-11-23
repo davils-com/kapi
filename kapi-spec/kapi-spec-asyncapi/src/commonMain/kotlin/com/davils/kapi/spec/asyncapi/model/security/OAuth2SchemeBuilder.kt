@@ -36,6 +36,10 @@ public class OAuth2SchemeBuilder internal constructor() : ElementBuilder<OAuth2S
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The flows the scheme supports.
@@ -43,6 +47,10 @@ public class OAuth2SchemeBuilder internal constructor() : ElementBuilder<OAuth2S
      * @since 1.0.0
      */
     public var flows: OAuthFlows = OAuthFlowsBuilder().build()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val scopes: MutableList<String> = mutableListOf()
 

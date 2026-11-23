@@ -31,7 +31,6 @@ import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.url
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLBuilder
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.close
 import kotlinx.coroutines.withTimeoutOrNull
@@ -43,6 +42,12 @@ private const val COOKIE_SEPARATOR: String = "; "
 private const val PROTOCOL_SEPARATOR: String = ", "
 
 private const val SWITCHING: Int = 101
+
+private const val GET: String = "GET"
+
+private const val DPOP: String = "DPoP"
+
+private const val DPOP_NONCE: String = "DPoP-Nonce"
 
 private val toHttp: List<Pair<String, String>> = listOf("wss://" to "https://", "ws://" to "http://")
 
@@ -59,33 +64,31 @@ internal class ChannelOpening(private val client: ApiClient) {
         if (failure != null) return Outcome.Failure(failure)
         return when (val granted = client.authorization.of(call)) {
             is Outcome.Failure -> granted
-            is Outcome.Success -> located(call.withCredentials(granted.value), channel)
+            is Outcome.Success -> located(handshakeOf(call, granted.value), channel)
         }
     }
 
-    private suspend fun located(call: Call, channel: ChannelSettings): Outcome<OpenedChannel, CallFailure> {
+    private fun handshakeOf(call: Call, granted: Granted): Handshake =
+        Handshake(call = call.withCredentials(granted), binding = granted.binding)
+
+    private suspend fun located(handshake: Handshake, channel: ChannelSettings): Outcome<OpenedChannel, CallFailure> {
+        val call = handshake.call
         val base = settings.baseUrl.takeIf(String::isNotEmpty)?.let { found -> found + call.path }
         val raw = call.destination ?: base ?: return Outcome.Failure(CallFailure.BaseUrlMissing)
-        return targeted(raw = replaced(raw, toHttp), call = call, channel = channel)
+        return targeted(raw = replaced(raw, toHttp), handshake = handshake, channel = channel)
     }
 
     private suspend fun targeted(
         raw: String,
-        call: Call,
+        handshake: Handshake,
         channel: ChannelSettings,
     ): Outcome<OpenedChannel, CallFailure> {
-        val refusal = destinations.refusal(raw) ?: return handshake(
-            url = replaced(built(raw, call), toWebSocket),
-            call = call,
+        val refusal = destinations.refusal(raw) ?: return opened(
+            url = QueryText.built(raw, handshake.call),
+            handshake = handshake,
             channel = channel,
         )
         return Outcome.Failure(refusal)
-    }
-
-    private fun built(raw: String, call: Call): String {
-        val builder = URLBuilder(raw)
-        call.query.forEach { entry -> builder.parameters.append(name = entry.name, value = entry.value) }
-        return builder.buildString()
     }
 
     private fun replaced(url: String, schemes: List<Pair<String, String>>): String {
@@ -93,31 +96,42 @@ internal class ChannelOpening(private val client: ApiClient) {
         return match.second + url.substring(match.first.length)
     }
 
-    private suspend fun handshake(
+    private suspend fun opened(
         url: String,
-        call: Call,
+        handshake: Handshake,
         channel: ChannelSettings,
     ): Outcome<OpenedChannel, CallFailure> {
         val limit = settings.timeout.request
+        val binding = handshake.binding
         val opened = attempted {
+            val proof = binding?.run { proofs.proof(method = GET, url = url, accessToken = token) }
             val session = withTimeoutOrNull(limit ?: channel.closeTimeout * HANDSHAKE_FACTOR) {
-                client.http.webSocketSession { prepared(builder = this, url = url, call = call, channel = channel) }
+                client.http.webSocketSession {
+                    val proven = handshake.copy(proof = proof)
+                    prepared(builder = this, url = replaced(url, toWebSocket), handshake = proven)
+                    protocolsOf(builder = this, channel = channel)
+                }
             }
             session ?: throw HandshakeTimeout()
         }
         return opened.fold(
-            onSuccess = { session -> chosen(session, channel) },
+            onSuccess = { session -> chosen(session = session, channel = channel, binding = binding, url = url) },
             onFailure = { failure -> Outcome.Failure(failureOf(failure)) },
         )
     }
 
-    private fun prepared(builder: HttpRequestBuilder, url: String, call: Call, channel: ChannelSettings) {
+    private fun prepared(builder: HttpRequestBuilder, url: String, handshake: Handshake) {
+        val call = handshake.call
         builder.url(url)
+        handshake.proof?.let { proof -> builder.headers.append(name = DPOP, value = proof) }
         call.headers.forEach { entry -> builder.headers.append(name = entry.name, value = entry.value) }
         if (call.cookies.isNotEmpty()) {
             val cookies = call.cookies.joinToString(COOKIE_SEPARATOR) { cookie -> cookie.name + "=" + cookie.value }
             builder.headers.append(name = HttpHeaders.Cookie, value = cookies)
         }
+    }
+
+    private fun protocolsOf(builder: HttpRequestBuilder, channel: ChannelSettings) {
         if (channel.subprotocols.isNotEmpty()) {
             builder.headers.append(name = PROTOCOL, value = channel.subprotocols.joinToString(PROTOCOL_SEPARATOR))
         }
@@ -126,11 +140,15 @@ internal class ChannelOpening(private val client: ApiClient) {
     private suspend fun chosen(
         session: DefaultClientWebSocketSession,
         channel: ChannelSettings,
+        binding: DpopBinding?,
+        url: String,
     ): Outcome<OpenedChannel, CallFailure> {
+        val headers = session.call.response.headers
+        binding?.run { proofs.acceptNonce(url = url, nonce = headers[DPOP_NONCE]) }
         session.pingIntervalMillis = channel.pingInterval.inWholeMilliseconds
         session.timeoutMillis = channel.pongTimeout.inWholeMilliseconds
         session.maxFrameSize = channel.maxFrameBytes
-        val protocol = session.call.response.headers[PROTOCOL]
+        val protocol = headers[PROTOCOL]
         val isOffered = protocol == null || protocol in channel.subprotocols
         if (isOffered) return Outcome.Success(OpenedChannel(session = session, protocol = protocol))
         session.close(CloseReason(code = CloseKind.ProtocolError.code.toShort(), message = ""))
@@ -147,6 +165,8 @@ internal class ChannelOpening(private val client: ApiClient) {
     }
 
     private class HandshakeTimeout : IllegalStateException("The handshake took too long")
+
+    private data class Handshake(val call: Call, val binding: DpopBinding?, val proof: String? = null)
 
     private companion object {
         const val HANDSHAKE_FACTOR: Int = 6

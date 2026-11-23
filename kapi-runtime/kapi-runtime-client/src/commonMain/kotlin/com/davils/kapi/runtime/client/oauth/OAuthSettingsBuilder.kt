@@ -44,6 +44,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var tokenUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The issuer identifier of the authorization server, whose metadata name every endpoint left empty; empty for a
@@ -52,6 +56,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var issuer: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Where the metadata of [issuer] are discovered; RFC 8414 by default.
@@ -59,6 +67,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var discovery: Discovery = Discovery.OAuth
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The authorization endpoint of the authorization code grant; empty to discover it.
@@ -66,6 +78,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var authorizationUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The device authorization endpoint of RFC 8628; empty to discover it.
@@ -73,6 +89,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var deviceAuthorizationUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The revocation endpoint of RFC 7009; empty to discover it.
@@ -80,6 +100,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var revocationUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The client id.
@@ -87,6 +111,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var clientId: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How the client proves who it is; a public client by default.
@@ -94,6 +122,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var authentication: ClientAuthentication = ClientAuthentication.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How the source gets its first token; the client credentials grant by default.
@@ -101,6 +133,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var grant: Grant = Grant.ClientCredentials
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The scopes the source asks for.
@@ -108,6 +144,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var scopes: Set<String> = emptySet()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How long before its expiry a token is replaced; half a minute by default.
@@ -115,6 +155,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var leeway: Duration = DEFAULT_LEEWAY
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How long one request to an endpoint may take; half a minute by default.
@@ -122,6 +166,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var timeout: Duration = DEFAULT_TIMEOUT
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The policy every endpoint must pass; `https` to public hosts by default.
@@ -129,6 +177,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var destinations: DestinationPolicy = DestinationPolicy.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The cryptography of krypt that draws the verifiers, states and identifiers, hashes and signs.
@@ -136,6 +188,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var crypto: Crypto = Crypto()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The DPoP proofs of RFC 9449 that bind every token to their key, or `null` for bearer tokens.
@@ -143,6 +199,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var dpop: DpopProofs? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The event bus of konfetti the source reports on, or `null`.
@@ -150,6 +210,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var events: EventBus? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The time source of the expiry of tokens and of polling.
@@ -157,6 +221,10 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
      * @since 1.0.0
      */
     public var timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): OAuthSettings = OAuthSettings(this)
 

@@ -32,4 +32,5 @@ dependencies {
     commonMainApi(project(":kapi-spec:kapi-spec-openapi"))
     commonMainApi(project(":kapi-spec:kapi-spec-schema"))
     commonMainApi(libs.ktor.client.mock)
+    jvmMainApi(project(":kapi-runtime:kapi-runtime-server"))
 }

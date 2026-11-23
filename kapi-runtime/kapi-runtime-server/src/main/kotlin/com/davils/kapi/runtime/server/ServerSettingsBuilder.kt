@@ -44,6 +44,10 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public var codecs: Codecs = Codecs.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerSettings.verifier].
@@ -51,6 +55,10 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public var verifier: DeliveryVerifier? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerSettings.realm].
@@ -58,6 +66,10 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public var realm: String = DEFAULT_REALM
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerSettings.sensitiveHeaders].
@@ -65,6 +77,10 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public var sensitiveHeaders: Set<String> = emptySet()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerSettings.clock].
@@ -72,6 +88,10 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public var clock: Clock = Clock.System
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal var limits: ServerLimits = ServerLimits.Default
         private set
@@ -92,6 +112,7 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public fun limits(configure: ServerLimitsBuilder.() -> Unit) {
+        checkOpen()
         val builder = ServerLimitsBuilder()
         builder.configure()
         limits = builder.build()
@@ -105,6 +126,7 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public fun problems(configure: ProblemSettingsBuilder.() -> Unit) {
+        checkOpen()
         val builder = ProblemSettingsBuilder()
         builder.configure()
         problems = builder.build()
@@ -117,6 +139,7 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public fun telemetry(configure: TelemetrySettingsBuilder.() -> Unit) {
+        checkOpen()
         val builder = TelemetrySettingsBuilder()
         builder.configure()
         telemetry = builder.build()
@@ -130,6 +153,7 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
      * @since 1.0.0
      */
     public fun authorizer(scheme: String, authorizer: Authorizer) {
+        checkOpen()
         authorizers[scheme] = authorizer
     }
 

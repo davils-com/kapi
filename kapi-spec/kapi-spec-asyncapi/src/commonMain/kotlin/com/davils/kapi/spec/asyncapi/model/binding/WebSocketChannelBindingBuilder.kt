@@ -38,6 +38,10 @@ public class WebSocketChannelBindingBuilder internal constructor() : ElementBuil
      * @since 1.0.0
      */
     public var method: WebSocketMethod? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The schema of the query parameters, which describes an object.
@@ -45,6 +49,10 @@ public class WebSocketChannelBindingBuilder internal constructor() : ElementBuil
      * @since 1.0.0
      */
     public var query: Referable<Schema>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The schema of the headers, which describes an object.
@@ -52,6 +60,10 @@ public class WebSocketChannelBindingBuilder internal constructor() : ElementBuil
      * @since 1.0.0
      */
     public var headers: Referable<Schema>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The version of the binding, such as `0.1.0`.
@@ -59,6 +71,10 @@ public class WebSocketChannelBindingBuilder internal constructor() : ElementBuil
      * @since 1.0.0
      */
     public var bindingVersion: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): WebSocketChannelBinding = WebSocketChannelBinding(this)
 }

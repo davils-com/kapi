@@ -36,6 +36,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var title: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `version`, the version of the document; empty until it is set.
@@ -43,6 +47,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var version: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `summary`, a short summary of the API, written from OpenAPI 3.1 on.
@@ -50,6 +58,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the API.
@@ -57,6 +69,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `termsOfService`, the URL of the terms of service of the API.
@@ -64,6 +80,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var termsOfService: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `contact`, the contact of the API.
@@ -71,6 +91,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var contact: Contact? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `license`, the license of the API.
@@ -78,6 +102,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var license: License? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Info = Info(this)
 }

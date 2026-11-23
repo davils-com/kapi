@@ -16,6 +16,8 @@
 
 package com.davils.kapi.runtime.core.validation
 
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.pattern.patternLimits
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotContainDuplicates
@@ -27,6 +29,8 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldStartWith
 
 private const val SIX: Long = 6L
+
+private const val EXPLOSIVE_LENGTH: Int = 10_000
 
 private const val FOUR: Long = 4L
 
@@ -121,6 +125,29 @@ class ConstraintsTest : FunSpec({
             Decimal.parseOrNull("1" + "0".repeat(Decimal.MAX_TEXT_LENGTH)).shouldBeNull()
             Decimal.ofOrNull(Double.NaN).shouldBeNull()
             shouldThrow<IllegalArgumentException> { Decimal.parse("x") }
+        }
+    }
+
+    context("matches") {
+        test("finds the pattern anywhere in the text, as JSON Schema does") {
+            val pattern = Pattern.compileOrThrow("[0-9]{3}")
+
+            Constraints.matches("ab123cd", pattern) shouldBe true
+            Constraints.matches("12", pattern) shouldBe false
+            Constraints.matches("", Pattern.compileOrThrow("^$")) shouldBe true
+        }
+
+        test("refuses a text longer than the input limit of the pattern instead of reading it") {
+            val pattern = Pattern.compileOrThrow("a", patternLimits { maximumInputLength = 2 })
+
+            Constraints.matches("aa", pattern) shouldBe true
+            Constraints.matches("aaa", pattern) shouldBe false
+        }
+
+        test("stays linear on input that makes backtracking engines explode") {
+            val pattern = Pattern.compileOrThrow("^(a+)+$")
+
+            Constraints.matches("a".repeat(EXPLOSIVE_LENGTH) + "!", pattern) shouldBe false
         }
     }
 

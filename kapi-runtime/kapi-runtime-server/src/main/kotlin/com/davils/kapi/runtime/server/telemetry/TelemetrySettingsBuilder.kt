@@ -39,6 +39,10 @@ public class TelemetrySettingsBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public var tracer: Tracer = Tracer.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal var registry: MeterRegistry? = null
         private set
@@ -53,6 +57,7 @@ public class TelemetrySettingsBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public fun meters(registry: MeterRegistry) {
+        checkOpen()
         this.registry = registry
     }
 
@@ -63,6 +68,7 @@ public class TelemetrySettingsBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public fun events(bus: EventBus) {
+        checkOpen()
         this.bus = bus
     }
 

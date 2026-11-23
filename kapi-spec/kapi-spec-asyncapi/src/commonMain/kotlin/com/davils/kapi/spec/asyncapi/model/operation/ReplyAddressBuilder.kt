@@ -36,6 +36,10 @@ public class ReplyAddressBuilder internal constructor() : ElementBuilder<ReplyAd
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `location` of the address: the runtime expression that names where in the request the address is found, such
@@ -44,6 +48,10 @@ public class ReplyAddressBuilder internal constructor() : ElementBuilder<ReplyAd
      * @since 1.0.0
      */
     public var expression: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ReplyAddress = ReplyAddress(this)
 }

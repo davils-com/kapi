@@ -36,6 +36,10 @@ public class DestinationPolicyBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public var schemes: Set<String> = setOf("https")
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The hosts a destination may have, in lower case, such as `api.example.com`, `*.example.com` for every name
@@ -45,6 +49,10 @@ public class DestinationPolicyBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public var hosts: Set<String> = emptySet()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether a destination in a private network is allowed when no hosts are listed; `false` by default.
@@ -52,6 +60,10 @@ public class DestinationPolicyBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public var arePrivateNetworksAllowed: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The resolver that finds the addresses of a public host name; [HostResolver.None] by default.
@@ -59,6 +71,10 @@ public class DestinationPolicyBuilder internal constructor() : ValidatingBuilder
      * @since 1.0.0
      */
     public var resolver: HostResolver = HostResolver.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): DestinationPolicy = DestinationPolicy(this)
 }

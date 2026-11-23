@@ -73,6 +73,22 @@ public class Headers internal constructor(entries: Map<String, List<String>>, se
     public fun all(name: String): List<String> = fields[name.lowercase()].orEmpty()
 
     /**
+     * Returns every line of the field [name] joined into one value, as RFC 9110 §5.3 combines them: in the order they
+     * came, separated by a comma and a space.
+     *
+     * Only a field whose grammar is a comma-separated list may be combined this way, such as `Accept`, `Cache-Control`
+     * or `Link`; `Set-Cookie` may not, and a field whose value is a single item reads its first line with [get].
+     *
+     * @param name the name, compared without case.
+     * @return the combined value, or `null` if there is no such field.
+     * @since 1.0.0
+     */
+    public fun joined(name: String): String? {
+        val lines = all(name)
+        return lines.takeIf(List<String>::isNotEmpty)?.joinToString(", ")
+    }
+
+    /**
      * Returns every field with its values, unmasked.
      *
      * @return the names in lower case with their values.

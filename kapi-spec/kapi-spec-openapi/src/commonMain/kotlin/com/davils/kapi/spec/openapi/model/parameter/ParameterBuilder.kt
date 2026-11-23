@@ -41,6 +41,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `in`, where the parameter is sent; [ParameterPlacement.Query] until it is set.
@@ -48,6 +52,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var placement: ParameterPlacement = ParameterPlacement.Query
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the parameter.
@@ -55,6 +63,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `required`, whether a request must carry the parameter.
@@ -62,6 +74,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var isRequired: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `deprecated`, whether the parameter should no longer be used.
@@ -69,6 +85,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var isDeprecated: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `allowEmptyValue`, whether a query parameter may be sent without a value.
@@ -76,6 +96,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var isEmptyValueAllowed: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `style`; `null` to take the default of the placement.
@@ -83,6 +107,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var style: ParameterStyle? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `explode`; `null` to take the default of the style.
@@ -90,6 +118,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var isExploded: Boolean? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `allowReserved`, whether reserved characters stay unencoded.
@@ -97,6 +129,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var isReservedAllowed: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `schema`, the schema of the value.
@@ -104,6 +140,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var schema: Schema? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
@@ -113,6 +153,10 @@ public class ParameterBuilder internal constructor() : ElementBuilder<Parameter>
      * @since 1.0.0
      */
     public var example: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
 

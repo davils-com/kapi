@@ -38,6 +38,10 @@ public class ResponseBuilder internal constructor() : ElementBuilder<Response>()
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the response, which OpenAPI requires before 3.2.
@@ -45,6 +49,10 @@ public class ResponseBuilder internal constructor() : ElementBuilder<Response>()
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
 

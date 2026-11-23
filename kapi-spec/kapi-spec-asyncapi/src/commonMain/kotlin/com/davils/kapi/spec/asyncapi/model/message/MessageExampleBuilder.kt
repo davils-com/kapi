@@ -39,6 +39,10 @@ public class MessageExampleBuilder internal constructor() : ElementBuilder<Messa
      * @since 1.0.0
      */
     public var payload: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A machine-friendly name of the example.
@@ -46,6 +50,10 @@ public class MessageExampleBuilder internal constructor() : ElementBuilder<Messa
      * @since 1.0.0
      */
     public var name: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A short summary of what it is about.
@@ -53,6 +61,10 @@ public class MessageExampleBuilder internal constructor() : ElementBuilder<Messa
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): MessageExample = MessageExample(this)
 }

@@ -36,6 +36,10 @@ public class HttpApiKeySchemeBuilder internal constructor() : ElementBuilder<Htt
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The name of the query parameter, the header or the cookie.
@@ -43,6 +47,10 @@ public class HttpApiKeySchemeBuilder internal constructor() : ElementBuilder<Htt
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Where the key is sent.
@@ -50,6 +58,10 @@ public class HttpApiKeySchemeBuilder internal constructor() : ElementBuilder<Htt
      * @since 1.0.0
      */
     public var placement: HttpApiKeyPlacement = HttpApiKeyPlacement.Header
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): HttpApiKeyScheme = HttpApiKeyScheme(this)
 }

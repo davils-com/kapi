@@ -36,3 +36,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   them. Both tasks are cacheable and relocatable, write a JSON report and a SARIF log, and fail on every error, every
   unacknowledged warning and every acknowledgement without a reason or a matching warning. `generatorClasspath` and
   `runtimes { enabled = false }` let a build bring its own generator and runtimes.
+
+### Changed
+
+- **The linear pattern engine** moved from `kapi-spec-schema` to `kapi-runtime-core` as
+  `com.davils.kapi.runtime.core.pattern`, so generated models validate `pattern` with it: `Pattern.compileOrThrow`
+  compiles a known-good pattern once and `Constraints.matches` checks a text against it, reporting
+  `kapi.runtime.constraint.pattern`.
+- **The core runtime** shares what the other runtimes duplicated: `FieldSyntax` (tokens and field values) and the
+  `bounded` limit check as `@DavilsInternal` API, `HttpStatus` with the status codes and their classes,
+  `Headers.joined` for the combined value of every line of a field and `Codecs.decode` for a parsed `MediaType`.
+- **The server runtime** reads the shared grammar, limit check and status codes of the core runtime instead of copies,
+  and adds `ReplyBuilder.events(serializer, items)` for typed server-sent events, `Input.part`, `Input.partItems` and
+  `Input.field` that decode parts and form fields through the codecs of the server, an `admission` hook on
+  `ChannelEndpoint` that refuses an invalid handshake before the upgrade, `ChannelSession.request` with a
+  `Correlation` and `ChannelLimits.maxHeldMessages`, `Request.of { }` to build a request without Ktor and
+  `ReplyBody.Value.encoded`.
+- **The client runtime** adds `CallBuilder.queryString` for a `querystring` parameter of another media type than a
+  form, encoded strictly, `ChannelSettings.toBuilder`, `Correlation.json` over the JSON of messages, DPoP proofs on
+  WebSocket handshakes, `CallFailure.Unsent` for an interceptor that hands back a trip that was never sent, and
+  `RangeOutcome.Ranges.parts` with the parts of a `multipart/byteranges` answer.
+- **The test support** calls the operations of generated server routes without Ktor on the JVM: `Routes.call` with a
+  request of `Request.of` or one it builds, and `Reply.content`, `Reply.text`, `Reply.mediaType` and `Reply.decoded`
+  to read the reply.
+- **Every builder** of the DSLs closes after its first `build()` or `validate()`: a setter or a function that changes
+  it afterwards throws an `IllegalStateException` instead of losing the change silently.

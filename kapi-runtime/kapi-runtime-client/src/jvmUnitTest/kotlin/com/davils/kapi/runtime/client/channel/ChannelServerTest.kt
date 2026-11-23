@@ -24,9 +24,14 @@ import com.davils.kapi.runtime.client.channel.fixture.GONE
 import com.davils.kapi.runtime.client.channel.fixture.Line
 import com.davils.kapi.runtime.client.channel.fixture.PROTOCOL
 import com.davils.kapi.runtime.client.channel.fixture.withServer
+import com.davils.kapi.runtime.client.dpop.dpopProofs
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.krypt.core.algorithm.KeyType
+import com.davils.krypt.jose.JoseKey
+import com.davils.krypt.jose.jws.JwsAlgorithm
+import com.davils.krypt.primitive.Crypto
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -35,6 +40,8 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 private const val NOT_FOUND: Int = 404
+
+private const val BEARER: String = "bearer"
 
 private val spec: ChannelSpec<Line, Line> = ChannelSpec(
     sendSerializer = Line.serializer(),
@@ -50,7 +57,7 @@ class ChannelServerTest : FunSpec({
         test("opens with the subprotocol and the credentials, exchanges messages and closes normally") {
             val call = apiCall(operation = "echo", method = "GET") {
                 path("/echo")
-                security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
+                security(listOf(SecurityUse(BEARER, CredentialPlacement.Bearer)))
             }
 
             val outcome = withServer { client ->
@@ -64,6 +71,30 @@ class ChannelServerTest : FunSpec({
 
             completed.value shouldBe listOf(PROTOCOL, "Bearer t1", "hi")
             completed.close.kind shouldBe CloseKind.Normal
+        }
+
+        test("sends a DPoP proof and the query string with the handshake") {
+            val crypto = Crypto()
+            val pair = crypto.keys.generate(KeyType.P256)
+            val proofs = dpopProofs(
+                crypto = crypto,
+                key = JoseKey.Private(pair.privateKey),
+                publicKey = pair.publicKey,
+                algorithm = JwsAlgorithm.ES256,
+            )
+            val call = apiCall(operation = "proof", method = "GET") {
+                path("/proof")
+                queryString("a b&c")
+                query(name = "x", value = "y")
+                security(listOf(SecurityUse(BEARER, CredentialPlacement.Bearer)))
+            }
+
+            val outcome = withServer(configure = { dpop(BEARER, proofs) }) { client ->
+                client.channel(call, spec) { incoming.first().text }
+            }
+            val completed = outcome.shouldBeInstanceOf<ChannelOutcome.Completed<String>>()
+
+            completed.value shouldBe "DPoP t1|true|a%20b%26c&x=y"
         }
 
         test("surfaces the close code of the server") {

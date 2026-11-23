@@ -41,6 +41,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var host: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The protocol of the server, such as `ws`, `kafka` or `amqp`.
@@ -48,6 +52,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var protocol: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The version of the protocol, such as `0.9.1`.
@@ -55,6 +63,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var protocolVersion: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The path to a resource on the host, such as `/production`.
@@ -62,6 +74,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var pathname: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -69,6 +85,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A human-friendly title.
@@ -76,6 +96,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var title: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A short summary of what it is about.
@@ -83,6 +107,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val variables: MutableMap<String, Referable<ServerVariable>> = linkedMapOf()
 
@@ -96,6 +124,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The protocol-specific details of the server.
@@ -103,6 +135,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var bindings: Referable<ServerBindings>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Server = Server(this)
 }

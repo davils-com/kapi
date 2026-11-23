@@ -47,6 +47,7 @@ public class CredentialsBuilder internal constructor() : ValidatingBuilder<Crede
      * @since 1.0.0
      */
     public fun scheme(name: String, source: TokenSource) {
+        checkOpen()
         added += name to source
     }
 
@@ -57,6 +58,7 @@ public class CredentialsBuilder internal constructor() : ValidatingBuilder<Crede
      * @since 1.0.0
      */
     public fun peer(name: String) {
+        checkOpen()
         connected += name
     }
 

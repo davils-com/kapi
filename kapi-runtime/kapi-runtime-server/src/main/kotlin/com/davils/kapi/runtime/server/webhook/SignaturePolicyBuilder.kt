@@ -40,6 +40,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var label: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.requiredComponents].
@@ -47,6 +51,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var requiredComponents: Set<String> = setOf("@method", "@target-uri")
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.maxAge].
@@ -54,6 +62,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var maxAge: Duration = DEFAULT_AGE_MINUTES.minutes
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.clockSkew].
@@ -61,6 +73,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var clockSkew: Duration = 1.minutes
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.isCreatedRequired].
@@ -68,6 +84,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var isCreatedRequired: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.tag].
@@ -75,6 +95,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var tag: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.clock].
@@ -82,6 +106,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var clock: Clock = Clock.System
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [SignaturePolicy.limits].
@@ -89,6 +117,10 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
      * @since 1.0.0
      */
     public var limits: FieldLimits = FieldLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): SignaturePolicy = SignaturePolicy(this)
 

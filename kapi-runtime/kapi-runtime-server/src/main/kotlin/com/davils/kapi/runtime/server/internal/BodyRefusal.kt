@@ -16,10 +16,11 @@
 
 package com.davils.kapi.runtime.server.internal
 
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.problem.ServerCodes
 
 internal enum class BodyRefusal(val status: Int, val code: String) {
-    TooLarge(Statuses.TOO_LARGE, ServerCodes.TOO_LARGE),
-    UnsupportedEncoding(Statuses.UNSUPPORTED_MEDIA_TYPE, ServerCodes.UNSUPPORTED_ENCODING),
-    MalformedEncoding(Statuses.BAD_REQUEST, ServerCodes.MALFORMED),
+    TooLarge(HttpStatus.CONTENT_TOO_LARGE, ServerCodes.TOO_LARGE),
+    UnsupportedEncoding(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ServerCodes.UNSUPPORTED_ENCODING),
+    MalformedEncoding(HttpStatus.BAD_REQUEST, ServerCodes.MALFORMED),
 }

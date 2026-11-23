@@ -38,6 +38,10 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
      * @since 1.0.0
      */
     public var operationReference: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `operationId`, the id of the operation.
@@ -45,6 +49,10 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
      * @since 1.0.0
      */
     public var operationId: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val parameters: MutableMap<String, Value> = linkedMapOf()
 
@@ -54,6 +62,10 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
      * @since 1.0.0
      */
     public var requestBody: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the link.
@@ -61,6 +73,10 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `server`, the server the operation is called on.
@@ -68,6 +84,10 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
      * @since 1.0.0
      */
     public var server: Server? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Link = Link(this)
 }

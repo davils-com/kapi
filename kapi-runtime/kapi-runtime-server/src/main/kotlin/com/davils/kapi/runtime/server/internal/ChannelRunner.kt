@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.server.internal
 
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.ApiServer
 import com.davils.kapi.runtime.server.channel.ChannelEndpoint
 import com.davils.kapi.runtime.server.channel.ChannelSession
@@ -54,7 +55,7 @@ internal class ChannelRunner<Receive : Any, Send : Any>(
     }
 
     suspend fun refuseProtocol(call: ApplicationCall) {
-        writer.write(call, context.problems.problem(Statuses.BAD_REQUEST, ServerCodes.UPGRADE_REQUIRED))
+        writer.write(call, context.problems.problem(HttpStatus.BAD_REQUEST, ServerCodes.UPGRADE_REQUIRED))
     }
 
     suspend fun run(session: DefaultWebSocketServerSession, protocol: String?) {
@@ -87,19 +88,34 @@ internal class ChannelRunner<Receive : Any, Send : Any>(
             }
 
             is Admission.Granted -> {
-                call.attributes.put(REQUEST, request.authorized(admission.principal))
-                null
+                checked(call, request.authorized(admission.principal))
             }
         }
     }
 
+    private suspend fun checked(call: ApplicationCall, request: Request): Reply? {
+        val checked = attempted { withPrincipalOf(request) { endpoint.admission(request) } }
+        val refusal = checked.getOrElse { failure -> failed(failure) }
+        if (refusal == null) call.attributes.put(REQUEST, request)
+        return refusal
+    }
+
+    private fun failed(failure: Throwable): Reply {
+        telemetry.failed(endpoint.name, failure)
+        return context.problems.internal()
+    }
+
+    private suspend fun <T> withPrincipalOf(request: Request, block: suspend () -> T): T {
+        val principal = request.principal ?: return block()
+        return withPrincipal(principal) { block() }
+    }
+
     private suspend fun handle(session: TypedSession<Receive, Send>, request: Request) {
-        val principal = request.principal ?: return endpoint.handler(session)
-        withPrincipal(principal) { endpoint.handler(session) }
+        withPrincipalOf(request) { endpoint.handler(session) }
     }
 
     private fun upgradeRequired() = context.problems.problem(
-        status = Statuses.UPGRADE_REQUIRED,
+        status = HttpStatus.UPGRADE_REQUIRED,
         code = ServerCodes.UPGRADE_REQUIRED,
         headers = listOf("Upgrade" to WEBSOCKET),
     )

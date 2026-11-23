@@ -39,6 +39,10 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
      * @since 1.0.0
      */
     public var schema: Schema? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `itemSchema`, the schema of each item of a sequential media type, written from OpenAPI 3.2 on.
@@ -46,6 +50,10 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
      * @since 1.0.0
      */
     public var itemSchema: Schema? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `example`, an example of the content.
@@ -53,6 +61,10 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
      * @since 1.0.0
      */
     public var example: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
 
@@ -67,6 +79,10 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
      * @since 1.0.0
      */
     public var itemEncoding: Encoding? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): MediaType = MediaType(this)
 }

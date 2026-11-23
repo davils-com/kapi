@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.server.internal
 
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.telemetry.ServerEvent
 import com.davils.kapi.runtime.server.telemetry.ServerTopics
 import com.davils.kapi.runtime.server.telemetry.TelemetrySettings
@@ -110,8 +111,8 @@ internal class ServerTelemetry(settings: TelemetrySettings) {
         }
 
         fun outcomeOf(status: Int): String {
-            if (status >= Statuses.SERVER_ERRORS) return "server_error"
-            return "client_error".takeIf { status >= Statuses.CLIENT_ERRORS } ?: "success"
+            if (status >= HttpStatus.INTERNAL_SERVER_ERROR) return "server_error"
+            return "client_error".takeIf { status >= HttpStatus.BAD_REQUEST } ?: "success"
         }
     }
 }

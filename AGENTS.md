@@ -16,11 +16,11 @@ and critical infrastructure, with security and correctness first.
 | Module | Artifact | Purpose |
 |---|---|---|
 | `kapi-spec/kapi-spec-core` | `com.davils:kapi-spec-core` | What every API document shares: sources, loading through kaml within limits, `$ref` resolution with confinement, resolvers, located diagnostics, the severity policy, overlays and writing |
-| `kapi-spec/kapi-spec-schema` | `com.davils:kapi-spec-schema` | JSON Schema 2020-12 with the dialects of OpenAPI 3.0 and 3.1: a bounded validator over YAML nodes and JSON elements, a linear pattern matcher and format assertions |
+| `kapi-spec/kapi-spec-schema` | `com.davils:kapi-spec-schema` | JSON Schema 2020-12 with the dialects of OpenAPI 3.0 and 3.1: a bounded validator over YAML nodes and JSON elements and format assertions, matching patterns with the linear matcher of `kapi-runtime-core` |
 | `kapi-spec/kapi-spec-openapi` | `com.davils:kapi-spec-openapi` | OpenAPI 3.0, 3.1 and 3.2: the model, the strict reader, the upgrade of Swagger 2.0, the rules, the structure check against the official schemas and the comparison of two versions |
 | `kapi-spec/kapi-spec-asyncapi` | `com.davils:kapi-spec-asyncapi` | AsyncAPI 3: the model, the strict reader and the rules, with the WebSocket binding |
 | `kapi-spec/kapi-spec-testing` | `com.davils:kapi-spec-testing` | Test support for readers of documents: a corpus of OpenAPI documents, hostile documents and an in-memory resolver |
-| `kapi-runtime/kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation, problem details, HTTP semantics and the destination policy |
+| `kapi-runtime/kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation with a linear pattern matcher, problem details, HTTP semantics and the destination policy |
 | `kapi-runtime/kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the Ktor `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
 | `kapi-runtime/kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
 | `kapi-runtime/kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Test support for generated code: fake credentials, mock engines and contract assertions |

@@ -38,6 +38,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxRequestBytes: Long = DEFAULT_REQUEST_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxUploadBytes].
@@ -45,6 +49,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxUploadBytes: Long = DEFAULT_UPLOAD_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxDecompressedBytes].
@@ -52,6 +60,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxDecompressedBytes: Long = DEFAULT_DECOMPRESSED_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxQueryLength].
@@ -59,6 +71,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxQueryLength: Int = DEFAULT_QUERY_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxQueryParameters].
@@ -66,6 +82,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxQueryParameters: Int = DEFAULT_QUERY_PARAMETERS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxHeaders].
@@ -73,6 +93,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxHeaders: Int = DEFAULT_HEADERS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.maxHeaderBytes].
@@ -80,6 +104,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var maxHeaderBytes: Int = DEFAULT_HEADER_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.multipart].
@@ -87,6 +115,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var multipart: MultipartLimits = MultipartLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * See [ServerLimits.fields].
@@ -94,6 +126,10 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
      * @since 1.0.0
      */
     public var fields: FieldLimits = FieldLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ServerLimits = ServerLimits(this)
 

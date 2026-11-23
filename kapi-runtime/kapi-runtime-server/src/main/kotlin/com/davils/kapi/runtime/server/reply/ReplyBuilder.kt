@@ -23,6 +23,7 @@ import com.davils.kapi.runtime.core.codec.Codecs
 import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.conditional.HttpDate
 import com.davils.kapi.runtime.core.framing.JsonLines
+import com.davils.kapi.runtime.core.framing.ServerSentEvent
 import com.davils.kapi.runtime.core.header.ContentDisposition
 import com.davils.kapi.runtime.core.header.LinkValue
 import com.davils.kapi.runtime.core.header.Links
@@ -181,6 +182,31 @@ public class ReplyBuilder internal constructor(private val status: Int) {
         cacheControl(CacheControl.of(CacheDirective.noCache()))
         body = ReplyBody.Stream(eventStream, null) { channel: ByteWriteChannel, _: Codecs ->
             StreamWriters.events(channel, heartbeat, produce)
+        }
+    }
+
+    /**
+     * Streams [items] as server-sent events of the type `message`, the data of each the item written compactly by the
+     * JSON of the codecs of the server, with a heartbeat comment every [heartbeat].
+     *
+     * The JSON is written through the writer of server-sent events of the runtime core, so no item can end an event
+     * early or inject a field; the stream ends when [items] completes. Otherwise it behaves as [events] with a
+     * producer does.
+     *
+     * @param T the type of the items.
+     * @param serializer the serializer of an item.
+     * @param items the items, each sent as one event and flushed as it comes.
+     * @param heartbeat the time between two heartbeat comments, or `null` for none.
+     * @throws IllegalArgumentException if [heartbeat] is not positive.
+     * @since 1.0.0
+     */
+    public fun <T> events(serializer: SerializationStrategy<T>, items: Flow<T>, heartbeat: Duration? = null) {
+        require(heartbeat == null || heartbeat.isPositive()) { "A heartbeat comes after a positive time" }
+        cacheControl(CacheControl.of(CacheDirective.noCache()))
+        body = ReplyBody.Stream(eventStream, null) { channel: ByteWriteChannel, codecs: Codecs ->
+            StreamWriters.events(channel, heartbeat) {
+                items.collect { item -> send(ServerSentEvent(data = codecs.json.encodeToString(serializer, item))) }
+            }
         }
     }
 

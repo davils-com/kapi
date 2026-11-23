@@ -38,6 +38,10 @@ public class ReferencePolicyBuilder : ValidatingBuilder<ReferencePolicy>() {
      * @since 1.0.0
      */
     public var root: DocumentUri? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether references may lead to other documents at all; `true` by default.
@@ -45,6 +49,10 @@ public class ReferencePolicyBuilder : ValidatingBuilder<ReferencePolicy>() {
      * @since 1.0.0
      */
     public var isExternalAllowed: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ReferencePolicy = ReferencePolicy(this)
 }

@@ -36,6 +36,10 @@ public class LicenseBuilder internal constructor() : ElementBuilder<License>() {
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `identifier`, the SPDX license expression, written from OpenAPI 3.1 on.
@@ -43,6 +47,10 @@ public class LicenseBuilder internal constructor() : ElementBuilder<License>() {
      * @since 1.0.0
      */
     public var identifier: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `url`, the URL of the text of the license.
@@ -50,6 +58,10 @@ public class LicenseBuilder internal constructor() : ElementBuilder<License>() {
      * @since 1.0.0
      */
     public var url: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): License = License(this)
 }

@@ -66,6 +66,14 @@ public class Call internal constructor(builder: CallBuilder) {
     public val query: List<ParameterEntry> = builder.queryEntries.toList()
 
     /**
+     * The whole query of a parameter `in: querystring`, already percent-encoded, which comes before [query], or
+     * `null`.
+     *
+     * @since 1.0.0
+     */
+    public val queryString: String? = builder.rawQuery
+
+    /**
      * The header fields in their order.
      *
      * @since 1.0.0
@@ -171,6 +179,7 @@ public class Call internal constructor(builder: CallBuilder) {
             method,
             path,
             query,
+            queryString,
             headers,
             cookies,
             accept,

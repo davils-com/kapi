@@ -17,6 +17,7 @@
 package com.davils.kapi.runtime.core.validation
 
 import com.davils.kapi.runtime.core.internal.Utf8
+import com.davils.kapi.runtime.core.pattern.Pattern
 
 /**
  * The checks generated models run for the keywords of JSON Schema that Kotlin cannot express by itself.
@@ -35,6 +36,25 @@ public object Constraints {
      * @since 1.0.0
      */
     public fun length(text: String): Int = Utf8.codePointCount(text)
+
+    /**
+     * Returns whether [text] satisfies the keyword `pattern` of JSON Schema: whether [pattern] matches anywhere in it,
+     * as [Pattern.containsMatchIn] decides, in time linear in the length of [text].
+     *
+     * Generated models compile each pattern once, with [Pattern.compileOrThrow], into a private value and report a
+     * text that does not match as [ConstraintViolationCodes.PATTERN]. A text longer than
+     * [com.davils.kapi.runtime.core.pattern.PatternLimits.maximumInputLength] of [pattern] is never read and does not
+     * match, so an overlong value is refused instead of being matched in part.
+     *
+     * @param text the text to check, which may come from an attacker.
+     * @param pattern the compiled pattern.
+     * @return `true` if [text] is within the input limit of [pattern] and [pattern] matches some part of it.
+     * @since 1.0.0
+     */
+    public fun matches(text: String, pattern: Pattern): Boolean {
+        val isWithinLimit = text.length <= pattern.limits.maximumInputLength
+        return isWithinLimit && pattern.containsMatchIn(text)
+    }
 
     /**
      * Returns whether [value] is a whole multiple of [factor].

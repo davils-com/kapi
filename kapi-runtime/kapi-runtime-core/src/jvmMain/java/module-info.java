@@ -38,6 +38,7 @@ module com.davils.kapi.runtime.core {
     exports com.davils.kapi.runtime.core.header;
     exports com.davils.kapi.runtime.core.negotiation;
     exports com.davils.kapi.runtime.core.parameter;
+    exports com.davils.kapi.runtime.core.pattern;
     exports com.davils.kapi.runtime.core.problem;
     exports com.davils.kapi.runtime.core.range;
     exports com.davils.kapi.runtime.core.ratelimit;

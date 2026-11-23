@@ -36,6 +36,10 @@ public class ProblemSettingsBuilder internal constructor() : ValidatingBuilder<P
      * @since 1.0.0
      */
     public var typeBase: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): ProblemSettings = ProblemSettings(this)
 }

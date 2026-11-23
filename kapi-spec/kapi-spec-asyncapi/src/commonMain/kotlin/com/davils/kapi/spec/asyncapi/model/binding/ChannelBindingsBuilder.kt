@@ -37,6 +37,10 @@ public class ChannelBindingsBuilder internal constructor() : ElementBuilder<Chan
      * @since 1.0.0
      */
     public var webSocket: WebSocketChannelBinding? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val protocols: MutableMap<String, Value> = linkedMapOf()
 
