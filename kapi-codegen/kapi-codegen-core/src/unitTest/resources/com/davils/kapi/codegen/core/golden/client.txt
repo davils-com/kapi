@@ -280,6 +280,8 @@ public class PetstoreProblem(
 ===== com/example/petstore/model/PetstoreQueryPetsCriteria.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
@@ -302,6 +304,10 @@ public class PetstoreQueryPetsCriteria(
     public val minAge: Int? = null,
 ) : Validatable {
     override fun ValidationScope.validate() {
+        if (Constraints.length(name) > 40) fail(::name, "must have at most 40 characters", ConstraintViolationCodes.MAX_LENGTH)
+        if (minAge != null) {
+            if (minAge < 0L) fail(::minAge, "must be at least 0", ConstraintViolationCodes.MINIMUM)
+        }
     }
 
     /**
@@ -1765,6 +1771,8 @@ package com.example.petstore.server
 
 import com.davils.kapi.runtime.core.negotiation.MediaRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.operation.Routes
 import com.davils.kapi.runtime.server.reply.Reply
@@ -1777,6 +1785,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 @DavilsGenerated(
     by = "kapi",
@@ -1798,8 +1807,11 @@ public class PetstoreAuthRoutes(
     private suspend fun login(request: Request): Reply {
         val input = request.input()
         val form = input.body(LoginForm.serializer(), true, listOf(MediaRange.of("application/x-www-form-urlencoded")))
-        if (!input.isValid || form == null) return input.refused()
-        return when (val response = service.login(user = form.user, password = form.password, scopes = form.scopes)) {
+        val user = input.field("user", form?.user, String.serializer(), true, MediaType.parse("text/plain"), rule = {
+            if (Constraints.length(it) > 64) fail("must have at most 64 characters", ConstraintViolationCodes.MAX_LENGTH)
+        })
+        if (!input.isValid || form == null || user == null) return input.refused()
+        return when (val response = service.login(user = user, password = form.password, scopes = form.scopes)) {
             is PetstoreLoginResponse.Ok -> reply(200) {
                 body(MediaType.parse("application/json"), PetstoreLoginOk.serializer(), response.body)
             }
@@ -1844,6 +1856,7 @@ import com.davils.kapi.runtime.core.negotiation.MediaRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kapi.runtime.core.wire.FilePart
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
@@ -2012,11 +2025,17 @@ public class PetstorePetsRoutes(
 
     private suspend fun listPets(request: Request): Reply {
         val input = request.input()
-        val status = input.value(Place.Query, ParameterFormat("status", ParameterStyle.Form, true), ParameterType(PetstoreStatus.serializer(), true), false)
+        val status = input.value(Place.Query, ParameterFormat("status", ParameterStyle.Form, true), ParameterType(PetstoreStatus.serializer(), true), false, rule = {
+            if (!it.isKnown) fail("must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+        })
         val tag = input.items(Place.Query, ParameterFormat("tag", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
         val limit = input.value(Place.Query, ParameterFormat("limit", ParameterStyle.Form, true), ParameterType(Int.serializer(), false), false)
         val xTrace = input.value(Place.Header, ParameterFormat("X-Trace", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false)
-        val state = input.items(Place.Query, ParameterFormat("state", ParameterStyle.Form, false), ParameterType(PetstoreStatus.serializer(), true), false)
+        val state = input.items(Place.Query, ParameterFormat("state", ParameterStyle.Form, false), ParameterType(PetstoreStatus.serializer(), true), false, rule = {
+            it.forEach { item1 ->
+                if (!item1.isKnown) fail("must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+            }
+        })
         val session = input.value(Place.Cookie, ParameterFormat("session", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
         if (!input.isValid) return input.refused()
         return when (val response = service.listPets(status = status, tag = tag, limit = limit, xTrace = xTrace, state = state, session = session)) {

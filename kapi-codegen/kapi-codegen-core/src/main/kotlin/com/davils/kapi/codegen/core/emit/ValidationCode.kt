@@ -33,6 +33,18 @@ internal class ValidationCode(patterns: PatternTable) {
         return checks(property.type, Subject(CodeBlock.of("%N", property.name), property.name, depth = 0))
     }
 
+    fun value(use: TypeUse, name: String): CodeBlock {
+        val subject = Subject(CodeBlock.of("it"), name, depth = 1)
+        val shape = use.shape
+        val kind = (shape as? TypeShape.Scalar)?.kind ?: ScalarKind.Json
+        val body = CodeBlock.builder()
+        use.rules.forEach { rule -> body.add(rules.of(rule, kind, subject)) }
+        val named = shape as? TypeShape.Named
+        val isValidated = named != null && named.kind != ModelKind.Enum
+        if (!isValidated) body.add(nested(shape, subject))
+        return body.build()
+    }
+
     private fun patch(property: PropertyPlan): CodeBlock {
         val value = Subject(CodeBlock.of("%N.value", property.name), property.name, depth = 0)
         val inner = checks(property.type.copy(isNullable = false), value)

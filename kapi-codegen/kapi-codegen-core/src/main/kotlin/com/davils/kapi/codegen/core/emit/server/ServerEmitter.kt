@@ -22,8 +22,10 @@ import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
 import com.davils.kapi.codegen.core.emit.Docs
 import com.davils.kapi.codegen.core.emit.Kotlin
+import com.davils.kapi.codegen.core.emit.PatternTable
 import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
+import com.davils.kapi.codegen.core.emit.ValidationCode
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
@@ -61,7 +63,7 @@ private val modifiers: Map<Visibility, KModifier> = mapOf(
 internal class ServerEmitter(
     options: GeneratorOptions,
     private val origin: String,
-    fields: Map<String, List<String>>,
+    private val fields: Map<String, List<String>>,
     private val kind: ServerKind = ServerKind.Server,
 ) {
     private val serverPackage: String = options.packageName + "." + kind.packageName
@@ -78,8 +80,6 @@ internal class ServerEmitter(
 
     private val responses: ResponseEmitter = ResponseEmitter(types, visibility)
 
-    private val inputs: InputCode = InputCode(serializers, fields)
-
     private val replies: ReplyCode = ReplyCode(serializers)
 
     fun emit(operations: List<OperationPlan>): List<GeneratedFile> {
@@ -88,7 +88,14 @@ internal class ServerEmitter(
             file(packageName = serverPackage, name = group + kind.service, type = service(group, members))
         }
         val routes = groups.map { (group, members) ->
-            file(packageName = serverPackage, name = group + ROUTES_SUFFIX, type = routes(group, members))
+            val patterns = PatternTable()
+            val type = routes(group, members, InputCode(serializers, fields, ValidationCode(patterns)))
+            file(
+                packageName = serverPackage,
+                name = group + ROUTES_SUFFIX,
+                type = type,
+                properties = patterns.properties,
+            )
         }
         val answers = operations.sortedBy(OperationPlan::result).map { operation ->
             val response = responseOf(operation)
@@ -119,7 +126,7 @@ internal class ServerEmitter(
         return builder.build()
     }
 
-    private fun routes(group: String, operations: List<OperationPlan>): TypeSpec {
+    private fun routes(group: String, operations: List<OperationPlan>, inputs: InputCode): TypeSpec {
         val name = group + ROUTES_SUFFIX
         val service = ClassName(serverPackage, group + kind.service)
         val self = ClassName(serverPackage, name)
@@ -135,7 +142,7 @@ internal class ServerEmitter(
         builder.addProperty(operations(sorted))
         sorted.forEach { operation ->
             val form = formOf(self, operation)
-            builder.addFunction(handler(operation, form))
+            builder.addFunction(handler(operation, form, inputs))
             val body = operation.body?.takeIf { plan -> plan.kind == BodyKind.Form }
             if (body != null) builder.addType(form(form, body.fields))
         }
@@ -215,7 +222,7 @@ internal class ServerEmitter(
         return parameter.build()
     }
 
-    private fun handler(operation: OperationPlan, form: ClassName): FunSpec {
+    private fun handler(operation: OperationPlan, form: ClassName, inputs: InputCode): FunSpec {
         val reading = inputs.of(operation, form)
         val function = FunSpec.builder(operation.name)
         function.addModifiers(KModifier.PRIVATE, KModifier.SUSPEND)
@@ -226,8 +233,14 @@ internal class ServerEmitter(
         return function.build()
     }
 
-    private fun file(packageName: String, name: String, type: TypeSpec): GeneratedFile {
+    private fun file(
+        packageName: String,
+        name: String,
+        type: TypeSpec,
+        properties: List<PropertySpec> = emptyList(),
+    ): GeneratedFile {
         val file = FileSpec.builder(packageName = packageName, fileName = name)
+        properties.forEach(file::addProperty)
         file.addType(type)
         return GeneratedFile(
             path = packageName.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",

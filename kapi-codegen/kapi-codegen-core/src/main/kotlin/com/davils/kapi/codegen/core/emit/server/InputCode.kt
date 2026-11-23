@@ -17,6 +17,7 @@
 package com.davils.kapi.codegen.core.emit.server
 
 import com.davils.kapi.codegen.core.ModelKind
+import com.davils.kapi.codegen.core.emit.ValidationCode
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
@@ -54,7 +55,11 @@ private const val LET: String = "%L?.let { part -> %L }"
 
 private const val MAP: String = "%L?.map { part -> %L }"
 
-internal class InputCode(private val serializers: SerializerCode, private val fields: Map<String, List<String>>) {
+internal class InputCode(
+    private val serializers: SerializerCode,
+    private val fields: Map<String, List<String>>,
+    private val validation: ValidationCode,
+) {
     fun of(operation: OperationPlan, form: ClassName): Reading {
         val code = CodeBlock.builder()
         val checks = mutableListOf(CodeBlock.of("!%N.isValid", INPUT))
@@ -151,18 +156,25 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
     }
 
     private fun decoded(function: String, source: CodeBlock, field: FieldPlan): CodeBlock = CodeBlock.of(
-        "%N.%L(%L, %L, %L, %L)",
+        "%N.%L(%L, %L, %L, %L%L)",
         INPUT,
         function,
         source,
         serializer(field.type),
         !field.type.isNullable,
         ServerTypes.mediaType(mediaTypeOf(field)),
+        rule(field.type, field.name),
     )
 
     private fun items(source: CodeBlock, field: FieldPlan): CodeBlock {
         val item = (field.type.shape as? TypeShape.Items)?.item ?: field.type
-        return CodeBlock.of("%N.partItems(%L, %L)", INPUT, source, serializer(item))
+        return CodeBlock.of("%N.partItems(%L, %L%L)", INPUT, source, serializer(item), rule(field.type, field.name))
+    }
+
+    private fun rule(type: TypeUse, name: String): CodeBlock {
+        val checks = validation.value(type.copy(isNullable = false), name)
+        if (checks.isEmpty()) return CodeBlock.of("")
+        return CodeBlock.of(", rule = {\n⇥%L⇤}", checks)
     }
 
     private fun mediaTypeOf(field: FieldPlan): String {
@@ -191,11 +203,12 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
     }
 
     private fun queryString(parameter: ParameterPlan): CodeBlock = CodeBlock.of(
-        "%N.queryString(%L, %L, %L)",
+        "%N.queryString(%L, %L, %L%L)",
         INPUT,
         ServerTypes.mediaType(parameter.mediaType ?: FORM_TYPE),
         serializer(parameter.type),
         !parameter.type.isNullable,
+        rule(parameter.type, parameter.name),
     )
 
     private fun objectOf(parameter: ParameterPlan): CodeBlock {
@@ -203,7 +216,7 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         val names = named?.let { found -> fields[found.name] }.orEmpty()
         val set = names.map { name -> CodeBlock.of("%S", name) }.joinToCode(", ")
         return CodeBlock.of(
-            "%N.fields(%T.%L, %L, %L, %L, setOf(%L))",
+            "%N.fields(%T.%L, %L, %L, %L, setOf(%L)%L)",
             INPUT,
             ServerTypes.place,
             parameter.placement.name,
@@ -211,11 +224,12 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
             serializer(parameter.type),
             !parameter.type.isNullable,
             set,
+            rule(parameter.type, parameter.name),
         )
     }
 
     private fun read(function: String, parameter: ParameterPlan, single: TypeUse): CodeBlock = CodeBlock.of(
-        "%N.%L(%T.%L, %L, %T(%L, %L), %L)",
+        "%N.%L(%T.%L, %L, %T(%L, %L), %L%L)",
         INPUT,
         function,
         ServerTypes.place,
@@ -225,6 +239,7 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         serializer(single),
         parameter.isQuoted,
         !parameter.type.isNullable,
+        rule(parameter.type, parameter.name),
     )
 
     private fun format(parameter: ParameterPlan): CodeBlock {
@@ -249,8 +264,8 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
     companion object {
         fun isDecoded(field: FieldPlan): Boolean {
             if (field.kind == FieldKind.Json) return true
-            val shape = field.type.shape
-            return field.kind == FieldKind.Text && (shape as? TypeShape.Scalar)?.kind != ScalarKind.Text
+            val isString = (field.type.shape as? TypeShape.Scalar)?.kind == ScalarKind.Text
+            return field.kind == FieldKind.Text && (!isString || field.type.rules.isNotEmpty())
         }
 
         fun isObject(shape: TypeShape): Boolean =

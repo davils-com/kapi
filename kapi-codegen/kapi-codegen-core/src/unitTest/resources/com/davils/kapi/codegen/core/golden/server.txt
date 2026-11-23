@@ -1438,6 +1438,9 @@ import com.davils.kapi.runtime.core.negotiation.MediaRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.core.wire.FilePart
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
@@ -1473,6 +1476,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
+
+private val X_TRACE_1_PATTERN: Pattern = Pattern.compileOrThrow("^[a-z0-9-]+${'$'}")
 
 @DavilsGenerated(
     by = "kapi",
@@ -1607,10 +1612,22 @@ public class PetstorePetsRoutes(
 
     private suspend fun listPets(request: Request): Reply {
         val input = request.input()
-        val status = input.value(Place.Query, ParameterFormat("status", ParameterStyle.Form, true), ParameterType(PetstoreStatus.serializer(), true), false)
-        val tag = input.items(Place.Query, ParameterFormat("tag", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
-        val limit = input.value(Place.Query, ParameterFormat("limit", ParameterStyle.Form, true), ParameterType(Int.serializer(), false), false)
-        val xTrace = input.value(Place.Header, ParameterFormat("X-Trace", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false)
+        val status = input.value(Place.Query, ParameterFormat("status", ParameterStyle.Form, true), ParameterType(PetstoreStatus.serializer(), true), false, rule = {
+            if (!it.isKnown) fail("must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+        })
+        val tag = input.items(Place.Query, ParameterFormat("tag", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false, rule = {
+            if (it.size > 5) fail("must have at most 5 items", ConstraintViolationCodes.MAX_ITEMS)
+            it.forEach { item1 ->
+                if (Constraints.length(item1) < 1) fail("must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
+            }
+        })
+        val limit = input.value(Place.Query, ParameterFormat("limit", ParameterStyle.Form, true), ParameterType(Int.serializer(), false), false, rule = {
+            if (it < 1L) fail("must be at least 1", ConstraintViolationCodes.MINIMUM)
+            if (it > 100L) fail("must be at most 100", ConstraintViolationCodes.MAXIMUM)
+        })
+        val xTrace = input.value(Place.Header, ParameterFormat("X-Trace", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false, rule = {
+            if (!Constraints.matches(it, X_TRACE_1_PATTERN)) fail("must match ^[a-z0-9-]+${'$'}", ConstraintViolationCodes.PATTERN)
+        })
         if (!input.isValid) return input.refused()
         return when (val response = service.listPets(status = status, tag = tag, limit = limit, xTrace = xTrace)) {
             is PetstoreListPetsResponse.Ok -> reply(200) {
@@ -1662,7 +1679,9 @@ public class PetstorePetsRoutes(
         val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
         val parts = input.parts(true)
         val photo = parts?.firstOrNull { part -> part.name == "photo" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
-        val rank = input.part(parts, "rank", Int.serializer(), true, MediaType.parse("text/plain"))
+        val rank = input.part(parts, "rank", Int.serializer(), true, MediaType.parse("text/plain"), rule = {
+            if (it < 0L) fail("must be at least 0", ConstraintViolationCodes.MINIMUM)
+        })
         val tags = input.partItems(parts, "tags", Long.serializer())
         val meta = input.part(parts, "meta", PetstoreUploadPhotoRequestMeta.serializer(), false, MediaType.parse("application/json"))
         if (!input.isValid || petId == null || photo == null || rank == null) return input.refused()

@@ -269,9 +269,11 @@ paths:
                 properties:
                   name:
                     type: string
+                    maxLength: 40
                   minAge:
                     type: integer
                     format: int32
+                    minimum: 0
       responses:
         '200':
           description: The pets
@@ -353,6 +355,7 @@ paths:
               properties:
                 user:
                   type: string
+                  maxLength: 64
                 password:
                   type: string
                   x-kapi-sensitive: true

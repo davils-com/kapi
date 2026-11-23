@@ -364,6 +364,9 @@ package com.example.petstore.server
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.core.wire.FilePart
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
@@ -379,6 +382,8 @@ import com.example.petstore.operation.PetstoreValResponse
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.builtins.serializer
+
+private val ID_1_PATTERN: Pattern = Pattern.compileOrThrow("^\"\"\"\\${'$'}\\{pwned\\}\\\\${'$'}")
 
 @DavilsGenerated(
     by = "kapi",
@@ -399,7 +404,9 @@ public class PetstoreDefaultRoutes(
 
     private suspend fun `val`(request: Request): Reply {
         val input = request.input()
-        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
+        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true, rule = {
+            if (!Constraints.matches(it, ID_1_PATTERN)) fail("must match ^\"\"\"\\${'$'}\\{pwned\\}\\\\${'$'}", ConstraintViolationCodes.PATTERN)
+        })
         val parts = input.parts(true)
         val fileName = parts?.firstOrNull { part -> part.name == "file\"name" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
         val pwned = input.part(parts, "${'$'}{pwned}", String.serializer(), false, MediaType.parse("text/plain"))
@@ -434,6 +441,9 @@ package com.example.petstore.server
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.operation.Routes
@@ -449,6 +459,8 @@ import com.example.petstore.operation.PetstoreClassResponse
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.builtins.serializer
+
+private val ID_1_PATTERN: Pattern = Pattern.compileOrThrow("^\"\"\"\\${'$'}\\{pwned\\}\\\\${'$'}")
 
 @DavilsGenerated(
     by = "kapi",
@@ -469,7 +481,9 @@ public class PetstoreObjectRoutes(
 
     private suspend fun `class`(request: Request): Reply {
         val input = request.input()
-        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
+        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true, rule = {
+            if (!Constraints.matches(it, ID_1_PATTERN)) fail("must match ^\"\"\"\\${'$'}\\{pwned\\}\\\\${'$'}", ConstraintViolationCodes.PATTERN)
+        })
         val xValPwned = input.value(Place.Query, ParameterFormat("x\"); val pwned = (\"", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
         val `fun` = input.value(Place.Header, ParameterFormat("fun", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false)
         val evil = input.value(Place.Query, ParameterFormat("\u202Eevil\u2066", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)

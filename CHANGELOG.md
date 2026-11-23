@@ -66,6 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Generated servers check the rules of a schema** for parameters, the whole query string, the parts of a
+  multipart body and the fields of a form before the service is asked: `minimum`, `maximum`, `multipleOf`,
+  `minLength`, `maxLength`, `pattern` through the linear matcher, `minItems`, `maxItems`, `uniqueItems`, the known
+  values of an enum and the rules of every item, reported as a problem with status 400 under the path of the
+  parameter; a string field of a form that has rules is read through `Input.field` so they apply as well.
 - **The rules of a schema for parameters, parts and form fields** in the server runtime: `Input.value`, `items`,
   `fields`, `queryString`, `part`, `partItems` and `field` take an optional `rule: ValidationScope.(T) -> Unit` that
   checks a decoded value, such as `minimum`, `maxLength` or `pattern`, and reports through `fail` under the path of

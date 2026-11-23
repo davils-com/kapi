@@ -62,9 +62,11 @@ private val inputs: Map<String, String> = mapOf(
     "name: sid, in: cookie, $TEXT" to "$INPUT.Cookie, $FORMAT(\"sid\", $STYLE.Form, true)",
     "name: open, in: query, schema: {type: boolean}" to "ParameterType(Boolean.serializer(), false), false)",
     "name: state, in: query, schema: {type: string, enum: [a, b]}" to
-        "ParameterType(PetstoreListPetsState.serializer(), true), false)",
+        "ParameterType(PetstoreListPetsState.serializer(), true), false, rule = {\n" +
+        "            if (!it.isKnown) fail(",
     "name: level, in: query, schema: {type: integer, enum: [1, 2]}" to
-        "ParameterType(PetstoreListPetsLevel.serializer(), false), false)",
+        "ParameterType(PetstoreListPetsLevel.serializer(), false), false, rule = {\n" +
+        "            if (!it.isKnown) fail(",
     "name: tag, in: query, schema: {type: array, items: {type: integer}}" to
         "input.items(Place.Query, $FORMAT(\"tag\", $STYLE.Form, true), $NUMBER, false)",
 )

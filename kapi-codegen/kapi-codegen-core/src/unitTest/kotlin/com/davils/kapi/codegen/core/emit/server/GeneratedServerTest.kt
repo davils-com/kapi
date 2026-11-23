@@ -45,7 +45,7 @@ private const val UNAUTHENTICATED: String = "unexpected 401"
 
 private const val NO_CREDENTIALS: String = "failed CredentialMissing"
 
-private const val BAD_LIMIT: String = "other 400 bad limit"
+private const val BAD_LIMIT: String = "other 400 The request is invalid"
 
 private const val EMPTY: String = "listed 0: "
 

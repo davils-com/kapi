@@ -93,10 +93,11 @@ internal class FieldPlanner(private val scope: PlanScope, private val models: Mo
         val kind = matching.map { (_, found) -> found }.firstOrNull() ?: FieldKind.Json
         names.audit(name, "The field ${shown(site.wireName)}", site.schema.location)
         audit(site, kind)
+        val declared = files[kind]?.let { file -> TypeUse(file) } ?: use
         return FieldPlan(
             name = name,
             wireName = site.wireName,
-            type = TypeUse(files[kind] ?: use.shape, isNullable = use.isNullable || !site.isRequired),
+            type = declared.copy(isNullable = use.isNullable || !site.isRequired),
             kind = kind,
             contentType = site.encoding?.contentType,
         )
