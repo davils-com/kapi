@@ -40,11 +40,11 @@ private val refused: Map<String, List<String>> = mapOf(
         "more than one type",
         "patternProperties",
         "prefixItems",
-        "the parameter raw yet, which is no text, list or flat object",
+        "the parameter \"raw\" yet, which is no text, list or flat object",
     ),
     "openapi-32" to listOf(
         "a discriminator on a schema that nothing extends or chooses from",
-        "a discriminator that maps lamp to no member",
+        "a discriminator that maps \"lamp\" to no member",
     ),
 )
 

@@ -67,7 +67,7 @@ class CompositionTest : FunSpec({
             val other = "{type: object, properties: {name: {type: integer}}}"
 
             message(listOf("Pet: {allOf: [$TO_NAMED, $other]}", NAMED)) shouldContain
-                "allOf that declares the property name in two ways"
+                "allOf that declares the property \"name\" in two ways"
         }
 
         test("is refused when a member is no object of this document") {

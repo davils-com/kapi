@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core.naming
 
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.model.schema.Schema
@@ -26,7 +27,9 @@ internal class SchemaNames(private val options: GeneratorOptions, private val ta
     fun name(document: Document): Map<String, String> {
         val schemas = document.components?.schemas.orEmpty()
         val names = schemas.toSortedMap().mapValues { (key, schema) -> nameOf(key, schema) }
-        names.forEach { (key, name) -> table.claim(NameClaim(name, "The schema $key", schemas.getValue(key).location)) }
+        names.forEach { (key, name) ->
+            table.claim(NameClaim(name, "The schema ${shown(key)}", schemas.getValue(key).location))
+        }
         return names
     }
 

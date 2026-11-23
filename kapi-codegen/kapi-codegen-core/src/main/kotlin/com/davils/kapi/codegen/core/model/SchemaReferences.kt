@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -61,7 +62,7 @@ internal class SchemaReferences(private val scope: PlanScope, private val types:
     private fun refused(reference: Reference, problem: String): TypeUse {
         scope.findings.error(
             CodegenCodes.REFERENCE_UNSUPPORTED,
-            "The reference ${reference.text} $problem other than a schema in the components of this document",
+            "The reference ${shown(reference.text)} $problem other than a schema in the components of this document",
             reference.location,
         )
         return json

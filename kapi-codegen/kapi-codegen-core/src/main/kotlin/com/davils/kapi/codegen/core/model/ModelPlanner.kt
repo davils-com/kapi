@@ -27,6 +27,7 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.schema.FixedSchema
 import com.davils.kapi.spec.openapi.model.schema.Schema
@@ -76,7 +77,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
         val kept = shape.properties.filterNot { (jsonName, schema) -> isIgnored(shape, jsonName, schema) }
         val properties = kept.map { (jsonName, schema) -> property(name, shape, jsonName to schema) }
         properties.forEach { property ->
-            val origin = "The property ${property.jsonName}"
+            val origin = "The property ${shown(property.jsonName)}"
             members.claim(NameClaim(name = property.name, origin = origin, location = definition.location))
         }
         val dependencies = shape.dependencies.flatMap { (trigger, names) ->
@@ -99,7 +100,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
         val byName = properties.associateBy(PropertyPlan::jsonName)
         val unknown = (entry.second + entry.first).filter { name -> name !in byName }
         unknown.forEach { name ->
-            scope.unsupported(definition, "dependentRequired that names $name, which is no property")
+            scope.unsupported(definition, "dependentRequired that names ${shown(name)}, which is no property")
         }
         val trigger = byName[entry.first] ?: return emptyList()
         val dependents = entry.second.mapNotNull(byName::get).filter { property -> property.type.isNullable }
@@ -112,7 +113,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
         if (isIgnored && jsonName in owner.required) {
             scope.findings.error(
                 CodegenCodes.PROPERTY_IGNORED,
-                "The property $jsonName is required and cannot be left out",
+                "The property ${shown(jsonName)} is required and cannot be left out",
                 schema.location,
             )
         }

@@ -131,7 +131,7 @@ class UnionPlannerTest : FunSpec({
             val twin = "One: {type: object, required: [since], properties: {since: {type: string}}}"
 
             message(listOf("Command: {oneOf: $WATCHES}", ALL, twin)) shouldContain
-                "a union whose member All has no required property the others lack"
+                "a union whose member \"All\" has no required property the others lack"
         }
     }
 
@@ -153,14 +153,14 @@ class UnionPlannerTest : FunSpec({
         test("has a member that does not require the discriminator") {
             val loose = "Dog: {type: object, properties: {kind: {type: string}}}"
 
-            message(listOf(ANIMAL, CAT, loose)) shouldContain "a union whose member Dog does not require kind"
+            message(listOf(ANIMAL, CAT, loose)) shouldContain """a union whose member "Dog" does not require "kind""""
         }
 
         test("maps a value to what is no member") {
             val animal = "Animal: {oneOf: $MEMBERS, discriminator: {propertyName: kind, mapping: {bird: Bird}}}"
             val bird = "Bird: {type: object, required: [kind], properties: {kind: {type: string}}}"
 
-            message(listOf(animal, CAT, DOG, bird)) shouldContain "a discriminator that maps bird to no member"
+            message(listOf(animal, CAT, DOG, bird)) shouldContain "a discriminator that maps \"bird\" to no member"
         }
     }
 })

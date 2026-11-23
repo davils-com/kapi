@@ -60,7 +60,7 @@ class SampleValuesTest : FunSpec({
             generation.shouldBeInstanceOf<Generation.Generated>()
             generation.codes() shouldBe listOf(CodegenCodes.SAMPLE_UNAVAILABLE)
             generation.diagnostics.single().message shouldContain "PetstorePet"
-            generation.diagnostics.single().message shouldContain "its property a;"
+            generation.diagnostics.single().message shouldContain "its property \"a\";"
         }
     }
 

@@ -16,6 +16,7 @@
 
 package com.davils.kapi.codegen.core.model
 
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
@@ -53,7 +54,7 @@ internal class Composition(private val scope: PlanScope) {
 
     private fun merged(owner: SchemaDefinition, first: ObjectShape, second: ObjectShape): ObjectShape {
         val clashing = second.properties.filter { (name, schema) -> first.properties[name]?.equals(schema) == false }
-        clashing.keys.forEach { name -> refused(owner, "allOf that declares the property $name in two ways") }
+        clashing.keys.forEach { name -> refused(owner, "allOf that declares the property ${shown(name)} in two ways") }
         return ObjectShape(
             properties = first.properties + second.properties,
             required = first.required + second.required,

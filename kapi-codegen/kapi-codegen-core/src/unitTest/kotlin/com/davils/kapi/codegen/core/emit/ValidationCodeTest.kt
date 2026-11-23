@@ -188,7 +188,8 @@ class ValidationCodeTest : FunSpec({
         test("is refused when the object declares no property of that name") {
             val refused = refusedOf(schemas(pet(FIRST) + DEPENDENT))
 
-            refused.diagnostics.single().message shouldContain "dependentRequired that names b, which is no property"
+            refused.diagnostics.single().message shouldContain
+                """dependentRequired that names "b", which is no property"""
         }
     }
 

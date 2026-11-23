@@ -86,3 +86,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ChannelSession.request` and the `correlation` of the endpoint, and clients pair their requests with
   `Correlation.json`, reading each id from the JSON of a message by its discriminator, so ids inside union payloads
   are found on every platform. The correlation object of a channel moved to the `channel` package.
+- **Diagnostics of the generator** show every text of a document, such as the name of a parameter, a property, a
+  field, a header, a schema or a reference, quoted and escaped through `SafeText` of Kore, exactly once, where the
+  message is written.

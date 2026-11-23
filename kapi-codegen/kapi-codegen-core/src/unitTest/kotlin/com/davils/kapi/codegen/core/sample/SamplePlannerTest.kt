@@ -142,7 +142,7 @@ class SamplePlannerTest : FunSpec({
 
             generation.codes() shouldBe listOf(CodegenCodes.SAMPLE_UNAVAILABLE)
             finding.message shouldContain "No sample of PetstoreLoop is generated"
-            finding.message shouldContain "its property next;"
+            finding.message shouldContain "its property \"next\";"
             val location = checkNotNull(finding.location)
 
             location.pointer.toString() shouldBe "/components/schemas/Loop"

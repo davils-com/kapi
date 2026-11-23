@@ -165,7 +165,7 @@ class HookPlannerTest : FunSpec({
             val generation = hookGenerationOf(webhook(ADOPTED, NAMED, parameters))
 
             generation.diagnostics.map { diagnostic -> diagnostic.message } shouldBe
-                listOf("$UNSUPPORTED the path parameter id of a webhook or a callback yet")
+                listOf("$UNSUPPORTED the path parameter \"id\" of a webhook or a callback yet")
         }
 
         test("is refused for pagination and for a response that is streamed") {

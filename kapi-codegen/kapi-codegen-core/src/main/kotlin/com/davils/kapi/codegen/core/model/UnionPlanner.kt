@@ -19,6 +19,7 @@ package com.davils.kapi.codegen.core.model
 import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.UnionMemberPlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.openapi.model.schema.Discriminator
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -74,11 +75,14 @@ internal class UnionPlanner(private val scope: PlanScope, private val compositio
     ): List<UnionMemberPlan> {
         val untagged = shapes.filterValues { shape -> discriminator.propertyName !in shape.required }
         untagged.keys.forEach { key ->
-            scope.unsupported(definition, "a union whose member $key does not require ${discriminator.propertyName}")
+            val property = shown(discriminator.propertyName)
+            scope.unsupported(definition, "a union whose member ${shown(key)} does not require $property")
         }
         val mapped = discriminator.mapping.mapValues { (_, target) -> target.substringAfterLast(SEPARATOR) }
         val foreign = mapped.filterValues { key -> key !in shapes }
-        foreign.keys.forEach { value -> scope.unsupported(definition, "a discriminator that maps $value to no member") }
+        foreign.keys.forEach { value ->
+            scope.unsupported(definition, "a discriminator that maps ${shown(value)} to no member")
+        }
         return shapes.keys.flatMap { key -> membersOf(key, mapped) }
     }
 
@@ -97,7 +101,7 @@ internal class UnionPlanner(private val scope: PlanScope, private val compositio
 
     private fun deducedMember(definition: SchemaDefinition, key: String, own: String?): UnionMemberPlan? {
         if (own == null) {
-            scope.unsupported(definition, "a union whose member $key has no required property the others lack")
+            scope.unsupported(definition, "a union whose member ${shown(key)} has no required property the others lack")
             return null
         }
         return UnionMemberPlan(value = own, type = scope.names.getValue(key))

@@ -119,6 +119,14 @@ class OpenApi32Test : FunSpec({
             kotlinOf(text = text, name = CLIENT) shouldContain "queryString(client.json(String.serializer(), criteria)"
         }
 
+        test("is refused with its name escaped once, so the name cannot reorder or forge the message") {
+            val text = searched("text/plain").replace(oldValue = "name: criteria", newValue = """name: "q\u202E\n"""")
+            val message = generationOf(text).diagnostics.single().message
+
+            message shouldContain """The parameter "q\u{202E}\n" takes the whole query string"""
+            message shouldNotContain "\u202E"
+        }
+
         test("is refused for a query string that is neither a form nor JSON, which nothing would encode") {
             generationOf(searched("text/plain")).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
         }

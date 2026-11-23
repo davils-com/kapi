@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -77,7 +78,7 @@ internal class EnumPlanner(private val scope: PlanScope) {
         val table = NameTable(scope.findings)
         val entries = literals.zip(names) { literal, name -> EnumEntryPlan(name, literal) }
         entries.forEach { entry ->
-            val origin = "The entry ${entry.literal}"
+            val origin = "The entry ${shown(entry.literal)}"
             table.claim(NameClaim(name = entry.name, origin = origin, location = definition.location))
         }
         return entries

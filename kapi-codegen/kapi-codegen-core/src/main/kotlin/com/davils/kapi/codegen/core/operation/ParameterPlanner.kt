@@ -26,6 +26,7 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
@@ -85,13 +86,13 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
         if (type == null) {
             scope.findings.error(
                 CodegenCodes.OPERATION_UNSUPPORTED,
-                "The parameter ${parameter.name} takes the whole query string, which the generator supports only " +
-                    "as an object in $FORM or as a value in JSON",
+                "The parameter ${shown(parameter.name)} takes the whole query string, which the generator " +
+                    "supports only as an object in $FORM or as a value in JSON",
                 parameter.location,
             )
             return null
         }
-        names.audit(name, "The parameter ${parameter.name}", parameter.location)
+        names.audit(name, "The parameter ${shown(parameter.name)}", parameter.location)
         return ParameterPlan(
             name = name,
             wireName = parameter.name,
@@ -107,7 +108,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
     private fun ignore(parameter: Parameter) {
         scope.findings.warn(
             CodegenCodes.PARAMETER_RESERVED_HEADER,
-            "The generated client sets the header ${parameter.name} itself and takes no parameter for it",
+            "The generated client sets the header ${shown(parameter.name)} itself and takes no parameter for it",
             parameter.location,
         )
     }
@@ -116,7 +117,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
         val name = nameOf(parameter)
         val style = parameter.style ?: ParameterStyle.defaultFor(parameter.placement) ?: ParameterStyle.Simple
         val type = typeOf(context + Identifiers.type(name), parameter)
-        names.audit(name, "The parameter ${parameter.name}", parameter.location)
+        names.audit(name, "The parameter ${shown(parameter.name)}", parameter.location)
         return ParameterPlan(
             name = name,
             wireName = parameter.name,
@@ -141,8 +142,8 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
         if (supported == null) {
             scope.findings.error(
                 CodegenCodes.OPERATION_UNSUPPORTED,
-                "The generator has no Kotlin for the parameter ${parameter.name} yet, which is no text, list or " +
-                    "flat object",
+                "The generator has no Kotlin for the parameter ${shown(parameter.name)} yet, which is no text, " +
+                    "list or flat object",
                 parameter.location,
             )
         }

@@ -23,6 +23,7 @@ import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.openapi.model.path.Callback
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
@@ -97,7 +98,9 @@ internal class HookPlanner(
 
     private fun audit(plan: OperationPlan) {
         val segments = plan.parameters.filter { parameter -> parameter.placement == ParameterPlace.Path }
-        val paths = segments.map { parameter -> "the path parameter ${parameter.wireName} of a webhook or a callback" }
+        val paths = segments.map { parameter ->
+            "the path parameter ${shown(parameter.wireName)} of a webhook or a callback"
+        }
         val pages = listOfNotNull(plan.pages).map { "pagination on a webhook or a callback" }
         val streamed = plan.responses.filter { response -> response.stream != null }
         val streams = streamed.map { "a streamed response of a webhook or a callback" }

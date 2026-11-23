@@ -74,8 +74,8 @@ class SchemaNamesTest : FunSpec({
             val diagnostic = findings.sorted().single()
 
             diagnostic.code shouldBe CodegenCodes.NAME_COLLISION
-            diagnostic.message shouldContain "The schema pet_store becomes PetstorePetStore"
-            diagnostic.message shouldContain "which The schema PetStore at /components/schemas/PetStore already is"
+            diagnostic.message shouldContain "The schema \"pet_store\" becomes PetstorePetStore"
+            diagnostic.message shouldContain "which The schema \"PetStore\" at /components/schemas/PetStore already is"
             diagnostic.message shouldContain "x-kapi-name"
         }
 

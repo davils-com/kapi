@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.shown
 
 private val taken: Set<String> = setOf("input", "request", "response", "service", "form", "parts", "reply")
 
@@ -46,11 +47,11 @@ internal class ServerSupport(private val findings: Findings) {
             .flatMap { response -> response.headers }
             .filterNot { header -> isToken(header.wireName) }
         return maps.map { parameter ->
-            "the parameter ${parameter.wireName}, a map spread over the query, on a server"
+            "the parameter ${shown(parameter.wireName)}, a map spread over the query, on a server"
         } +
             upgrades.map { "a connection that is upgraded on a server" } +
             headers.map { header ->
-                "the response header ${header.wireName}, whose name is no token of HTTP, on a server"
+                "the response header ${shown(header.wireName)}, whose name is no token of HTTP, on a server"
             }
     }
 
