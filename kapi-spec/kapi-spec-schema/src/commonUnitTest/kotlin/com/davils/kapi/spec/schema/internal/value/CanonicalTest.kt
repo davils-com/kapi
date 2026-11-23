@@ -25,7 +25,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.serialization.json.Json
 
-private fun canonical(text: String): String = Canonical.of(InstanceReader(64).read(Json.parseToJsonElement(text)), Meter { })
+private fun canonical(text: String): String = Canonical.of(
+    InstanceReader(64).read(Json.parseToJsonElement(text)),
+    Meter { },
+)
 
 class CanonicalTest : FunSpec({
     test("equal JSON values have the same canonical form") {

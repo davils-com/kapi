@@ -31,11 +31,11 @@ class CompilerTest : FunSpec({
     test("a compiler has defaults that a block changes") {
         val defaults = JsonSchema.compiler()
         defaults.defaultDialect shouldBe Dialect.Draft202012
-        defaults.formatAssertion shouldBe false
+        defaults.isFormatAsserted shouldBe false
         defaults.limits shouldBe SchemaLimits.Default
         val configured = JsonSchema.compiler {
             defaultDialect = Dialect.Draft07
-            formatAssertion = true
+            isFormatAsserted = true
             limits { maximumErrors = 5 }
         }
         configured.defaultDialect shouldBe Dialect.Draft07
@@ -62,13 +62,16 @@ class CompilerTest : FunSpec({
 
     test("a reference resolves through the loader, which is asked once per document") {
         val asked = ArrayList<String>()
-        val compiled = schemaOf("""{"anyOf": [{"${'$'}ref": "https://example.com/a.json"},
-            {"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""") {
-            loader = SchemaLoader { uri ->
-                asked += uri.value
-                json("""{"type": "integer", "${'$'}defs": {"b": {"type": "string"}}}""")
+        val compiled =
+            schemaOf(
+                """{"anyOf": [{"${'$'}ref": "https://example.com/a.json"},
+            {"${'$'}ref": "https://example.com/a.json#/${'$'}defs/b"}]}""",
+            ) {
+                loader = SchemaLoader { uri ->
+                    asked += uri.value
+                    json("""{"type": "integer", "${'$'}defs": {"b": {"type": "string"}}}""")
+                }
             }
-        }
         compiled.accepts("1") shouldBe true
         compiled.accepts("\"b\"") shouldBe true
         compiled.accepts("true") shouldBe false
@@ -78,7 +81,11 @@ class CompilerTest : FunSpec({
     test("an unknown remote reference is a located compile error") {
         val diagnostics = diagnosticsOf("""{"properties": {"a": {"${'$'}ref": "https://example.com/missing.json"}}}""")
         diagnostics.map { it.code } shouldContain DiagnosticCodes.REFERENCE_UNRESOLVED
-        diagnostics.first().location?.pointer?.text shouldBe "/properties/a/\$ref"
+        diagnostics
+            .first()
+            .location
+            ?.pointer
+            ?.text shouldBe "/properties/a/\$ref"
     }
 
     test("a loader that returns nothing leaves the reference unresolved") {
@@ -132,7 +139,11 @@ class CompilerTest : FunSpec({
     test("an unknown meta-schema is reported") {
         val diagnostics = diagnosticsOf("""{"${'$'}schema": "https://example.com/meta"}""")
         diagnostics.map { it.code } shouldBe listOf(DiagnosticCodes.DIALECT_UNKNOWN)
-        diagnostics.first().location?.pointer?.text shouldBe "/\$schema"
+        diagnostics
+            .first()
+            .location
+            ?.pointer
+            ?.text shouldBe "/\$schema"
     }
 
     test("a schema compiles from YAML") {

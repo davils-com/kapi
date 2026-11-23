@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.spec.schema.internal
 
 import io.kotest.core.spec.style.FunSpec
@@ -35,7 +34,8 @@ class EnginesTest : FunSpec({
 
         test("are refused when they need backtracking or exceed the source limit") {
             Patterns.compile("(a)\\1", maximumSourceLength = LIMIT, maximumInputLength = LIMIT).shouldBeNull()
-            Patterns.compile("a".repeat(LIMIT + 1), maximumSourceLength = LIMIT, maximumInputLength = LIMIT)
+            Patterns
+                .compile("a".repeat(LIMIT + 1), maximumSourceLength = LIMIT, maximumInputLength = LIMIT)
                 .shouldBeNull()
         }
     }

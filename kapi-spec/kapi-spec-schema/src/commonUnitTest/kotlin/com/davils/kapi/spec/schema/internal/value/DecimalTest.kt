@@ -29,7 +29,16 @@ private fun decimal(text: String): Decimal = checkNotNull(Decimal.parse(text)) {
 
 class DecimalTest : FunSpec({
     test("reads exactly the number grammar of JSON") {
-        listOf("0", "-0", "1", "-1.5", "1e3", "1E+3", "2.5e-3", "100").forEach { text -> Decimal.parse(text) shouldNotBe null }
+        listOf(
+            "0",
+            "-0",
+            "1",
+            "-1.5",
+            "1e3",
+            "1E+3",
+            "2.5e-3",
+            "100",
+        ).forEach { text -> Decimal.parse(text) shouldNotBe null }
         listOf("", "01", "+1", ".5", "1.", "1e", "1e+", "--1", "0x1", "1_0", "NaN", "Infinity", " 1").forEach { text ->
             Decimal.parse(text) shouldBe null
         }

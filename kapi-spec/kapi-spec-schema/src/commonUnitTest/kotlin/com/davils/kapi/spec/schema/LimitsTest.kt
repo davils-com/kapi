@@ -170,7 +170,7 @@ class LimitsTest : FunSpec({
         val names = schemaOf("""{"patternProperties": {"a": true}}""", limited { maximumStringLength = 3 })
         names.refusalOf(json("""{"aaaa": 1}""")).reason shouldBe RefusalReason.StringLength
         val format = schemaOf("""{"format": "date"}""") {
-            formatAssertion = true
+            isFormatAsserted = true
             limits { maximumStringLength = 10 }
         }
         format.accepts("\"2024-01-01\"") shouldBe true

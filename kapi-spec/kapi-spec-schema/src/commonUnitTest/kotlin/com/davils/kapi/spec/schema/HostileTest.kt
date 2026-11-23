@@ -40,10 +40,13 @@ class HostileTest : FunSpec({
         ).forEach { schema ->
             schemaOf(schema).refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
         }
-        val legacy = schemaOf("""{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}},
-            "${'$'}ref": "#/definitions/a"}""") {
-            defaultDialect = Dialect.Draft07
-        }
+        val legacy =
+            schemaOf(
+                """{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}},
+            "${'$'}ref": "#/definitions/a"}""",
+            ) {
+                defaultDialect = Dialect.Draft07
+            }
         legacy.refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
     }
 
@@ -78,8 +81,11 @@ class HostileTest : FunSpec({
 
     test("nested alternatives that all fail run out of steps instead of time") {
         val schema = nested("""{"anyOf": [{"type": "string"}, """, """{"type": "string"}""", "]}", 40)
-            .replace("""{"anyOf": [{"type": "string"}, {"type": "string"}]}""", """{"anyOf": [{"type": "string"},
-                {"type": "boolean"}]}""")
+            .replace(
+                """{"anyOf": [{"type": "string"}, {"type": "string"}]}""",
+                """{"anyOf": [{"type": "string"},
+                {"type": "boolean"}]}""",
+            )
         val compiled = schemaOf(schema) { limits { maximumEvaluationSteps = 100_000L } }
         compiled.accepts("\"a\"") shouldBe true
         compiled.validate(json("1")).isValid shouldBe false
@@ -106,8 +112,15 @@ class HostileTest : FunSpec({
 
     test("keys an attacker chose do not slow lookups") {
         val keys = (0 until WIDE).joinToString(", ") { """"k${"0".repeat(20)}$it": $it""" }
-        val compiled = schemaOf("""{"required": ["k${"0".repeat(20)}19999", "missing"],
-            "propertyNames": {"maxLength": 40}}""")
-        compiled.errorsOf("{$keys}").single().error.contains("missing") shouldBe true
+        val compiled =
+            schemaOf(
+                """{"required": ["k${"0".repeat(20)}19999", "missing"],
+            "propertyNames": {"maxLength": 40}}""",
+            )
+        compiled
+            .errorsOf("{$keys}")
+            .single()
+            .error
+            .contains("missing") shouldBe true
     }
 })

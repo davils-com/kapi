@@ -119,7 +119,7 @@ class KeywordTest : FunSpec({
 
         test("format is an annotation unless it asserts") {
             verify("""{"format": "date"}""", listOf("\"not a date\"", "1"), emptyList())
-            val asserting: CompilerBuilder.() -> Unit = { formatAssertion = true }
+            val asserting: CompilerBuilder.() -> Unit = { isFormatAsserted = true }
             verify(
                 """{"format": "date"}""",
                 listOf("\"2024-02-29\"", "1"),
