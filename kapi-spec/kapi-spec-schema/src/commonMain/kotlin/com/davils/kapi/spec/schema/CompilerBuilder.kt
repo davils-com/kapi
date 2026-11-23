@@ -42,6 +42,10 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
      * @since 1.0.0
      */
     public var defaultDialect: Dialect = Dialect.Draft202012
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether `format` asserts, so that a string that is no valid date, for instance, is not valid; `false` by
@@ -51,6 +55,10 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
      * @since 1.0.0
      */
     public var isFormatAsserted: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Loads the documents that a schema refers to and the compiler does not know; `null` by default, which leaves
@@ -59,6 +67,10 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
      * @since 1.0.0
      */
     public var loader: SchemaLoader? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Configures the limits; [SchemaLimits.Default] when not called.
@@ -68,6 +80,7 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
      * @since 1.0.0
      */
     public fun limits(block: SchemaLimitsBuilder.() -> Unit) {
+        checkOpen()
         limits = nested(SchemaLimitsBuilder(), Compiler::limits, block)
     }
 

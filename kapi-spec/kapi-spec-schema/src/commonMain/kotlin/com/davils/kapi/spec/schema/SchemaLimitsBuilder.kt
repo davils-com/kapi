@@ -37,6 +37,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumSchemaDepth: Int = DEFAULT_SCHEMA_DEPTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most subschemas a compilation may compile; see [SchemaLimits.maximumSubschemas].
@@ -44,6 +48,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumSubschemas: Int = DEFAULT_SUBSCHEMAS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most documents a compilation may read; see [SchemaLimits.maximumDocuments].
@@ -51,6 +59,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumDocuments: Int = DEFAULT_DOCUMENTS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most steps a validation may take; see [SchemaLimits.maximumEvaluationSteps].
@@ -58,6 +70,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumEvaluationSteps: Long = DEFAULT_EVALUATION_STEPS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most subschemas a validation may nest; see [SchemaLimits.maximumEvaluationDepth].
@@ -65,6 +81,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumEvaluationDepth: Int = DEFAULT_EVALUATION_DEPTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most levels a value may nest; see [SchemaLimits.maximumInstanceDepth].
@@ -72,6 +92,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumInstanceDepth: Int = DEFAULT_INSTANCE_DEPTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most nodes a value may have; see [SchemaLimits.maximumInstanceNodes].
@@ -79,6 +103,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumInstanceNodes: Int = DEFAULT_INSTANCE_NODES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most errors a validation or a compilation may report; see [SchemaLimits.maximumErrors].
@@ -86,6 +114,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumErrors: Int = DEFAULT_ERRORS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest string a pattern or a format may read; see [SchemaLimits.maximumStringLength].
@@ -93,6 +125,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumStringLength: Int = DEFAULT_STRING_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest pattern a schema may have; see [SchemaLimits.maximumPatternLength].
@@ -100,6 +136,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumPatternLength: Int = DEFAULT_PATTERN_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most values an `enum` may have; see [SchemaLimits.maximumEnumValues].
@@ -107,6 +147,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumEnumValues: Int = DEFAULT_ENUM_VALUES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most nodes the value of a `const` or an `enum` may have; see [SchemaLimits.maximumLiteralNodes].
@@ -114,6 +158,10 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
      * @since 1.0.0
      */
     public var maximumLiteralNodes: Int = DEFAULT_LITERAL_NODES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): SchemaLimits = SchemaLimits(this)
 
