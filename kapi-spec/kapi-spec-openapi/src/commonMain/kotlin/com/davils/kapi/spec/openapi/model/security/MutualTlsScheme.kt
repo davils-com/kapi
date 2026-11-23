@@ -16,12 +16,21 @@
 
 package com.davils.kapi.spec.openapi.model.security
 
+/**
+ * A security scheme of `type` `mutualTLS`: the client proves who it is by a certificate in TLS. OpenAPI defines it
+ * from 3.1 on, and a reading of an older document reports it and leaves it out.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class MutualTlsScheme internal constructor(builder: MutualTlsSchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
     /**
-     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     * Whether the scheme is `deprecated` and should no longer be used; `false` when the document leaves it out and
+     * before OpenAPI 3.2.
      *
      * @since 1.0.0
      */

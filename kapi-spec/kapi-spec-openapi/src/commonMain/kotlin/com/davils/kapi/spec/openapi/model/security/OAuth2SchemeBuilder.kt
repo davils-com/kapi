@@ -19,24 +19,42 @@ package com.davils.kapi.spec.openapi.model.security
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of an [OAuth2Scheme], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the scheme it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class OAuth2SchemeBuilder internal constructor() :
     ElementBuilder<OAuth2Scheme>() {
     override val subject: String get() = "openapi oauth2 scheme"
 
+    /**
+     * The value of `description`, the description of the scheme.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     /**
-     * Whether the scheme is deprecated and should no longer be used, written from OpenAPI 3.2 on.
+     * The value of `deprecated`, whether the scheme should no longer be used, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var isDeprecated: Boolean = false
 
+    /**
+     * The value of `flows`, the flows the scheme supports; without any flow until it is set.
+     *
+     * @since 1.0.0
+     */
     public var flows: OAuthFlows = OAuthFlowsBuilder().build()
 
     /**
-     * The address of the authorization server metadata, written from OpenAPI 3.2 on.
+     * The value of `oauth2MetadataUrl`, the address of the authorization server metadata, written from OpenAPI 3.2
+     * on.
      *
      * @since 1.0.0
      */

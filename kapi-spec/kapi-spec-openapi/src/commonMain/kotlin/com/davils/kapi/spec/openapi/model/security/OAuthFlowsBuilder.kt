@@ -19,20 +19,47 @@ package com.davils.kapi.spec.openapi.model.security
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of [OAuthFlows], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the flows it builds are.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlows>() {
     override val subject: String get() = "openapi oauth flows"
 
+    /**
+     * The value of `implicit`, the implicit flow.
+     *
+     * @since 1.0.0
+     */
     public var implicit: OAuthFlow? = null
 
+    /**
+     * The value of `password`, the resource owner password credentials flow.
+     *
+     * @since 1.0.0
+     */
     public var password: OAuthFlow? = null
 
+    /**
+     * The value of `clientCredentials`, the client credentials flow.
+     *
+     * @since 1.0.0
+     */
     public var clientCredentials: OAuthFlow? = null
 
+    /**
+     * The value of `authorizationCode`, the authorization code flow.
+     *
+     * @since 1.0.0
+     */
     public var authorizationCode: OAuthFlow? = null
 
     /**
-     * The device authorization flow, written from OpenAPI 3.2 on.
+     * The value of `deviceAuthorization`, the device authorization flow, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */

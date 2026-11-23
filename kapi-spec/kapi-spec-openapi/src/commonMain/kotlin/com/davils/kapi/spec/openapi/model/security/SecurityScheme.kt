@@ -19,13 +19,30 @@ package com.davils.kapi.spec.openapi.model.security
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.ElementBuilder
 
+/**
+ * A security scheme object: how a client proves who it is to the API. The `type` of the scheme decides the
+ * subclass: [ApiKeyScheme] for `apiKey`, [HttpScheme] for `http`, [MutualTlsScheme] for `mutualTLS`, [OAuth2Scheme]
+ * for `oauth2` and [OpenIdConnectScheme] for `openIdConnect`.
+ *
+ * Every scheme is immutable and safe to share between threads. A reading reports a scheme without a type or with a
+ * type it does not know, and leaves the scheme out.
+ *
+ * @param builder the builder whose state the scheme takes over.
+ * @since 1.0.0
+ */
 public sealed class SecurityScheme(
     builder: ElementBuilder<*>,
 ) : Element(builder) {
+    /**
+     * The `description` of the scheme, which may use CommonMark; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public abstract val description: String?
 
     /**
-     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     * Whether the scheme is `deprecated` and should no longer be used; `false` when the document leaves it out and
+     * before OpenAPI 3.2.
      *
      * @since 1.0.0
      */

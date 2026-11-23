@@ -19,6 +19,13 @@ package com.davils.kapi.spec.openapi.model.security
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [SecurityRequirement], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the requirement it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class SecurityRequirementBuilder internal constructor() :
     ElementBuilder<SecurityRequirement>() {

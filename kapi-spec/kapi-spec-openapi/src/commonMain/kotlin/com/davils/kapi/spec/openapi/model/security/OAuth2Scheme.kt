@@ -16,21 +16,36 @@
 
 package com.davils.kapi.spec.openapi.model.security
 
+/**
+ * A security scheme of `type` `oauth2`: OAuth 2.0 with the flows it supports.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class OAuth2Scheme internal constructor(builder: OAuth2SchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
     /**
-     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     * Whether the scheme is `deprecated` and should no longer be used; `false` when the document leaves it out and
+     * before OpenAPI 3.2.
      *
      * @since 1.0.0
      */
     public override val isDeprecated: Boolean = builder.isDeprecated
 
+    /**
+     * The `flows` the scheme supports; required by OpenAPI, so a reading reports a scheme that leaves it out and keeps
+     * no flow here.
+     *
+     * @since 1.0.0
+     */
     public val flows: OAuthFlows = builder.flows
 
     /**
-     * The address of the OAuth 2.0 authorization server metadata of RFC 8414; `null` before OpenAPI 3.2.
+     * The `oauth2MetadataUrl`: the address of the OAuth 2.0 authorization server metadata of RFC 8414; `null` when
+     * the document leaves it out and before OpenAPI 3.2.
      *
      * The address is not checked when it is read; a client fetches it only through its destination policy.
      *
