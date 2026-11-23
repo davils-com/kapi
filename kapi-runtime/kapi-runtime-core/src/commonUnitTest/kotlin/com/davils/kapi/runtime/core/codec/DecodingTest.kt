@@ -39,6 +39,7 @@ class DecodingTest : FunSpec({
         test("differs from a failure and from another value") {
             nothing.equals(Decoding.Failed(REASON)) shouldBe false
             Decoding.Decoded(1) shouldNotBe Decoding.Decoded(2)
+            Decoding.Decoded(REASON).hashCode() shouldBe REASON.hashCode()
         }
     }
 

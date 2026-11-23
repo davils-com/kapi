@@ -39,6 +39,8 @@ private const val ONE: Byte = 0x31
 
 private const val DATA: String = "x"
 
+private const val LF: String = "\n"
+
 private const val RETRY: Long = 5L
 
 private const val TOO_MANY_DIGITS: Int = 19
@@ -48,6 +50,11 @@ private val notUtf8: Outcome<List<String>, FramingFailure> = Outcome.Failure(Fra
 private val tooLong: Outcome<List<String>, FramingFailure> = Outcome.Failure(FramingFailure.RecordTooLong)
 
 private fun bytes(vararg values: Byte): ByteString = ByteString(values)
+
+private fun lines(vararg texts: String): ByteString {
+    val text = texts.joinToString(separator = LF, postfix = LF)
+    return text.encodeToByteString()
+}
 
 private fun events(reader: ServerSentEventReader, text: String): List<ServerSentEvent> {
     val outcome = reader.feed(text.encodeToByteString())
@@ -108,21 +115,27 @@ class FramingFailuresTest : FunSpec({
         }
 
         test("read a short first line without a byte order mark") {
-            events(ServerSentEventReader(), "a\n\ndata: x\n\n") shouldBe listOf(ServerSentEvent(DATA))
+            events(ServerSentEventReader(), "a$LF${LF}data: x$LF$LF") shouldBe listOf(ServerSentEvent(DATA))
         }
 
         test("ignore a reconnection time that is empty, too long or no number") {
             val reader = ServerSentEventReader()
 
-            events(reader, "retry:\nretry: 1x\nretry: ${"1".repeat(TOO_MANY_DIGITS)}\ndata: x\n\n")
+            reader.feed(lines("retry:", "retry: 1x", "retry: " + "1".repeat(TOO_MANY_DIGITS), "data: x", ""))
             reader.retry.shouldBeNull()
         }
 
         test("keep the first failure of an event that is too long") {
             val reader = ServerSentEventReader(framingLimits { maxEventBytes = SMALL })
 
-            reader.feed("data: 12345\ndata: 12345\n".encodeToByteString()) shouldBe
+            reader.feed(lines("data: 12345", "data: 12345")) shouldBe
                 Outcome.Failure(FramingFailure.EventTooLong)
+        }
+    }
+
+    context("a comment") {
+        test("is empty by default") {
+            ServerSentEvents.comment() shouldBe ":$LF"
         }
     }
 

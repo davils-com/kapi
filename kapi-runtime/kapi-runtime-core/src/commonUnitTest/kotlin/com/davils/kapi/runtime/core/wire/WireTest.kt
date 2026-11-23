@@ -61,6 +61,12 @@ class WireTest : FunSpec({
             listOf(Patch.Absent, Patch.Null).map(Patch<String>::toString) shouldBe listOf("Absent", "Null")
         }
 
+        test("holds a value that may be null and differs from another kind") {
+            Patch.Value(null).hashCode() shouldBe 0
+            Patch.Value(null).toString() shouldBe "Value(null)"
+            Patch.Value(HELLO).equals(Patch.Null) shouldBe false
+        }
+
         test("is written as its value, as null or left out") {
             terse.encodeToString(NotePatch.serializer(), NotePatch(Patch.Value(HELLO))) shouldBe SET
             terse.encodeToString(NotePatch.serializer(), NotePatch(Patch.Null)) shouldBe CLEARED
