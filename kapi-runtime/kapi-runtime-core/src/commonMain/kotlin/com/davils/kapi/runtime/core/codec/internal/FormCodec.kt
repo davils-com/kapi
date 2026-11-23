@@ -80,7 +80,8 @@ internal class FormCodec(private val json: Json, private val limits: FormLimits)
     }
 
     private fun memberOf(descriptor: SerialDescriptor, name: String, values: List<JsonPrimitive>): JsonElement {
-        val index = descriptor.getElementIndex(name)
+        val isClass = descriptor.kind == StructureKind.CLASS
+        val index = descriptor.takeIf { isClass }?.getElementIndex(name) ?: -1
         val isList = index >= 0 && descriptor.getElementDescriptor(index).kind == StructureKind.LIST
         if (isList || values.size > 1) return JsonArray(values)
         return values.first()

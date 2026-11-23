@@ -36,6 +36,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -203,6 +204,13 @@ class CodecsTest : FunSpec({
             val content = "item=tea+cup&count=2&tags=x".encodeToByteString()
 
             codec.decode(Order.serializer(), content) shouldBe Decoding.Decoded(Order("tea cup", 2, listOf("x")))
+        }
+
+        test("reads a form into a map of texts") {
+            val serializer = MapSerializer(String.serializer(), String.serializer())
+
+            codec.decode(serializer, "a=1&b=x+y".encodeToByteString()) shouldBe
+                Decoding.Decoded(mapOf("a" to "1", "b" to "x y"))
         }
 
         test("refuses a nested object and a malformed or oversized form") {
