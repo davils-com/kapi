@@ -47,5 +47,5 @@ internal object Nodes {
     fun texts(values: List<String>): YamlNode = yamlSequence(values.map { value -> yamlScalar(value) })
 
     fun <T> mapping(values: Map<String, T>, write: (T) -> YamlNode): YamlNode =
-        yamlMapping(values.map { (key, value) -> YamlEntry(yamlScalar(key), write(value)) })
+        yamlMapping(values.map { (key, value) -> YamlEntry(key = yamlScalar(key), value = write(value)) })
 }

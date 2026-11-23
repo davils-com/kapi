@@ -30,7 +30,7 @@ internal class Out {
         entries += listOfNotNull(node).map { value -> YamlEntry(yamlScalar(key), value) }
     }
 
-    fun text(key: String, value: String?) {
+    operator fun set(key: String, value: String?) {
         node(key, value?.let { text -> yamlScalar(text) })
     }
 

@@ -68,7 +68,7 @@ internal object QueryStringRules {
 
     private fun effective(shared: List<Parameter>, own: List<Parameter>): List<Parameter> {
         val overridden = own.map { parameter -> parameter.name to parameter.placement }.toSet()
-        val inherited = shared.filterNot { parameter -> (parameter.name to parameter.placement) in overridden }
+        val inherited = shared.filterNot { parameter -> parameter.name to parameter.placement in overridden }
         return inherited + own
     }
 }

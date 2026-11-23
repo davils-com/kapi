@@ -38,7 +38,7 @@ internal class SimpleSchemaUpgrade(private val styles: CollectionStyles) {
 
     private fun withItems(entry: YamlEntry, items: YamlNode?): YamlEntry {
         if (items == null || Trees.keyOf(entry) != Keys.ITEMS) return entry
-        return YamlEntry(entry.key, items)
+        return YamlEntry(key = entry.key, value = items)
     }
 
     companion object {

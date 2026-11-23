@@ -27,8 +27,10 @@ internal object SchemaConstraints {
     private val lowest: Comparator<Bound> = compareBy(Bound::value)
 
     fun fill(builder: SchemaDefinitionBuilder, fields: Fields) {
-        builder.minimum = bound(fields, Keys.MINIMUM, Keys.EXCLUSIVE_MINIMUM)?.maxWithOrNull(lowest)
-        builder.maximum = bound(fields, Keys.MAXIMUM, Keys.EXCLUSIVE_MAXIMUM)?.minWithOrNull(lowest)
+        val minimums = bound(fields = fields, name = Keys.MINIMUM, exclusiveName = Keys.EXCLUSIVE_MINIMUM)
+        val maximums = bound(fields = fields, name = Keys.MAXIMUM, exclusiveName = Keys.EXCLUSIVE_MAXIMUM)
+        builder.minimum = minimums?.maxWithOrNull(lowest)
+        builder.maximum = maximums?.minWithOrNull(lowest)
         builder.multipleOf = fields.number(Keys.MULTIPLE_OF)
         builder.minLength = fields.count(Keys.MIN_LENGTH)
         builder.maxLength = fields.count(Keys.MAX_LENGTH)

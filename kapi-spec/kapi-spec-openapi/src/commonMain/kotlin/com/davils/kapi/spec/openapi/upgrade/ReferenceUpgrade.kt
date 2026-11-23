@@ -42,14 +42,14 @@ internal object ReferenceUpgrade {
         val tail = reference.substring(start + 1)
         val fragment = tail.takeIf { start >= 0 }.orEmpty()
         val rename = renames.firstOrNull { (from, _) -> fragment.startsWith(from) } ?: return reference
-        val document = reference.substring(0, start)
+        val document = reference.take(start)
         return "$document$FRAGMENT${rename.second}${fragment.removePrefix(rename.first)}"
     }
 
     fun upgradedEntry(entry: YamlEntry): YamlEntry {
         val reference = entry.value.string() ?: return entry
         val upgraded = upgraded(reference)
-        return entry.takeIf { upgraded == reference } ?: YamlEntry(entry.key, Trees.textOf(upgraded))
+        return entry.takeIf { upgraded == reference } ?: YamlEntry(key = entry.key, value = Trees.textOf(upgraded))
     }
 
     fun upgradedNode(node: YamlNode): YamlNode {
@@ -61,8 +61,8 @@ internal object ReferenceUpgrade {
         val prefix = "$FRAGMENT/$section/"
         val token = reference.removePrefix(prefix)
         val isLocal = reference.startsWith(prefix) && !token.contains(SLASH)
-        val unescaped = token.replace(ESCAPED_SLASH, SLASH)
-        return unescaped.replace(ESCAPED_TILDE, TILDE).takeIf { isLocal }
+        val unescaped = token.replace(oldValue = ESCAPED_SLASH, newValue = SLASH)
+        return unescaped.replace(oldValue = ESCAPED_TILDE, newValue = TILDE).takeIf { isLocal }
     }
 
     private fun upgradedSibling(entry: YamlEntry): YamlEntry {

@@ -40,36 +40,36 @@ internal class SecurityWriter(family: VersionFamily) {
         when (scheme) {
             is ApiKeyScheme -> apiKey(out, scheme)
             is HttpScheme -> http(out, scheme)
-            is MutualTlsScheme -> out.text(Keys.TYPE, Keys.MUTUAL_TLS)
+            is MutualTlsScheme -> out[Keys.TYPE] = Keys.MUTUAL_TLS
             is OAuth2Scheme -> oauth2(out, scheme)
             is OpenIdConnectScheme -> openIdConnect(out, scheme)
         }
-        out.text(Keys.DESCRIPTION, scheme.description)
+        out[Keys.DESCRIPTION] = scheme.description
         out.flag(Keys.DEPRECATED, scheme.isDeprecated && isCurrent)
         return out.build(scheme)
     }
 
     private fun apiKey(out: Out, scheme: ApiKeyScheme) {
-        out.text(Keys.TYPE, Keys.API_KEY)
-        out.text(Keys.NAME, scheme.name)
-        out.text(Keys.IN, scheme.placement.keyword)
+        out[Keys.TYPE] = Keys.API_KEY
+        out[Keys.NAME] = scheme.name
+        out[Keys.IN] = scheme.placement.keyword
     }
 
     private fun http(out: Out, scheme: HttpScheme) {
-        out.text(Keys.TYPE, Keys.HTTP)
-        out.text(Keys.SCHEME, scheme.scheme)
-        out.text(Keys.BEARER_FORMAT, scheme.bearerFormat)
+        out[Keys.TYPE] = Keys.HTTP
+        out[Keys.SCHEME] = scheme.scheme
+        out[Keys.BEARER_FORMAT] = scheme.bearerFormat
     }
 
     private fun oauth2(out: Out, scheme: OAuth2Scheme) {
-        out.text(Keys.TYPE, Keys.OAUTH2)
+        out[Keys.TYPE] = Keys.OAUTH2
         out.node(Keys.FLOWS, flows(scheme.flows))
-        out.text(Keys.OAUTH2_METADATA_URL, scheme.oauth2MetadataUrl?.takeIf { isCurrent })
+        out[Keys.OAUTH2_METADATA_URL] = scheme.oauth2MetadataUrl?.takeIf { isCurrent }
     }
 
     private fun openIdConnect(out: Out, scheme: OpenIdConnectScheme) {
-        out.text(Keys.TYPE, Keys.OPEN_ID_CONNECT)
-        out.text(Keys.OPEN_ID_CONNECT_URL, scheme.openIdConnectUrl)
+        out[Keys.TYPE] = Keys.OPEN_ID_CONNECT
+        out[Keys.OPEN_ID_CONNECT_URL] = scheme.openIdConnectUrl
     }
 
     private fun flows(flows: OAuthFlows): YamlNode {
@@ -84,10 +84,10 @@ internal class SecurityWriter(family: VersionFamily) {
 
     private fun flow(flow: OAuthFlow): YamlNode {
         val out = Out()
-        out.text(Keys.AUTHORIZATION_URL, flow.authorizationUrl)
-        out.text(Keys.DEVICE_AUTHORIZATION_URL, flow.deviceAuthorizationUrl?.takeIf { isCurrent })
-        out.text(Keys.TOKEN_URL, flow.tokenUrl)
-        out.text(Keys.REFRESH_URL, flow.refreshUrl)
+        out[Keys.AUTHORIZATION_URL] = flow.authorizationUrl
+        out[Keys.DEVICE_AUTHORIZATION_URL] = flow.deviceAuthorizationUrl?.takeIf { isCurrent }
+        out[Keys.TOKEN_URL] = flow.tokenUrl
+        out[Keys.REFRESH_URL] = flow.refreshUrl
         out.node(Keys.SCOPES, Nodes.mapping(flow.scopes) { description -> yamlScalar(description) })
         return out.build(flow)
     }

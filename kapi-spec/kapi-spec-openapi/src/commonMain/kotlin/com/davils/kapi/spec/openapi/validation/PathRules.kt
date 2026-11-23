@@ -36,7 +36,12 @@ internal object PathRules {
         val paths = scope.document.paths
         val items = paths?.items.orEmpty()
         items.forEach { (template, item) -> path(scope, template, item) }
-        val alike = items.entries.groupBy { (template, _) -> parameter.replace(template.value, PLACEHOLDER) }
+        val alike = items.entries.groupBy { (template, _) ->
+            parameter.replace(
+                input = template.value,
+                replacement = PLACEHOLDER,
+            )
+        }
         val ambiguous = alike.values.flatMap { same -> same.drop(1) }
         ambiguous.forEach { (template, item) ->
             val message = "The path $template differs from another path only by the names of its parameters"
@@ -46,7 +51,7 @@ internal object PathRules {
 
     private fun path(scope: RuleScope, template: PathTemplate, item: PathItem) {
         val names = template.parameters
-        val rest = parameter.replace(template.value, "")
+        val rest = parameter.replace(input = template.value, replacement = "")
         val isBroken = brace.containsMatchIn(rest) || names.distinct().size < names.size
         if (isBroken) {
             val message = "The path $template must name every parameter once between a pair of braces"

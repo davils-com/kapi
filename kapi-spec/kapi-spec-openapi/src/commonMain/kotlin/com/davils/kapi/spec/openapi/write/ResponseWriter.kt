@@ -40,8 +40,8 @@ internal class ResponseWriter(
 
     fun response(response: Response): YamlNode {
         val out = Out()
-        out.text(Keys.SUMMARY, response.summary?.takeIf { isCurrent })
-        out.text(Keys.DESCRIPTION, response.description)
+        out[Keys.SUMMARY] = response.summary?.takeIf { isCurrent }
+        out[Keys.DESCRIPTION] = response.description
         out.map(Keys.HEADERS, response.headers, ReferenceWriter.referables(content::header))
         out.map(Keys.CONTENT, response.content, ReferenceWriter.referables(content::mediaType))
         out.map(Keys.LINKS, response.links, ReferenceWriter.referables(::link))
@@ -50,11 +50,11 @@ internal class ResponseWriter(
 
     fun link(link: Link): YamlNode {
         val out = Out()
-        out.text(Keys.OPERATION_REF, link.operationReference)
-        out.text(Keys.OPERATION_ID, link.operationId)
+        out[Keys.OPERATION_REF] = link.operationReference
+        out[Keys.OPERATION_ID] = link.operationId
         out.map(Keys.PARAMETERS, link.parameters, Nodes::of)
         out.node(Keys.REQUEST_BODY, link.requestBody?.let(Nodes::of))
-        out.text(Keys.DESCRIPTION, link.description)
+        out[Keys.DESCRIPTION] = link.description
         out.node(Keys.SERVER, link.server?.let(info::server))
         return out.build(link)
     }

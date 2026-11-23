@@ -31,13 +31,13 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
 
     fun parameter(parameter: Parameter): YamlNode {
         val out = Out()
-        out.text(Keys.NAME, parameter.name)
-        out.text(Keys.IN, parameter.placement.keyword)
-        out.text(Keys.DESCRIPTION, parameter.description)
+        out[Keys.NAME] = parameter.name
+        out[Keys.IN] = parameter.placement.keyword
+        out[Keys.DESCRIPTION] = parameter.description
         out.flag(Keys.REQUIRED, parameter.isRequired)
         out.flag(Keys.DEPRECATED, parameter.isDeprecated)
         out.flag(Keys.ALLOW_EMPTY_VALUE, parameter.isEmptyValueAllowed)
-        out.text(Keys.STYLE, parameter.style?.keyword)
+        out[Keys.STYLE] = parameter.style?.keyword
         out.choice(Keys.EXPLODE, parameter.isExploded)
         out.flag(Keys.ALLOW_RESERVED, parameter.isReservedAllowed)
         out.node(Keys.SCHEMA, parameter.schema?.let(schemas::schema))
@@ -49,10 +49,10 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
 
     fun header(header: Header): YamlNode {
         val out = Out()
-        out.text(Keys.DESCRIPTION, header.description)
+        out[Keys.DESCRIPTION] = header.description
         out.flag(Keys.REQUIRED, header.isRequired)
         out.flag(Keys.DEPRECATED, header.isDeprecated)
-        out.text(Keys.STYLE, header.style?.keyword)
+        out[Keys.STYLE] = header.style?.keyword
         out.choice(Keys.EXPLODE, header.isExploded)
         out.node(Keys.SCHEMA, header.schema?.let(schemas::schema))
         out.map(Keys.CONTENT, header.content, ReferenceWriter.referables(::mediaType))
@@ -74,7 +74,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
 
     fun requestBody(body: RequestBody): YamlNode {
         val out = Out()
-        out.text(Keys.DESCRIPTION, body.description)
+        out[Keys.DESCRIPTION] = body.description
         out.node(Keys.CONTENT, Nodes.mapping(body.content, ReferenceWriter.referables(::mediaType)))
         out.flag(Keys.REQUIRED, body.isRequired)
         return out.build(body)
@@ -82,20 +82,20 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
 
     fun example(example: Example): YamlNode {
         val out = Out()
-        out.text(Keys.SUMMARY, example.summary)
-        out.text(Keys.DESCRIPTION, example.description)
+        out[Keys.SUMMARY] = example.summary
+        out[Keys.DESCRIPTION] = example.description
         out.node(Keys.VALUE, example.value?.let(Nodes::of))
-        out.text(Keys.EXTERNAL_VALUE, example.externalValue)
+        out[Keys.EXTERNAL_VALUE] = example.externalValue
         out.node(Keys.DATA_VALUE, example.dataValue?.takeIf { isCurrent }?.let(Nodes::of))
-        out.text(Keys.SERIALIZED_VALUE, example.serializedValue?.takeIf { isCurrent })
+        out[Keys.SERIALIZED_VALUE] = example.serializedValue?.takeIf { isCurrent }
         return out.build(example)
     }
 
     private fun encoding(encoding: Encoding): YamlNode {
         val out = Out()
-        out.text(Keys.CONTENT_TYPE, encoding.contentType)
+        out[Keys.CONTENT_TYPE] = encoding.contentType
         out.map(Keys.HEADERS, encoding.headers, ReferenceWriter.referables(::header))
-        out.text(Keys.STYLE, encoding.style?.keyword)
+        out[Keys.STYLE] = encoding.style?.keyword
         out.choice(Keys.EXPLODE, encoding.isExploded)
         out.flag(Keys.ALLOW_RESERVED, encoding.isReservedAllowed)
         out.map(Keys.ENCODING, encoding.nestedEncoding.takeIf { isCurrent }.orEmpty(), ::encoding)

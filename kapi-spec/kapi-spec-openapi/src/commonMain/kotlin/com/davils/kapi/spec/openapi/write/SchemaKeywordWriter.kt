@@ -33,7 +33,7 @@ internal class SchemaKeywordWriter(private val family: VersionFamily) {
         val names = written.map { type -> yamlScalar(type.keyword) }
         out.node(Keys.TYPE, names.singleOrNull() ?: yamlSequence(names).takeIf { names.size > 1 })
         out.flag(Keys.NULLABLE, isNullable)
-        out.text(Keys.FORMAT, schema.format)
+        out[Keys.FORMAT] = schema.format
         out.node(Keys.ENUM, schema.enumeration?.let { values -> yamlSequence(values.map(Nodes::of)) })
         out.node(Keys.CONST, schema.constant?.let(Nodes::of))
         examples(out, schema)
@@ -45,7 +45,7 @@ internal class SchemaKeywordWriter(private val family: VersionFamily) {
         out.node(Keys.MULTIPLE_OF, schema.multipleOf?.let(Nodes::of))
         out.count(Keys.MIN_LENGTH, schema.minLength)
         out.count(Keys.MAX_LENGTH, schema.maxLength)
-        out.text(Keys.PATTERN, schema.pattern)
+        out[Keys.PATTERN] = schema.pattern
         out.count(Keys.MIN_ITEMS, schema.minItems)
         out.count(Keys.MAX_ITEMS, schema.maxItems)
         out.count(Keys.MIN_CONTAINS, schema.minContains)

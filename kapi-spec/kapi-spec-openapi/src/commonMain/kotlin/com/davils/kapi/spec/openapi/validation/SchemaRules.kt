@@ -37,11 +37,11 @@ internal object SchemaRules {
 
     private fun constraints(scope: RuleScope, schema: SchemaDefinition) {
         val contradictions = listOf(
-            "minimum is larger than maximum" to isEmptyRange(schema.minimum, schema.maximum),
-            "minLength is larger than maxLength" to isReversed(schema.minLength, schema.maxLength),
-            "minItems is larger than maxItems" to isReversed(schema.minItems, schema.maxItems),
-            "minProperties is larger than maxProperties" to isReversed(schema.minProperties, schema.maxProperties),
-            "minContains is larger than maxContains" to isReversed(schema.minContains, schema.maxContains),
+            "minimum is larger than maximum" to schema.minimum.isEmptyRangeTo(schema.maximum),
+            "minLength is larger than maxLength" to schema.minLength.isAbove(schema.maxLength),
+            "minItems is larger than maxItems" to schema.minItems.isAbove(schema.maxItems),
+            "minProperties is larger than maxProperties" to schema.minProperties.isAbove(schema.maxProperties),
+            "minContains is larger than maxContains" to schema.minContains.isAbove(schema.maxContains),
             "multipleOf is not larger than zero" to (schema.multipleOf?.let { factor -> factor <= nothing } == true),
         )
         contradictions.filter { (_, isBroken) -> isBroken }.forEach { (reason, _) ->
@@ -50,13 +50,12 @@ internal object SchemaRules {
         }
     }
 
-    private fun isReversed(minimum: Int?, maximum: Int?): Boolean =
-        minimum != null && maximum != null && minimum > maximum
+    private fun Int?.isAbove(maximum: Int?): Boolean = this != null && maximum != null && this > maximum
 
-    private fun isEmptyRange(minimum: Bound?, maximum: Bound?): Boolean {
-        if (minimum == null || maximum == null) return false
-        val order = minimum.value.compareTo(maximum.value)
-        val isOpen = minimum.isExclusive || maximum.isExclusive
+    private fun Bound?.isEmptyRangeTo(maximum: Bound?): Boolean {
+        if (this == null || maximum == null) return false
+        val order = value.compareTo(maximum.value)
+        val isOpen = isExclusive || maximum.isExclusive
         val isTouching = order == 0 && isOpen
         return order > 0 || isTouching
     }

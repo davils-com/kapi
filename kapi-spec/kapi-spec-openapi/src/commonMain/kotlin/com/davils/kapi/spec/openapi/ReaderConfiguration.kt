@@ -20,7 +20,6 @@ import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.core.policy.ReferencePolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.core.source.Resolver
-import com.davils.kapi.spec.openapi.StructureCheck
 import com.davils.kapi.spec.openapi.diagnostic.CodeRules
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
