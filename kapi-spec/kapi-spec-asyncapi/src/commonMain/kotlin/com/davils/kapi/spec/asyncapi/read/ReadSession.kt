@@ -22,10 +22,13 @@ import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.ReaderConfiguration
 import com.davils.kapi.spec.asyncapi.Reading
+import com.davils.kapi.spec.asyncapi.StructureCheck
 import com.davils.kapi.spec.asyncapi.Version
 import com.davils.kapi.spec.asyncapi.diagnostic.Findings
 import com.davils.kapi.spec.asyncapi.load.loaderOf
 import com.davils.kapi.spec.asyncapi.read.reference.TargetResolver
+import com.davils.kapi.spec.asyncapi.structure.OfficialSchema
+import com.davils.kapi.spec.asyncapi.structure.StructureValidation
 import com.davils.kapi.spec.asyncapi.validation.DocumentRules
 import com.davils.kapi.spec.asyncapi.validation.RuleScope
 import com.davils.kapi.spec.core.load.DocumentLoader
@@ -35,6 +38,7 @@ import com.davils.kore.core.annotation.DavilsInternal
 
 internal class ReadSession(
     private val configuration: ReaderConfiguration,
+    private val schema: OfficialSchema,
     source: Source,
 ) {
     private val findings: Findings = Findings(configuration.severities, configuration.limits.maximumDiagnostics)
@@ -61,6 +65,9 @@ internal class ReadSession(
         val document = builder.build()
         val rules = RuleScope(document = document, findings = findings, documents = loader.documents)
         DocumentRules.check(rules)
+        if (configuration.structure == StructureCheck.ReaderAndOfficialSchema) {
+            StructureValidation(findings = findings, document = root, model = document).check(schema)
+        }
         return document
     }
 

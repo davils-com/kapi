@@ -20,3 +20,9 @@ License 2.0, whose text is in the file LICENSE. kapi-spec-openapi embeds them un
     SHA-256 4751a7777357b26b09a9a61b9addd08081de2e65cf80d3ae0df2b4cd931b2d7b
   https://spec.openapis.org/oas/3.2/schema/2026-11-12, the latest schema of OpenAPI 3.2 on 2026-11-23
     SHA-256 f1f7ee38d431a7bb1082e4df2288dbe1d4d3f49081b497af249c07b77737fb43
+
+This product bundles the official JSON Schema of AsyncAPI 3.0.0, published by the AsyncAPI Initiative in
+https://github.com/asyncapi/spec-json-schemas, Copyright The Linux Foundation / AsyncAPI Initiative, licensed under
+the Apache License 2.0, whose text is in the file LICENSE. kapi-spec-asyncapi embeds it unchanged:
+  https://raw.githubusercontent.com/asyncapi/spec-json-schemas/v6.11.1/schemas/3.0.0-without-$id.json, release 6.11.1
+    SHA-256 abe96881dbfaad495ccbb6bd8d3fb43ca18a13b9d7564849ccb66f39d5e5b20f

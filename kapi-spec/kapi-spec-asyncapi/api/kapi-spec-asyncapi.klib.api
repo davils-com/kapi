@@ -99,6 +99,17 @@ final enum class com.davils.kapi.spec.asyncapi.model.security/SecuritySchemeType
     final fun values(): kotlin/Array<com.davils.kapi.spec.asyncapi.model.security/SecuritySchemeType> // com.davils.kapi.spec.asyncapi.model.security/SecuritySchemeType.values|values#static(){}[0]
 }
 
+final enum class com.davils.kapi.spec.asyncapi/StructureCheck : kotlin/Enum<com.davils.kapi.spec.asyncapi/StructureCheck> { // com.davils.kapi.spec.asyncapi/StructureCheck|null[0]
+    enum entry Reader // com.davils.kapi.spec.asyncapi/StructureCheck.Reader|null[0]
+    enum entry ReaderAndOfficialSchema // com.davils.kapi.spec.asyncapi/StructureCheck.ReaderAndOfficialSchema|null[0]
+
+    final val entries // com.davils.kapi.spec.asyncapi/StructureCheck.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.asyncapi/StructureCheck> // com.davils.kapi.spec.asyncapi/StructureCheck.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.spec.asyncapi/StructureCheck // com.davils.kapi.spec.asyncapi/StructureCheck.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.spec.asyncapi/StructureCheck> // com.davils.kapi.spec.asyncapi/StructureCheck.values|values#static(){}[0]
+}
+
 final enum class com.davils.kapi.spec.asyncapi/VersionFamily : kotlin/Enum<com.davils.kapi.spec.asyncapi/VersionFamily> { // com.davils.kapi.spec.asyncapi/VersionFamily|null[0]
     enum entry V30 // com.davils.kapi.spec.asyncapi/VersionFamily.V30|null[0]
 
@@ -1027,6 +1038,9 @@ final class com.davils.kapi.spec.asyncapi/ReaderBuilder : com.davils.kore.core.d
     final var severities // com.davils.kapi.spec.asyncapi/ReaderBuilder.severities|{}severities[0]
         final fun <get-severities>(): com.davils.kapi.spec.core.policy/SeverityPolicy // com.davils.kapi.spec.asyncapi/ReaderBuilder.severities.<get-severities>|<get-severities>(){}[0]
         final fun <set-severities>(com.davils.kapi.spec.core.policy/SeverityPolicy) // com.davils.kapi.spec.asyncapi/ReaderBuilder.severities.<set-severities>|<set-severities>(com.davils.kapi.spec.core.policy.SeverityPolicy){}[0]
+    final var structure // com.davils.kapi.spec.asyncapi/ReaderBuilder.structure|{}structure[0]
+        final fun <get-structure>(): com.davils.kapi.spec.asyncapi/StructureCheck // com.davils.kapi.spec.asyncapi/ReaderBuilder.structure.<get-structure>|<get-structure>(){}[0]
+        final fun <set-structure>(com.davils.kapi.spec.asyncapi/StructureCheck) // com.davils.kapi.spec.asyncapi/ReaderBuilder.structure.<set-structure>|<set-structure>(com.davils.kapi.spec.asyncapi.StructureCheck){}[0]
 
     final fun limits(kotlin/Function1<com.davils.kapi.spec.core.policy/ReadLimitsBuilder, kotlin/Unit>) // com.davils.kapi.spec.asyncapi/ReaderBuilder.limits|limits(kotlin.Function1<com.davils.kapi.spec.core.policy.ReadLimitsBuilder,kotlin.Unit>){}[0]
     final fun references(kotlin/Function1<com.davils.kapi.spec.core.policy/ReferencePolicyBuilder, kotlin/Unit>) // com.davils.kapi.spec.asyncapi/ReaderBuilder.references|references(kotlin.Function1<com.davils.kapi.spec.core.policy.ReferencePolicyBuilder,kotlin.Unit>){}[0]
@@ -1044,6 +1058,8 @@ final class com.davils.kapi.spec.asyncapi/ReaderConfiguration : com.davils.kore.
         final fun <get-resolver>(): com.davils.kapi.spec.core.source/Resolver // com.davils.kapi.spec.asyncapi/ReaderConfiguration.resolver.<get-resolver>|<get-resolver>(){}[0]
     final val severities // com.davils.kapi.spec.asyncapi/ReaderConfiguration.severities|{}severities[0]
         final fun <get-severities>(): com.davils.kapi.spec.core.policy/SeverityPolicy // com.davils.kapi.spec.asyncapi/ReaderConfiguration.severities.<get-severities>|<get-severities>(){}[0]
+    final val structure // com.davils.kapi.spec.asyncapi/ReaderConfiguration.structure|{}structure[0]
+        final fun <get-structure>(): com.davils.kapi.spec.asyncapi/StructureCheck // com.davils.kapi.spec.asyncapi/ReaderConfiguration.structure.<get-structure>|<get-structure>(){}[0]
 
     final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.asyncapi/ReaderConfiguration.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.asyncapi/ReaderConfiguration.toString|toString(){}[0]
@@ -1173,6 +1189,8 @@ final object com.davils.kapi.spec.asyncapi/DiagnosticCodes { // com.davils.kapi.
         final fun <get-OPERATION_ACTION>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_ACTION.<get-OPERATION_ACTION>|<get-OPERATION_ACTION>(){}[0]
     final val OPERATION_CHANNEL_PLACEMENT // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_CHANNEL_PLACEMENT|{}OPERATION_CHANNEL_PLACEMENT[0]
         final fun <get-OPERATION_CHANNEL_PLACEMENT>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_CHANNEL_PLACEMENT.<get-OPERATION_CHANNEL_PLACEMENT>|<get-OPERATION_CHANNEL_PLACEMENT>(){}[0]
+    final val OPERATION_KEY_DUPLICATE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_KEY_DUPLICATE|{}OPERATION_KEY_DUPLICATE[0]
+        final fun <get-OPERATION_KEY_DUPLICATE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_KEY_DUPLICATE.<get-OPERATION_KEY_DUPLICATE>|<get-OPERATION_KEY_DUPLICATE>(){}[0]
     final val OPERATION_MESSAGE_NOT_IN_CHANNEL // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_MESSAGE_NOT_IN_CHANNEL|{}OPERATION_MESSAGE_NOT_IN_CHANNEL[0]
         final fun <get-OPERATION_MESSAGE_NOT_IN_CHANNEL>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.OPERATION_MESSAGE_NOT_IN_CHANNEL.<get-OPERATION_MESSAGE_NOT_IN_CHANNEL>|<get-OPERATION_MESSAGE_NOT_IN_CHANNEL>(){}[0]
     final val REFERENCE_CHAIN_TOO_LONG // com.davils.kapi.spec.asyncapi/DiagnosticCodes.REFERENCE_CHAIN_TOO_LONG|{}REFERENCE_CHAIN_TOO_LONG[0]
@@ -1205,6 +1223,8 @@ final object com.davils.kapi.spec.asyncapi/DiagnosticCodes { // com.davils.kapi.
         final fun <get-SCHEMA_FORMAT_UNKNOWN>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SCHEMA_FORMAT_UNKNOWN.<get-SCHEMA_FORMAT_UNKNOWN>|<get-SCHEMA_FORMAT_UNKNOWN>(){}[0]
     final val SECURITY_LOCATION // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_LOCATION|{}SECURITY_LOCATION[0]
         final fun <get-SECURITY_LOCATION>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_LOCATION.<get-SECURITY_LOCATION>|<get-SECURITY_LOCATION>(){}[0]
+    final val SECURITY_REFERENCE_PLACEMENT // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_REFERENCE_PLACEMENT|{}SECURITY_REFERENCE_PLACEMENT[0]
+        final fun <get-SECURITY_REFERENCE_PLACEMENT>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_REFERENCE_PLACEMENT.<get-SECURITY_REFERENCE_PLACEMENT>|<get-SECURITY_REFERENCE_PLACEMENT>(){}[0]
     final val SECURITY_SCOPES // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_SCOPES|{}SECURITY_SCOPES[0]
         final fun <get-SECURITY_SCOPES>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_SCOPES.<get-SECURITY_SCOPES>|<get-SECURITY_SCOPES>(){}[0]
     final val SECURITY_TYPE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SECURITY_TYPE|{}SECURITY_TYPE[0]
@@ -1225,6 +1245,8 @@ final object com.davils.kapi.spec.asyncapi/DiagnosticCodes { // com.davils.kapi.
         final fun <get-SOURCE_MULTIPLE_DOCUMENTS>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SOURCE_MULTIPLE_DOCUMENTS.<get-SOURCE_MULTIPLE_DOCUMENTS>|<get-SOURCE_MULTIPLE_DOCUMENTS>(){}[0]
     final val SOURCE_NON_JSON_VALUE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SOURCE_NON_JSON_VALUE|{}SOURCE_NON_JSON_VALUE[0]
         final fun <get-SOURCE_NON_JSON_VALUE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.SOURCE_NON_JSON_VALUE.<get-SOURCE_NON_JSON_VALUE>|<get-SOURCE_NON_JSON_VALUE>(){}[0]
+    final val STRUCTURE_SCHEMA // com.davils.kapi.spec.asyncapi/DiagnosticCodes.STRUCTURE_SCHEMA|{}STRUCTURE_SCHEMA[0]
+        final fun <get-STRUCTURE_SCHEMA>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.STRUCTURE_SCHEMA.<get-STRUCTURE_SCHEMA>|<get-STRUCTURE_SCHEMA>(){}[0]
     final val TAG_DUPLICATE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TAG_DUPLICATE|{}TAG_DUPLICATE[0]
         final fun <get-TAG_DUPLICATE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TAG_DUPLICATE.<get-TAG_DUPLICATE>|<get-TAG_DUPLICATE>(){}[0]
     final val VERSION_MISSING // com.davils.kapi.spec.asyncapi/DiagnosticCodes.VERSION_MISSING|{}VERSION_MISSING[0]

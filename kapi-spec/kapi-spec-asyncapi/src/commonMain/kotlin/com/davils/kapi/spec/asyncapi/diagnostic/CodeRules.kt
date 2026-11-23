@@ -38,6 +38,7 @@ internal object CodeRules {
         DiagnosticCodes.MESSAGE_EXAMPLE_EMPTY,
         DiagnosticCodes.SCHEMA_FORMAT_UNKNOWN,
         DiagnosticCodes.TAG_DUPLICATE,
+        DiagnosticCodes.STRUCTURE_SCHEMA,
     )
 
     fun severityOf(code: ViolationCode): Severity {

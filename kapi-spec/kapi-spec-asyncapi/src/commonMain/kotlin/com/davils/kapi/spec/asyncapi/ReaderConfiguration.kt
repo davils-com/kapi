@@ -43,6 +43,13 @@ public class ReaderConfiguration internal constructor(builder: ReaderBuilder) : 
     public val resolver: Resolver = builder.resolver
 
     /**
+     * How thoroughly the structure is checked.
+     *
+     * @since 1.0.0
+     */
+    public val structure: StructureCheck = builder.structure
+
+    /**
      * Whether the merge key `<<` of YAML 1.1 is honoured.
      *
      * @since 1.0.0
@@ -83,6 +90,6 @@ public class ReaderConfiguration internal constructor(builder: ReaderBuilder) : 
     }
 
     override fun toString(): String =
-        "ReaderConfiguration(hasMergeKeys=$hasMergeKeys, limits=$limits, references=$references, " +
-            "severities=$severities)"
+        "ReaderConfiguration(structure=$structure, hasMergeKeys=$hasMergeKeys, limits=$limits, " +
+            "references=$references, severities=$severities)"
 }

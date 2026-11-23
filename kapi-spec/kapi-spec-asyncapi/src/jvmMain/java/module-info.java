@@ -21,6 +21,7 @@
 module com.davils.kapi.spec.asyncapi {
     requires transitive kotlin.stdlib;
     requires transitive com.davils.kapi.spec.core;
+    requires com.davils.kapi.spec.schema;
 
     exports com.davils.kapi.spec.asyncapi;
     exports com.davils.kapi.spec.asyncapi.model.binding;

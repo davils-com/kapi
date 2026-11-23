@@ -22,6 +22,7 @@ import com.davils.kapi.spec.asyncapi.fixture.readingOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 private val channels: String =
     """
@@ -224,6 +225,36 @@ class OperationRulesTest : FunSpec({
             )
 
             reading.codes().map { code -> code.value } shouldBe listOf("kaml.mapping.duplicate-key")
+        }
+
+        test("list one operation under one key, so it has one id") {
+            val reading = readingOf(
+                """
+                    |channels:
+                    |  chat:
+                    |    address: chat
+                    |operations:
+                    |  first:
+                    |    ${'$'}ref: '#/components/operations/shared'
+                    |  second:
+                    |    ${'$'}ref: '#/components/operations/shared'
+                    |  third:
+                    |    action: send
+                    |    channel:
+                    |      ${'$'}ref: '#/channels/chat'
+                    |  fourth:
+                    |    ${'$'}ref: '#/operations/third'
+                    |components:
+                    |  operations:
+                    |    shared:
+                    |      action: receive
+                    |      channel:
+                    |        ${'$'}ref: '#/channels/chat'
+                """.trimMargin(),
+            )
+
+            reading.codes() shouldBe List(2) { DiagnosticCodes.OPERATION_KEY_DUPLICATE }
+            reading.diagnostics.first().message shouldContain """"first", "second""""
         }
     }
 })

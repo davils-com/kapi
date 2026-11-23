@@ -39,6 +39,10 @@ kreate {
                 note = "AsyncAPI 3: the documents kapi-spec-asyncapi reads, checks and writes, with the WebSocket " +
                     "binding."
             }
+            github("asyncapi/spec-json-schemas") {
+                note = "The official JSON Schema of AsyncAPI 3.0.0 that the structure check of kapi-spec-asyncapi " +
+                    "embeds unchanged."
+            }
             github("OAI/Overlay-Specification") {
                 note = "OpenAPI Overlays: the overlays the OpenAPI reader applies before it reads a document."
             }

@@ -36,6 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   them. Both tasks are cacheable and relocatable, write a JSON report and a SARIF log, and fail on every error, every
   unacknowledged warning and every acknowledgement without a reason or a matching warning. `generatorClasspath` and
   `runtimes { enabled = false }` let a build bring its own generator and runtimes.
+- **The structure check of AsyncAPI**: `StructureCheck.ReaderAndOfficialSchema`, the default of `AsyncApi.reader {
+  structure = ... }`, validates the root document against the official JSON Schema of AsyncAPI 3.0.0
+  (`asyncapi/spec-json-schemas` 6.11.1, embedded unchanged and recorded in `NOTICE`) and reports
+  `asyncapi.structure.schema` only where the reader has not reported yet, leaving references and boolean schemas to
+  the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
+  `operations` and `asyncapi.security.reference-placement` for a security requirement that refers outside
+  `components/securitySchemes`.
 
 ### Changed
 

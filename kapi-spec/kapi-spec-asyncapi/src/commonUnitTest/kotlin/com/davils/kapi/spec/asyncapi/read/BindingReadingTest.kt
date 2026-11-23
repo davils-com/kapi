@@ -80,6 +80,8 @@ class BindingReadingTest : FunSpec({
                     |    all:
                     |      amqp:
                     |        is: queue
+                    |        queue:
+                    |          name: rooms
                     |      mqtt:
                     |        qos: 1
                     |      x-vendor: true

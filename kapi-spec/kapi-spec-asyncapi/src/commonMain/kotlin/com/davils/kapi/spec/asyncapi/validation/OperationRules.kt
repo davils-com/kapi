@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
@@ -22,8 +24,11 @@ import com.davils.kapi.spec.asyncapi.model.channel.Channel
 import com.davils.kapi.spec.asyncapi.model.message.Message
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.operation.OperationReply
+import com.davils.kapi.spec.core.collection.groupByKeyed
+import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 
 private const val CHANNELS: String = "channels"
@@ -53,6 +58,22 @@ internal object OperationRules {
             }
         }
         scope.all<OperationReply>().forEach { reply -> reply(scope, reply) }
+        keys(scope)
+    }
+
+    private fun keys(scope: RuleScope) {
+        val listed = scope.document.operations.entries.mapNotNull { (key, referable) ->
+            scope.resolve(referable)?.location?.let { location -> Listing(key, referable, location) }
+        }
+        val groups = listed.groupByKeyed { listing -> "${listing.location}" }
+        val repeated = groups.values.filter { same -> same.size > 1 }
+        repeated.forEach { same ->
+            val keys = same.joinToString { listing -> shown(listing.key) }
+            same.drop(1).forEach { listing ->
+                val message = "One operation is listed under the keys $keys of operations, but an operation has one id"
+                scope.report(DiagnosticCodes.OPERATION_KEY_DUPLICATE, message, listing.referable)
+            }
+        }
     }
 
     private fun placement(scope: RuleScope, channel: Reference) {
@@ -107,4 +128,6 @@ internal object OperationRules {
         val isDeclared = target != null && target in declared
         return isPlaced || isDeclared
     }
+
+    private data class Listing(val key: String, val referable: Referable<Operation>, val location: Location)
 }

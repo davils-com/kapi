@@ -50,6 +50,17 @@ public class ReaderBuilder internal constructor() : ValidatingBuilder<ReaderConf
         }
 
     /**
+     * How thoroughly the structure is checked; [StructureCheck.ReaderAndOfficialSchema] by default.
+     *
+     * @since 1.0.0
+     */
+    public var structure: StructureCheck = StructureCheck.ReaderAndOfficialSchema
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
      * Whether the merge key `<<` of YAML 1.1 is honoured; off by default, so a merge key is a finding.
      *
      * @since 1.0.0
