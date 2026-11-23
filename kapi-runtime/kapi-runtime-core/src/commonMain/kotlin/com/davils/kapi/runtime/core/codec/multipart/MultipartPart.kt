@@ -111,8 +111,8 @@ public class MultipartPart(headers: List<Pair<String, String>>, public val conte
     override fun hashCode(): Int = listOf(headers, content).hashCode()
 
     override fun toString(): String {
-        val shownName = name?.let(SafeText::text) ?: NONE
-        val shownFile = filename?.let(SafeText::text) ?: NONE
+        val shownName = SafeText.text(name ?: NONE)
+        val shownFile = SafeText.text(filename ?: NONE)
         return "MultipartPart(name=$shownName, filename=$shownFile, ${content.size} bytes)"
     }
 

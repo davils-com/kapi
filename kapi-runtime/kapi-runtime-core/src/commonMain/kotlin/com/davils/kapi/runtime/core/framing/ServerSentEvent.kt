@@ -62,8 +62,8 @@ public class ServerSentEvent(
     override fun hashCode(): Int = listOf(data, type, id, retry).hashCode()
 
     override fun toString(): String {
-        val shownId = id?.let(SafeText::text) ?: NONE
-        val shownRetry = retry?.toString() ?: NONE
+        val shownId = SafeText.text(id ?: NONE)
+        val shownRetry = retry ?: NONE
         return "ServerSentEvent(type=${SafeText.text(type)}, id=$shownId, retry=$shownRetry, " +
             "data=${SafeText.text(data)})"
     }
