@@ -49,6 +49,10 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -58,7 +62,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Branch",
 )
-public data class PetstoreBranch(
+public class PetstoreBranch(
     @SerialName("children")
     public val children: List<PetstoreTree>,
 ) : Validatable,
@@ -69,6 +73,17 @@ public data class PetstoreBranch(
             with(item) { validate() }
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(children: List<PetstoreTree> = this.children): PetstoreBranch = PetstoreBranch(children = children)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreBranch && listOf(this.children) == listOf(other.children)
+
+    override fun hashCode(): Int = listOf(this.children).hashCode()
+
+    override fun toString(): String = "PetstoreBranch(" + "children=" + this.children + ")"
 }
 ===== com/example/petstore/model/PetstoreCat.kt
 package com.example.petstore.model
@@ -76,6 +91,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -85,7 +103,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Cat",
 )
-public data class PetstoreCat(
+public class PetstoreCat(
     @SerialName("kind")
     public val kind: String,
     @SerialName("name")
@@ -99,6 +117,21 @@ public data class PetstoreCat(
             within(::rival) { with(rival) { validate() } }
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        kind: String = this.kind,
+        name: String = this.name,
+        rival: PetstoreAnimal? = this.rival,
+    ): PetstoreCat = PetstoreCat(kind = kind, name = name, rival = rival)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreCat && listOf(this.kind, this.name, this.rival) == listOf(other.kind, other.name, other.rival)
+
+    override fun hashCode(): Int = listOf(this.kind, this.name, this.rival).hashCode()
+
+    override fun toString(): String = "PetstoreCat(" + "kind=" + this.kind + ", name=" + this.name + ", rival=" + this.rival + ")"
 }
 ===== com/example/petstore/model/PetstoreDog.kt
 package com.example.petstore.model
@@ -106,6 +139,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -115,7 +151,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Dog",
 )
-public data class PetstoreDog(
+public class PetstoreDog(
     @SerialName("kind")
     public val kind: String,
     @SerialName("friend")
@@ -127,6 +163,17 @@ public data class PetstoreDog(
             within(::friend) { with(friend) { validate() } }
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(kind: String = this.kind, friend: PetstoreAnimal? = this.friend): PetstoreDog = PetstoreDog(kind = kind, friend = friend)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreDog && listOf(this.kind, this.friend) == listOf(other.kind, other.friend)
+
+    override fun hashCode(): Int = listOf(this.kind, this.friend).hashCode()
+
+    override fun toString(): String = "PetstoreDog(" + "kind=" + this.kind + ", friend=" + this.friend + ")"
 }
 ===== com/example/petstore/model/PetstoreLeaf.kt
 package com.example.petstore.model
@@ -134,7 +181,10 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Int
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -143,13 +193,24 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Leaf",
 )
-public data class PetstoreLeaf(
+public class PetstoreLeaf(
     @SerialName("value")
     public val `value`: Int,
 ) : Validatable,
     PetstoreTree {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(`value`: Int = this.`value`): PetstoreLeaf = PetstoreLeaf(`value` = `value`)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreLeaf && listOf(this.`value`) == listOf(other.`value`)
+
+    override fun hashCode(): Int = listOf(this.`value`).hashCode()
+
+    override fun toString(): String = "PetstoreLeaf(" + "value=" + this.`value` + ")"
 }
 ===== com/example/petstore/model/PetstoreLoop.kt
 package com.example.petstore.model
@@ -157,6 +218,10 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -165,33 +230,52 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Loop",
 )
-public data class PetstoreLoop(
+public class PetstoreLoop(
     @SerialName("next")
     public val next: PetstoreLoop,
 ) : Validatable {
     override fun ValidationScope.validate() {
         within(::next) { with(next) { validate() } }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(next: PetstoreLoop = this.next): PetstoreLoop = PetstoreLoop(next = next)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreLoop && listOf(this.next) == listOf(other.next)
+
+    override fun hashCode(): Int = listOf(this.next).hashCode()
+
+    override fun toString(): String = "PetstoreLoop(" + "next=" + this.next + ")"
 }
 ===== com/example/petstore/model/PetstoreOwner.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.pattern.Pattern
 import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
-import kotlin.text.Regex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+private val EMAIL_PATTERN: Pattern = Pattern.compileOrThrow("^.+@.+${'$'}")
+
+private val EXPIRY_PATTERN: Pattern = Pattern.compileOrThrow("^[0-9]{2}/[0-9]{2}${'$'}")
 
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Owner",
 )
-public data class PetstoreOwner(
+public class PetstoreOwner(
     @SerialName("email")
     public val email: String,
     @SerialName("pets")
@@ -202,49 +286,61 @@ public data class PetstoreOwner(
     public val expiry: String? = null,
 ) : Validatable {
     override fun ValidationScope.validate() {
-        if (!EMAIL_PATTERN.containsMatchIn(email)) fail(::email, "must match ^.+@.+${'$'}", ConstraintViolationCodes.PATTERN)
+        if (!Constraints.matches(email, EMAIL_PATTERN)) fail(::email, "must match ^.+@.+${'$'}", ConstraintViolationCodes.PATTERN)
         if (pets != null) {
             each(::pets, pets) { item ->
                 with(item) { validate() }
             }
         }
         if (expiry != null) {
-            if (!EXPIRY_PATTERN.containsMatchIn(expiry)) fail(::expiry, "must match ^[0-9]{2}/[0-9]{2}${'$'}", ConstraintViolationCodes.PATTERN)
+            if (!Constraints.matches(expiry, EXPIRY_PATTERN)) fail(::expiry, "must match ^[0-9]{2}/[0-9]{2}${'$'}", ConstraintViolationCodes.PATTERN)
         }
         if (card != null && expiry == null) fail(::expiry, "is required when card is given", ConstraintViolationCodes.DEPENDENT_REQUIRED)
     }
 
-    override fun toString(): String = "PetstoreOwner(" + "email=" + "****" + ", pets=" + pets + ", card=" + card + ", expiry=" + expiry + ")"
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        email: String = this.email,
+        pets: List<PetstorePet>? = this.pets,
+        card: String? = this.card,
+        expiry: String? = this.expiry,
+    ): PetstoreOwner = PetstoreOwner(email = email, pets = pets, card = card, expiry = expiry)
 
-    @DavilsGenerated(
-        by = "kapi",
-        from = "mocks.yaml#/components/schemas/Owner",
-    )
-    public companion object {
-        private val EMAIL_PATTERN: Regex = Regex("^.+@.+${'$'}")
+    override fun equals(other: Any?): Boolean = other is PetstoreOwner && listOf(this.email, this.pets, this.card, this.expiry) == listOf(other.email, other.pets, other.card, other.expiry)
 
-        private val EXPIRY_PATTERN: Regex = Regex("^[0-9]{2}/[0-9]{2}${'$'}")
-    }
+    override fun hashCode(): Int = listOf(this.email, this.pets, this.card, this.expiry).hashCode()
+
+    override fun toString(): String = "PetstoreOwner(" + "email=" + "****" + ", pets=" + this.pets + ", card=" + this.card + ", expiry=" + this.expiry + ")"
 }
 ===== com/example/petstore/model/PetstoreOwnerWrite.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.pattern.Pattern
 import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
-import kotlin.text.Regex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+private val EMAIL_PATTERN: Pattern = Pattern.compileOrThrow("^.+@.+${'$'}")
+
+private val EXPIRY_PATTERN: Pattern = Pattern.compileOrThrow("^[0-9]{2}/[0-9]{2}${'$'}")
 
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Owner",
 )
-public data class PetstoreOwnerWrite(
+public class PetstoreOwnerWrite(
     @SerialName("email")
     public val email: String,
     @SerialName("pets")
@@ -255,39 +351,45 @@ public data class PetstoreOwnerWrite(
     public val expiry: String? = null,
 ) : Validatable {
     override fun ValidationScope.validate() {
-        if (!EMAIL_PATTERN.containsMatchIn(email)) fail(::email, "must match ^.+@.+${'$'}", ConstraintViolationCodes.PATTERN)
+        if (!Constraints.matches(email, EMAIL_PATTERN)) fail(::email, "must match ^.+@.+${'$'}", ConstraintViolationCodes.PATTERN)
         if (pets != null) {
             each(::pets, pets) { item ->
                 with(item) { validate() }
             }
         }
         if (expiry != null) {
-            if (!EXPIRY_PATTERN.containsMatchIn(expiry)) fail(::expiry, "must match ^[0-9]{2}/[0-9]{2}${'$'}", ConstraintViolationCodes.PATTERN)
+            if (!Constraints.matches(expiry, EXPIRY_PATTERN)) fail(::expiry, "must match ^[0-9]{2}/[0-9]{2}${'$'}", ConstraintViolationCodes.PATTERN)
         }
         if (card != null && expiry == null) fail(::expiry, "is required when card is given", ConstraintViolationCodes.DEPENDENT_REQUIRED)
     }
 
-    override fun toString(): String = "PetstoreOwnerWrite(" + "email=" + "****" + ", pets=" + pets + ", card=" + card + ", expiry=" + expiry + ")"
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        email: String = this.email,
+        pets: List<PetstorePetWrite>? = this.pets,
+        card: String? = this.card,
+        expiry: String? = this.expiry,
+    ): PetstoreOwnerWrite = PetstoreOwnerWrite(email = email, pets = pets, card = card, expiry = expiry)
 
-    @DavilsGenerated(
-        by = "kapi",
-        from = "mocks.yaml#/components/schemas/Owner",
-    )
-    public companion object {
-        private val EMAIL_PATTERN: Regex = Regex("^.+@.+${'$'}")
+    override fun equals(other: Any?): Boolean = other is PetstoreOwnerWrite && listOf(this.email, this.pets, this.card, this.expiry) == listOf(other.email, other.pets, other.card, other.expiry)
 
-        private val EXPIRY_PATTERN: Regex = Regex("^[0-9]{2}/[0-9]{2}${'$'}")
-    }
+    override fun hashCode(): Int = listOf(this.email, this.pets, this.card, this.expiry).hashCode()
+
+    override fun toString(): String = "PetstoreOwnerWrite(" + "email=" + "****" + ", pets=" + this.pets + ", card=" + this.card + ", expiry=" + this.expiry + ")"
 }
 ===== com/example/petstore/model/PetstorePet.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.pattern.Pattern
 import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.core.wire.Base64Serializer
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Float
@@ -296,19 +398,20 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
-import kotlin.text.Regex
 import kotlin.time.Instant
 import kotlinx.io.bytestring.ByteString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
+private val NAME_PATTERN: Pattern = Pattern.compileOrThrow("^[A-Z][a-z]+${'$'}")
+
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Pet",
 )
-public data class PetstorePet(
+public class PetstorePet(
     @SerialName("id")
     public val id: Long? = null,
     @SerialName("name")
@@ -342,7 +445,7 @@ public data class PetstorePet(
         }
         if (Constraints.length(name) < 2) fail(::name, "must have at least 2 characters", ConstraintViolationCodes.MIN_LENGTH)
         if (Constraints.length(name) > 8) fail(::name, "must have at most 8 characters", ConstraintViolationCodes.MAX_LENGTH)
-        if (!NAME_PATTERN.containsMatchIn(name)) fail(::name, "must match ^[A-Z][a-z]+${'$'}", ConstraintViolationCodes.PATTERN)
+        if (!Constraints.matches(name, NAME_PATTERN)) fail(::name, "must match ^[A-Z][a-z]+${'$'}", ConstraintViolationCodes.PATTERN)
         if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         if (tags != null) {
             if (tags.size < 1) fail(::tags, "must have at least 1 items", ConstraintViolationCodes.MIN_ITEMS)
@@ -380,23 +483,42 @@ public data class PetstorePet(
         }
     }
 
-    @DavilsGenerated(
-        by = "kapi",
-        from = "mocks.yaml#/components/schemas/Pet",
-    )
-    public companion object {
-        private val NAME_PATTERN: Regex = Regex("^[A-Z][a-z]+${'$'}")
-    }
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        id: Long? = this.id,
+        name: String = this.name,
+        status: PetstoreStatus = this.status,
+        born: Instant? = this.born,
+        tags: List<String>? = this.tags,
+        owner: PetstoreOwner? = this.owner,
+        friends: List<PetstorePet>? = this.friends,
+        scores: Map<String, Double>? = this.scores,
+        photo: @Serializable(with = Base64Serializer::class) ByteString? = this.photo,
+        weight: Float? = this.weight,
+        legs: Int? = this.legs,
+        chipped: Boolean? = this.chipped,
+        extra: JsonElement? = this.extra,
+    ): PetstorePet = PetstorePet(id = id, name = name, status = status, born = born, tags = tags, owner = owner, friends = friends, scores = scores, photo = photo, weight = weight, legs = legs, chipped = chipped, extra = extra)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePet && listOf(this.id, this.name, this.status, this.born, this.tags, this.owner, this.friends, this.scores, this.photo, this.weight, this.legs, this.chipped, this.extra) == listOf(other.id, other.name, other.status, other.born, other.tags, other.owner, other.friends, other.scores, other.photo, other.weight, other.legs, other.chipped, other.extra)
+
+    override fun hashCode(): Int = listOf(this.id, this.name, this.status, this.born, this.tags, this.owner, this.friends, this.scores, this.photo, this.weight, this.legs, this.chipped, this.extra).hashCode()
+
+    override fun toString(): String = "PetstorePet(" + "id=" + this.id + ", name=" + this.name + ", status=" + this.status + ", born=" + this.born + ", tags=" + this.tags + ", owner=" + this.owner + ", friends=" + this.friends + ", scores=" + this.scores + ", photo=" + this.photo + ", weight=" + this.weight + ", legs=" + this.legs + ", chipped=" + this.chipped + ", extra=" + this.extra + ")"
 }
 ===== com/example/petstore/model/PetstorePetWrite.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.pattern.Pattern
 import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kapi.runtime.core.wire.Base64Serializer
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Float
@@ -404,19 +526,20 @@ import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
-import kotlin.text.Regex
 import kotlin.time.Instant
 import kotlinx.io.bytestring.ByteString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
+private val NAME_PATTERN: Pattern = Pattern.compileOrThrow("^[A-Z][a-z]+${'$'}")
+
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Pet",
 )
-public data class PetstorePetWrite(
+public class PetstorePetWrite(
     @SerialName("name")
     public val name: String,
     @SerialName("status")
@@ -445,7 +568,7 @@ public data class PetstorePetWrite(
     override fun ValidationScope.validate() {
         if (Constraints.length(name) < 2) fail(::name, "must have at least 2 characters", ConstraintViolationCodes.MIN_LENGTH)
         if (Constraints.length(name) > 8) fail(::name, "must have at most 8 characters", ConstraintViolationCodes.MAX_LENGTH)
-        if (!NAME_PATTERN.containsMatchIn(name)) fail(::name, "must match ^[A-Z][a-z]+${'$'}", ConstraintViolationCodes.PATTERN)
+        if (!Constraints.matches(name, NAME_PATTERN)) fail(::name, "must match ^[A-Z][a-z]+${'$'}", ConstraintViolationCodes.PATTERN)
         if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         if (tags != null) {
             if (tags.size < 1) fail(::tags, "must have at least 1 items", ConstraintViolationCodes.MIN_ITEMS)
@@ -483,13 +606,29 @@ public data class PetstorePetWrite(
         }
     }
 
-    @DavilsGenerated(
-        by = "kapi",
-        from = "mocks.yaml#/components/schemas/Pet",
-    )
-    public companion object {
-        private val NAME_PATTERN: Regex = Regex("^[A-Z][a-z]+${'$'}")
-    }
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        name: String = this.name,
+        status: PetstoreStatus = this.status,
+        born: Instant? = this.born,
+        tags: List<String>? = this.tags,
+        owner: PetstoreOwnerWrite? = this.owner,
+        friends: List<PetstorePetWrite>? = this.friends,
+        scores: Map<String, Double>? = this.scores,
+        photo: @Serializable(with = Base64Serializer::class) ByteString? = this.photo,
+        weight: Float? = this.weight,
+        legs: Int? = this.legs,
+        chipped: Boolean? = this.chipped,
+        extra: JsonElement? = this.extra,
+    ): PetstorePetWrite = PetstorePetWrite(name = name, status = status, born = born, tags = tags, owner = owner, friends = friends, scores = scores, photo = photo, weight = weight, legs = legs, chipped = chipped, extra = extra)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePetWrite && listOf(this.name, this.status, this.born, this.tags, this.owner, this.friends, this.scores, this.photo, this.weight, this.legs, this.chipped, this.extra) == listOf(other.name, other.status, other.born, other.tags, other.owner, other.friends, other.scores, other.photo, other.weight, other.legs, other.chipped, other.extra)
+
+    override fun hashCode(): Int = listOf(this.name, this.status, this.born, this.tags, this.owner, this.friends, this.scores, this.photo, this.weight, this.legs, this.chipped, this.extra).hashCode()
+
+    override fun toString(): String = "PetstorePetWrite(" + "name=" + this.name + ", status=" + this.status + ", born=" + this.born + ", tags=" + this.tags + ", owner=" + this.owner + ", friends=" + this.friends + ", scores=" + this.scores + ", photo=" + this.photo + ", weight=" + this.weight + ", legs=" + this.legs + ", chipped=" + this.chipped + ", extra=" + this.extra + ")"
 }
 ===== com/example/petstore/model/PetstoreStamp.kt
 package com.example.petstore.model
@@ -497,6 +636,10 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
 import kotlin.time.Duration
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -506,12 +649,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "mocks.yaml#/components/schemas/Stamp",
 )
-public data class PetstoreStamp(
+public class PetstoreStamp(
     @SerialName("at")
     public val at: Duration,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(at: Duration = this.at): PetstoreStamp = PetstoreStamp(at = at)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreStamp && listOf(this.at) == listOf(other.at)
+
+    override fun hashCode(): Int = listOf(this.at).hashCode()
+
+    override fun toString(): String = "PetstoreStamp(" + "at=" + this.at + ")"
 }
 ===== com/example/petstore/model/PetstoreStatus.kt
 package com.example.petstore.model

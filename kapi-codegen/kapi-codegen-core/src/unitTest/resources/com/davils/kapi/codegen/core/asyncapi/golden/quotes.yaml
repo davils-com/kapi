@@ -33,6 +33,10 @@ channels:
         $ref: '#/components/messages/Price'
       tick:
         $ref: '#/components/messages/Tick'
+      confirm:
+        $ref: '#/components/messages/Confirm'
+      ack:
+        $ref: '#/components/messages/Ack'
 operations:
   askQuote:
     action: receive
@@ -55,6 +59,17 @@ operations:
       - $ref: '#/components/securitySchemes/key'
     messages:
       - $ref: '#/channels/quotes/messages/tick'
+  confirmQuote:
+    action: send
+    channel:
+      $ref: '#/channels/quotes'
+    security:
+      - $ref: '#/components/securitySchemes/key'
+    messages:
+      - $ref: '#/channels/quotes/messages/confirm'
+    reply:
+      messages:
+        - $ref: '#/channels/quotes/messages/ack'
 components:
   securitySchemes:
     key:
@@ -78,6 +93,16 @@ components:
     Tick:
       payload:
         $ref: '#/components/schemas/Tick'
+    Confirm:
+      payload:
+        $ref: '#/components/schemas/Confirm'
+      correlationId:
+        $ref: '#/components/correlationIds/request'
+    Ack:
+      payload:
+        $ref: '#/components/schemas/Ack'
+      correlationId:
+        $ref: '#/components/correlationIds/request'
   schemas:
     Request:
       type: object
@@ -87,8 +112,11 @@ components:
           type: string
     Quote:
       type: object
-      required: [request, symbol]
+      required: [type, request, symbol]
       properties:
+        type:
+          type: string
+          const: quote
         request:
           $ref: '#/components/schemas/Request'
         symbol:
@@ -117,3 +145,23 @@ components:
         cents:
           type: integer
           format: int64
+    Confirm:
+      type: object
+      required: [type, request]
+      properties:
+        type:
+          type: string
+          const: confirm
+        request:
+          $ref: '#/components/schemas/Request'
+    Ack:
+      type: object
+      required: [type, request, accepted]
+      properties:
+        type:
+          type: string
+          const: ack
+        request:
+          $ref: '#/components/schemas/Request'
+        accepted:
+          type: boolean

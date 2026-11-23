@@ -16,11 +16,14 @@
 
 package com.davils.kapi.codegen.core.emit
 
+import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.fixture.kotlinOf
 import com.davils.kapi.codegen.core.fixture.pet
 import com.davils.kapi.codegen.core.fixture.refusedOf
 import com.davils.kapi.codegen.core.fixture.schemas
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 
@@ -41,7 +44,8 @@ private val rules: Map<String, String> = mapOf(
         """if (Constraints.length(a) < 2) fail(::a, "must have at least 2 characters"""",
     "a: {type: string, maxLength: 9}" to
         """if (Constraints.length(a) > 9) fail(::a, "must have at most 9 characters"""",
-    PATTERNED to """if (!A_PATTERN.containsMatchIn(a)) fail(::a, "must match ^x", ConstraintViolationCodes.PATTERN)""",
+    PATTERNED to
+        """if (!Constraints.matches(a, A_PATTERN)) fail(::a, "must match ^x", ConstraintViolationCodes.PATTERN)""",
     "a: {type: integer, minimum: 1}" to """if (a < 1L) fail(::a, "must be at least 1"""",
     "a: {type: integer, exclusiveMinimum: 0}" to
         """if (a <= 0L) fail(::a, "must be greater than 0", ConstraintViolationCodes.MINIMUM)""",
@@ -77,7 +81,7 @@ private val rules: Map<String, String> = mapOf(
     "a: {const: 7}" to "public val a: Long,",
     "a: {const: true}" to """if (a != true) fail(::a, "must be true", ConstraintViolationCodes.CONST)""",
     "a: {type: array, items: {type: string, pattern: '^x'}}" to
-        """if (!A_1_PATTERN.containsMatchIn(item)) fail("must match ^x", ConstraintViolationCodes.PATTERN)""",
+        """if (!Constraints.matches(item, A_1_PATTERN)) fail("must match ^x", ConstraintViolationCodes.PATTERN)""",
     "a: {type: array, items: {type: array, items: {type: string, minLength: 1}}}" to
         """if (Constraints.length(item1) < 1) fail("must have at least 1 characters"""",
     "a: {type: array, items: {type: array, items: {type: string, maxLength: 1}}}" to "item.forEach { item1 ->",
@@ -109,11 +113,40 @@ class ValidationCodeTest : FunSpec({
             kotlin shouldContain "    if (Constraints.length(a) < 2)"
         }
 
-        test("keeps a pattern in a private constant of a companion that leaves the serializer reachable") {
+        test("compiles a pattern once, for the linear engine, in a private value of the file") {
             val kotlin = kotlinOf(pet(PATTERNED))
 
-            kotlin shouldContain "public companion object {"
-            kotlin shouldContain """private val A_PATTERN: Regex = Regex("^x")"""
+            kotlin shouldContain """private val A_PATTERN: Pattern = Pattern.compileOrThrow("^x")"""
+            kotlin shouldNotContain "Regex"
+            kotlin shouldNotContain "companion object"
+        }
+
+        test("compiles a pattern two properties share only once") {
+            val kotlin = kotlinOf(pet(PATTERNED, "b: {type: string, pattern: '^x'}"))
+
+            kotlin shouldContain "Constraints.matches(b, A_PATTERN)"
+            kotlin shouldNotContain "B_PATTERN"
+        }
+
+        test("gives two patterns whose names meet a name of their own") {
+            val kotlin = kotlinOf(
+                pet(
+                    "a: {type: string, pattern: '^x', x-kapi-name: aB}",
+                    "b: {type: string, pattern: '^y', x-kapi-name: a_B}",
+                ),
+            )
+
+            kotlin shouldContain """private val A_B_PATTERN: Pattern = Pattern.compileOrThrow("^x")"""
+            kotlin shouldContain """private val A_B_2_PATTERN: Pattern = Pattern.compileOrThrow("^y")"""
+        }
+
+        test("is refused when the linear engine refuses it, at the schema") {
+            val refused = refusedOf(schemas(pet("a: {type: string, pattern: '(?=x)y'}")))
+            val diagnostic = refused.diagnostics.single()
+
+            diagnostic.code shouldBe CodegenCodes.SCHEMA_UNSUPPORTED
+            diagnostic.message shouldContain "is refused at offset 0"
+            diagnostic.location.shouldNotBeNull()
         }
     }
 
@@ -155,7 +188,8 @@ class ValidationCodeTest : FunSpec({
         test("is refused when the object declares no property of that name") {
             val refused = refusedOf(schemas(pet(FIRST) + DEPENDENT))
 
-            refused.diagnostics.single().message shouldContain "dependentRequired that names b, which is no property"
+            refused.diagnostics.single().message shouldContain
+                """dependentRequired that names "b", which is no property"""
         }
     }
 
@@ -163,7 +197,7 @@ class ValidationCodeTest : FunSpec({
         test("is masked when the object is rendered") {
             val kotlin = kotlinOf(pet("a: {type: string, x-kapi-sensitive: true}", "b: {type: string}"))
 
-            kotlin shouldContain """= "PetstorePet(" + "a=" + "****" + ", b=" + b + ")""""
+            kotlin shouldContain """= "PetstorePet(" + "a=" + "****" + ", b=" + this.b + ")""""
         }
     }
 })

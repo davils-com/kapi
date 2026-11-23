@@ -1,23 +1,31 @@
 ===== com/example/petstore/model/PetstoreWhen.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.pattern.Pattern
 import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
-import kotlin.text.Regex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+private val IT_PATTERN: Pattern = Pattern.compileOrThrow("\\${'$'}\\{pwned\\}|\"\"\"")
+
+/**
+ * *&#47; fun pwned() {} &#47;*
+ */
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "hostile.yaml#/components/schemas/when",
 )
-public data class PetstoreWhen(
+public class PetstoreWhen(
     @SerialName("val")
     public val `val`: PetstoreWhenVal,
     @SerialName("it")
@@ -33,7 +41,7 @@ public data class PetstoreWhen(
         if (!`val`.isKnown) fail(::`val`, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         if (it != null) {
             if (Constraints.length(it) < 1) fail(::it, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
-            if (!IT_PATTERN.containsMatchIn(it)) fail(::it, "must match \\${'$'}\\{pwned\\}|\"\"\"", ConstraintViolationCodes.PATTERN)
+            if (!Constraints.matches(it, IT_PATTERN)) fail(::it, "must match \\${'$'}\\{pwned\\}|\"\"\"", ConstraintViolationCodes.PATTERN)
         }
         if (pwned != null) {
             if (pwned != 3L) fail(::pwned, "must be 3", ConstraintViolationCodes.CONST)
@@ -43,15 +51,22 @@ public data class PetstoreWhen(
         }
     }
 
-    override fun toString(): String = "PetstoreWhen(" + "val=" + `val` + ", it=" + it + ", pwned=" + pwned + ", aB=" + "****" + ", class=" + `class` + ")"
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        `val`: PetstoreWhenVal = this.`val`,
+        it: String? = this.it,
+        pwned: Long? = this.pwned,
+        aB: String? = this.aB,
+        `class`: PetstoreWhen? = this.`class`,
+    ): PetstoreWhen = PetstoreWhen(`val` = `val`, it = it, pwned = pwned, aB = aB, `class` = `class`)
 
-    @DavilsGenerated(
-        by = "kapi",
-        from = "hostile.yaml#/components/schemas/when",
-    )
-    public companion object {
-        private val IT_PATTERN: Regex = Regex("\\${'$'}\\{pwned\\}|\"\"\"")
-    }
+    override fun equals(other: Any?): Boolean = other is PetstoreWhen && listOf(this.`val`, this.it, this.pwned, this.aB, this.`class`) == listOf(other.`val`, other.it, other.pwned, other.aB, other.`class`)
+
+    override fun hashCode(): Int = listOf(this.`val`, this.it, this.pwned, this.aB, this.`class`).hashCode()
+
+    override fun toString(): String = "PetstoreWhen(" + "val=" + this.`val` + ", it=" + this.it + ", pwned=" + this.pwned + ", aB=" + "****" + ", class=" + this.`class` + ")"
 }
 ===== com/example/petstore/model/PetstoreWhenVal.kt
 package com.example.petstore.model
@@ -186,6 +201,11 @@ public class PetstoreObjectClient(
         200 to ::classOk,
     )
 
+    /**
+     * *&#47; val pwned = 1 &#47;*
+     *
+     * """ ${pwned} \u0041 \u2066
+     */
     public suspend fun `class`(
         id: String,
         xValPwned: String? = null,
@@ -341,6 +361,7 @@ public sealed interface PetstoreValResult {
 ===== com/example/petstore/server/PetstoreDefaultRoutes.kt
 package com.example.petstore.server
 
+import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.core.wire.FilePart
@@ -357,7 +378,6 @@ import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.operation.PetstoreValResponse
 import kotlin.String
 import kotlin.collections.List
-import kotlinx.io.bytestring.decodeToString
 import kotlinx.serialization.builtins.serializer
 
 @DavilsGenerated(
@@ -382,7 +402,7 @@ public class PetstoreDefaultRoutes(
         val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
         val parts = input.parts(true)
         val fileName = parts?.firstOrNull { part -> part.name == "file\"name" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
-        val pwned = parts?.firstOrNull { part -> part.name == "${'$'}{pwned}" }?.let { part -> part.content.decodeToString() }
+        val pwned = input.part(parts, "${'$'}{pwned}", String.serializer(), false, MediaType.parse("text/plain"))
         if (!input.isValid || id == null) return input.refused()
         return when (val response = service.`val`(id = id, fileName = fileName, pwned = pwned)) {
             is PetstoreValResponse.NoContent -> reply(204)
@@ -476,6 +496,11 @@ import kotlin.String
     from = "hostile.yaml",
 )
 public interface PetstoreObjectService {
+    /**
+     * *&#47; val pwned = 1 &#47;*
+     *
+     * """ ${pwned} \u0041 \u2066
+     */
     public suspend fun `class`(
         id: String,
         xValPwned: String?,

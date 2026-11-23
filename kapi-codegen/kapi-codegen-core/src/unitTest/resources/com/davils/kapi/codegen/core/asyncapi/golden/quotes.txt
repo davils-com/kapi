@@ -1,3 +1,91 @@
+===== com/example/quotes/model/QuotesAck.kt
+package com.example.quotes.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Ack",
+)
+public class QuotesAck(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("request")
+    public val request: QuotesRequest,
+    @SerialName("accepted")
+    public val accepted: Boolean,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "ack") fail(::type, "must be ack", ConstraintViolationCodes.CONST)
+        within(::request) { with(request) { validate() } }
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        type: String = this.type,
+        request: QuotesRequest = this.request,
+        accepted: Boolean = this.accepted,
+    ): QuotesAck = QuotesAck(type = type, request = request, accepted = accepted)
+
+    override fun equals(other: Any?): Boolean = other is QuotesAck && listOf(this.type, this.request, this.accepted) == listOf(other.type, other.request, other.accepted)
+
+    override fun hashCode(): Int = listOf(this.type, this.request, this.accepted).hashCode()
+
+    override fun toString(): String = "QuotesAck(" + "type=" + this.type + ", request=" + this.request + ", accepted=" + this.accepted + ")"
+}
+===== com/example/quotes/model/QuotesConfirm.kt
+package com.example.quotes.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Confirm",
+)
+public class QuotesConfirm(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("request")
+    public val request: QuotesRequest,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "confirm") fail(::type, "must be confirm", ConstraintViolationCodes.CONST)
+        within(::request) { with(request) { validate() } }
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(type: String = this.type, request: QuotesRequest = this.request): QuotesConfirm = QuotesConfirm(type = type, request = request)
+
+    override fun equals(other: Any?): Boolean = other is QuotesConfirm && listOf(this.type, this.request) == listOf(other.type, other.request)
+
+    override fun hashCode(): Int = listOf(this.type, this.request).hashCode()
+
+    override fun toString(): String = "QuotesConfirm(" + "type=" + this.type + ", request=" + this.request + ")"
+}
 ===== com/example/quotes/model/QuotesPrice.kt
 package com.example.quotes.model
 
@@ -5,6 +93,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -15,7 +106,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "quotes.yaml#/components/schemas/Price",
 )
-public data class QuotesPrice(
+public class QuotesPrice(
     @SerialName("type")
     public val type: String,
     @SerialName("request")
@@ -27,13 +118,32 @@ public data class QuotesPrice(
         if (type != "price") fail(::type, "must be price", ConstraintViolationCodes.CONST)
         within(::request) { with(request) { validate() } }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        type: String = this.type,
+        request: QuotesRequest = this.request,
+        cents: Long = this.cents,
+    ): QuotesPrice = QuotesPrice(type = type, request = request, cents = cents)
+
+    override fun equals(other: Any?): Boolean = other is QuotesPrice && listOf(this.type, this.request, this.cents) == listOf(other.type, other.request, other.cents)
+
+    override fun hashCode(): Int = listOf(this.type, this.request, this.cents).hashCode()
+
+    override fun toString(): String = "QuotesPrice(" + "type=" + this.type + ", request=" + this.request + ", cents=" + this.cents + ")"
 }
 ===== com/example/quotes/model/QuotesQuote.kt
 package com.example.quotes.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -43,15 +153,33 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "quotes.yaml#/components/schemas/Quote",
 )
-public data class QuotesQuote(
+public class QuotesQuote(
+    @SerialName("type")
+    public val type: String,
     @SerialName("request")
     public val request: QuotesRequest,
     @SerialName("symbol")
     public val symbol: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
+        if (type != "quote") fail(::type, "must be quote", ConstraintViolationCodes.CONST)
         within(::request) { with(request) { validate() } }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        type: String = this.type,
+        request: QuotesRequest = this.request,
+        symbol: String = this.symbol,
+    ): QuotesQuote = QuotesQuote(type = type, request = request, symbol = symbol)
+
+    override fun equals(other: Any?): Boolean = other is QuotesQuote && listOf(this.type, this.request, this.symbol) == listOf(other.type, other.request, other.symbol)
+
+    override fun hashCode(): Int = listOf(this.type, this.request, this.symbol).hashCode()
+
+    override fun toString(): String = "QuotesQuote(" + "type=" + this.type + ", request=" + this.request + ", symbol=" + this.symbol + ")"
 }
 ===== com/example/quotes/model/QuotesRequest.kt
 package com.example.quotes.model
@@ -59,6 +187,9 @@ package com.example.quotes.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -68,12 +199,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "quotes.yaml#/components/schemas/Request",
 )
-public data class QuotesRequest(
+public class QuotesRequest(
     @SerialName("id")
     public val id: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(id: String = this.id): QuotesRequest = QuotesRequest(id = id)
+
+    override fun equals(other: Any?): Boolean = other is QuotesRequest && listOf(this.id) == listOf(other.id)
+
+    override fun hashCode(): Int = listOf(this.id).hashCode()
+
+    override fun toString(): String = "QuotesRequest(" + "id=" + this.id + ")"
 }
 ===== com/example/quotes/model/QuotesTick.kt
 package com.example.quotes.model
@@ -82,6 +224,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -92,7 +237,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "quotes.yaml#/components/schemas/Tick",
 )
-public data class QuotesTick(
+public class QuotesTick(
     @SerialName("type")
     public val type: String,
     @SerialName("symbol")
@@ -103,11 +248,140 @@ public data class QuotesTick(
     override fun ValidationScope.validate() {
         if (type != "tick") fail(::type, "must be tick", ConstraintViolationCodes.CONST)
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        type: String = this.type,
+        symbol: String = this.symbol,
+        cents: Long = this.cents,
+    ): QuotesTick = QuotesTick(type = type, symbol = symbol, cents = cents)
+
+    override fun equals(other: Any?): Boolean = other is QuotesTick && listOf(this.type, this.symbol, this.cents) == listOf(other.type, other.symbol, other.cents)
+
+    override fun hashCode(): Int = listOf(this.type, this.symbol, this.cents).hashCode()
+
+    override fun toString(): String = "QuotesTick(" + "type=" + this.type + ", symbol=" + this.symbol + ", cents=" + this.cents + ")"
+}
+===== com/example/quotes/channel/QuotesQuotesClientMessage.kt
+package com.example.quotes.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesAck
+import com.example.quotes.model.QuotesQuote
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.Serializable
+
+/**
+ * The messages the client sends and the server receives on the channel `quotes`.
+ *
+ * AsyncAPI describes the server: these are the messages of its operations with the action `receive` (`askQuote`) and the replies to the requests of the other side.
+ *
+ * A message is told apart from the others by the constant value of its property `type`; a message whose property names none of them is refused.
+ */
+@Serializable(with = QuotesQuotesClientMessageSerializer::class)
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public sealed interface QuotesQuotesClientMessage {
+    /**
+     * The message `quote`.
+     *
+     * Its property `type` is `quote`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Quote(
+        public val payload: QuotesQuote,
+    ) : QuotesQuotesClientMessage {
+        override fun equals(other: Any?): Boolean = other is Quote && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Quote(" + payload + ")"
+    }
+
+    /**
+     * The message `ack`.
+     *
+     * Its property `type` is `ack`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Ack(
+        public val payload: QuotesAck,
+    ) : QuotesQuotesClientMessage {
+        override fun equals(other: Any?): Boolean = other is Ack && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Ack(" + payload + ")"
+    }
+}
+===== com/example/quotes/channel/QuotesQuotesClientMessageSerializer.kt
+package com.example.quotes.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesAck
+import com.example.quotes.model.QuotesQuote
+import kotlin.String
+import kotlin.collections.Map
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.serializer
+
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+internal object QuotesQuotesClientMessageSerializer : KSerializer<QuotesQuotesClientMessage> {
+    private val quoteSerializer: KSerializer<QuotesQuote> = serializer()
+
+    private val ackSerializer: KSerializer<QuotesAck> = serializer()
+
+    private val members: Map<String, (Json, JsonElement) -> QuotesQuotesClientMessage> = mapOf(
+        "quote" to { json, element -> QuotesQuotesClientMessage.Quote(json.decodeFromJsonElement(quoteSerializer, element)) },
+        "ack" to { json, element -> QuotesQuotesClientMessage.Ack(json.decodeFromJsonElement(ackSerializer, element)) },
+    )
+
+    override val descriptor: SerialDescriptor =
+            buildClassSerialDescriptor("com.example.quotes.channel.QuotesQuotesClientMessage")
+
+    override fun serialize(encoder: Encoder, `value`: QuotesQuotesClientMessage) {
+        when (`value`) {
+            is QuotesQuotesClientMessage.Quote -> encoder.encodeSerializableValue(quoteSerializer, `value`.payload)
+            is QuotesQuotesClientMessage.Ack -> encoder.encodeSerializableValue(ackSerializer, `value`.payload)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): QuotesQuotesClientMessage {
+        val json = decoder as? JsonDecoder ?: throw SerializationException("The messages of QuotesQuotesClientMessage are read from JSON only")
+        val element = json.decodeJsonElement()
+        val tag = (element as? JsonObject)?.get("type") as? JsonPrimitive
+        val name = tag?.takeIf { primitive -> primitive.isString }?.content
+        val member = name?.let(members::get) ?: throw SerializationException("The message is none of QuotesQuotesClientMessage")
+        return member(json.json, element)
+    }
 }
 ===== com/example/quotes/channel/QuotesQuotesServerMessage.kt
 package com.example.quotes.channel
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesConfirm
 import com.example.quotes.model.QuotesPrice
 import com.example.quotes.model.QuotesTick
 import kotlin.Any
@@ -119,7 +393,7 @@ import kotlinx.serialization.Serializable
 /**
  * The messages the server sends and the client receives on the channel `quotes`.
  *
- * AsyncAPI describes the server: these are the messages of its operations with the action `send` (`pushTicks`) and the replies to the requests of the other side.
+ * AsyncAPI describes the server: these are the messages of its operations with the action `send` (`pushTicks`, `confirmQuote`) and the replies to the requests of the other side.
  *
  * A message is told apart from the others by the constant value of its property `type`; a message whose property names none of them is refused.
  */
@@ -162,11 +436,29 @@ public sealed interface QuotesQuotesServerMessage {
 
         override fun toString(): String = "Tick(" + payload + ")"
     }
+
+    /**
+     * The message `confirm`.
+     *
+     * Its property `type` is `confirm`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Confirm(
+        public val payload: QuotesConfirm,
+    ) : QuotesQuotesServerMessage {
+        override fun equals(other: Any?): Boolean = other is Confirm && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Confirm(" + payload + ")"
+    }
 }
 ===== com/example/quotes/channel/QuotesQuotesServerMessageSerializer.kt
 package com.example.quotes.channel
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesConfirm
 import com.example.quotes.model.QuotesPrice
 import com.example.quotes.model.QuotesTick
 import kotlin.String
@@ -193,9 +485,12 @@ internal object QuotesQuotesServerMessageSerializer : KSerializer<QuotesQuotesSe
 
     private val tickSerializer: KSerializer<QuotesTick> = serializer()
 
+    private val confirmSerializer: KSerializer<QuotesConfirm> = serializer()
+
     private val members: Map<String, (Json, JsonElement) -> QuotesQuotesServerMessage> = mapOf(
         "price" to { json, element -> QuotesQuotesServerMessage.Price(json.decodeFromJsonElement(priceSerializer, element)) },
         "tick" to { json, element -> QuotesQuotesServerMessage.Tick(json.decodeFromJsonElement(tickSerializer, element)) },
+        "confirm" to { json, element -> QuotesQuotesServerMessage.Confirm(json.decodeFromJsonElement(confirmSerializer, element)) },
     )
 
     override val descriptor: SerialDescriptor =
@@ -205,6 +500,7 @@ internal object QuotesQuotesServerMessageSerializer : KSerializer<QuotesQuotesSe
         when (`value`) {
             is QuotesQuotesServerMessage.Price -> encoder.encodeSerializableValue(priceSerializer, `value`.payload)
             is QuotesQuotesServerMessage.Tick -> encoder.encodeSerializableValue(tickSerializer, `value`.payload)
+            is QuotesQuotesServerMessage.Confirm -> encoder.encodeSerializableValue(confirmSerializer, `value`.payload)
         }
     }
 
@@ -217,22 +513,19 @@ internal object QuotesQuotesServerMessageSerializer : KSerializer<QuotesQuotesSe
         return member(json.json, element)
     }
 }
-===== com/example/quotes/client/QuotesQuotesCorrelation.kt
-package com.example.quotes.client
+===== com/example/quotes/channel/QuotesQuotesCorrelation.kt
+package com.example.quotes.channel
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.example.quotes.channel.QuotesQuotesServerMessage
-import com.example.quotes.model.QuotesPrice
-import com.example.quotes.model.QuotesQuote
 import kotlin.String
-import kotlinx.serialization.KSerializer
+import kotlin.collections.List
+import kotlin.collections.Map
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.serializer
 
 @DavilsGenerated(
     by = "kapi-codegen-asyncapi",
@@ -241,26 +534,28 @@ import kotlinx.serialization.serializer
 internal object QuotesQuotesCorrelation {
     private val json: Json = Json { encodeDefaults = true }
 
-    private val quoteSerializer: KSerializer<QuotesQuote> = serializer()
+    private val clientPaths: Map<String, List<String>> =
+            mapOf("quote" to listOf("request", "id"), "ack" to listOf("request", "id"))
 
-    private val priceSerializer: KSerializer<QuotesPrice> = serializer()
+    private val serverPaths: Map<String, List<String>> =
+            mapOf("price" to listOf("request", "id"), "confirm" to listOf("request", "id"))
 
-    public fun sent(message: QuotesQuote): String? = quoteSent(message)
+    public fun clientId(element: JsonElement): String? = clientPaths[tagOf(element, "type")]?.let { tokens -> idAt(element, tokens) }
 
-    public fun received(message: QuotesQuotesServerMessage): String? = when (message) {
-        is QuotesQuotesServerMessage.Price -> priceReceived(message.payload)
-        is QuotesQuotesServerMessage.Tick -> null
+    public fun clientMessageId(message: QuotesQuotesClientMessage): String? = clientId(json.encodeToJsonElement(QuotesQuotesClientMessageSerializer, message))
+
+    public fun serverId(element: JsonElement): String? = serverPaths[tagOf(element, "type")]?.let { tokens -> idAt(element, tokens) }
+
+    public fun serverMessageId(message: QuotesQuotesServerMessage): String? = serverId(json.encodeToJsonElement(QuotesQuotesServerMessageSerializer, message))
+
+    private fun tagOf(element: JsonElement, `property`: String): String? {
+        val fields = element as? JsonObject
+        val tag = fields?.get(property) as? JsonPrimitive
+        return tag?.takeIf { primitive -> primitive.isString }?.content
     }
 
-    private fun quoteSent(payload: QuotesQuote): String? {
-        val root = json.encodeToJsonElement(quoteSerializer, payload)
-        val found = step(step(root, "request"), "id")
-        return (found as? JsonPrimitive)?.contentOrNull
-    }
-
-    private fun priceReceived(payload: QuotesPrice): String? {
-        val root = json.encodeToJsonElement(priceSerializer, payload)
-        val found = step(step(root, "request"), "id")
+    private fun idAt(element: JsonElement, tokens: List<String>): String? {
+        val found = tokens.fold<String, JsonElement?>(element) { inner, token -> step(inner, token) }
         return (found as? JsonPrimitive)?.contentOrNull
     }
 
@@ -285,11 +580,12 @@ import com.davils.kapi.runtime.client.channel.Correlation
 import com.davils.kapi.runtime.client.channel.channel
 import com.davils.kapi.runtime.client.channel.channelSettings
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesClientMessage
+import com.example.quotes.channel.QuotesQuotesClientMessageSerializer
+import com.example.quotes.channel.QuotesQuotesCorrelation
 import com.example.quotes.channel.QuotesQuotesServerMessage
 import com.example.quotes.channel.QuotesQuotesServerMessageSerializer
-import com.example.quotes.model.QuotesQuote
 import kotlin.Unit
-import kotlinx.serialization.serializer
 
 /**
  * Opens the WebSocket channel `quotes` at `/quotes`.
@@ -308,11 +604,12 @@ public class QuotesQuotesChannel(
     private val client: ApiClient,
     configure: ChannelSettingsBuilder.() -> Unit = {},
 ) {
-    private val spec: ChannelSpec<QuotesQuote, QuotesQuotesServerMessage> = ChannelSpec(
-        sendSerializer = serializer<QuotesQuote>(),
+    private val spec: ChannelSpec<QuotesQuotesClientMessage, QuotesQuotesServerMessage> =
+            ChannelSpec(
+        sendSerializer = QuotesQuotesClientMessageSerializer,
         receiveDeserializer = QuotesQuotesServerMessageSerializer,
         settings = channelSettings(configure),
-        correlation = Correlation(sent = QuotesQuotesCorrelation::sent, received = QuotesQuotesCorrelation::received),
+        correlation = Correlation.json(sent = { element -> QuotesQuotesCorrelation.clientId(element) }, received = { element -> QuotesQuotesCorrelation.serverId(element) }),
     )
 
     /**
@@ -335,7 +632,9 @@ import com.davils.kapi.runtime.client.channel.ChannelReply
 import com.davils.kapi.runtime.client.channel.ChannelSession
 import com.davils.kapi.runtime.client.channel.CloseKind
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesClientMessage
 import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.model.QuotesAck
 import com.example.quotes.model.QuotesQuote
 import kotlin.Boolean
 import kotlin.Int
@@ -353,7 +652,7 @@ import kotlinx.coroutines.flow.Flow
     from = "quotes.yaml#/channels/quotes",
 )
 public class QuotesQuotesClientSession internal constructor(
-    private val session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>,
+    private val session: ChannelSession<QuotesQuotesClientMessage, QuotesQuotesServerMessage>,
 ) {
     /**
      * The subprotocol the server chose.
@@ -372,7 +671,21 @@ public class QuotesQuotesClientSession internal constructor(
      * @param message the message.
      * @return `false` if it cannot be written or the channel is closed.
      */
-    public suspend fun send(message: QuotesQuote): Boolean = session.send(message)
+    public suspend fun send(message: QuotesQuotesClientMessage): Boolean = session.send(message)
+
+    /**
+     * Sends the message `quote` with [payload].
+     * @param payload the payload.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun sendQuote(payload: QuotesQuote): Boolean = session.send(QuotesQuotesClientMessage.Quote(payload))
+
+    /**
+     * Sends the message `ack` with [payload].
+     * @param payload the payload.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun sendAck(payload: QuotesAck): Boolean = session.send(QuotesQuotesClientMessage.Ack(payload))
 
     /**
      * Sends the request of the operation `askQuote` and waits for the first reply with its correlation id.
@@ -380,7 +693,7 @@ public class QuotesQuotesClientSession internal constructor(
      * @param timeout how long to wait for the reply.
      * @return the reply, or why there is none.
      */
-    public suspend fun requestAskQuote(payload: QuotesQuote, timeout: Duration): ChannelReply<QuotesQuotesServerMessage> = session.request(payload, timeout)
+    public suspend fun requestAskQuote(payload: QuotesQuote, timeout: Duration): ChannelReply<QuotesQuotesServerMessage> = session.request(QuotesQuotesClientMessage.Quote(payload), timeout)
 
     /**
      * Closes the channel with [code] and [reason].
@@ -416,15 +729,18 @@ public interface QuotesQuotesService {
 ===== com/example/quotes/server/QuotesQuotesServerSession.kt
 package com.example.quotes.server
 
+import com.davils.kapi.runtime.server.channel.ChannelReply
 import com.davils.kapi.runtime.server.channel.ChannelSession
 import com.davils.kapi.runtime.server.request.Request
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesClientMessage
 import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.model.QuotesConfirm
 import com.example.quotes.model.QuotesPrice
-import com.example.quotes.model.QuotesQuote
 import com.example.quotes.model.QuotesTick
 import kotlin.Short
 import kotlin.String
+import kotlin.time.Duration
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -437,7 +753,7 @@ import kotlinx.coroutines.flow.Flow
     from = "quotes.yaml#/channels/quotes",
 )
 public class QuotesQuotesServerSession internal constructor(
-    private val session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>,
+    private val session: ChannelSession<QuotesQuotesClientMessage, QuotesQuotesServerMessage>,
 ) {
     /**
      * The request that opened the channel.
@@ -454,14 +770,14 @@ public class QuotesQuotesServerSession internal constructor(
     /**
      * The messages as they arrive.
      */
-    public val incoming: Flow<QuotesQuote>
+    public val incoming: Flow<QuotesQuotesClientMessage>
         get() = session.incoming
 
     /**
      * Receives the next message.
      * @return the message, or `null` once the channel is closed.
      */
-    public suspend fun receive(): QuotesQuote? = session.receive()
+    public suspend fun receive(): QuotesQuotesClientMessage? = session.receive()
 
     /**
      * Sends [message].
@@ -491,6 +807,23 @@ public class QuotesQuotesServerSession internal constructor(
     }
 
     /**
+     * Sends the message `confirm` with [payload].
+     * @param payload the payload.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun sendConfirm(payload: QuotesConfirm) {
+        session.send(QuotesQuotesServerMessage.Confirm(payload))
+    }
+
+    /**
+     * Sends the request of the operation `confirmQuote` and waits for the first message of the client with its correlation id; read no other message meanwhile.
+     * @param payload the request.
+     * @param timeout how long to wait for the reply.
+     * @return the reply, or why there is none.
+     */
+    public suspend fun requestConfirmQuote(payload: QuotesConfirm, timeout: Duration): ChannelReply<QuotesQuotesClientMessage> = session.request(QuotesQuotesServerMessage.Confirm(payload), timeout)
+
+    /**
      * Closes the channel with [code] and [reason].
      * @param code the close code of RFC 6455; 1000 by default.
      * @param reason the reason, at most 123 bytes of UTF-8 without control characters.
@@ -506,22 +839,24 @@ package com.example.quotes.server
 import com.davils.kapi.runtime.server.channel.ChannelEndpoint
 import com.davils.kapi.runtime.server.channel.ChannelLimits
 import com.davils.kapi.runtime.server.channel.ChannelSession
+import com.davils.kapi.runtime.server.channel.Correlation
 import com.davils.kapi.runtime.server.channel.MessageCodec
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.operation.Routes
 import com.davils.kapi.runtime.server.operation.SchemeUse
 import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesClientMessage
+import com.example.quotes.channel.QuotesQuotesClientMessageSerializer
+import com.example.quotes.channel.QuotesQuotesCorrelation
 import com.example.quotes.channel.QuotesQuotesServerMessage
 import com.example.quotes.channel.QuotesQuotesServerMessageSerializer
-import com.example.quotes.model.QuotesQuote
 import kotlin.collections.List
-import kotlinx.serialization.serializer
 
 /**
  * The WebSocket channels `quotes`, mounted with `routing { mount(routes) }` below the path of the server.
  *
- * Every handshake is authorized by the security requirement of its channel before the WebSocket opens. Its parameters are read after it opened: a handshake that lacks a required one or carries one that is invalid closes the channel with 1008 before the service sees it.
+ * Every handshake is authorized by the security requirement of its channel and its parameters are checked before the WebSocket opens: a handshake that lacks a required one or carries one that is invalid is refused with a problem with status 400 and never reaches the service.
  *
  * @param quotesQuotesService serves the channel `quotes`.
  * @param limits the limits of every channel.
@@ -540,16 +875,17 @@ public class QuotesRoutes(
         ChannelEndpoint(
             name = "quotes",
             path = "/quotes",
-            receive = MessageCodec(serializer<QuotesQuote>()),
+            receive = MessageCodec(QuotesQuotesClientMessageSerializer),
             send = MessageCodec(QuotesQuotesServerMessageSerializer),
             protocols = listOf(),
             security = listOf(listOf(SchemeUse("key", CredentialSource.Header("X-Key"), setOf()))),
             limits = limits,
+            correlation = Correlation(sent = QuotesQuotesCorrelation::serverMessageId, received = QuotesQuotesCorrelation::clientMessageId),
             handler = { serveQuotesQuotes(this) },
         ),
     )
 
-    private suspend fun serveQuotesQuotes(session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>) {
+    private suspend fun serveQuotesQuotes(session: ChannelSession<QuotesQuotesClientMessage, QuotesQuotesServerMessage>) {
         val request = session.request
         quotesQuotesService.serve(QuotesQuotesServerSession(session = session))
     }
@@ -564,45 +900,61 @@ public class QuotesRoutes(
   "sources": [
     {
       "name": "quotes.yaml",
-      "digest": "sha256:59176d90e22aa8909cc2b333a94c0e0c177e8ac29df75a01f2afa5a835254fed"
+      "digest": "sha256:48910a21ee4125870d12a9b45ff2527d7dd670efccf73d30e7a7e184a6bb51d6"
     }
   ],
   "files": [
     {
+      "name": "com/example/quotes/model/QuotesAck.kt",
+      "digest": "sha256:b2de2d060237e725d3bc84041bb2fd842243865162e456060be924cf34a1cc4d"
+    },
+    {
+      "name": "com/example/quotes/model/QuotesConfirm.kt",
+      "digest": "sha256:1064e4a6bc9de78436c9102c0818172dcc25a213510d6cc0c7a9f3e239bdf371"
+    },
+    {
       "name": "com/example/quotes/model/QuotesPrice.kt",
-      "digest": "sha256:7353003130dc50768996bde184290f3249a15de96f2ca96c7aab111acf46d16a"
+      "digest": "sha256:3984aa28213022adf7bd90f6f79c02813b7ac55fce0804c9da1f3519c29b7b65"
     },
     {
       "name": "com/example/quotes/model/QuotesQuote.kt",
-      "digest": "sha256:5891a04e34dcda07342cd028103c6192c4dca367b4b24bf0094a4030d816ab47"
+      "digest": "sha256:8a1fbfc242ccd4d164e3b5f85bf73201c0e1b10c6a9fccdb286491ab6ba881ef"
     },
     {
       "name": "com/example/quotes/model/QuotesRequest.kt",
-      "digest": "sha256:bbe5cbdbdefabd8731ecb0b174551c438f81dfbeb7dc2a1e4805ca1b1e2ce302"
+      "digest": "sha256:f44fa198e43fa9547d2ef58e980902c230c58451c37c3033b4489059710bac84"
     },
     {
       "name": "com/example/quotes/model/QuotesTick.kt",
-      "digest": "sha256:ec5f3aed68a4a906075abd60d82de91037ba5279bacfd93734844bb076cdd1f1"
+      "digest": "sha256:125faeb0bfda784ec090fcb819f757f5ac972c9f79fb983a49a746b1c1d94cd5"
+    },
+    {
+      "name": "com/example/quotes/channel/QuotesQuotesClientMessage.kt",
+      "digest": "sha256:2b83e341897e5361512828f81d536c0ab5e59d4f79695dad147d9d8008787917"
+    },
+    {
+      "name": "com/example/quotes/channel/QuotesQuotesClientMessageSerializer.kt",
+      "digest": "sha256:b9bd2fdca05d4f9c9c39cb54b886fbb2ef21f630137c73c7e41cb166deb575a4"
     },
     {
       "name": "com/example/quotes/channel/QuotesQuotesServerMessage.kt",
-      "digest": "sha256:31080cfe1c9b4aa065a40ff55139861c7207f042d4510180840de49ed3f1cce9"
+      "digest": "sha256:b7c675e7d1c3846d4e7d3a63ab6e396b9b2efd05f7be4d2875b169d19ce76526"
     },
     {
       "name": "com/example/quotes/channel/QuotesQuotesServerMessageSerializer.kt",
-      "digest": "sha256:a6ffb7ea0be173d161749bd2bd3328297b26faa30ca7de6f479c16f822e684a7"
+      "digest": "sha256:e87744f51883d6d80ca39f1bdbd7cdba56bf8a70595499f3865f31b2738322b8"
     },
     {
-      "name": "com/example/quotes/client/QuotesQuotesCorrelation.kt",
-      "digest": "sha256:55414c1d3d5eec54b59014cd490b7e72edf66c8a87207224d6bd9c0eebf126cb"
+      "name": "com/example/quotes/channel/QuotesQuotesCorrelation.kt",
+      "digest": "sha256:01100ef1ab04af7619014bebfcaf2578e8ea16375ae4c372d23e62f30bc28e25"
     },
     {
       "name": "com/example/quotes/client/QuotesQuotesChannel.kt",
-      "digest": "sha256:a415bed4737fcc695b7ef800c3bb43a4f08b74f7fe36101a605252e94c651bc8"
+      "digest": "sha256:4e1afc02614cd492db466d449199ed4bbd17a7a592ed25bca3b97ebee91fff96"
     },
     {
       "name": "com/example/quotes/client/QuotesQuotesClientSession.kt",
-      "digest": "sha256:aa614e6b634209c864fc8697f7994d17167216ab14a7e59d80837a77c55600fa"
+      "digest": "sha256:ef943ab0b054eae28dbd3c25780ee926aed8d3ad42032d74fb6e6ee695f2258f"
     },
     {
       "name": "com/example/quotes/server/QuotesQuotesService.kt",
@@ -610,11 +962,11 @@ public class QuotesRoutes(
     },
     {
       "name": "com/example/quotes/server/QuotesQuotesServerSession.kt",
-      "digest": "sha256:e66fb3e1f9c48a4bce6da2175b20c5cc46020cb8eccae2590e930b46ff581ee9"
+      "digest": "sha256:135280c1b5c1d71594643a91d399b34c221585f22b948e54a21af5c7fd4230e1"
     },
     {
       "name": "com/example/quotes/server/QuotesRoutes.kt",
-      "digest": "sha256:a5d54ae7ecfd94da38bbc24f0d8a8b0985b750d943266598e4d07665b9c1f06e"
+      "digest": "sha256:1c09e132c41ba2e6d701121c008c87374429a658b3980e1f7015cbe378996cab"
     }
   ]
 }

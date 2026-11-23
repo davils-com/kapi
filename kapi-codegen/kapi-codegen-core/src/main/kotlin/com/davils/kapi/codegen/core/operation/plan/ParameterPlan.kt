@@ -27,4 +27,5 @@ internal data class ParameterPlan(
     val type: TypeUse,
     val isQuoted: Boolean = true,
     val isReservedAllowed: Boolean = false,
+    val mediaType: String? = null,
 )

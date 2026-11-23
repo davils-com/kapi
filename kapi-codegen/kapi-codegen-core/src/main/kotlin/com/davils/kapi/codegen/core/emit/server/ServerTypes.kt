@@ -73,18 +73,7 @@ internal object ServerTypes {
 
     val httpDate: ClassName = ClassName(CONDITIONAL, "HttpDate")
 
-    val codecs: ClassName = ClassName("$CORE.codec", "Codecs")
-
-    val decoded: ClassName = ClassName("$CORE.codec", "Decoding").nestedClass("Decoded")
-
-    val event: ClassName = ClassName("$CORE.framing", "ServerSentEvent")
-
     val filePart: ClassName = ClassName("$CORE.wire", "FilePart")
-
-    val decodeToString: MemberName = MemberName(packageName = "kotlinx.io.bytestring", simpleName = "decodeToString")
-
-    val encodeToByteString: MemberName =
-        MemberName(packageName = "kotlinx.io.bytestring", simpleName = "encodeToByteString")
 
     fun mediaType(text: String): CodeBlock = CodeBlock.of("%T.parse(%S)", mediaType, text)
 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -29,6 +31,8 @@ import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.codegen.core.pipeline.shown
+import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.spec.core.value.ExtensionReading
@@ -36,12 +40,15 @@ import com.davils.kapi.spec.openapi.model.path.Method
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.PathTemplate
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val DEFAULT_GROUP: String = "Default"
 
 private const val PAGES: String = "Pages"
 
 private const val STREAM: String = "Stream"
+
+private val standard: Set<String> = Method.entries.map { method -> method.keyword.uppercase() }.toSet()
 
 internal class OperationPlanner(
     private val scope: PlanScope,
@@ -71,9 +78,31 @@ internal class OperationPlanner(
         return sorted.flatMap { (template, item) -> operations(template, item) }
     }
 
-    fun nameOf(method: Method, path: String, operation: Operation): String {
-        val declared = declaredName(operation) ?: method.keyword + " " + path
+    fun nameOf(method: String, path: String, operation: Operation): String {
+        val declared = declaredName(operation) ?: method.lowercase() + " " + path
         return Identifiers.member(declared)
+    }
+
+    fun methodsOf(item: PathItem): List<Pair<String, Operation>> {
+        val standard = item.operations.entries.sortedBy { (method, _) -> method.ordinal }
+        val named = standard.map { (method, operation) -> method.keyword.uppercase() to operation }
+        val additional = item.additionalOperations.entries.sortedBy { (method, _) -> method }
+        val served = additional.filter { (method, operation) -> isServed(method, operation) }
+        val all = named + served.map { (method, operation) -> method to operation }
+        return all.filterNot { (_, operation) -> isIgnored(operation) }
+    }
+
+    private fun isServed(method: String, operation: Operation): Boolean {
+        val isServed = FieldSyntax.isToken(method) && method.none(Char::isLowerCase) && method !in standard
+        if (!isServed) {
+            scope.findings.error(
+                CodegenCodes.OPERATION_UNSUPPORTED,
+                "The key ${shown(method)} of additionalOperations is no method token in upper case without a " +
+                    "field of its own, which is how the runtimes send and serve a method",
+                operation.location,
+            )
+        }
+        return isServed
     }
 
     fun declaredName(operation: Operation): String? = text(operation, Keywords.NAME) ?: operation.operationId
@@ -101,7 +130,7 @@ internal class OperationPlanner(
             name = site.name,
             group = site.group,
             result = context + "Result",
-            method = site.method.keyword.uppercase(),
+            method = site.method,
             path = site.path,
             parameters = planned,
             body = body,
@@ -112,6 +141,8 @@ internal class OperationPlanner(
             origin = operation.location,
             isDelivery = site.isDelivery,
             upgrade = upgrade,
+            summary = operation.summary,
+            description = operation.description,
         )
     }
 
@@ -134,10 +165,8 @@ internal class OperationPlanner(
         }
     }
 
-    private fun operations(template: PathTemplate, item: PathItem): List<OperationPlan> {
-        val kept = item.operations.filterValues { operation -> !isIgnored(operation) }
-        val sorted = kept.entries.sortedBy { (method, _) -> method.ordinal }
-        return sorted.map { (method, operation) ->
+    private fun operations(template: PathTemplate, item: PathItem): List<OperationPlan> =
+        methodsOf(item).map { (method, operation) ->
             val site = OperationSite(
                 name = nameOf(method, template.value, operation),
                 group = groupOf(item, operation),
@@ -148,7 +177,6 @@ internal class OperationPlanner(
             )
             planned(site)
         }
-    }
 
     private fun groupOf(item: PathItem, operation: Operation): String {
         val declared = text(operation, Keywords.GROUP) ?: text(item, Keywords.GROUP)

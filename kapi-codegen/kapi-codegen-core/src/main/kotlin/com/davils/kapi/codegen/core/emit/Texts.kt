@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.codegen.core.asyncapi.emit
+package com.davils.kapi.codegen.core.emit
 
 import com.squareup.kotlinpoet.CodeBlock
 

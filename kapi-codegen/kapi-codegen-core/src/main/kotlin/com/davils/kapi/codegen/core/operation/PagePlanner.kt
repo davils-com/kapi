@@ -28,6 +28,7 @@ import com.davils.kapi.codegen.core.operation.plan.PageStyle
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.path.Operation
 
@@ -91,7 +92,7 @@ internal class PagePlanner(private val scope: PlanScope) {
         scope.findings.warn(
             CodegenCodes.EXTENSION_PENDING,
             "${Keywords.PAGINATION} has no effect on the generated client yet for the style " +
-                site.settings[STYLE],
+                shown(site.settings[STYLE].orEmpty()),
             site.operation.location,
         )
         return null
@@ -137,7 +138,7 @@ internal class PagePlanner(private val scope: PlanScope) {
     private fun refuse(site: PageSite, what: String) {
         scope.findings.error(
             CodegenCodes.PAGINATION_INVALID,
-            "${Keywords.PAGINATION} with the style ${site.settings[STYLE]} $what",
+            "${Keywords.PAGINATION} with the style ${shown(site.settings[STYLE].orEmpty())} $what",
             site.operation.location,
         )
     }

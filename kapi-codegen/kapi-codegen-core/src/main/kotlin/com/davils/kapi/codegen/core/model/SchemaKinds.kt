@@ -54,6 +54,11 @@ internal object SchemaKinds {
         return members.singleOrNull().takeIf { isWrapper && isPlain }
     }
 
+    fun describe(definition: SchemaDefinition): String? {
+        val texts = listOfNotNull(definition.title, definition.description)
+        return texts.joinToString(separator = "\n\n").ifEmpty { null }
+    }
+
     fun alternativesOf(definition: SchemaDefinition): List<Schema> = definition.oneOf.ifEmpty { definition.anyOf }
 
     fun optionalOf(definition: SchemaDefinition): Schema? {

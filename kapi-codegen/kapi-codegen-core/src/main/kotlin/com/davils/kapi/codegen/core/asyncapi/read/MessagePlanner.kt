@@ -21,6 +21,7 @@ import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
 import com.davils.kapi.spec.asyncapi.model.message.Message

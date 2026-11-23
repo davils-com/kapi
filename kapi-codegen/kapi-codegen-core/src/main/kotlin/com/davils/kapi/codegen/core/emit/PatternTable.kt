@@ -17,15 +17,29 @@
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
+
+private const val SUFFIX: String = "_PATTERN"
 
 internal class PatternTable {
-    private val declared: MutableMap<String, String> = linkedMapOf()
+    private val names: MutableMap<String, String> = linkedMapOf()
 
-    val patterns: Map<String, String> get() = declared
+    val properties: List<PropertySpec>
+        get() = names.map { (pattern, name) ->
+            val property = PropertySpec.builder(name, Kotlin.pattern, KModifier.PRIVATE)
+            property.initializer("%T.compileOrThrow(%S)", Kotlin.pattern, pattern)
+            property.build()
+        }
 
-    fun name(subject: Subject, pattern: String): String {
-        val name = Identifiers.constant(subject.property) + subject.depthMark("_") + "_PATTERN"
-        declared[name] = pattern
-        return name
+    fun name(subject: Subject, pattern: String): String =
+        names.getOrPut(pattern) { free(Identifiers.constant(subject.property) + subject.depthMark("_")) }
+
+    private fun free(base: String): String {
+        val taken = names.values.toSet()
+        val candidates = generateSequence(1) { index -> index + 1 }.map { index ->
+            base + "_$index".takeIf { index > 1 }.orEmpty() + SUFFIX
+        }
+        return candidates.first { candidate -> candidate !in taken }
     }
 }

@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
 import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeKind
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeUsePlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.security.ApiKeyScheme

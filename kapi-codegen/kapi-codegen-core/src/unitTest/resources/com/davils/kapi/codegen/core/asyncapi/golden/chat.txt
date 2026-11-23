@@ -5,6 +5,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,7 +17,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "chat.yaml#/components/messages/Joined/payload",
 )
-public data class ChatJoinedPayload(
+public class ChatJoinedPayload(
     @SerialName("type")
     public val type: String,
     @SerialName("member")
@@ -24,6 +27,17 @@ public data class ChatJoinedPayload(
         if (type != "joined") fail(::type, "must be joined", ConstraintViolationCodes.CONST)
         within(::member) { with(member) { validate() } }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(type: String = this.type, member: ChatMember = this.member): ChatJoinedPayload = ChatJoinedPayload(type = type, member = member)
+
+    override fun equals(other: Any?): Boolean = other is ChatJoinedPayload && listOf(this.type, this.member) == listOf(other.type, other.member)
+
+    override fun hashCode(): Int = listOf(this.type, this.member).hashCode()
+
+    override fun toString(): String = "ChatJoinedPayload(" + "type=" + this.type + ", member=" + this.member + ")"
 }
 ===== com/example/chat/model/ChatLeavePayload.kt
 package com.example.chat.model
@@ -32,6 +46,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -41,13 +58,24 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "chat.yaml#/components/messages/Leave/payload",
 )
-public data class ChatLeavePayload(
+public class ChatLeavePayload(
     @SerialName("type")
     public val type: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
         if (type != "leave") fail(::type, "must be leave", ConstraintViolationCodes.CONST)
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(type: String = this.type): ChatLeavePayload = ChatLeavePayload(type = type)
+
+    override fun equals(other: Any?): Boolean = other is ChatLeavePayload && listOf(this.type) == listOf(other.type)
+
+    override fun hashCode(): Int = listOf(this.type).hashCode()
+
+    override fun toString(): String = "ChatLeavePayload(" + "type=" + this.type + ")"
 }
 ===== com/example/chat/model/ChatMember.kt
 package com.example.chat.model
@@ -55,6 +83,9 @@ package com.example.chat.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -64,12 +95,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "chat.yaml#/components/schemas/Member",
 )
-public data class ChatMember(
+public class ChatMember(
     @SerialName("nick")
     public val nick: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(nick: String = this.nick): ChatMember = ChatMember(nick = nick)
+
+    override fun equals(other: Any?): Boolean = other is ChatMember && listOf(this.nick) == listOf(other.nick)
+
+    override fun hashCode(): Int = listOf(this.nick).hashCode()
+
+    override fun toString(): String = "ChatMember(" + "nick=" + this.nick + ")"
 }
 ===== com/example/chat/model/ChatSaid.kt
 package com.example.chat.model
@@ -78,6 +120,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -87,7 +132,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "chat.yaml#/components/schemas/Said",
 )
-public data class ChatSaid(
+public class ChatSaid(
     @SerialName("type")
     public val type: String,
     @SerialName("from")
@@ -99,6 +144,21 @@ public data class ChatSaid(
         if (type != "said") fail(::type, "must be said", ConstraintViolationCodes.CONST)
         within(::from) { with(from) { validate() } }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        type: String = this.type,
+        from: ChatMember = this.from,
+        text: String = this.text,
+    ): ChatSaid = ChatSaid(type = type, from = from, text = text)
+
+    override fun equals(other: Any?): Boolean = other is ChatSaid && listOf(this.type, this.from, this.text) == listOf(other.type, other.from, other.text)
+
+    override fun hashCode(): Int = listOf(this.type, this.from, this.text).hashCode()
+
+    override fun toString(): String = "ChatSaid(" + "type=" + this.type + ", from=" + this.from + ", text=" + this.text + ")"
 }
 ===== com/example/chat/model/ChatSay.kt
 package com.example.chat.model
@@ -107,6 +167,9 @@ import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -116,7 +179,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "chat.yaml#/components/schemas/Say",
 )
-public data class ChatSay(
+public class ChatSay(
     @SerialName("type")
     public val type: String,
     @SerialName("text")
@@ -125,6 +188,17 @@ public data class ChatSay(
     override fun ValidationScope.validate() {
         if (type != "say") fail(::type, "must be say", ConstraintViolationCodes.CONST)
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(type: String = this.type, text: String = this.text): ChatSay = ChatSay(type = type, text = text)
+
+    override fun equals(other: Any?): Boolean = other is ChatSay && listOf(this.type, this.text) == listOf(other.type, other.text)
+
+    override fun hashCode(): Int = listOf(this.type, this.text).hashCode()
+
+    override fun toString(): String = "ChatSay(" + "type=" + this.type + ", text=" + this.text + ")"
 }
 ===== com/example/chat/channel/ChatRoomClientMessage.kt
 package com.example.chat.channel
@@ -649,6 +723,8 @@ import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.operation.Routes
 import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.request.Request
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.chat.channel.ChatRoomClientMessage
 import com.example.chat.channel.ChatRoomClientMessageSerializer
@@ -659,7 +735,7 @@ import kotlin.collections.List
 /**
  * The WebSocket channels `room`, mounted with `routing { mount(routes) }` below the path of the server.
  *
- * Every handshake is authorized by the security requirement of its channel before the WebSocket opens. Its parameters are read after it opened: a handshake that lacks a required one or carries one that is invalid closes the channel with 1008 before the service sees it.
+ * Every handshake is authorized by the security requirement of its channel and its parameters are checked before the WebSocket opens: a handshake that lacks a required one or carries one that is invalid is refused with a problem with status 400 and never reaches the service.
  *
  * @param chatRoomService serves the channel `room`.
  * @param limits the limits of every channel.
@@ -683,6 +759,7 @@ public class ChatRoutes(
             protocols = listOf("chat.v1"),
             security = listOf(listOf(SchemeUse("token", CredentialSource.Bearer, setOf()))),
             limits = limits,
+            admission = { request -> admitChatRoom(request) },
             handler = { serveChatRoom(this) },
         ),
     )
@@ -696,6 +773,14 @@ public class ChatRoutes(
         val xClient = request.headers["X-Client"]
         if (nick == null || sinceText != null && since == null) return session.close(ChannelSession.POLICY_VIOLATION, "The handshake lacks a parameter or carries an invalid one")
         chatRoomService.serve(ChatRoomServerSession(session = session, roomId = roomId, nick = nick, since = since, xClient = xClient))
+    }
+
+    private fun admitChatRoom(request: Request): Reply? {
+        val nick = request.query.firstOrNull { entry -> entry.first == "nick" }?.second
+        val sinceText = request.query.firstOrNull { entry -> entry.first == "since" }?.second
+        val since = sinceText?.toLongOrNull()
+        if (nick == null || sinceText != null && since == null) return request.input().refused()
+        return null
     }
 }
 ===== META-INF/kapi/asyncapi/chat.provenance.json
@@ -714,23 +799,23 @@ public class ChatRoutes(
   "files": [
     {
       "name": "com/example/chat/model/ChatJoinedPayload.kt",
-      "digest": "sha256:19fc64ac21de51e471cab67b011a2193ca1a6c1c6019ffb6ff53d58b66028009"
+      "digest": "sha256:5a71ae8c1c959438b8b6f1debbffc6ca291b9b252301e104ff1302bd00f2fa34"
     },
     {
       "name": "com/example/chat/model/ChatLeavePayload.kt",
-      "digest": "sha256:5d5853dea4f24258ac70b863d9000f1cac9dcc7e6b543a28a1607eb741241024"
+      "digest": "sha256:285f0f0f2a280ff57aca6459d25f00f51e3bf2f0ddca718d42bfae0de224ebfc"
     },
     {
       "name": "com/example/chat/model/ChatMember.kt",
-      "digest": "sha256:f91506f5994d3147f58de1fb398156a142de7c7c8fa0750dba523084aad0779c"
+      "digest": "sha256:f1b0d20bc83dedd252a699077dfee3ccbedd9b989db17bd954cee730c5d47060"
     },
     {
       "name": "com/example/chat/model/ChatSaid.kt",
-      "digest": "sha256:5e1a805dfb8d29230700b383b3efde029be458280f76634865efd864bd86b714"
+      "digest": "sha256:8ffe03d3742674b94ad021ce81d2fcd1d3345101a66712e701b7c8003f677259"
     },
     {
       "name": "com/example/chat/model/ChatSay.kt",
-      "digest": "sha256:43f921fc31c1b89ce38afddca500041610c776c0c49a7cc6eb0547df522cf912"
+      "digest": "sha256:3c2b5c5bad031fd7eb7674ce0c1baaec1fa5c704f2996653f2189a10734567a1"
     },
     {
       "name": "com/example/chat/channel/ChatRoomClientMessage.kt",
@@ -766,7 +851,7 @@ public class ChatRoutes(
     },
     {
       "name": "com/example/chat/server/ChatRoutes.kt",
-      "digest": "sha256:f91b461e7cda1f123beb916b2886380c52943f59d98d5254a3ca872078721aa0"
+      "digest": "sha256:c2851b20448ec302d137320cd558228f36cff5ff50930c6ec0634b795ae9ce14"
     }
   ]
 }

@@ -24,6 +24,8 @@ paths:
   /pets:
     get:
       operationId: listPets
+      summary: Lists the pets.
+      description: Lists the pets of the store, filtered by status and tag.
       tags: [pets]
       parameters:
         - name: status

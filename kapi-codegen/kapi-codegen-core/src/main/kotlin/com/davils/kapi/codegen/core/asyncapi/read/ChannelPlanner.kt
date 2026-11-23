@@ -25,7 +25,9 @@ import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.OperationFlow
 import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.plan.RequestPlan
+import com.davils.kapi.codegen.core.asyncapi.plan.Side
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
 import com.davils.kapi.spec.asyncapi.model.binding.WebSocketChannelBinding
@@ -204,11 +206,6 @@ internal class ChannelPlanner(private val document: Document, private val report
         val replies = reply?.let { found ->
             repliesOf(channelKey = channelKey, channel = channel, name = name, reply = found)
         }
-        if (replies != null && operation.action == OperationAction.Send) {
-            val text = "The server sends the request of the operation ${shown(name)}, and the server runtime pairs " +
-                "no replies; its replies travel as any other message"
-            report.warn(GenerationCodes.REPLY_UNPAIRED, text, operation.location)
-        }
         return OperationFlow(
             operation = name,
             action = operation.action,
@@ -248,7 +245,7 @@ internal class ChannelPlanner(private val document: Document, private val report
     }
 
     private fun requestOf(flow: OperationFlow, planned: List<MessagePlan>): RequestPlan? {
-        val replies = flow.replies?.takeIf { flow.action == OperationAction.Receive } ?: return null
+        val replies = flow.replies ?: return null
         val involved = planned.filter { message -> message.key in flow.messages || message.key in replies }
         val isCorrelated = involved.all { message -> message.correlation != null }
         val isPaired = flow.messages.isNotEmpty() && replies.isNotEmpty() && isCorrelated
@@ -263,6 +260,7 @@ internal class ChannelPlanner(private val document: Document, private val report
             function = function,
             messages = flow.messages,
             replies = replies,
+            sender = Side.Client.takeIf { flow.action == OperationAction.Receive } ?: Side.Server,
         )
         return request.takeIf { isPaired }
     }

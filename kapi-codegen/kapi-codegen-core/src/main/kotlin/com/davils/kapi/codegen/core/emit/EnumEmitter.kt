@@ -50,6 +50,7 @@ internal class EnumEmitter(private val types: TypeNames, private val visibility:
         value.initializer("%N", VALUE)
         val builder = TypeSpec.classBuilder(plan.name)
         builder.addModifiers(visibility, KModifier.VALUE)
+        Docs.on(builder, plan.description)
         builder.addAnnotation(Kotlin.serializable)
         builder.addAnnotation(Kotlin.jvmInline)
         builder.addAnnotation(Annotations.generated(plan.origin))

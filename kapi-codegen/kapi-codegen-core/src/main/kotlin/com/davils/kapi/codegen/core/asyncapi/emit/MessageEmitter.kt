@@ -21,6 +21,7 @@ import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
+import com.davils.kapi.codegen.core.emit.Texts
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.AnnotationSpec

@@ -19,6 +19,7 @@ package com.davils.kapi.codegen.core.asyncapi.emit
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
+import com.davils.kapi.codegen.core.asyncapi.plan.RequestPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -40,6 +41,8 @@ private const val PAYLOAD: String = "payload"
 private const val CODE: String = "code"
 
 private const val REASON: String = "reason"
+
+private const val TIMEOUT: String = "timeout"
 
 private const val CLOSED: String =
     "@throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed."
@@ -126,6 +129,7 @@ internal class ServerEmitter(private val emission: Emission) {
             type.addFunction(send(sent))
             sendHelpers(plan).forEach(type::addFunction)
         }
+        Side.Server.requestsOf(plan).forEach { request -> type.addFunction(request(plan, request, received)) }
         type.addFunction(close())
         return type.build()
     }
@@ -171,6 +175,32 @@ internal class ServerEmitter(private val emission: Emission) {
             function.addStatement("%N.send(%L)", SESSION, wrapped)
             function.build()
         }
+    }
+
+    private fun request(plan: ChannelPlan, request: RequestPlan, received: TypeName): FunSpec {
+        val keys = request.messages.singleOrNull()
+        val sent = Side.Server.of(plan)
+        val single = sent.messages.firstOrNull { message -> message.key == keys }
+        val function = FunSpec.builder(request.function).addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
+        function.addKdoc(
+            "%L",
+            Specs.kdoc(
+                "Sends the request of the operation ${Kdocs.code(request.operation)} and waits for the first message " +
+                    "of the client with its correlation id; read no other message meanwhile.",
+                "@param ${MESSAGE.takeIf { single == null } ?: PAYLOAD} the request.",
+                "@param timeout how long to wait for the reply.",
+                "@return the reply, or why there is none.",
+            ),
+        )
+        val argument = single?.let { message ->
+            emission.wrapped(plan = plan, side = Side.Server, message = message, value = PAYLOAD)
+        }
+        val type = single?.let(emission::payloadType) ?: emission.directionType(plan, Side.Server)
+        function.addParameter(PAYLOAD.takeIf { single != null } ?: MESSAGE, type)
+        function.addParameter(TIMEOUT, Runtime.duration)
+        function.returns(Runtime.serverChannelReply.parameterizedBy(received))
+        function.addStatement("return %N.request(%L, %N)", SESSION, argument ?: CodeBlock.of("%N", MESSAGE), TIMEOUT)
+        return function.build()
     }
 
     private fun close(): FunSpec {

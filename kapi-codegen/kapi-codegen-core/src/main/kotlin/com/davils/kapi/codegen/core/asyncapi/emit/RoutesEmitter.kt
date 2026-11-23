@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.HandshakePlace
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeKind
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeUsePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
+import com.davils.kapi.codegen.core.emit.Texts
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -48,7 +49,11 @@ private const val QUERY: String = "%N.query.firstOrNull { entry -> entry.first =
 
 private const val REFUSED: String = "The handshake lacks a parameter or carries an invalid one"
 
-internal class RoutesEmitter(private val emission: Emission, private val servers: ServerEmitter) {
+internal class RoutesEmitter(
+    private val emission: Emission,
+    private val servers: ServerEmitter,
+    private val correlations: CorrelationEmitter,
+) {
     fun emit(name: String, plans: List<ChannelPlan>): List<GeneratedFile> {
         if (plans.isEmpty()) return emptyList()
         return listOf(emission.file(emission.serverPackage, routes(name, plans), GeneratedPlatform.Jvm))
@@ -83,6 +88,7 @@ internal class RoutesEmitter(private val emission: Emission, private val servers
         channels.initializer(code.build())
         type.addProperty(channels.build())
         plans.forEach { plan -> type.addFunction(handler(plan)) }
+        plans.filter { plan -> refusals(plan).isNotEmpty() }.forEach { plan -> type.addFunction(admission(plan)) }
         return type.build()
     }
 
@@ -94,9 +100,9 @@ internal class RoutesEmitter(private val emission: Emission, private val servers
         val head = listOf(
             "The WebSocket channels $channels, mounted with `routing { mount(routes) }` below the path of the server.",
             "",
-            "Every handshake is authorized by the security requirement of its channel before the WebSocket opens. " +
-                "Its parameters are read after it opened: a handshake that lacks a required one or carries one " +
-                "that is invalid closes the channel with 1008 before the service sees it.",
+            "Every handshake is authorized by the security requirement of its channel and its parameters are " +
+                "checked before the WebSocket opens: a handshake that lacks a required one or carries one that is " +
+                "invalid is refused with a problem with status 400 and never reaches the service.",
             "",
         )
         val lines = head + parameters + listOf("@param limits the limits of every channel.")
@@ -116,6 +122,15 @@ internal class RoutesEmitter(private val emission: Emission, private val servers
         }
         code.add("security = listOf(%L),\n", alternatives.joinToCode(", "))
         code.add("limits = %N,\n", LIMITS)
+        if (Side.Server.requestsOf(plan).isNotEmpty()) {
+            code.add(
+                "correlation = %T(sent = %L, received = %L),\n",
+                Runtime.serverCorrelation,
+                correlations.messageIdOf(plan, Side.Server),
+                correlations.messageIdOf(plan, Side.Client),
+            )
+        }
+        if (refusals(plan).isNotEmpty()) code.add("admission = { %N -> %N(%N) },\n", REQUEST, admitName(plan), REQUEST)
         code.add("handler = { %N(this) },\n", handlerName(plan))
         code.unindent().add(")")
         return code.build()
@@ -136,6 +151,27 @@ internal class RoutesEmitter(private val emission: Emission, private val servers
     }
 
     private fun handlerName(plan: ChannelPlan): String = "serve" + plan.base
+
+    private fun admitName(plan: ChannelPlan): String = "admit" + plan.base
+
+    private fun admission(plan: ChannelPlan): FunSpec {
+        val function = FunSpec.builder(admitName(plan)).addModifiers(KModifier.PRIVATE)
+        function.addParameter(REQUEST, Runtime.request)
+        function.returns(Runtime.reply.copy(nullable = true))
+        plan.parameters.filter { parameter -> parameter.choices.isNotEmpty() }.forEach { parameter ->
+            function.addStatement(
+                "val %N = %N.pathParameters[%L].orEmpty()",
+                parameter.member,
+                REQUEST,
+                Texts.literal(parameter.name),
+            )
+        }
+        val checked = plan.handshake.filter { field -> refusals(field).isNotEmpty() }
+        checked.forEach { field -> function.addCode(read(field)) }
+        function.addStatement("if (%L) return %N.input().refused()", refusals(plan).joinToCode(" || "), REQUEST)
+        function.addStatement("return null")
+        return function.build()
+    }
 
     private fun handler(plan: ChannelPlan): FunSpec {
         val function = FunSpec.builder(handlerName(plan)).addModifiers(KModifier.PRIVATE, KModifier.SUSPEND)

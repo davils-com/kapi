@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.DirectionPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
+import com.davils.kapi.codegen.core.emit.Texts
 
 internal object Kdocs {
     fun direction(plan: ChannelPlan, side: Side): String {

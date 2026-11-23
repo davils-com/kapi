@@ -69,7 +69,8 @@ internal class GenerationRun(private val options: GeneratorOptions) {
 
     private fun channels(emission: Emission, plans: List<ChannelPlan>): List<GeneratedFile> {
         val emitter = MessageEmitter(emission)
-        return plans.flatMap(emitter::emit)
+        val correlations = CorrelationEmitter(emission)
+        return plans.flatMap { plan -> emitter.emit(plan) + correlations.emit(plan) }
     }
 
     private fun clients(emission: Emission, plans: List<ChannelPlan>): List<GeneratedFile> {
@@ -81,7 +82,7 @@ internal class GenerationRun(private val options: GeneratorOptions) {
     private fun servers(emission: Emission, plans: List<ChannelPlan>): List<GeneratedFile> {
         if (Artifact.Server !in options.artifacts) return emptyList()
         val emitter = ServerEmitter(emission)
-        val routes = RoutesEmitter(emission, emitter)
+        val routes = RoutesEmitter(emission, emitter, CorrelationEmitter(emission))
         return plans.flatMap(emitter::emit) + routes.emit(options.typePrefix + options.apiName + "Routes", plans)
     }
 }

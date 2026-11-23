@@ -39,12 +39,15 @@ class ScenarioTest : FunSpec({
             "joined ann, said ann hi:lobby:chat.v1:7:test / chat.v1 closed 4001 bye",
             "large closed 1009",
             "failed HandshakeRefused(401)",
+            "admission 400",
+            "admission 400",
+            "admission null",
         )
     }
 
-    test("a generated client pairs replies with its requests and receives what else the server sends") {
+    test("a generated client and server pair replies with the requests both send and receive the rest") {
         scenarioOf("quotes.yaml") shouldBe listOf(
-            "reply price r1 4200, timed out, tick ACME closed 1000",
+            "reply price r1 4200, timed out, tick ACME, tick SILENT, confirm c-r3, price r3 1 closed 1000",
             "failed HandshakeRefused(401)",
         )
     }

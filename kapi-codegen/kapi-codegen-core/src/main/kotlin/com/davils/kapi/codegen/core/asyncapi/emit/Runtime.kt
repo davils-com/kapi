@@ -82,6 +82,12 @@ internal object Runtime {
 
     val channelLimits: ClassName = ClassName(SERVER_CHANNEL, "ChannelLimits")
 
+    val serverCorrelation: ClassName = ClassName(SERVER_CHANNEL, "Correlation")
+
+    val serverChannelReply: ClassName = ClassName(SERVER_CHANNEL, "ChannelReply")
+
+    val reply: ClassName = ClassName("$SERVER.reply", "Reply")
+
     val routes: ClassName = ClassName(SERVER_OPERATION, "Routes")
 
     val operation: ClassName = ClassName(SERVER_OPERATION, "Operation")

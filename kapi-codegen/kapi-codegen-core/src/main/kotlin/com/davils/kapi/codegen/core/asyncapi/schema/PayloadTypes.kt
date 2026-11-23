@@ -21,7 +21,7 @@ import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
 import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
-import com.davils.kapi.codegen.core.asyncapi.read.shown
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.Value
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -79,19 +79,17 @@ internal class PayloadTypes(
     }
 
     private fun typeOfValue(value: Value, depth: Int): TypeName? {
-        val mapping = value as? Value.Mapping
-        val isEmpty = mapping?.run { entries.isEmpty() } == true
-        val isAnything = (value as? Value.Flag)?.isTrue == true || isEmpty
-        val text = (mapping?.get(REFERENCE) as? Value.Text)?.value
-        val isLocal = text?.startsWith(LOCAL) == true && depth < MOST_DEPTH
-        val referenced = text?.takeIf { isLocal }?.removePrefix(LOCAL)
-        val type = (mapping?.get(TYPE) as? Value.Text)?.value
-        val format = (mapping?.get(FORMAT) as? Value.Text)?.value
+        val mapping = value as? Value.Mapping ?: return element.takeIf { (value as? Value.Flag)?.isTrue == true }
+        val text = (mapping[REFERENCE] as? Value.Text)?.value
+        val type = (mapping[TYPE] as? Value.Text)?.value
+        val format = (mapping[FORMAT] as? Value.Text)?.value
+        val isShallow = depth < MOST_DEPTH
+        val referenced = text?.takeIf { found -> isShallow && found.startsWith(LOCAL) }?.removePrefix(LOCAL)
         val scalar = INT.takeIf { type == INTEGER && format == INT32 } ?: type?.let(scalars::get)
-        val items = mapping?.get(ITEMS)?.takeIf { type == ARRAY && depth < MOST_DEPTH }
+        val items = mapping[ITEMS]?.takeIf { isShallow && type == ARRAY }
         val listed = items?.let { found -> typeOfValue(found, depth + 1) }?.let { item -> LIST.parameterizedBy(item) }
         val named = referenced?.let { found -> typeOfKey(found, depth) }
-        return element.takeIf { isAnything } ?: named ?: scalar ?: listed
+        return element.takeIf { mapping.entries.isEmpty() } ?: named ?: scalar ?: listed
     }
 
     private companion object {

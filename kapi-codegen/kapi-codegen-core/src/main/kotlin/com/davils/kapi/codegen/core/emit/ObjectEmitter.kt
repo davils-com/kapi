@@ -19,8 +19,12 @@ package com.davils.kapi.codegen.core.emit
 import com.davils.kapi.codegen.core.model.plan.DependencyPlan
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.PropertyPlan
+import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.BOOLEAN
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -28,16 +32,27 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 private const val MASK: String = "****"
 
+private const val OTHER: String = "other"
+
+private const val THIS: String = "this"
+
+private const val RETURN: String = "return %L"
+
+private const val COPY_KDOC: String =
+    "Returns a copy of this value with the given properties replaced; every property not given keeps its value."
+
 internal class ObjectEmitter(private val types: TypeNames, private val visibility: KModifier) {
-    fun type(plan: ModelPlan.ObjectPlan): TypeSpec {
+    fun type(plan: ModelPlan.ObjectPlan): ModelFile {
         val patterns = PatternTable()
         val validate = validation(plan, ValidationCode(patterns))
+        val self = types.model(plan.name)
         val builder = TypeSpec.classBuilder(plan.name)
         builder.addModifiers(visibility)
-        if (plan.properties.isNotEmpty()) builder.addModifiers(KModifier.DATA)
+        Docs.on(builder, plan.description)
         builder.addAnnotation(Kotlin.serializable)
         if (plan.properties.any(PropertyPlan::isPatch)) builder.addAnnotation(Annotations.experimentalSerialization())
         builder.addAnnotation(Annotations.generated(plan.origin))
@@ -46,9 +61,11 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         builder.addSuperinterface(Kotlin.validatable)
         plan.unions.forEach { union -> builder.addSuperinterface(types.model(union)) }
         builder.addFunction(validate)
-        if (plan.properties.any(PropertyPlan::isSensitive)) builder.addFunction(masked(plan))
-        if (patterns.patterns.isNotEmpty()) builder.addType(companion(patterns, plan.origin))
-        return builder.build()
+        if (plan.properties.isNotEmpty()) builder.addFunction(copy(plan, self))
+        builder.addFunction(equality(plan, self))
+        builder.addFunction(hash(plan))
+        builder.addFunction(text(plan))
+        return ModelFile(builder.build(), patterns.properties)
     }
 
     private fun constructor(plan: ModelPlan.ObjectPlan): FunSpec {
@@ -67,6 +84,7 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
     private fun property(property: PropertyPlan): PropertySpec {
         val builder = PropertySpec.builder(property.name, typeOf(property), visibility)
         builder.initializer("%N", property.name)
+        Docs.on(builder, property.description)
         builder.addAnnotation(Annotations.serialName(property.jsonName))
         if (property.isPatch) builder.addAnnotation(Annotations.neverDefault())
         return builder.build()
@@ -101,7 +119,49 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         )
     }
 
-    private fun masked(plan: ModelPlan.ObjectPlan): FunSpec {
+    private fun copy(plan: ModelPlan.ObjectPlan, self: ClassName): FunSpec {
+        val function = FunSpec.builder("copy")
+        function.addModifiers(visibility)
+        function.addKdoc("%L", COPY_KDOC)
+        plan.properties.forEach { property ->
+            val parameter = ParameterSpec.builder(property.name, typeOf(property))
+            parameter.defaultValue("this.%N", property.name)
+            function.addParameter(parameter.build())
+        }
+        function.returns(self)
+        val arguments = plan.properties.map { property -> CodeBlock.of("%N = %N", property.name, property.name) }
+        function.addStatement("return %T(%L)", self, arguments.joinToCode(", "))
+        return function.build()
+    }
+
+    private fun equality(plan: ModelPlan.ObjectPlan, self: ClassName): FunSpec {
+        val function = FunSpec.builder("equals")
+        function.addModifiers(KModifier.OVERRIDE)
+        function.addParameter(OTHER, ANY.copy(nullable = true))
+        function.returns(BOOLEAN)
+        val sameType = CodeBlock.of("%N is %T", OTHER, self)
+        if (plan.properties.isEmpty()) return function.addStatement(RETURN, sameType).build()
+        val own = values(plan, CodeBlock.of(THIS))
+        val theirs = values(plan, CodeBlock.of("%N", OTHER))
+        function.addStatement("return %L && %L == %L", sameType, own, theirs)
+        return function.build()
+    }
+
+    private fun hash(plan: ModelPlan.ObjectPlan): FunSpec {
+        val function = FunSpec.builder("hashCode")
+        function.addModifiers(KModifier.OVERRIDE)
+        function.returns(INT)
+        val all = CodeBlock.of("%L.hashCode()", values(plan, CodeBlock.of(THIS)))
+        function.addStatement(RETURN, all.takeIf { plan.properties.isNotEmpty() } ?: CodeBlock.of("0"))
+        return function.build()
+    }
+
+    private fun values(plan: ModelPlan.ObjectPlan, owner: CodeBlock): CodeBlock {
+        val read = plan.properties.map { property -> CodeBlock.of("%L.%N", owner, property.name) }
+        return CodeBlock.of("listOf(%L)", read.joinToCode(", "))
+    }
+
+    private fun text(plan: ModelPlan.ObjectPlan): FunSpec {
         val template = CodeBlock.builder()
         template.add("%S", plan.name + "(")
         plan.properties.forEachIndexed { index, property ->
@@ -113,24 +173,12 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         val function = FunSpec.builder("toString")
         function.addModifiers(KModifier.OVERRIDE)
         function.returns(STRING)
-        function.addStatement("return %L", template.build())
+        function.addStatement(RETURN, template.build())
         return function.build()
     }
 
     private fun shown(property: PropertyPlan): CodeBlock {
         if (property.isSensitive) return CodeBlock.of("%S", MASK)
-        return CodeBlock.of("%N", property.name)
-    }
-
-    private fun companion(patterns: PatternTable, origin: String): TypeSpec {
-        val companion = TypeSpec.companionObjectBuilder()
-        companion.addModifiers(visibility)
-        companion.addAnnotation(Annotations.generated(origin))
-        patterns.patterns.forEach { (name, pattern) ->
-            val property = PropertySpec.builder(name, Kotlin.regex, KModifier.PRIVATE)
-            property.initializer("%T(%S)", Kotlin.regex, pattern)
-            companion.addProperty(property.build())
-        }
-        return companion.build()
+        return CodeBlock.of("this.%N", property.name)
     }
 }

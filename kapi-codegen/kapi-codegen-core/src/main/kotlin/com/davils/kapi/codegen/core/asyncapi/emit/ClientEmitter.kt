@@ -27,6 +27,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.ScalarType
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeKind
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeUsePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
+import com.davils.kapi.codegen.core.emit.Texts
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -72,7 +73,7 @@ internal class ClientEmitter(private val emission: Emission, private val correla
             emission.file(emission.clientPackage, connector(plan), GeneratedPlatform.Common),
             emission.file(emission.clientPackage, session(plan), GeneratedPlatform.Common),
         )
-        return correlations.emit(plan) + files
+        return files
     }
 
     private fun sessionType(plan: ChannelPlan): ClassName =
@@ -122,13 +123,12 @@ internal class ClientEmitter(private val emission: Emission, private val correla
         code.add("sendSerializer = %L,\n", emission.serializer(plan, Side.Client))
         code.add("receiveDeserializer = %L,\n", emission.serializer(plan, Side.Server))
         code.add("settings = %L,\n", settings(plan))
-        if (plan.hasCorrelation) {
-            val correlation = correlations.typeName(plan)
+        if (Side.Client.requestsOf(plan).isNotEmpty()) {
             code.add(
-                "correlation = %T(sent = %T::sent, received = %T::received),\n",
+                "correlation = %T.json(sent = %L, received = %L),\n",
                 Runtime.correlation,
-                correlation,
-                correlation,
+                correlations.idOf(plan, Side.Client),
+                correlations.idOf(plan, Side.Server),
             )
         }
         code.add("⇤)⇥⇥")
@@ -270,7 +270,7 @@ internal class ClientEmitter(private val emission: Emission, private val correla
             type.addFunction(send(sent))
             sendHelpers(plan).forEach(type::addFunction)
         }
-        plan.requests.forEach { request -> type.addFunction(request(plan, request, received)) }
+        Side.Client.requestsOf(plan).forEach { request -> type.addFunction(request(plan, request, received)) }
         type.addFunction(close())
         return type.build()
     }

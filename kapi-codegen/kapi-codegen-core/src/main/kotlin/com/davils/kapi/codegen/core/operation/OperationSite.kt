@@ -16,7 +16,6 @@
 
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.path.Method
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 
@@ -24,7 +23,7 @@ internal data class OperationSite(
     val name: String,
     val group: String,
     val path: String,
-    val method: Method,
+    val method: String,
     val item: PathItem,
     val operation: Operation,
     val isDelivery: Boolean = false,

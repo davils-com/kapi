@@ -2,17 +2,23 @@ package com.example.petstore
 
 import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.conditional.Validators
+import com.davils.kapi.runtime.client.stream.StreamEvent
 import com.davils.kapi.runtime.core.conditional.EntityTag
+import com.davils.kapi.runtime.core.wire.FilePart
 import com.davils.kapi.runtime.core.wire.Patch
 import com.davils.kapi.runtime.server.mount
 import com.davils.kore.core.principal.currentPrincipal
 import com.example.petstore.client.PetstoreAdminClient
 import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.model.PetstoreFilter
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstorePetPatch
 import com.example.petstore.model.PetstorePetWrite
 import com.example.petstore.model.PetstoreProblem
 import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.model.PetstoreUploadPhotoRequestMeta as Meta
+import com.example.petstore.operation.PetstoreCopyPetResponse
+import com.example.petstore.operation.PetstoreCopyPetResult
 import com.example.petstore.operation.PetstoreCreatePetResponse
 import com.example.petstore.operation.PetstoreCreatePetResult
 import com.example.petstore.operation.PetstoreDeletePetResponse
@@ -25,8 +31,13 @@ import com.example.petstore.operation.PetstoreListPetsResponse
 import com.example.petstore.operation.PetstoreListPetsResult
 import com.example.petstore.operation.PetstoreRenamePetResponse
 import com.example.petstore.operation.PetstoreRenamePetResult
+import com.example.petstore.operation.PetstoreSearchPetsResponse
+import com.example.petstore.operation.PetstoreSearchPetsResult
 import com.example.petstore.operation.PetstoreSetAvatarResponse
 import com.example.petstore.operation.PetstoreSetAvatarResult
+import com.example.petstore.operation.PetstoreUploadPhotoResponse
+import com.example.petstore.operation.PetstoreUploadPhotoResult
+import com.example.petstore.operation.PetstoreWatchPetsResponse
 import com.example.petstore.server.PetstoreAdminRoutes
 import com.example.petstore.server.PetstoreAdminService
 import com.example.petstore.server.PetstorePetsRoutes
@@ -35,6 +46,8 @@ import io.ktor.server.routing.Route
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.toList
 
 public class Scenario(client: ApiClient, base: String) {
     private val pets: PetstorePetsClient = PetstorePetsClient(client)
@@ -62,7 +75,30 @@ public class Scenario(client: ApiClient, base: String) {
         pictured(pets.getAvatar(2)),
         deleted(admin.deletePet(2)),
         deleted(admin.deletePet(2)),
+        searched(pets.searchPets(PetstoreFilter(name = "Rexy"))),
+        searched(pets.searchPets(PetstoreFilter(name = "a&b=c #d+e"))),
+        searched(pets.searchPets()),
+        copied(pets.copyPet(1)),
+        copied(pets.copyPet(9)),
+        uploaded(pets.uploadPhoto(1, FilePart(PNG), rank = 2, tags = listOf(3, 4), meta = Meta(title = "nice"))),
+        uploaded(pets.uploadPhoto(1, FilePart(PNG), rank = 1, meta = Meta(title = "x"))),
+        watched(pets.watchPetsStream().toList()),
     )
+
+    private fun uploaded(result: PetstoreUploadPhotoResult): String = when (result) {
+        is PetstoreUploadPhotoResult.NoContent -> "uploaded"
+        is PetstoreUploadPhotoResult.Unexpected -> "unexpected ${result.status} ${result.content.decodeToString()}"
+        is PetstoreUploadPhotoResult.Malformed -> "malformed ${result.status}"
+        is PetstoreUploadPhotoResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun watched(events: List<StreamEvent<PetstorePet>>): String = "watched " + events.joinToString { event ->
+        when (event) {
+            is StreamEvent.Item -> shown(event.value)
+            is StreamEvent.Malformed -> "malformed"
+            is StreamEvent.Ended -> "ended"
+        }
+    }
 
     private fun shown(pet: PetstorePet): String = "${pet.id}:${pet.name}:${pet.status}"
 
@@ -114,6 +150,21 @@ public class Scenario(client: ApiClient, base: String) {
         is PetstoreGetAvatarResult.Failed -> "failed ${result.failure}"
     }
 
+    private fun searched(result: PetstoreSearchPetsResult): String = when (result) {
+        is PetstoreSearchPetsResult.Ok -> "searched " + result.body.joinToString(transform = ::shown)
+        is PetstoreSearchPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSearchPetsResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSearchPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun copied(result: PetstoreCopyPetResult): String = when (result) {
+        is PetstoreCopyPetResult.Created -> "copied " + shown(result.body)
+        is PetstoreCopyPetResult.NotFound -> "not found"
+        is PetstoreCopyPetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreCopyPetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreCopyPetResult.Failed -> "failed ${result.failure}"
+    }
+
     private fun deleted(result: PetstoreDeletePetResult): String = when (result) {
         is PetstoreDeletePetResult.NoContent -> "deleted"
         is PetstoreDeletePetResult.NotFound -> "not found"
@@ -122,6 +173,8 @@ public class Scenario(client: ApiClient, base: String) {
         is PetstoreDeletePetResult.Failed -> "failed ${result.failure}"
     }
 }
+
+private val PNG: ByteString = "PNG".encodeToByteString()
 
 public object Wiring {
     public fun install(route: Route) {
@@ -186,6 +239,35 @@ private class PetsService(private val store: Store) : PetstorePetsService {
     override suspend fun getAvatar(petId: Long): PetstoreGetAvatarResponse {
         val avatar = store.avatars[petId] ?: return PetstoreGetAvatarResponse.NotFound
         return PetstoreGetAvatarResponse.Ok(avatar)
+    }
+
+    override suspend fun uploadPhoto(
+        petId: Long,
+        photo: FilePart,
+        rank: Int,
+        tags: List<Long>?,
+        meta: Meta?,
+    ): PetstoreUploadPhotoResponse {
+        check(photo.content == PNG && rank in 1..2 && (tags == null || tags == listOf(3L, 4L)))
+        check(meta == null || meta.title == "nice")
+        store.avatars[petId] = photo.content
+        return PetstoreUploadPhotoResponse.NoContent
+    }
+
+    override suspend fun watchPets(): PetstoreWatchPetsResponse =
+        PetstoreWatchPetsResponse.Ok(store.pets.values.toList().asFlow())
+
+    override suspend fun searchPets(filter: PetstoreFilter?): PetstoreSearchPetsResponse {
+        check(filter == null || filter.name == "Rexy" || filter.name == "a&b=c #d+e")
+        val found = store.pets.values.filter { pet -> filter?.name == null || pet.name == filter.name }
+        return PetstoreSearchPetsResponse.Ok(found)
+    }
+
+    override suspend fun copyPet(petId: Long): PetstoreCopyPetResponse {
+        val pet = store.pets[petId] ?: return PetstoreCopyPetResponse.NotFound
+        val copy = PetstorePet(id = store.pets.keys.max() + 1, name = pet.name, status = pet.status)
+        store.pets[copy.id ?: 0L] = copy
+        return PetstoreCopyPetResponse.Created(copy)
     }
 }
 

@@ -21,8 +21,8 @@ import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
 import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
 import com.davils.kapi.codegen.core.asyncapi.read.Targets
-import com.davils.kapi.codegen.core.asyncapi.read.shown
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
@@ -54,8 +54,8 @@ internal class SchemaHoist(private val document: Document, private val report: R
         val components = document.components?.schemas.orEmpty()
         components.forEach { (key, referable) ->
             val schema = document.resolve(referable)?.takeIf { found -> found.format in modelled }
-            val target = origin?.let { uri -> Target(uri, JsonPointer.of(COMPONENTS, SCHEMAS, key)) }
-            if (schema != null && target != null) claim(target, schema, key)
+            val target = Target(origin, JsonPointer.of(COMPONENTS, SCHEMAS, key))
+            if (schema != null) claim(target, schema, key)
         }
         payloads.filter { payload -> payload.schema.format in modelled }.forEach { payload ->
             keyOf(payload.target, payload.schema)
@@ -103,7 +103,7 @@ internal class SchemaHoist(private val document: Document, private val report: R
 
     private fun reference(text: Value.Text): String? {
         val base = text.location?.document ?: targets.origin
-        val target = base?.let { uri -> targets.targetOf(text.value, uri) }
+        val target = targets.targetOf(text.value, base)
         val schema = target?.let(targets::schemaAt)?.takeIf { found -> found.format in modelled }
         if (schema == null) {
             val message = "The reference ${shown(text.value)} names no schema the reader resolved"

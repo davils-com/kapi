@@ -11,8 +11,11 @@ import com.davils.kapi.runtime.server.Kapi
 import com.davils.kapi.runtime.server.mount
 import com.davils.kapi.runtime.server.security.ApiKeyAuthorizer
 import com.davils.kore.core.principal.principal
+import com.example.quotes.channel.QuotesQuotesClientMessage
 import com.example.quotes.channel.QuotesQuotesServerMessage
 import com.example.quotes.client.QuotesQuotesChannel
+import com.example.quotes.model.QuotesAck
+import com.example.quotes.model.QuotesConfirm
 import com.example.quotes.model.QuotesPrice
 import com.example.quotes.model.QuotesQuote
 import com.example.quotes.model.QuotesRequest
@@ -25,21 +28,31 @@ import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.engine.cio.CIO as ClientEngine
 import io.ktor.client.plugins.websocket.WebSockets as ClientWebSockets
 import io.ktor.server.websocket.WebSockets as ServerWebSockets
+import com.davils.kapi.runtime.server.channel.ChannelReply as ServerReply
 
 private const val HOST: String = "127.0.0.1"
 
 private class Desk : QuotesQuotesService {
     override suspend fun serve(session: QuotesQuotesServerSession) {
-        session.incoming.collect { quote ->
+        while (true) {
+            val message = session.receive() ?: return
+            val quote = (message as? QuotesQuotesClientMessage.Quote)?.payload ?: continue
+            if (quote.symbol == "CONFIRM") {
+                val asked = QuotesConfirm(type = "confirm", request = QuotesRequest(id = "c-" + quote.request.id))
+                val answer = session.requestConfirmQuote(asked, 5.seconds)
+                val ack = ((answer as? ServerReply.Received<QuotesQuotesClientMessage>)?.message as? QuotesQuotesClientMessage.Ack)?.payload
+                val cents = if (ack?.accepted == true) 1L else 0L
+                session.sendPrice(QuotesPrice(type = "price", request = quote.request, cents = cents))
+                continue
+            }
             session.sendTick(QuotesTick(type = "tick", symbol = quote.symbol, cents = 1))
             if (quote.symbol != "SILENT") {
                 session.sendPrice(QuotesPrice(type = "price", request = quote.request, cents = 4200))
@@ -71,10 +84,16 @@ public object Scenario {
     private suspend fun talk(client: ApiClient): String {
         val outcome = QuotesQuotesChannel(client).connect {
             coroutineScope {
-                val tick = async { incoming.first() }
-                val price = requestAskQuote(QuotesQuote(request = QuotesRequest(id = "r1"), symbol = "ACME"), 5.seconds)
-                val silent = requestAskQuote(QuotesQuote(request = QuotesRequest(id = "r2"), symbol = "SILENT"), 300.milliseconds)
-                listOf(reply(price), reply(silent), shown(tick.await())).joinToString(", ")
+                val price = requestAskQuote(QuotesQuote(type = "quote", request = QuotesRequest(id = "r1"), symbol = "ACME"), 5.seconds)
+                val silent = requestAskQuote(QuotesQuote(type = "quote", request = QuotesRequest(id = "r2"), symbol = "SILENT"), 300.milliseconds)
+                sendQuote(QuotesQuote(type = "quote", request = QuotesRequest(id = "r3"), symbol = "CONFIRM"))
+                val seen = mutableListOf<String>()
+                incoming.take(4).collect { message ->
+                    seen += shown(message)
+                    val confirm = (message as? QuotesQuotesServerMessage.Confirm)?.payload
+                    if (confirm != null) sendAck(QuotesAck(type = "ack", request = confirm.request, accepted = true))
+                }
+                (listOf(reply(price), reply(silent)) + seen).joinToString(", ")
             }
         }
         return when (outcome) {
@@ -102,5 +121,6 @@ public object Scenario {
     private fun shown(message: QuotesQuotesServerMessage): String = when (message) {
         is QuotesQuotesServerMessage.Price -> "price " + message.payload.request.id + " " + message.payload.cents
         is QuotesQuotesServerMessage.Tick -> "tick " + message.payload.symbol
+        is QuotesQuotesServerMessage.Confirm -> "confirm " + message.payload.request.id
     }
 }

@@ -21,13 +21,16 @@ import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.toBigDecimal
 import com.davils.kapi.codegen.core.sample.plan.SampleSpan
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.pattern.PatternCompilation
+import com.davils.kapi.runtime.core.validation.Constraints
 import java.math.BigDecimal
 
 internal object SampleRules {
     fun text(value: String, rules: List<RulePlan>): Boolean {
         val length = value.codePointCount(beginIndex = 0, endIndex = value.length)
         val patterns = rules.filterIsInstance<RulePlan.Pattern>()
-        val isMatching = patterns.all { rule -> Regex(rule.pattern).containsMatchIn(value) }
+        val isMatching = patterns.all { rule -> matches(value, rule.pattern) }
         val isSized = fits(size = length, rules = rules, least = LimitKind.MinLength, most = LimitKind.MaxLength)
         return isMatching && isSized
     }
@@ -49,6 +52,11 @@ internal object SampleRules {
         val span = SampleSpan.of(rules, least, most)
         val nearest = size.coerceAtLeast(span.least)
         return nearest.coerceAtMost(span.most) == size
+    }
+
+    private fun matches(value: String, source: String): Boolean {
+        val compiled = Pattern.compile(source) as? PatternCompilation.Compiled
+        return compiled?.let { found -> Constraints.matches(value, found.pattern) } == true
     }
 
     private fun isBounded(rule: RulePlan.Bound, value: BigDecimal): Boolean {

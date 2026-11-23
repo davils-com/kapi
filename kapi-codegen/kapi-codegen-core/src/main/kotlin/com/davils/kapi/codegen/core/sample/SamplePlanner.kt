@@ -22,6 +22,7 @@ import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.PropertyPlan
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.codegen.core.sample.plan.SamplePlan
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
 
@@ -71,7 +72,7 @@ internal class SamplePlanner(private val scope: PlanScope, private val prefix: S
         left.filterIsInstance<ModelPlan.ObjectPlan>().forEach { plan ->
             val missing = objects.missing(plan, values).map(PropertyPlan::jsonName)
             val what = missing.ifEmpty { listOf("what its dependentRequired names") }
-            warn(plan, "its property ${what.joinToString()}")
+            warn(plan, "its property " + what.joinToString(transform = ::shown))
         }
         left.filterIsInstance<ModelPlan.UnionPlan>().forEach { plan -> warn(plan, "any of its members") }
     }

@@ -27,6 +27,7 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.FieldKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.content.MediaType
@@ -90,7 +91,7 @@ internal class FieldPlanner(private val scope: PlanScope, private val models: Mo
         val use = models.typeOf(site.schema, context + Identifiers.type(name))
         val matching = kinds.filter { (matches, _) -> matches(use.shape) }
         val kind = matching.map { (_, found) -> found }.firstOrNull() ?: FieldKind.Json
-        names.audit(name, "The field ${site.wireName}", site.schema.location)
+        names.audit(name, "The field ${shown(site.wireName)}", site.schema.location)
         audit(site, kind)
         return FieldPlan(
             name = name,
@@ -109,11 +110,12 @@ internal class FieldPlanner(private val scope: PlanScope, private val models: Mo
 
     private fun audit(site: FieldSite, kind: FieldKind) {
         val isFile = kind in files.keys
-        if (isFile && site.body == BodyKind.Form) refuse("the file ${site.wireName} in a form", site.schema.location)
+        val isFormFile = isFile && site.body == BodyKind.Form
+        if (isFormFile) refuse("the file ${shown(site.wireName)} in a form", site.schema.location)
         val encoding = site.encoding ?: return
         val isPlain = encoding.style == null && encoding.isExploded == null && encoding.headers.isEmpty()
         if (isPlain && !encoding.isReservedAllowed) return
-        refuse("the encoding of the field ${site.wireName} beyond its content type", encoding.location)
+        refuse("the encoding of the field ${shown(site.wireName)} beyond its content type", encoding.location)
     }
 
     private fun isFile(shape: TypeShape): Boolean = (shape as? TypeShape.Scalar)?.kind == ScalarKind.Bytes

@@ -106,6 +106,26 @@ private val refused: Map<String, Pair<String, ViolationCode>> = mapOf(
             components = "{securitySchemes: {up: {type: userPassword}}}",
         ) to GenerationCodes.SECURITY_UNSUPPORTED
         ),
+    "an API key in the user and password of a server" to (
+        document(
+            channel = messages(TEXT),
+            operations = operation(action = "send", extra = secured("key")),
+            components = "{securitySchemes: {key: {type: apiKey, in: user}}}",
+        ) to GenerationCodes.SECURITY_UNSUPPORTED
+        ),
+    "an HTTP scheme other than bearer and basic" to (
+        document(
+            channel = messages(TEXT),
+            operations = operation(action = "send", extra = secured("digest")),
+            components = "{securitySchemes: {digest: {type: http, scheme: digest}}}",
+        ) to GenerationCodes.SECURITY_UNSUPPORTED
+        ),
+    "a scheme written inline" to (
+        document(
+            channel = messages(TEXT),
+            operations = operation(action = "send", extra = "security: [{type: http, scheme: bearer}]"),
+        ) to GenerationCodes.SECURITY_UNSUPPORTED
+        ),
     "operations that demand different security" to (
         document(
             channel = messages(TEXT, "b: {payload: {type: string}}"),

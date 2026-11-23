@@ -21,6 +21,7 @@ import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.DirectionPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.value.Value
@@ -69,22 +70,19 @@ internal class Discriminators(document: Document, private val report: Report) {
         return targets.resolved(payload?.run { schema.definition }) as? Value.Mapping
     }
 
-    private fun declaredOf(message: MessagePlan): String? =
-        (definitionOf(message)?.get(DISCRIMINATOR) as? Value.Text)?.value
+    private fun declaredOf(message: MessagePlan): String? = Fields.text(definitionOf(message), DISCRIMINATOR)
 
     private fun constantsOf(message: MessagePlan): Map<String, String> {
         val definition = definitionOf(message)
-        val properties = (definition?.get(PROPERTIES) as? Value.Mapping)?.entries.orEmpty()
-        val required = (definition?.get(REQUIRED) as? Value.Sequence)?.items.orEmpty()
-        val names = required.mapNotNull { item -> (item as? Value.Text)?.value }.toSet()
+        val properties = Fields.mapping(definition, PROPERTIES)?.entries.orEmpty()
+        val names = Fields.texts(Fields.items(definition, REQUIRED)).toSet()
         val constants = properties.filterKeys { name -> name in names }.mapValues { (_, value) -> constantOf(value) }
         return constants.mapNotNull { (name, value) -> value?.let { found -> name to found } }.toMap()
     }
 
     private fun constantOf(value: Value): String? {
-        val schema = targets.resolved(value) as? Value.Mapping
-        val constant = (schema?.get(CONST) as? Value.Text)?.value
-        val listed = (schema?.get(ENUM) as? Value.Sequence)?.run { items.singleOrNull() }
-        return constant ?: (listed as? Value.Text)?.value
+        val schema = targets.resolved(value)
+        val listed = Fields.texts(Fields.items(schema, ENUM)).singleOrNull()
+        return Fields.text(schema, CONST) ?: listed
     }
 }

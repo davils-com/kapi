@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(DavilsInternal::class)
+package com.davils.kapi.codegen.core.emit
 
-package com.davils.kapi.codegen.core.asyncapi.read
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeSpec
 
-import com.davils.kore.core.annotation.DavilsInternal
-import com.davils.kore.core.text.SafeText
-
-internal fun shown(text: String): String = SafeText.quoted(text)
+internal data class ModelFile(val type: TypeSpec, val properties: List<PropertySpec> = emptyList())

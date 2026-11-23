@@ -1,0 +1,25 @@
+package com.example.petstore
+
+import com.davils.kore.core.validation.validate
+import com.example.petstore.model.PetstoreAccountWrite
+import com.example.petstore.model.PetstoreCat
+import com.example.petstore.model.PetstorePetOwner
+
+public class Scenario {
+    private val cat: PetstoreCat = PetstoreCat(name = "tom", kind = "cat", lives = 9)
+
+    public fun run(): List<String> = listOf(
+        "equal " + (cat == PetstoreCat(name = "tom", kind = "cat", lives = 9)),
+        "same hash " + (cat.hashCode() == PetstoreCat(name = "tom", kind = "cat", lives = 9).hashCode()),
+        "differs " + (cat == cat.copy(lives = 8)),
+        "copy " + cat.copy(name = "felix"),
+        "kept " + cat.copy(),
+        "other type " + (cat.equals("tom")),
+        "null " + (cat.equals(null)),
+        "masked " + PetstoreAccountWrite(email = "a@b.c", password = "secret"),
+        "nan " + (PetstorePetOwner(email = "o", score = Double.NaN) == PetstorePetOwner(email = "o", score = Double.NaN)),
+        "zero " + (PetstorePetOwner(email = "o", score = 0.0) == PetstorePetOwner(email = "o", score = -0.0)),
+        "valid " + cat.validate("cat").isValid,
+        "invalid " + cat.copy(name = "").validate("cat").errors.map { violation -> violation.code.value },
+    )
+}

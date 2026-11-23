@@ -21,4 +21,5 @@ internal data class RequestPlan(
     val function: String,
     val messages: List<String>,
     val replies: List<String>,
+    val sender: Side = Side.Client,
 )

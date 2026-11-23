@@ -61,3 +61,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to read the reply.
 - **Every builder** of the DSLs closes after its first `build()` or `validate()`: a setter or a function that changes
   it afterwards throws an `IllegalStateException` instead of losing the change silently.
+- **Generated models** are regular classes instead of data classes: they write `equals`, `hashCode` and `toString`
+  by hand, mask every property marked `x-kapi-sensitive` in `toString` and offer `copy` with named parameters, but no
+  `componentN`.
+- **Generated patterns** run in the linear engine of `kapi-runtime-core`: a model compiles each pattern once into a
+  private `Pattern` of its file and checks it with `Constraints.matches`, never a `Regex` of the platform, and a
+  pattern the engine refuses is refused at generation with a located `codegen.schema.unsupported`; the samples of
+  mocks match patterns with the engine as well.
+- **Generated KDoc** describes models, their properties, enums and unions with the `title` and `description` of their
+  schemas and the functions of operations in clients, senders and services with their `summary` and `description`,
+  escaped for KDoc: no `*/` or `/*`, no tags, invisible and bidirectional characters as escapes.
+- **OpenAPI 3.2 in the generator**: a `querystring` parameter of JSON, `application/json` or a `+json` type, is sent
+  with `CallBuilder.queryString` and read with `Input.queryString` of its media type, beside the form it already
+  supported; the operations of `additionalOperations` are generated for clients, senders and servers with their
+  method as the document names it, and a key that is no method token in upper case is refused with a located
+  `codegen.operation.unsupported`.
+- **Generated servers** stream typed server-sent events with `ReplyBuilder.events(serializer, items)` and read the
+  parts of a multipart body and the fields of a form with `Input.part`, `Input.partItems` and `Input.field`, so every
+  value is decoded by the codecs of the server, validated and reported under `body.<name>`; repeated parts of numbers
+  or flags are served instead of refused.
+- **Generated WebSocket channels** check the parameters of a handshake in the `admission` of their
+  `ChannelEndpoint` and refuse an invalid one with a problem with status 400 before the upgrade; a request the server
+  sends with a reply and correlation ids becomes `request<Operation>` on the server session over
+  `ChannelSession.request` and the `correlation` of the endpoint, and clients pair their requests with
+  `Correlation.json`, reading each id from the JSON of a message by its discriminator, so ids inside union payloads
+  are found on every platform. The correlation object of a channel moved to the `channel` package.
+- **Diagnostics of the generator** show every text of a document, such as the name of a parameter, a property, a
+  field, a header, a schema or a reference, quoted and escaped through `SafeText` of Kore, exactly once, where the
+  message is written.
+- **The generator** locates every finding of a partial AsyncAPI document, such as a handshake whose schema the reader
+  could not resolve, which is now reported at its ws binding.
+- **Generated servers** read a multipart body that the document does not require as optional, instead of refusing a
+  request without one, and check the names of response headers with `FieldSyntax` of the core runtime.

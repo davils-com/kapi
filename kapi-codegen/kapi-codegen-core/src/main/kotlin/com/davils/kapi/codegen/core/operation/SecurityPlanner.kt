@@ -19,6 +19,7 @@ package com.davils.kapi.codegen.core.operation
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.security.ApiKeyScheme
 import com.davils.kapi.spec.openapi.model.security.HttpScheme
@@ -66,7 +67,7 @@ internal class SecurityPlanner(private val scope: PlanScope) {
         if (placement == null) {
             scope.findings.error(
                 CodegenCodes.OPERATION_UNSUPPORTED,
-                "The generator has no Kotlin for the HTTP scheme ${scheme.scheme} of $name yet",
+                "The generator has no Kotlin for the HTTP scheme ${shown(scheme.scheme)} of ${shown(name)} yet",
                 operation.location,
             )
         }

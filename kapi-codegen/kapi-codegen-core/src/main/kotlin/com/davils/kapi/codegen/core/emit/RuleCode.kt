@@ -121,7 +121,12 @@ internal class RuleCode(private val patterns: PatternTable) {
         subject.value.takeIf { kind == ScalarKind.Long } ?: CodeBlock.of("%L.toLong()", subject.value)
 
     private fun pattern(rule: RulePlan.Pattern, subject: Subject): CodeBlock = failure(
-        condition = CodeBlock.of("!%N.containsMatchIn(%L)", patterns.name(subject, rule.pattern), subject.value),
+        condition = CodeBlock.of(
+            "!%T.matches(%L, %N)",
+            Kotlin.constraints,
+            subject.value,
+            patterns.name(subject, rule.pattern),
+        ),
         subject = subject,
         message = "must match ${rule.pattern}",
         code = "PATTERN",

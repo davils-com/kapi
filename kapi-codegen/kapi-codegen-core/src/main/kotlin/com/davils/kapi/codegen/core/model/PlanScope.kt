@@ -23,6 +23,7 @@ import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
@@ -96,7 +97,8 @@ internal class PlanScope(
     }
 
     fun claim(name: String, schema: Schema) {
-        table.claim(NameClaim(name = name, origin = "The schema ${originOf(schema)}", location = schema.location))
+        val origin = "The schema ${shown(originOf(schema))}"
+        table.claim(NameClaim(name = name, origin = origin, location = schema.location))
     }
 
     fun claimName(name: String, origin: String) {

@@ -20,12 +20,12 @@ import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Docs
 import com.davils.kapi.codegen.core.emit.Kotlin
 import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
-import com.davils.kapi.codegen.core.operation.plan.FieldKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
@@ -111,6 +111,7 @@ internal class ServerEmitter(
             val function = FunSpec.builder(operation.name)
             function.addModifiers(listOf(KModifier.PUBLIC).filter { open -> open == visibility })
             function.addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
+            Docs.on(function, operation.summary, operation.description)
             function.addParameters(signatures.parameters(operation))
             function.returns(responseOf(operation))
             builder.addFunction(function.build())
@@ -204,7 +205,7 @@ internal class ServerEmitter(
     }
 
     private fun formType(field: FieldPlan): TypeName {
-        if (field.kind != FieldKind.Json) return types.of(field.type)
+        if (!InputCode.isDecoded(field)) return types.of(field.type)
         return STRING.copy(nullable = field.type.isNullable)
     }
 

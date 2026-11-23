@@ -124,19 +124,8 @@ internal class ReplyCode(private val serializers: SerializerCode) {
         }
     }
 
-    private fun events(stream: StreamPlan, items: CodeBlock): CodeBlock {
-        val data = CodeBlock.of(
-            "%T.Default.json.encodeToString(%L, item)",
-            ServerTypes.codecs,
-            serializers.of(stream.item),
-        )
-        return CodeBlock.of(
-            "events {\n⇥%L.collect { item -> send(%T(data = %L)) }\n⇤}",
-            items,
-            ServerTypes.event,
-            data,
-        )
-    }
+    private fun events(stream: StreamPlan, items: CodeBlock): CodeBlock =
+        CodeBlock.of("events(%L, %L)", serializers.of(stream.item), items)
 
     private fun mediaOf(plan: ResponsePlan, fallback: String): CodeBlock {
         val type = plan.accept.firstOrNull { found -> found != EVENTS } ?: fallback

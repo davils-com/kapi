@@ -29,6 +29,8 @@ import com.davils.kapi.codegen.core.operation.plan.TimeoutPlan
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
+private const val FORM: String = "application/x-www-form-urlencoded"
+
 private val template: Regex = Regex("""\{([^{}/]+)}""")
 
 internal class CallCode(private val serializers: SerializerCode) {
@@ -77,8 +79,17 @@ internal class CallCode(private val serializers: SerializerCode) {
     private fun placed(parameter: ParameterPlan): CodeBlock {
         if (parameter.placement == ParameterPlace.Path) return CodeBlock.of("")
         val guard = CodeBlock.of("if (%N != null) ", parameter.name).takeIf { parameter.type.isNullable }
+        val isText = parameter.placement == ParameterPlace.QueryString && parameter.mediaType != FORM
+        val text = CodeBlock.of("queryString(%L)", serialized(parameter)).takeIf { isText }
         val function = parameter.placement.function
-        return CodeBlock.of("%L%L(%L, %L)\n", guard ?: "", function, format(parameter), value(parameter))
+        val placed = text ?: CodeBlock.of("%L(%L, %L)", function, format(parameter), value(parameter))
+        return CodeBlock.of("%L%L\n", guard ?: "", placed)
+    }
+
+    private fun serialized(parameter: ParameterPlan): CodeBlock {
+        val serializer = serializers.of(parameter.type.copy(isNullable = false))
+        val json = CodeBlock.of("client.json(%L, %N)", serializer, parameter.name)
+        return CodeBlock.of("%L.%M()", json, ClientTypes.decodeToString)
     }
 
     private fun format(parameter: ParameterPlan): CodeBlock {

@@ -88,8 +88,16 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         val kind = BodyKind.Upload.takeIf { isUpload(media) } ?: kindOf(type)
         return when (kind) {
             BodyKind.Json -> BodyPlan(kind, typeOf(media, context, isOptional), type)
+
             BodyKind.Binary -> BodyPlan(kind, TypeUse(bytes, isNullable = isOptional), concrete(type))
-            BodyKind.Form, BodyKind.Multipart -> fields(context, kind, type to media)
+
+            BodyKind.Form, BodyKind.Multipart -> fields(
+                context = context,
+                kind = kind,
+                entry = type to media,
+                isOptional = isOptional,
+            )
+
             BodyKind.Upload -> BodyPlan(kind, TypeUse(Chunks.stream, isNullable = isOptional), concrete(type))
         }
     }
@@ -107,8 +115,13 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         return kind == StreamKind.Bytes.function
     }
 
-    private fun fields(context: String, kind: BodyKind, entry: Pair<String, MediaType>): BodyPlan =
-        BodyPlan(kind = kind, type = json, contentType = entry.first, fields = fields.plan(context, entry.second, kind))
+    private fun fields(context: String, kind: BodyKind, entry: Pair<String, MediaType>, isOptional: Boolean): BodyPlan =
+        BodyPlan(
+            kind = kind,
+            type = json.copy(isNullable = isOptional),
+            contentType = entry.first,
+            fields = fields.plan(context, entry.second, kind),
+        )
 
     private fun typeOf(media: MediaType, context: String, isOptional: Boolean): TypeUse {
         val schema = media.schema ?: return json.copy(isNullable = isOptional)

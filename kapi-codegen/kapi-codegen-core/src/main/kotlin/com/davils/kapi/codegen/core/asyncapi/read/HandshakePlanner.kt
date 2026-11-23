@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
@@ -22,16 +24,18 @@ import com.davils.kapi.codegen.core.asyncapi.plan.Handshake
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakeField
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakePlace
 import com.davils.kapi.codegen.core.asyncapi.plan.ScalarType
+import com.davils.kapi.codegen.core.pipeline.shown
+import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.binding.WebSocketChannelBinding
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.resolve
+import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val PROTOCOL: String = "sec-websocket-protocol"
-
-private const val TOKEN_SYMBOLS: String = "!#$%&'*+-.^_`|~"
 
 private const val INT32: String = "int32"
 
@@ -68,25 +72,45 @@ internal class HandshakePlanner(private val document: Document, private val repo
         }
 
     fun plan(channel: String, binding: WebSocketChannelBinding?): Handshake {
-        val query = binding?.query?.let { referable -> fields(channel, referable, HandshakePlace.Query) }.orEmpty()
-        val headers = binding?.headers?.let { referable -> fields(channel, referable, HandshakePlace.Header) }.orEmpty()
+        val query = fieldsOf(channel, binding, HandshakePlace.Query)
+        val headers = fieldsOf(channel, binding, HandshakePlace.Header)
         val protocol = headers.firstOrNull { field -> field.name.lowercase() == PROTOCOL }
         val written = headers.filterNot { field -> field.name.lowercase() == PROTOCOL }
         return Handshake(query + written, protocol?.choices.orEmpty())
     }
 
-    private fun fields(channel: String, referable: Referable<Schema>, place: HandshakePlace): List<HandshakeField> {
+    private fun fieldsOf(
+        channel: String,
+        binding: WebSocketChannelBinding?,
+        place: HandshakePlace,
+    ): List<HandshakeField> {
+        val location = binding?.location
+        val referable = when (place) {
+            HandshakePlace.Query -> binding?.query
+            HandshakePlace.Header -> binding?.headers
+        }
+        val fields = referable?.let { found ->
+            fields(channel = channel, referable = found, place = place, binding = location)
+        }
+        return fields.orEmpty()
+    }
+
+    private fun fields(
+        channel: String,
+        referable: Referable<Schema>,
+        place: HandshakePlace,
+        binding: Location?,
+    ): List<HandshakeField> {
         val schema = document.resolve(referable)
-        val definition = targets.resolved(schema?.definition) as? Value.Mapping
-        val type = (definition?.get(TYPE) as? Value.Text)?.value
-        val properties = (definition?.get(PROPERTIES) as? Value.Mapping)?.takeIf { type == OBJECT }
+        val definition = targets.resolved(schema?.definition)
+        val type = Fields.text(definition, TYPE)
+        val properties = Fields.mapping(definition, PROPERTIES)?.takeIf { type == OBJECT }
         if (properties == null) {
             val text = "The ${place.label} of the ws binding of the channel ${shown(channel)} is no object with " +
                 "properties"
-            report.error(GenerationCodes.HANDSHAKE_UNSUPPORTED, text, schema?.location)
+            report.error(GenerationCodes.HANDSHAKE_UNSUPPORTED, text, schema?.location ?: binding)
         }
-        val required = (definition?.get(REQUIRED) as? Value.Sequence)?.items.orEmpty()
-        val names = required.mapNotNull { item -> (item as? Value.Text)?.value }.toSet()
+        val names = Fields.texts(Fields.items(definition, REQUIRED)).toSet()
         val entries = properties?.entries.orEmpty()
         return entries.mapNotNull { (name, value) ->
             field(channel = channel, place = place, name = name, value = value, isRequired = name in names)
@@ -100,7 +124,7 @@ internal class HandshakePlanner(private val document: Document, private val repo
         value: Value,
         isRequired: Boolean,
     ): HandshakeField? {
-        val resolved = targets.resolved(value) as? Value.Mapping
+        val resolved = targets.resolved(value)
         val scalar = scalarOf(resolved)
         val choices = choicesOf(resolved)
         val isHeader = place == HandshakePlace.Header
@@ -140,39 +164,32 @@ internal class HandshakePlanner(private val document: Document, private val repo
         choices: List<String>,
         value: Value,
     ) {
-        val isHeaderName = place == HandshakePlace.Query || isToken(name)
+        val isHeaderName = place == HandshakePlace.Query || FieldSyntax.isToken(name)
         if (scalar == null || !isHeaderName) {
             val text = "The ${place.label} ${shown(name)} of the channel ${shown(channel)} is no string, integer, " +
                 "number or boolean, or no field name"
             report.error(GenerationCodes.HANDSHAKE_UNSUPPORTED, text, value.location)
         }
-        val isOffered = choices.isNotEmpty() && choices.all(::isToken)
+        val isOffered = choices.isNotEmpty() && choices.all(FieldSyntax::isToken)
         if (isProtocol && !isOffered) {
             val text = "The subprotocols of the channel ${shown(channel)} must be tokens named by const or enum"
             report.error(GenerationCodes.HANDSHAKE_UNSUPPORTED, text, value.location)
         }
     }
 
-    private fun scalarOf(schema: Value.Mapping?): ScalarType? {
-        val type = (schema?.get(TYPE) as? Value.Text)?.value
-        val format = (schema?.get(FORMAT) as? Value.Text)?.value
+    private fun scalarOf(schema: Value?): ScalarType? {
+        val type = Fields.text(schema, TYPE)
+        val format = Fields.text(schema, FORMAT)
         val integer = ScalarType.Int.takeIf { format == INT32 } ?: ScalarType.Long
         val scalar = type?.let(scalars::get)
         return integer.takeIf { type == INTEGER } ?: scalar
     }
 
-    private fun choicesOf(schema: Value.Mapping?): List<String> {
-        val constant = (schema?.get(CONST) as? Value.Text)?.value
-        val listed = (schema?.get(ENUM) as? Value.Sequence)?.items.orEmpty()
-        val texts = listed.mapNotNull { item -> (item as? Value.Text)?.value }
-        return listOfNotNull(constant).ifEmpty { texts.takeIf { texts.size == listed.size }.orEmpty() }
-    }
-
-    private fun isToken(text: String): Boolean {
-        val isTokenText = text.all { char ->
-            char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9' || char in TOKEN_SYMBOLS
-        }
-        return text.isNotEmpty() && isTokenText
+    private fun choicesOf(schema: Value?): List<String> {
+        val listed = Fields.items(schema, ENUM)
+        val texts = Fields.texts(listed)
+        val isComplete = texts.size == listed.size
+        return listOfNotNull(Fields.text(schema, CONST)).ifEmpty { texts.takeIf { isComplete }.orEmpty() }
     }
 
     private companion object {

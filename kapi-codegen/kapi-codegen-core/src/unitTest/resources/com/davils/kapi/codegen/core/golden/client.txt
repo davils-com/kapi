@@ -4,6 +4,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,12 +16,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1login/post/responses/200/content/application~1json/schema",
 )
-public data class PetstoreLoginOk(
+public class PetstoreLoginOk(
     @SerialName("token")
     public val token: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(token: String = this.token): PetstoreLoginOk = PetstoreLoginOk(token = token)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreLoginOk && listOf(this.token) == listOf(other.token)
+
+    override fun hashCode(): Int = listOf(this.token).hashCode()
+
+    override fun toString(): String = "PetstoreLoginOk(" + "token=" + this.token + ")"
 }
 ===== com/example/petstore/model/PetstorePagePetsOk.kt
 package com.example.petstore.model
@@ -26,6 +40,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.SerialName
@@ -36,7 +53,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1pets~1pages/get/responses/200/content/application~1json/schema",
 )
-public data class PetstorePagePetsOk(
+public class PetstorePagePetsOk(
     @SerialName("items")
     public val items: List<PetstorePet>? = null,
     @SerialName("next")
@@ -49,6 +66,17 @@ public data class PetstorePagePetsOk(
             }
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(items: List<PetstorePet>? = this.items, next: String? = this.next): PetstorePagePetsOk = PetstorePagePetsOk(items = items, next = next)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePagePetsOk && listOf(this.items, this.next) == listOf(other.items, other.next)
+
+    override fun hashCode(): Int = listOf(this.items, this.next).hashCode()
+
+    override fun toString(): String = "PetstorePagePetsOk(" + "items=" + this.items + ", next=" + this.next + ")"
 }
 ===== com/example/petstore/model/PetstorePagePetsOkWrite.kt
 package com.example.petstore.model
@@ -56,6 +84,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.SerialName
@@ -66,7 +97,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1pets~1pages/get/responses/200/content/application~1json/schema",
 )
-public data class PetstorePagePetsOkWrite(
+public class PetstorePagePetsOkWrite(
     @SerialName("items")
     public val items: List<PetstorePetWrite>? = null,
     @SerialName("next")
@@ -79,6 +110,17 @@ public data class PetstorePagePetsOkWrite(
             }
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(items: List<PetstorePetWrite>? = this.items, next: String? = this.next): PetstorePagePetsOkWrite = PetstorePagePetsOkWrite(items = items, next = next)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePagePetsOkWrite && listOf(this.items, this.next) == listOf(other.items, other.next)
+
+    override fun hashCode(): Int = listOf(this.items, this.next).hashCode()
+
+    override fun toString(): String = "PetstorePagePetsOkWrite(" + "items=" + this.items + ", next=" + this.next + ")"
 }
 ===== com/example/petstore/model/PetstorePet.kt
 package com.example.petstore.model
@@ -86,6 +128,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -96,7 +141,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
-public data class PetstorePet(
+public class PetstorePet(
     @SerialName("id")
     public val id: Long? = null,
     @SerialName("name")
@@ -104,6 +149,17 @@ public data class PetstorePet(
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(id: Long? = this.id, name: String = this.name): PetstorePet = PetstorePet(id = id, name = name)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePet && listOf(this.id, this.name) == listOf(other.id, other.name)
+
+    override fun hashCode(): Int = listOf(this.id, this.name).hashCode()
+
+    override fun toString(): String = "PetstorePet(" + "id=" + this.id + ", name=" + this.name + ")"
 }
 ===== com/example/petstore/model/PetstorePetPatch.kt
 package com.example.petstore.model
@@ -113,6 +169,9 @@ import com.davils.kapi.runtime.core.wire.Patch
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.OptIn
 import kotlin.String
 import kotlinx.serialization.EncodeDefault
@@ -126,7 +185,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
-public data class PetstorePetPatch(
+public class PetstorePetPatch(
     @SerialName("name")
     @EncodeDefault(EncodeDefault.Mode.NEVER)
     public val name: Patch<String> = Patch.Absent,
@@ -134,6 +193,17 @@ public data class PetstorePetPatch(
     override fun ValidationScope.validate() {
         if (name is Patch.Null) fail(::name, "must not be null", ConstraintViolationCodes.NOT_NULL)
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: Patch<String> = this.name): PetstorePetPatch = PetstorePetPatch(name = name)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePetPatch && listOf(this.name) == listOf(other.name)
+
+    override fun hashCode(): Int = listOf(this.name).hashCode()
+
+    override fun toString(): String = "PetstorePetPatch(" + "name=" + this.name + ")"
 }
 ===== com/example/petstore/model/PetstorePetWrite.kt
 package com.example.petstore.model
@@ -141,6 +211,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -150,12 +223,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
-public data class PetstorePetWrite(
+public class PetstorePetWrite(
     @SerialName("name")
     public val name: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: String = this.name): PetstorePetWrite = PetstorePetWrite(name = name)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePetWrite && listOf(this.name) == listOf(other.name)
+
+    override fun hashCode(): Int = listOf(this.name).hashCode()
+
+    override fun toString(): String = "PetstorePetWrite(" + "name=" + this.name + ")"
 }
 ===== com/example/petstore/model/PetstoreProblem.kt
 package com.example.petstore.model
@@ -163,6 +247,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -172,12 +259,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/components/schemas/Problem",
 )
-public data class PetstoreProblem(
+public class PetstoreProblem(
     @SerialName("title")
     public val title: String? = null,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(title: String? = this.title): PetstoreProblem = PetstoreProblem(title = title)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreProblem && listOf(this.title) == listOf(other.title)
+
+    override fun hashCode(): Int = listOf(this.title).hashCode()
+
+    override fun toString(): String = "PetstoreProblem(" + "title=" + this.title + ")"
 }
 ===== com/example/petstore/model/PetstoreQueryPetsCriteria.kt
 package com.example.petstore.model
@@ -185,6 +283,8 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -195,7 +295,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1pets~1query/query/parameters/0/content/application~1x-www-form-urlencoded/schema",
 )
-public data class PetstoreQueryPetsCriteria(
+public class PetstoreQueryPetsCriteria(
     @SerialName("name")
     public val name: String,
     @SerialName("minAge")
@@ -203,6 +303,17 @@ public data class PetstoreQueryPetsCriteria(
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: String = this.name, minAge: Int? = this.minAge): PetstoreQueryPetsCriteria = PetstoreQueryPetsCriteria(name = name, minAge = minAge)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreQueryPetsCriteria && listOf(this.name, this.minAge) == listOf(other.name, other.minAge)
+
+    override fun hashCode(): Int = listOf(this.name, this.minAge).hashCode()
+
+    override fun toString(): String = "PetstoreQueryPetsCriteria(" + "name=" + this.name + ", minAge=" + this.minAge + ")"
 }
 ===== com/example/petstore/model/PetstoreSearchPetsFilter.kt
 package com.example.petstore.model
@@ -210,6 +321,8 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -220,7 +333,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1pets~1search/get/parameters/0/schema",
 )
-public data class PetstoreSearchPetsFilter(
+public class PetstoreSearchPetsFilter(
     @SerialName("name")
     public val name: String? = null,
     @SerialName("minAge")
@@ -228,6 +341,17 @@ public data class PetstoreSearchPetsFilter(
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: String? = this.name, minAge: Int? = this.minAge): PetstoreSearchPetsFilter = PetstoreSearchPetsFilter(name = name, minAge = minAge)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreSearchPetsFilter && listOf(this.name, this.minAge) == listOf(other.name, other.minAge)
+
+    override fun hashCode(): Int = listOf(this.name, this.minAge).hashCode()
+
+    override fun toString(): String = "PetstoreSearchPetsFilter(" + "name=" + this.name + ", minAge=" + this.minAge + ")"
 }
 ===== com/example/petstore/model/PetstoreStatus.kt
 package com.example.petstore.model
@@ -271,6 +395,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -280,12 +407,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "client.yaml#/paths/~1pets~1{petId}~1photo/post/requestBody/content/multipart~1form-data/schema/properties/meta",
 )
-public data class PetstoreUploadPhotoRequestMeta(
+public class PetstoreUploadPhotoRequestMeta(
     @SerialName("title")
     public val title: String,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(title: String = this.title): PetstoreUploadPhotoRequestMeta = PetstoreUploadPhotoRequestMeta(title = title)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreUploadPhotoRequestMeta && listOf(this.title) == listOf(other.title)
+
+    override fun hashCode(): Int = listOf(this.title).hashCode()
+
+    override fun toString(): String = "PetstoreUploadPhotoRequestMeta(" + "title=" + this.title + ")"
 }
 ===== com/example/petstore/client/PetstoreAdminClient.kt
 package com.example.petstore.client
@@ -623,6 +761,11 @@ public class PetstorePetsClient(
         }
     }
 
+    /**
+     * Lists the pets.
+     *
+     * Lists the pets of the store, filtered by status and tag.
+     */
     public suspend fun listPets(
         status: PetstoreStatus? = null,
         tag: List<String>? = null,
@@ -1695,11 +1838,8 @@ public interface PetstoreAuthService {
 ===== com/example/petstore/server/PetstorePetsRoutes.kt
 package com.example.petstore.server
 
-import com.davils.kapi.runtime.core.codec.Codecs
-import com.davils.kapi.runtime.core.codec.Decoding
 import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.conditional.RepresentationState
-import com.davils.kapi.runtime.core.framing.ServerSentEvent
 import com.davils.kapi.runtime.core.negotiation.MediaRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
@@ -1740,7 +1880,6 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
-import kotlinx.io.bytestring.decodeToString
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -1956,10 +2095,10 @@ public class PetstorePetsRoutes(
         val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
         val parts = input.parts(true)
         val photo = parts?.firstOrNull { part -> part.name == "photo" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
-        val caption = parts?.firstOrNull { part -> part.name == "caption" }?.let { part -> part.content.decodeToString() }
-        val meta = parts?.firstOrNull { part -> part.name == "meta" }?.let { part -> Codecs.Default.decode(PetstoreUploadPhotoRequestMeta.serializer(), part.content, "application/json") }
-        if (!input.isValid || petId == null || photo == null || (meta != null && meta !is Decoding.Decoded)) return input.refused()
-        return when (val response = service.uploadPhoto(petId = petId, photo = photo, caption = caption, meta = meta?.value)) {
+        val caption = input.part(parts, "caption", String.serializer(), false, MediaType.parse("text/plain"))
+        val meta = input.part(parts, "meta", PetstoreUploadPhotoRequestMeta.serializer(), false, MediaType.parse("application/json"))
+        if (!input.isValid || petId == null || photo == null) return input.refused()
+        return when (val response = service.uploadPhoto(petId = petId, photo = photo, caption = caption, meta = meta)) {
             is PetstoreUploadPhotoResponse.NoContent -> reply(204)
         }
     }
@@ -1969,9 +2108,7 @@ public class PetstorePetsRoutes(
         if (!input.isValid) return input.refused()
         return when (val response = service.watchPets()) {
             is PetstoreWatchPetsResponse.Ok -> reply(200) {
-                events {
-                    response.items.collect { item -> send(ServerSentEvent(data = Codecs.Default.json.encodeToString(PetstorePet.serializer(), item))) }
-                }
+                events(PetstorePet.serializer(), response.items)
             }
         }
     }
@@ -2016,6 +2153,11 @@ public interface PetstorePetsService {
 
     public suspend fun getPet(petId: Long): PetstoreGetPetResponse
 
+    /**
+     * Lists the pets.
+     *
+     * Lists the pets of the store, filtered by status and tag.
+     */
     public suspend fun listPets(
         status: PetstoreStatus?,
         tag: List<String>?,

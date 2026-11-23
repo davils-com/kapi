@@ -24,6 +24,8 @@ private const val NAME_SYMBOLS: String = "_-."
 
 private const val MOST_ADDRESS_LENGTH: Int = 2_048
 
+private const val ASCII_LETTERS_AND_DIGITS: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
 internal object Addresses {
     fun parts(address: String, parameter: (String) -> PathPart.Parameter): List<PathPart>? {
         val rooted = address.takeIf { text -> text.startsWith('/') } ?: "/$address"
@@ -52,5 +54,5 @@ internal object Addresses {
 
     private fun isNameChar(char: Char): Boolean = isAsciiLetterOrDigit(char) || char in NAME_SYMBOLS
 
-    private fun isAsciiLetterOrDigit(char: Char): Boolean = char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9'
+    private fun isAsciiLetterOrDigit(char: Char): Boolean = char in ASCII_LETTERS_AND_DIGITS
 }

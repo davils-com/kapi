@@ -23,6 +23,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import java.nio.file.Files
 import java.nio.file.Path
@@ -330,6 +331,18 @@ class LauncherTest : FunSpec({
 
             verdict.failures.shouldBeEmpty()
             verdict.lines shouldBe listOf("warning: [openapi.w] m")
+        }
+
+        test("is a value equal by its lines and failures") {
+            val verdict = LaunchVerdict(lines = listOf("a"), failures = listOf("b"))
+
+            verdict shouldBe LaunchVerdict(lines = listOf("a"), failures = listOf("b"))
+            verdict.hashCode() shouldBe LaunchVerdict(lines = listOf("a"), failures = listOf("b")).hashCode()
+            verdict shouldNotBe LaunchVerdict(lines = listOf("a"), failures = emptyList())
+            verdict shouldNotBe LaunchVerdict(lines = listOf("c"), failures = listOf("b"))
+            verdict.equals("a") shouldBe false
+            verdict.isAccepted shouldBe false
+            verdict.toString() shouldBe "LaunchVerdict(1 lines, 1 failures)"
         }
     }
 })

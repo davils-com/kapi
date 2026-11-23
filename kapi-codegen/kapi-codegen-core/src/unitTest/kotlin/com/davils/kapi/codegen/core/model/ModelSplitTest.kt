@@ -61,7 +61,7 @@ class ModelSplitTest : FunSpec({
         test("has a shape to write without what is only read, even when that is required") {
             val kotlin = kotlinOf(listOf(ACCOUNT), WRITE)
 
-            kotlin shouldContain "public data class PetstoreAccountWrite("
+            kotlin shouldContain "public class PetstoreAccountWrite("
             kotlin shouldContain "public val email: String,"
             kotlin shouldContain "public val password: String? = null"
             kotlin shouldNotContain "val id"
