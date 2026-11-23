@@ -90,21 +90,21 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
         val range = digit.digitToIntOrNull().takeIf { status.isRange }
         val name = nameOf(status, range)
         val forced = forcedOf(context + name, response)
-        val media = jsonOf(response.content).takeIf { forced == null }
+        val media = jsonOf(scope.contentOf(response.content)).takeIf { forced == null }
         val accepted = listOfNotNull(forced?.first ?: media?.key)
         return ResponsePlan(
             name = name,
             status = status.code,
             range = range,
             body = media?.let { content -> typeOf(content.value, context + name) },
-            accept = accepted.ifEmpty { response.content.keys.toList() },
+            accept = accepted.ifEmpty { scope.contentOf(response.content).keys.toList() },
             headers = headers.plan(context + name, response),
             stream = forced?.second ?: streamOf(context + name, response).takeIf { media == null },
         )
     }
 
     private fun forcedOf(context: String, response: Response): Pair<String, StreamPlan>? {
-        val declared = response.content.entries.firstOrNull { (_, media) -> declaredKind(media) != null }
+        val declared = scope.contentOf(response.content).entries.firstOrNull { (_, media) -> declaredKind(media) != null }
         val (type, media) = declared ?: return null
         val kind = declaredKind(media) ?: StreamKind.Bytes
         val item = TypeUse(Chunks.item).takeIf { kind == StreamKind.Bytes } ?: typeOf(media, context + ITEM)
@@ -118,7 +118,7 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     }
 
     private fun streamOf(context: String, response: Response): StreamPlan? {
-        val kinds = response.content.mapKeys { (type, _) -> type.substringBefore(';').trim() }
+        val kinds = scope.contentOf(response.content).mapKeys { (type, _) -> type.substringBefore(';').trim() }
         val streamed = kinds.entries.firstNotNullOfOrNull { (type, media) ->
             streams[type.lowercase()]?.let { kind -> kind to media }
         }

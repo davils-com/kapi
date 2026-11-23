@@ -19,7 +19,10 @@ package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kapi.spec.openapi.model.content.MediaType
+import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -58,6 +61,9 @@ internal class PlanScope(
     val documentName: String get() = documentUri.substringAfterLast(SEPARATOR)
 
     fun component(key: String): Schema? = schemas[key]
+
+    fun contentOf(content: Map<String, Referable<MediaType>>): Map<String, MediaType> =
+        content.mapNotNull { (type, media) -> document.resolve(media)?.let { resolved -> type to resolved } }.toMap()
 
     fun foreign(reference: Reference): TypeShape.Named? = ModelCatalogs.foreign(catalogs, reference)
 

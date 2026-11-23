@@ -53,13 +53,25 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
         val declared = item.parameters + operation.parameters
         val resolved = declared.mapNotNull { referable -> scope.document.resolve(referable) }
         val effective = resolved.associateBy { parameter -> parameter.placement to parameter.name }
-        val (ignored, kept) = effective.values.partition(::isOwned)
+        val (whole, single) = effective.values.partition { parameter ->
+            parameter.placement == ParameterPlacement.QueryString
+        }
+        whole.forEach(::refuse)
+        val (ignored, kept) = single.partition(::isOwned)
         ignored.forEach(::ignore)
         return kept.map { parameter -> parameter(context, parameter) }
     }
 
     private fun isOwned(parameter: Parameter): Boolean =
         parameter.placement == ParameterPlacement.Header && parameter.name.lowercase() in owned
+
+    private fun refuse(parameter: Parameter) {
+        scope.findings.error(
+            CodegenCodes.OPERATION_UNSUPPORTED,
+            "The parameter ${parameter.name} takes the whole query string, which the generator does not support yet",
+            parameter.location,
+        )
+    }
 
     private fun ignore(parameter: Parameter) {
         scope.findings.warn(
@@ -71,7 +83,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
 
     private fun parameter(context: String, parameter: Parameter): ParameterPlan {
         val name = nameOf(parameter)
-        val style = parameter.style ?: ParameterStyle.defaultFor(parameter.placement)
+        val style = parameter.style ?: ParameterStyle.defaultFor(parameter.placement) ?: ParameterStyle.Simple
         val type = typeOf(context + Identifiers.type(name), parameter)
         names.audit(name, "The parameter ${parameter.name}", parameter.location)
         return ParameterPlan(

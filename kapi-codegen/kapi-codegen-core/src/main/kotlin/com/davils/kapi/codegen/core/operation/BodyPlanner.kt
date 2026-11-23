@@ -59,7 +59,7 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         val declared = listOfNotNull(operation.requestBody)
         val bodies = declared.mapNotNull { referable -> scope.document.resolve(referable) }
         val plans = bodies.flatMap { body ->
-            val ranked = body.content.entries.sortedBy { (type, _) -> kindOf(type).ordinal }
+            val ranked = scope.contentOf(body.content).entries.sortedBy { (type, _) -> kindOf(type).ordinal }
             ranked.take(1).map { (type, media) -> plan(context + "Request", body, baseOf(type) to media) }
         }
         val body = plans.firstOrNull() ?: return null
