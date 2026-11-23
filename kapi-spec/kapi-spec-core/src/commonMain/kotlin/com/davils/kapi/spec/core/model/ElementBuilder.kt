@@ -25,21 +25,52 @@ import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.dsl.ValidatingBuilder
 import com.davils.kore.core.validation.Validatable
 
+/**
+ * The builder of an [Element]: collects its fields and its extensions and validates them when the element is built.
+ *
+ * A builder is not safe to share between threads; the element it builds is.
+ *
+ * @param T the type of the element.
+ * @since 1.0.0
+ */
 @DavilsDsl
 public abstract class ElementBuilder<T : Validatable> protected constructor() :
     ValidatingBuilder<T>() {
     private val declared: MutableMap<ExtensionName, Value> = linkedMapOf()
 
+    /**
+     * Where the element was written; set by the readers of kapi.
+     *
+     * @since 1.0.0
+     */
     @DavilsInternal
     public var location: Location? = null
 
+    /**
+     * The extensions declared so far.
+     *
+     * @since 1.0.0
+     */
     @DavilsInternal
     public val extensions: Extensions get() = Extensions(declared)
 
+    /**
+     * Declares the extension [name] with [value]; a second declaration of the same name replaces the first.
+     *
+     * @param name the name of the extension.
+     * @param value its value.
+     * @since 1.0.0
+     */
     public fun extension(name: ExtensionName, value: Value) {
         declared[name] = value
     }
 
+    /**
+     * Declares every extension of [extensions].
+     *
+     * @param extensions the extensions to take over.
+     * @since 1.0.0
+     */
     @DavilsInternal
     public fun adopt(extensions: Extensions) {
         declared.putAll(extensions.entries)

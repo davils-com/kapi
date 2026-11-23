@@ -30,13 +30,13 @@ import io.kotest.matchers.string.shouldStartWith
 
 private const val TEXT: String = "openapi: 3.1.0\ninof: {}\n"
 
-private val range: TextRange = TextRange.of(15, 4)
+private val range: TextRange = TextRange.of(start = 15, length = 4)
 
 private val location: Location = Location(
     document = DocumentUri("file:///api/petstore.yaml"),
     pointer = JsonPointer.of("inof"),
     range = range,
-    position = TextPosition(1, 0),
+    position = TextPosition(line = 1, column = 0),
 )
 
 private val unknown: Diagnostic = Diagnostic(

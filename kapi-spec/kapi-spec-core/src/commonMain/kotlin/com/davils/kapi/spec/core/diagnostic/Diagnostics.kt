@@ -16,8 +16,28 @@
 
 package com.davils.kapi.spec.core.diagnostic
 
+/**
+ * Renders this diagnostic as its line, followed by the line of the source with the finding underlined when it has a
+ * snippet.
+ *
+ * Text that came from a document is escaped, so the rendering is safe to print to a terminal or a log.
+ *
+ * @return the rendered diagnostic, one or three lines without a final line break.
+ * @since 1.0.0
+ */
 public fun Diagnostic.render(): String = DiagnosticRendering.block(this)
 
-public fun Iterable<Diagnostic>.render(): String = joinToString("\n") { it.render() }
+/**
+ * Renders these diagnostics one after the other, each as [Diagnostic.render] does.
+ *
+ * @return the rendered diagnostics separated by line breaks.
+ * @since 1.0.0
+ */
+public fun Iterable<Diagnostic>.render(): String = joinToString("\n") { diagnostic -> diagnostic.render() }
 
-public val Iterable<Diagnostic>.hasErrors: Boolean get() = any { it.isError }
+/**
+ * Whether one of these diagnostics is an error.
+ *
+ * @since 1.0.0
+ */
+public val Iterable<Diagnostic>.hasErrors: Boolean get() = any { diagnostic -> diagnostic.isError }

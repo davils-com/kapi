@@ -16,11 +16,51 @@
 
 package com.davils.kapi.spec.core.value
 
+/**
+ * The kinds of values a document can hold, the six kinds of JSON.
+ *
+ * @since 1.0.0
+ */
 public enum class ValueKind {
+    /**
+     * `null`.
+     *
+     * @since 1.0.0
+     */
     Null,
+
+    /**
+     * `true` or `false`.
+     *
+     * @since 1.0.0
+     */
     Flag,
+
+    /**
+     * A number.
+     *
+     * @since 1.0.0
+     */
     Number,
+
+    /**
+     * A string.
+     *
+     * @since 1.0.0
+     */
     Text,
+
+    /**
+     * An array.
+     *
+     * @since 1.0.0
+     */
     Sequence,
+
+    /**
+     * An object.
+     *
+     * @since 1.0.0
+     */
     Mapping,
 }

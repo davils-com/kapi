@@ -16,8 +16,8 @@
 
 package com.davils.kapi.spec.core.model
 
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 
 /**
  * The place a reference leads to: a document and a JSON Pointer into it.

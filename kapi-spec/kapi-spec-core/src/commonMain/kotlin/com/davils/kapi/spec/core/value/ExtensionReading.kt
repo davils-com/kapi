@@ -33,6 +33,7 @@ public sealed interface ExtensionReading<out T> {
     /**
      * The extension holds a value of the type.
      *
+     * @param T the type of the value.
      * @property value the value.
      * @since 1.0.0
      */

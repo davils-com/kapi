@@ -27,6 +27,7 @@ public sealed interface Referable<out T : Element> {
     /**
      * An element written inline.
      *
+     * @param T the type of the element.
      * @property value the element.
      * @since 1.0.0
      */

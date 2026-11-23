@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.diagnostic
 
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.text.SafeText
 import com.davils.kore.core.text.render
 import com.davils.kore.core.validation.violation.Severity
+
+private const val MAXIMUM_MESSAGE_LENGTH: Int = 1024
 
 internal object DiagnosticRendering {
     private val labels: Map<Severity, String> = mapOf(
@@ -27,7 +33,8 @@ internal object DiagnosticRendering {
 
     fun line(diagnostic: Diagnostic): String {
         val label = labels.getValue(diagnostic.severity)
-        val head = "$label: [${diagnostic.code}] ${diagnostic.message}"
+        val message = SafeText.text(diagnostic.message, MAXIMUM_MESSAGE_LENGTH)
+        val head = "$label: [${diagnostic.code}] $message"
         val location = diagnostic.location ?: return head
         return "$location: $head"
     }

@@ -14,15 +14,44 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.value
 
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.text.SafeText
 
+/**
+ * A value written in a document, such as an example, a default, an enum entry or the value of an extension, kept as
+ * it was written: numbers stay exact and mappings keep the order of their keys.
+ *
+ * Values compare by content and never by their [location]. They are immutable and safe to share between threads.
+ * [toString] shows text through [SafeText], so a value from an untrusted document is safe to show.
+ *
+ * @since 1.0.0
+ */
 public sealed interface Value {
+    /**
+     * The kind of the value.
+     *
+     * @since 1.0.0
+     */
     public val kind: ValueKind
 
+    /**
+     * Where the value was written, or `null` for a value built in code.
+     *
+     * @since 1.0.0
+     */
     public val location: Location?
 
+    /**
+     * `null`.
+     *
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Null(override val location: Location? = null) : Value {
         override val kind: ValueKind get() = ValueKind.Null
 
@@ -33,6 +62,13 @@ public sealed interface Value {
         override fun toString(): String = "null"
     }
 
+    /**
+     * `true` or `false`.
+     *
+     * @property isTrue whether the value is `true`.
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Flag(
         public val isTrue: Boolean,
         override val location: Location? = null,
@@ -46,6 +82,13 @@ public sealed interface Value {
         override fun toString(): String = isTrue.toString()
     }
 
+    /**
+     * A number, kept exactly.
+     *
+     * @property value the number.
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Number(
         public val value: NumberValue,
         override val location: Location? = null,
@@ -59,6 +102,13 @@ public sealed interface Value {
         override fun toString(): String = value.toString()
     }
 
+    /**
+     * A string.
+     *
+     * @property value the text.
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Text(
         public val value: String,
         override val location: Location? = null,
@@ -69,13 +119,25 @@ public sealed interface Value {
 
         override fun hashCode(): Int = value.hashCode()
 
-        override fun toString(): String = "\"$value\""
+        override fun toString(): String = SafeText.quoted(value)
     }
 
+    /**
+     * An array.
+     *
+     * @param items the items, which are copied.
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Sequence(
         items: List<Value>,
         override val location: Location? = null,
     ) : Value {
+        /**
+         * The items in their order.
+         *
+         * @since 1.0.0
+         */
         public val items: List<Value> = items.toList()
 
         override val kind: ValueKind get() = ValueKind.Sequence
@@ -87,20 +149,41 @@ public sealed interface Value {
         override fun toString(): String = items.toString()
     }
 
+    /**
+     * An object.
+     *
+     * @param entries the entries, which are copied in their order.
+     * @property location where the value was written, or `null`.
+     * @since 1.0.0
+     */
     public class Mapping(
         entries: Map<String, Value>,
         override val location: Location? = null,
     ) : Value {
+        /**
+         * The entries in the order of their keys in the document.
+         *
+         * @since 1.0.0
+         */
         public val entries: Map<String, Value> = entries.toMap()
 
         override val kind: ValueKind get() = ValueKind.Mapping
 
+        /**
+         * Returns the value of [key].
+         *
+         * @param key the key.
+         * @return the value, or `null` if the object has no such key.
+         * @since 1.0.0
+         */
         public operator fun get(key: String): Value? = entries[key]
 
         override fun equals(other: Any?): Boolean = other is Mapping && entries == other.entries
 
         override fun hashCode(): Int = entries.hashCode()
 
-        override fun toString(): String = entries.toString()
+        override fun toString(): String = entries.entries.joinToString(prefix = "{", postfix = "}") { (key, value) ->
+            "${SafeText.quoted(key)}=$value"
+        }
     }
 }

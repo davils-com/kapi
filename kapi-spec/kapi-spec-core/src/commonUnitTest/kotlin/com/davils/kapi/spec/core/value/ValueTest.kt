@@ -107,7 +107,7 @@ class ValueTest : FunSpec({
             mapping shouldBe Value.Mapping(mapOf("b" to Value.Flag(true)))
             mapping.hashCode() shouldBe mapping.entries.hashCode()
             mapping shouldNotBe Value.Mapping(emptyMap())
-            mapping.toString() shouldBe "{b=true}"
+            mapping.toString() shouldBe "{\"b\"=true}"
         }
     }
 })

@@ -26,15 +26,49 @@ import com.davils.kore.core.validation.ValidationScope
 
 private const val BUILT: String = "built"
 
+private const val ELEMENT: String = "Element"
+
+/**
+ * An object of an API document, such as an operation, a schema or a server, built by its [ElementBuilder].
+ *
+ * Elements are immutable and safe to share between threads. Two elements are equal when they are of the same class
+ * and hold the same content and extensions; where they were written does not count. [toString] names only the class
+ * and the location, never content of the document.
+ *
+ * @param builder the builder whose state the element takes over.
+ * @since 1.0.0
+ */
 public abstract class Element protected constructor(builder: ElementBuilder<*>) : Validatable {
+    /**
+     * Where the element was written, or `null` for an element built in code.
+     *
+     * @since 1.0.0
+     */
     public val location: Location? = builder.location
 
+    /**
+     * The specification extensions of the element.
+     *
+     * @since 1.0.0
+     */
     public val extensions: Extensions = builder.extensions
 
+    /**
+     * The content of the element that [equals] and [hashCode] compare, in a fixed order.
+     *
+     * @since 1.0.0
+     */
     protected abstract val identity: List<Any?>
 
     internal val children: List<Element> get() = ElementWalk.childrenOf(identity)
 
+    /**
+     * Returns this element and every element it holds, inline or in collections, depth first in the order of their
+     * fields; references are not followed.
+     *
+     * @return the elements, starting with this one.
+     * @since 1.0.0
+     */
     public fun walk(): Sequence<Element> = ElementWalk.from(this)
 
     override fun ValidationScope.validate(): Unit = Unit
@@ -46,7 +80,8 @@ public abstract class Element protected constructor(builder: ElementBuilder<*>) 
 
     final override fun toString(): String {
         val place = location ?: BUILT
-        return "${this::class.simpleName}($place)"
+        val name = this::class.simpleName ?: ELEMENT
+        return "$name($place)"
     }
 
     private fun sameContent(other: Element): Boolean = identity == other.identity && extensions == other.extensions

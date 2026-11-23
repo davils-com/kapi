@@ -16,26 +16,95 @@
 
 package com.davils.kapi.spec.core.value
 
+/**
+ * The specification extensions of an element, the fields whose names start with `x-`, in the order they were written.
+ *
+ * The typed readers, such as [flag] and [text], tell an absent extension from one that holds a value of another kind,
+ * so a tool can report a mistyped extension instead of ignoring it. Extensions are immutable and safe to share
+ * between threads.
+ *
+ * @param entries the extensions and their values, which are copied.
+ * @since 1.0.0
+ */
 public class Extensions(entries: Map<ExtensionName, Value>) {
+    /**
+     * The extensions and their values.
+     *
+     * @since 1.0.0
+     */
     public val entries: Map<ExtensionName, Value> = entries.toMap()
 
+    /**
+     * The names of the extensions.
+     *
+     * @since 1.0.0
+     */
     public val names: Set<ExtensionName> get() = entries.keys
 
+    /**
+     * Whether the element has no extension.
+     *
+     * @since 1.0.0
+     */
     public val isEmpty: Boolean get() = entries.isEmpty()
 
+    /**
+     * Returns the value of the extension [name].
+     *
+     * @param name the name of the extension.
+     * @return its value, or `null` if the element has no such extension.
+     * @since 1.0.0
+     */
     public operator fun get(name: ExtensionName): Value? = entries[name]
 
+    /**
+     * Reads the extension [name] as `true` or `false`.
+     *
+     * @param name the name of the extension.
+     * @return the flag, [ExtensionReading.Absent], or [ExtensionReading.Mistyped] for a value of another kind.
+     * @since 1.0.0
+     */
     public fun flag(name: ExtensionName): ExtensionReading<Boolean> =
         read(name, ValueKind.Flag) { value -> (value as? Value.Flag)?.isTrue }
 
+    /**
+     * Reads the extension [name] as text.
+     *
+     * @param name the name of the extension.
+     * @return the text, [ExtensionReading.Absent], or [ExtensionReading.Mistyped] for a value of another kind.
+     * @since 1.0.0
+     */
     public fun text(name: ExtensionName): ExtensionReading<String> =
         read(name, ValueKind.Text) { value -> (value as? Value.Text)?.value }
 
+    /**
+     * Reads the extension [name] as a number.
+     *
+     * @param name the name of the extension.
+     * @return the number, [ExtensionReading.Absent], or [ExtensionReading.Mistyped] for a value of another kind.
+     * @since 1.0.0
+     */
     public fun number(name: ExtensionName): ExtensionReading<NumberValue> =
         read(name, ValueKind.Number) { value -> (value as? Value.Number)?.value }
 
+    /**
+     * Reads the extension [name] as a list of texts.
+     *
+     * @param name the name of the extension.
+     * @return the texts, [ExtensionReading.Absent], or [ExtensionReading.Mistyped] for a value that is no array of
+     * strings only.
+     * @since 1.0.0
+     */
     public fun texts(name: ExtensionName): ExtensionReading<List<String>> = read(name, ValueKind.Sequence, ::textsOf)
 
+    /**
+     * Reads the extension [name] as an object.
+     *
+     * @param name the name of the extension.
+     * @return the entries of the object, [ExtensionReading.Absent], or [ExtensionReading.Mistyped] for a value of
+     * another kind.
+     * @since 1.0.0
+     */
     public fun mapping(name: ExtensionName): ExtensionReading<Map<String, Value>> =
         read(name, ValueKind.Mapping) { value -> (value as? Value.Mapping)?.entries }
 
@@ -61,7 +130,17 @@ public class Extensions(entries: Map<ExtensionName, Value>) {
         return texts.takeIf { it.size == sequence.items.size }
     }
 
+    /**
+     * Holds the empty set of extensions.
+     *
+     * @since 1.0.0
+     */
     public companion object {
+        /**
+         * No extensions.
+         *
+         * @since 1.0.0
+         */
         public val EMPTY: Extensions = Extensions(emptyMap())
     }
 }

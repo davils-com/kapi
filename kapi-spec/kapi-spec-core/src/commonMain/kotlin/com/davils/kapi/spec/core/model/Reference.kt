@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.model
 
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.text.SafeText
 
+/**
+ * A `$ref` as it was written, with the place it leads to.
+ *
+ * @property text the reference as it was written, such as `#/components/schemas/Pet`.
+ * @property target the document and the JSON Pointer the reference leads to.
+ * @property summary the `summary` written beside the reference, which overrides the one of the target where the
+ * specification allows it.
+ * @property description the `description` written beside the reference, likewise.
+ * @property location where the reference was written, or `null` for one built in code.
+ * @since 1.0.0
+ */
 public class Reference(
     public val text: String,
     public val target: Target,
@@ -31,5 +46,5 @@ public class Reference(
 
     override fun hashCode(): Int = identity.hashCode()
 
-    override fun toString(): String = "Reference($text -> $target)"
+    override fun toString(): String = "Reference(${SafeText.quoted(text)} -> $target)"
 }

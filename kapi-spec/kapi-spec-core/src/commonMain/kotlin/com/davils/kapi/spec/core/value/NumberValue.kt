@@ -82,8 +82,8 @@ public class NumberValue private constructor(
      * @since 1.0.0
      */
     public fun toLongOrNull(): Long? {
-        val fits = isIntegral && magnitude <= LONG_DIGITS
-        if (!fits) return null
+        val isFitting = isIntegral && magnitude <= LONG_DIGITS
+        if (!isFitting) return null
         val minus = "-".repeat(-sign.coerceAtMost(0))
         return (minus + digits.ifEmpty { "0" } + "0".repeat(power)).toLongOrNull()
     }
@@ -108,7 +108,7 @@ public class NumberValue private constructor(
     private fun compareMagnitude(other: NumberValue): Int {
         val positions = magnitude.compareTo(other.magnitude)
         if (positions != 0) return positions
-        val length = maxOf(digits.length, other.digits.length)
+        val length = maxOf(a = digits.length, b = other.digits.length)
         return digits.padEnd(length, '0').compareTo(other.digits.padEnd(length, '0'))
     }
 
@@ -163,9 +163,14 @@ public class NumberValue private constructor(
             val significand = all.trimEnd('0')
             val power = exponent - fraction.length + (all.length - significand.length)
             val negative = (-1).takeIf { isNegative } ?: 1
-            val value = NumberValue(literal, negative * significand.length.coerceAtMost(1), significand, power)
-            val inRange = significand.isEmpty() || value.magnitude in -MAXIMUM_EXPONENT..MAXIMUM_EXPONENT
-            return value.takeIf { inRange }
+            val value = NumberValue(
+                literal = literal,
+                sign = negative * significand.length.coerceAtMost(1),
+                digits = significand,
+                power = power,
+            )
+            val isInRange = significand.isEmpty() || value.magnitude in -MAXIMUM_EXPONENT..MAXIMUM_EXPONENT
+            return value.takeIf { isInRange }
         }
     }
 }

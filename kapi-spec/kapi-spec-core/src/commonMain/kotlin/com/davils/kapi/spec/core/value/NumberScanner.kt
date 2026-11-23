@@ -25,14 +25,21 @@ internal class NumberScanner(private val text: String) {
         val isNegative = accept('-')
         val parts = parts() ?: return null
         val (integer, fraction, exponent) = parts
-        return NumberValue.of(text, isNegative, integer, fraction, exponent).takeIf { index == text.length }
+        val value = NumberValue.of(
+            literal = text,
+            isNegative = isNegative,
+            integer = integer,
+            fraction = fraction,
+            exponent = exponent,
+        )
+        return value.takeIf { index == text.length }
     }
 
     private fun parts(): Triple<String, String, Int>? {
         val integer = integer()
         val fraction = integer?.let { fraction() }
         val exponent = fraction?.let { exponent() }
-        return exponent?.let { Triple(integer, fraction, exponent) }
+        return exponent?.let { Triple(first = integer, second = fraction, third = exponent) }
     }
 
     private fun integer(): String? {
@@ -55,7 +62,8 @@ internal class NumberScanner(private val text: String) {
         val digits = digits()
         val significant = digits.trimStart('0')
         val isBounded = digits.isNotEmpty() && significant.length <= MAXIMUM_EXPONENT_DIGITS
-        val value = significant.ifEmpty { "0" }.takeIf { isBounded }?.toInt()
+        val written = significant.ifEmpty { "0" }
+        val value = written.takeIf { isBounded }?.toInt()
         val factor = (-1).takeIf { isNegative } ?: 1
         return value?.times(factor)
     }
@@ -63,13 +71,13 @@ internal class NumberScanner(private val text: String) {
     private fun digits(): String {
         val start = index
         while (index < text.length && text[index].isAsciiDigit()) index++
-        return text.substring(start, index)
+        return text.substring(startIndex = start, endIndex = index)
     }
 
     private fun accept(char: Char): Boolean {
-        val matches = index < text.length && text[index] == char
-        if (matches) index++
-        return matches
+        val isMatch = index < text.length && text[index] == char
+        if (isMatch) index++
+        return isMatch
     }
 
     private fun Char.isAsciiDigit(): Boolean = this in '0'..'9'

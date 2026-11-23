@@ -37,6 +37,7 @@ public sealed interface Source {
      * Its text is shown nowhere: [toString] names only its URI and its length.
      *
      * @property text the text of the document.
+     * @property uri the URI of the document; [DocumentUri.MEMORY] when it has no place of its own.
      * @since 1.0.0
      */
     public class Text(
@@ -53,6 +54,7 @@ public sealed interface Source {
     /**
      * A document the [Resolver] of the reading loads from its URI.
      *
+     * @property uri the URI of the document.
      * @since 1.0.0
      */
     public class Located(override val uri: DocumentUri) : Source {

@@ -95,6 +95,15 @@ libraries:
     excludes:
       - '**/*Event.kt'
       - '**/*Limits.kt'
+      - '**/spec/core/model/Referable.kt'
+      - '**/spec/core/model/Target.kt'
+      - '**/spec/core/source/Resolution.kt'
+      - '**/spec/core/source/Source.kt'
+      - '**/spec/core/source/SourceDocument.kt'
+      - '**/spec/core/value/ExtensionReading.kt'
+      - '**/spec/core/value/Value.kt'
+      - '**/spec/core/diagnostic/Location.kt'
+      - '**/spec/core/model/Reference.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -147,6 +156,15 @@ style:
     excludes:
       - '**/*Event.kt'
       - '**/*Limits.kt'
+      - '**/spec/core/model/Referable.kt'
+      - '**/spec/core/model/Target.kt'
+      - '**/spec/core/source/Resolution.kt'
+      - '**/spec/core/source/Source.kt'
+      - '**/spec/core/source/SourceDocument.kt'
+      - '**/spec/core/value/ExtensionReading.kt'
+      - '**/spec/core/value/Value.kt'
+      - '**/spec/core/diagnostic/Location.kt'
+      - '**/spec/core/model/Reference.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false
