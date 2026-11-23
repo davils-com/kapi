@@ -46,6 +46,7 @@ internal class DocumentWriter(family: VersionFamily) {
     fun document(document: Document): YamlNode {
         val out = Out()
         out.text(Keys.OPENAPI, document.version.literal)
+        out.text(Keys.SELF, document.self?.takeIf { isCurrent })
         out.node(Keys.INFO, info.info(document.info))
         out.text(Keys.JSON_SCHEMA_DIALECT, document.jsonSchemaDialect)
         out.list(Keys.SERVERS, document.servers, info::server)

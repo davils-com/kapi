@@ -36,6 +36,13 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
 
     public var version: Version = Version.Latest
 
+    /**
+     * The URI reference the document names itself by, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var self: String? = null
+
     public var info: Info = InfoBuilder().build()
 
     public var jsonSchemaDialect: String? = null

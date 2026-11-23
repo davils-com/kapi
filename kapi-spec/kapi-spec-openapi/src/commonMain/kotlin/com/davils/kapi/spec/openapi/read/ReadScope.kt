@@ -16,6 +16,7 @@
 
 package com.davils.kapi.spec.openapi.read
 
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.openapi.ReaderConfiguration
 import com.davils.kapi.spec.openapi.VersionFamily
@@ -30,6 +31,26 @@ internal class ReadScope(
     private val findings: Findings,
 ) {
     val references: ReferenceQueue = ReferenceQueue()
+
+    private val adopted: MutableSet<DocumentUri> = linkedSetOf()
+
+    private val bases: MutableMap<DocumentUri, DocumentUri> = linkedMapOf()
+
+    private val retrievals: MutableMap<DocumentUri, DocumentUri> = linkedMapOf()
+
+    fun isAdopted(retrieval: DocumentUri): Boolean = retrieval in adopted
+
+    fun adopt(retrieval: DocumentUri, self: DocumentUri?) {
+        adopted += retrieval
+        self?.let { base ->
+            bases[retrieval] = base
+            retrievals.getOrPut(base) { retrieval }
+        }
+    }
+
+    fun baseOf(retrieval: DocumentUri): DocumentUri = bases[retrieval] ?: retrieval
+
+    fun retrievalOf(uri: DocumentUri): DocumentUri = retrievals[uri] ?: uri
 
     fun report(code: ViolationCode, message: String, location: Location, snippet: TextSnippet?) {
         findings.report(code = code, message = message, location = location, snippet = snippet)

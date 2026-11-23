@@ -21,15 +21,22 @@ import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.read.component.ComponentsReader
 import com.davils.kapi.spec.openapi.read.info.InfoReader
 import com.davils.kapi.spec.openapi.read.path.PathReader
+import com.davils.kapi.spec.openapi.read.reference.SelfBase
 import com.davils.kapi.spec.openapi.read.security.SecurityReader
 import com.davils.kapi.spec.openapi.read.server.ServerReader
 import com.davils.kapi.spec.openapi.read.shape.Keys
 import com.davils.kapi.spec.openapi.read.shape.Shapes
 
 internal object DocumentReader {
-    fun fill(cursor: Cursor, version: Version): DocumentBuilder =
+    fun fill(cursor: Cursor, version: Version): DocumentBuilder {
+        SelfBase.adopt(cursor)
+        return content(cursor, version)
+    }
+
+    private fun content(cursor: Cursor, version: Version): DocumentBuilder =
         cursor.fill(Shapes.document, DocumentBuilder()) { fields ->
             this.version = version
+            self = fields.text(Keys.SELF)
             fields.cursor(Keys.INFO)?.let { declared -> info = InfoReader.info(declared) }
             jsonSchemaDialect = fields.text(Keys.JSON_SCHEMA_DIALECT)
             servers.addAll(fields.items(Keys.SERVERS).map(ServerReader::server))

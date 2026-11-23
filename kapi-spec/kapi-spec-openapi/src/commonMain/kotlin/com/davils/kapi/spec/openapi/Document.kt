@@ -31,6 +31,18 @@ public class Document internal constructor(builder: DocumentBuilder) :
     Element(builder) {
     public val version: Version = builder.version
 
+    /**
+     * The `$self` of the document, the URI reference it names itself by and its relative references resolve
+     * against; `null` when the document leaves it out and before OpenAPI 3.2.
+     *
+     * A reading resolves the references of the document against it, relative to the address the document was read
+     * from, and treats a reference to it as a reference to the document itself; every other document a reference
+     * leads to is still loaded through the resolver and the reference policy, so `$self` widens no confinement.
+     *
+     * @since 1.0.0
+     */
+    public val self: String? = builder.self
+
     public val info: Info = builder.info
 
     public val jsonSchemaDialect: String? = builder.jsonSchemaDialect
@@ -54,6 +66,7 @@ public class Document internal constructor(builder: DocumentBuilder) :
     override val identity: List<Any?>
         get() = listOf(
             version,
+            self,
             info,
             jsonSchemaDialect,
             servers,

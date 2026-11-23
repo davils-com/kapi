@@ -257,6 +257,14 @@ public object DiagnosticCodes {
      */
     public val SCHEMA_XML_DEPRECATED: ViolationCode = code("schema.xml-deprecated")
 
+    /**
+     * The $self of a document is no URI reference without a fragment, or no absolute URI follows from it and the
+     * address the document was read from; its references then resolve against that address.
+     *
+     * @since 1.0.0
+     */
+    public val DOCUMENT_SELF: ViolationCode = code("document.self")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -343,6 +351,7 @@ public object DiagnosticCodes {
         MEDIA_TYPE_ENCODING,
         SCHEMA_XML_NODE_TYPE,
         SCHEMA_XML_DEPRECATED,
+        DOCUMENT_SELF,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

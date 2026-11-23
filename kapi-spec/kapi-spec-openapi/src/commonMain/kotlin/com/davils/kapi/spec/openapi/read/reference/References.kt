@@ -60,11 +60,14 @@ internal object References {
     )
 
     private fun target(written: Cursor, text: String): Pair<String, Target>? {
+        val scope = written.scope
+        val base = scope.baseOf(written.document.uri)
         val uri = UriResolution.parse(text)
-        val target = uri?.let { parsed -> UriResolution.target(written.document.uri, parsed) }
+        val resolved = uri?.let { parsed -> UriResolution.target(base, parsed) }
+        val target = resolved?.let { found -> Target(scope.retrievalOf(found.document), found.pointer) }
         if (target == null) {
             val message = "'$text' names no document and JSON pointer the reader can follow"
-            written.report(codeOf(written.document.uri, uri), message)
+            written.report(codeOf(base, uri), message)
         }
         return target?.let { found -> text to found }
     }

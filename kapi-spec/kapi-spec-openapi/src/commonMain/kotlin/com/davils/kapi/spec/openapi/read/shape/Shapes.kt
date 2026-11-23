@@ -23,6 +23,7 @@ internal object Shapes {
         subject = "The document",
         fields = listOf(
             FieldRule(Keys.OPENAPI, FieldKind.Value, isRequired = true),
+            FieldRule(Keys.SELF, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.INFO, FieldKind.Mapping, isRequired = true),
             FieldRule(Keys.SERVERS, FieldKind.Sequence),
             FieldRule(Keys.PATHS, FieldKind.Mapping),
