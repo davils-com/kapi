@@ -25,7 +25,6 @@ import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kapi.spec.openapi.load.fixture.Loading
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.TextPosition
 import com.davils.kore.core.text.TextRange

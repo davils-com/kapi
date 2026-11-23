@@ -23,7 +23,6 @@ import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.spec.core.value.Value
-import com.davils.kapi.spec.openapi.model.fixture.elementBuilders
 import com.davils.kapi.spec.openapi.model.info.ContactBuilder
 import com.davils.kapi.spec.openapi.model.info.LicenseBuilder
 import com.davils.kore.core.annotation.DavilsInternal

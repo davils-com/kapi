@@ -21,7 +21,6 @@ import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.yamlMapping
 import com.davils.kaml.core.node.yamlScalar
 import com.davils.kaml.core.node.yamlSequence
-import com.davils.kapi.spec.openapi.upgrade.fixture.nodeOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull

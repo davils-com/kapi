@@ -18,8 +18,6 @@ package com.davils.kapi.spec.openapi.overlay
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.openapi.overlay.fixture.actionsOf
-import com.davils.kapi.spec.openapi.overlay.fixture.overlaid
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
