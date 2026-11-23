@@ -115,7 +115,9 @@ public object Links {
         val target = span?.takeIf { found -> UriReference.parseOrNull(found) != null }
         val isClosed = isOpen && target != null && scanner.consume(CLOSE)
         val parameters = parameters(scanner, limits)
-        return target?.takeIf { isClosed }?.let { found -> parameters?.let { values -> LinkValue(found, values) } }
+        val closedTarget = target?.takeIf { isClosed }
+        if (closedTarget == null || parameters == null) return null
+        return LinkValue(closedTarget, parameters)
     }
 
     private fun parameters(scanner: FieldScanner, limits: FieldLimits): List<Pair<String, String>>? {
