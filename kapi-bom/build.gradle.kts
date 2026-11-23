@@ -29,6 +29,7 @@ dependencies {
         api(project(":kapi-spec:kapi-spec-core"))
         api(project(":kapi-spec:kapi-spec-schema"))
         api(project(":kapi-spec:kapi-spec-openapi"))
+        api(project(":kapi-spec:kapi-spec-asyncapi"))
         api(project(":kapi-runtime:kapi-runtime-core"))
         api(project(":kapi-runtime:kapi-runtime-client"))
         api(project(":kapi-runtime:kapi-runtime-server"))

@@ -10,6 +10,8 @@
 /kapi-spec/kapi-spec-schema/src/jvmMain/java/@davils-com/maintainers
 /kapi-spec/kapi-spec-openapi/api/           @davils-com/maintainers
 /kapi-spec/kapi-spec-openapi/src/jvmMain/java/@davils-com/maintainers
+/kapi-spec/kapi-spec-asyncapi/api/          @davils-com/maintainers
+/kapi-spec/kapi-spec-asyncapi/src/jvmMain/java/@davils-com/maintainers
 /kapi-runtime/kapi-runtime-core/api/        @davils-com/maintainers
 /kapi-runtime/kapi-runtime-core/src/jvmMain/java/@davils-com/maintainers
 /kapi-runtime/kapi-runtime-client/api/      @davils-com/maintainers

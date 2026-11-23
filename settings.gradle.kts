@@ -128,6 +128,7 @@ rootProject.name = "kapi"
 include(":kapi-spec:kapi-spec-core")
 include(":kapi-spec:kapi-spec-schema")
 include(":kapi-spec:kapi-spec-openapi")
+include(":kapi-spec:kapi-spec-asyncapi")
 include(":kapi-runtime:kapi-runtime-core")
 include(":kapi-runtime:kapi-runtime-client")
 include(":kapi-runtime:kapi-runtime-server")
