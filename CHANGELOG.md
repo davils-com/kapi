@@ -63,5 +63,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   it afterwards throws an `IllegalStateException` instead of losing the change silently.
 - **The specification core** keeps maps keyed by document input in Kore's balanced trees instead of hash maps, which
   Wasm cannot defend against colliding keys: `Value.Mapping`, `Value.Sequence` and `Extensions` hold immutable copies
-  that a cast cannot change, `KeyedMap` and `frozen()` of `com.davils.kapi.spec.core.collection` are `@DavilsInternal`
+  that a cast cannot change, `KeyedMap`, `frozen()`, `frozenSet()` and the keyed counterparts of `toMap`, `associate`,
+  `associateBy`, `groupBy`, `distinctBy` and `filter` of `com.davils.kapi.spec.core.collection` are `@DavilsInternal`
   API for the other modules, and `ExtensionName`, `DocumentUri` and `Target` are `Comparable`.

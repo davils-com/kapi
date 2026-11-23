@@ -52,3 +52,20 @@ public fun <T> Collection<T>.frozen(): List<T> {
     if (this is FrozenList<T>) return this
     return FrozenList(this)
 }
+
+/**
+ * Returns an immutable set of the distinct items of this collection in their order of iteration.
+ *
+ * The set finds an item through a balanced tree in `O(log n)` whatever the items are. It cannot be changed through a
+ * cast: on the JVM every mutator throws [UnsupportedOperationException], on Wasm the cast fails. A set this function
+ * returned is returned as it is. The set is safe to share between threads.
+ *
+ * @param T the type of the items.
+ * @return the immutable set.
+ * @since 1.0.0
+ */
+@DavilsInternal
+public fun <T : Comparable<T>> Iterable<T>.frozenSet(): Set<T> {
+    if (this is FrozenSet<T>) return this
+    return FrozenSet(this)
+}

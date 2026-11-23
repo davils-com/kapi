@@ -115,4 +115,32 @@ class FrozenTest : FunSpec({
             frozen shouldBe listOf("a")
         }
     }
+
+    context("a frozen set") {
+        test("keeps the distinct items of its source in their order") {
+            val frozen = listOf("b", "a", "b").frozenSet()
+
+            frozen.toList() shouldBe listOf("b", "a")
+            ("a" in frozen) shouldBe true
+            ("c" in frozen) shouldBe false
+            frozen shouldBe setOf("a", "b")
+            frozen.frozenSet() shouldBeSameInstanceAs frozen
+        }
+
+        test("cannot be changed through a cast or its iterator") {
+            val frozen = listOf("a").frozenSet()
+
+            shouldThrowAny { (frozen as MutableSet<String>).add("b") }
+            shouldThrowAny { (frozen.iterator() as MutableIterator<String>).remove() }
+            frozen shouldBe setOf("a")
+        }
+
+        test("withstands items whose hash codes collide") {
+            val keys = collidingKeys(COLLIDING)
+            val frozen = (keys + keys).frozenSet()
+
+            frozen.size shouldBe COLLIDING
+            keys.all { key -> key in frozen } shouldBe true
+        }
+    }
 })

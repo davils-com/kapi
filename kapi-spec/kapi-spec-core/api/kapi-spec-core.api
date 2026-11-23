@@ -1,6 +1,7 @@
 public final class com/davils/kapi/spec/core/collection/FrozenKt {
 	public static final fun frozen (Ljava/util/Collection;)Ljava/util/List;
 	public static final fun frozen (Ljava/util/Map;)Ljava/util/Map;
+	public static final fun frozenSet (Ljava/lang/Iterable;)Ljava/util/Set;
 }
 
 public final class com/davils/kapi/spec/core/collection/KeyedMap : kotlin/collections/AbstractMutableMap {
@@ -20,6 +21,15 @@ public final class com/davils/kapi/spec/core/collection/KeyedMap : kotlin/collec
 	public fun remove (Ljava/lang/Comparable;Ljava/lang/Object;)Z
 	public final fun remove (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+}
+
+public final class com/davils/kapi/spec/core/collection/KeyingKt {
+	public static final fun associateByKeyed (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun associateKeyed (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun distinctByKeyed (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun filterKeyed (Ljava/util/Map;Lkotlin/jvm/functions/Function2;)Ljava/util/Map;
+	public static final fun groupByKeyed (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
+	public static final fun toKeyedMap (Ljava/lang/Iterable;)Ljava/util/Map;
 }
 
 public final class com/davils/kapi/spec/core/diagnostic/Diagnostic {
