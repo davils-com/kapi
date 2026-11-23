@@ -21,20 +21,58 @@ import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 
+/**
+ * An encoding object: how one property or item of a `multipart` or `application/x-www-form-urlencoded` body is
+ * serialized.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class Encoding internal constructor(builder: EncodingBuilder) :
     Element(builder) {
+    /**
+     * The `contentType` of the part, a media type or a comma-separated list of them such as `image/png, image/jpeg`;
+     * `null` when the document leaves it out, so that the default for the type of the property applies.
+     *
+     * @since 1.0.0
+     */
     public val contentType: String? = builder.contentType
 
+    /**
+     * The `headers` of a `multipart` part by name, inline or by reference; empty when the encoding declares none.
+     * OpenAPI ignores a `Content-Type` header here, which [contentType] describes.
+     *
+     * @since 1.0.0
+     */
     public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
 
+    /**
+     * The `style` the value is serialized in, as for a query parameter; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val style: ParameterStyle? = builder.style
 
+    /**
+     * Whether arrays and objects are `explode`d into a pair per item or property; `null` when the document leaves it
+     * out, so that the default of the style applies, which is `true` for [ParameterStyle.Form] and `false` otherwise.
+     *
+     * @since 1.0.0
+     */
     public val isExploded: Boolean? = builder.isExploded
 
+    /**
+     * Whether the value may hold the reserved characters of RFC 3986 unencoded, from `allowReserved`; `false` when the
+     * document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val isReservedAllowed: Boolean = builder.isReservedAllowed
 
     /**
-     * The encodings of the properties of a nested multipart part, by name; empty before OpenAPI 3.2.
+     * The `encoding` of the properties of a nested `multipart` part, by name; empty when the document declares none
+     * and before OpenAPI 3.2.
      *
      * A reading reports it beside [prefixEncoding] or [itemEncoding].
      *
@@ -43,14 +81,16 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
     public val encoding: Map<String, Encoding> = builder.encoding.toMap()
 
     /**
-     * The encodings of the leading items of a nested part, by position; empty before OpenAPI 3.2.
+     * The `prefixEncoding`: the encodings of the leading items of a nested part, by position; empty when the
+     * document declares none and before OpenAPI 3.2.
      *
      * @since 1.0.0
      */
     public val prefixEncoding: List<Encoding> = builder.prefixEncoding.toList()
 
     /**
-     * The encoding of every item of a nested part that [prefixEncoding] does not cover; `null` before OpenAPI 3.2.
+     * The `itemEncoding`: the encoding of every item of a nested part that [prefixEncoding] does not cover; `null`
+     * when the document leaves it out and before OpenAPI 3.2.
      *
      * @since 1.0.0
      */

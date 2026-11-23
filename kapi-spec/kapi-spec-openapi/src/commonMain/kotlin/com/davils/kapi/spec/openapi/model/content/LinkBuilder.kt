@@ -21,20 +21,52 @@ import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [Link], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the link it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
     override val subject: String get() = "openapi link"
 
+    /**
+     * The value of `operationRef`, a URI reference to the operation.
+     *
+     * @since 1.0.0
+     */
     public var operationReference: String? = null
 
+    /**
+     * The value of `operationId`, the id of the operation.
+     *
+     * @since 1.0.0
+     */
     public var operationId: String? = null
 
     internal val parameters: MutableMap<String, Value> = linkedMapOf()
 
+    /**
+     * The value of `requestBody`, the body to send to the operation.
+     *
+     * @since 1.0.0
+     */
     public var requestBody: Value? = null
 
+    /**
+     * The value of `description`, the description of the link.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
+    /**
+     * The value of `server`, the server the operation is called on.
+     *
+     * @since 1.0.0
+     */
     public var server: Server? = null
 
     override fun assemble(): Link = Link(this)

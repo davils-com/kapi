@@ -22,19 +22,36 @@ import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [MediaType], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the media type it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>() {
     override val subject: String get() = "openapi media type"
 
+    /**
+     * The value of `schema`, the schema of the whole content.
+     *
+     * @since 1.0.0
+     */
     public var schema: Schema? = null
 
     /**
-     * The schema of each item of a sequential media type, written from OpenAPI 3.2 on.
+     * The value of `itemSchema`, the schema of each item of a sequential media type, written from OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */
     public var itemSchema: Schema? = null
 
+    /**
+     * The value of `example`, an example of the content.
+     *
+     * @since 1.0.0
+     */
     public var example: Value? = null
 
     internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
@@ -44,7 +61,8 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
     internal val prefixEncoding: MutableList<Encoding> = mutableListOf()
 
     /**
-     * The encoding of every item that the prefix encodings do not cover, written from OpenAPI 3.2 on.
+     * The value of `itemEncoding`, the encoding of every item that the prefix encodings do not cover, written from
+     * OpenAPI 3.2 on.
      *
      * @since 1.0.0
      */

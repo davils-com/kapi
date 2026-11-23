@@ -20,15 +20,32 @@ import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of a [RequestBody], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the request body it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class RequestBodyBuilder internal constructor() :
     ElementBuilder<RequestBody>() {
     override val subject: String get() = "openapi request body"
 
+    /**
+     * The value of `description`, the description of the body.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
+    /**
+     * The value of `required`, whether a request must carry the body.
+     *
+     * @since 1.0.0
+     */
     public var isRequired: Boolean = false
 
     override fun assemble(): RequestBody = RequestBody(this)

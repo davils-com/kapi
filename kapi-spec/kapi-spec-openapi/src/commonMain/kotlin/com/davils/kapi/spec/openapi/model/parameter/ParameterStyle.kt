@@ -16,13 +16,61 @@
 
 package com.davils.kapi.spec.openapi.model.parameter
 
+/**
+ * How the value of a parameter, a header or an encoded part is serialized, the `style` of OpenAPI, following the
+ * forms of URI templates in RFC 6570.
+ *
+ * @property keyword the value of `style` in a document.
+ * @since 1.0.0
+ */
 public enum class ParameterStyle(public val keyword: String) {
+    /**
+     * Path-style parameters of RFC 6570, such as `;color=blue`; for path parameters.
+     *
+     * @since 1.0.0
+     */
     Matrix("matrix"),
+
+    /**
+     * Label expansion of RFC 6570, such as `.blue`; for path parameters.
+     *
+     * @since 1.0.0
+     */
     Label("label"),
+
+    /**
+     * Form-style expansion of RFC 6570, such as `color=blue`; the default for query and cookie parameters.
+     *
+     * @since 1.0.0
+     */
     Form("form"),
+
+    /**
+     * Simple expansion of RFC 6570, such as `blue,black`; the default for path parameters and headers.
+     *
+     * @since 1.0.0
+     */
     Simple("simple"),
+
+    /**
+     * The items of an array joined by spaces, such as `blue%20black`; for query parameters.
+     *
+     * @since 1.0.0
+     */
     SpaceDelimited("spaceDelimited"),
+
+    /**
+     * The items of an array joined by `|`, such as `blue|black`; for query parameters.
+     *
+     * @since 1.0.0
+     */
     PipeDelimited("pipeDelimited"),
+
+    /**
+     * The properties of an object as nested names, such as `color[R]=100`; for query parameters.
+     *
+     * @since 1.0.0
+     */
     DeepObject("deepObject"),
 
     /**
@@ -34,8 +82,21 @@ public enum class ParameterStyle(public val keyword: String) {
     Cookie("cookie"),
     ;
 
+    /**
+     * Returns whether a parameter in [placement] may take this style.
+     *
+     * @param placement the place of the parameter.
+     * @return `true` if OpenAPI allows the style there; always `false` for [ParameterPlacement.QueryString], which has
+     * no style.
+     * @since 1.0.0
+     */
     public fun isAllowedIn(placement: ParameterPlacement): Boolean = this in allowed.getValue(placement)
 
+    /**
+     * Finds styles and the default of each placement.
+     *
+     * @since 1.0.0
+     */
     public companion object {
         private val defaults: Map<ParameterPlacement, ParameterStyle> = mapOf(
             ParameterPlacement.Path to Simple,
@@ -61,6 +122,13 @@ public enum class ParameterStyle(public val keyword: String) {
          */
         public fun defaultFor(placement: ParameterPlacement): ParameterStyle? = defaults[placement]
 
+        /**
+         * Returns the style written as [keyword], whatever the version of the document.
+         *
+         * @param keyword the value of `style`, which may be any text; it is compared exactly.
+         * @return the style, or `null` if [keyword] names none.
+         * @since 1.0.0
+         */
         public fun fromKeyword(keyword: String): ParameterStyle? = entries.firstOrNull { it.keyword == keyword }
     }
 }
