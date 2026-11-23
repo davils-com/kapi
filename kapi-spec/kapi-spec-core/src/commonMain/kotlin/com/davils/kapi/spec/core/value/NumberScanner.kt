@@ -43,10 +43,8 @@ internal class NumberScanner(private val text: String) {
     }
 
     private fun integer(): String? {
-        val start = index
         if (accept('0')) return "0"
-        val digits = digits()
-        return digits.takeIf { it.isNotEmpty() && text[start] != '0' }
+        return digits().takeIf { it.isNotEmpty() }
     }
 
     private fun fraction(): String? {
