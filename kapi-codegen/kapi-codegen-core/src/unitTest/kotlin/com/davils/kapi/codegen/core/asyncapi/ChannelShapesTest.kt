@@ -22,6 +22,7 @@ import com.davils.kapi.codegen.core.asyncapi.fixture.generationOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val REF: String = "\$ref"
@@ -50,6 +51,8 @@ private const val SERVER_REQUEST: String = "server request of two messages"
 
 private const val CLIENT_REQUEST: String = "client request of two messages"
 
+private const val SINGLE_REQUEST: String = "request and reply of one message each"
+
 private const val DISCRIMINATED: String = "declared discriminator"
 
 private const val HANDSHAKE: String = "handshake from components"
@@ -63,6 +66,11 @@ private val shapes: Map<String, String> = mapOf(
     CLIENT_REQUEST to document(
         channel = "{address: /room, messages: {q1: ${tagged("q1")}, q2: ${tagged("q2")}, r: ${tagged("r")}}}",
         operations = "{ask: {action: receive, channel: $ROOM, messages: [${message("q1")}, ${message("q2")}], " +
+            "reply: {messages: [${message("r")}]}}}",
+    ),
+    SINGLE_REQUEST to document(
+        channel = "{address: /room, messages: {q: ${tagged("q")}, r: ${tagged("r")}}}",
+        operations = "{ask: {action: receive, channel: $ROOM, messages: [${message("q")}], " +
             "reply: {messages: [${message("r")}]}}}",
     ),
     DISCRIMINATED to document(
@@ -112,6 +120,16 @@ class ChannelShapesTest : FunSpec({
             kotlin shouldContain "public suspend fun requestAsk(message: TRoomClientMessage, timeout: Duration): " +
                 "ChannelReply<TRoomRPayload> = session.request(message, timeout)"
             kotlin shouldContain """public fun serverId(element: JsonElement): String? = idAt(element, listOf("id"))"""
+        }
+    }
+
+    context("a request and a reply of one message each") {
+        test("are paired by the ids at one place, without telling messages apart") {
+            val kotlin = kotlinOf(SINGLE_REQUEST)
+
+            kotlin shouldContain """public fun clientId(element: JsonElement): String? = idAt(element, listOf("id"))"""
+            kotlin shouldContain """public fun serverId(element: JsonElement): String? = idAt(element, listOf("id"))"""
+            kotlin shouldNotContain "tagOf"
         }
     }
 
