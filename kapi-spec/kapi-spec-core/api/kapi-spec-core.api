@@ -100,6 +100,43 @@ public abstract class com/davils/kapi/spec/core/compatibility/Direction : java/l
 	public static fun values ()[Lcom/davils/kapi/spec/core/compatibility/Direction;
 }
 
+public final class com/davils/kapi/spec/core/compatibility/FixedSchemaView : com/davils/kapi/spec/core/compatibility/SchemaView {
+	public fun <init> (Lcom/davils/kapi/spec/core/diagnostic/Location;Z)V
+	public fun getAdditionalProperties ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public fun getAllOf ()Ljava/util/List;
+	public fun getAnyOf ()Ljava/util/List;
+	public fun getConstant ()Lcom/davils/kapi/spec/core/value/Value;
+	public fun getDiscriminator ()Ljava/lang/String;
+	public fun getEnumeration ()Ljava/util/List;
+	public fun getFormat ()Ljava/lang/String;
+	public fun getHasUniqueItems ()Z
+	public fun getItems ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public fun getMaxItems ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMaxLength ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMaxProperties ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMaximum ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMinItems ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMinLength ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMinProperties ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMinimum ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getMultipleOf ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun getOneOf ()Ljava/util/List;
+	public fun getOpaque ()Lcom/davils/kapi/spec/core/value/Value;
+	public fun getPattern ()Ljava/lang/String;
+	public fun getProperties ()Ljava/util/Map;
+	public fun getRequired ()Ljava/util/List;
+	public fun getTarget ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public fun getTypes ()Ljava/util/Set;
+	public fun isAccepting ()Ljava/lang/Boolean;
+	public fun isDeprecated ()Z
+	public fun isMaximumExclusive ()Z
+	public fun isMinimumExclusive ()Z
+	public fun isReadOnly ()Z
+	public fun isUnresolved ()Z
+	public fun isWriteOnly ()Z
+}
+
 public final class com/davils/kapi/spec/core/compatibility/Impact : java/lang/Enum {
 	public static final field Breaking Lcom/davils/kapi/spec/core/compatibility/Impact;
 	public static final field Info Lcom/davils/kapi/spec/core/compatibility/Impact;
