@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.server
 
-import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.LIST_PETS
 import com.davils.kapi.codegen.core.fixture.OK
 import com.davils.kapi.codegen.core.fixture.codes
@@ -51,35 +50,32 @@ private const val STYLE: String = "ParameterStyle"
 
 private const val INPUT: String = "input.value(Place"
 
-private const val NUMBER: String = "Text(Long.serializer(), false)"
+private const val NUMBER: String = "ParameterType(Long.serializer(), false)"
 
 private val inputs: Map<String, String> = mapOf(
     "name: limit, in: query, schema: {type: integer, format: int32}" to
-        "$INPUT.Query, $FORMAT(\"limit\", $STYLE.Form, true), Text(Int.serializer(), false), false)",
+        "$INPUT.Query, $FORMAT(\"limit\", $STYLE.Form, true), ParameterType(Int.serializer(), false), false)",
     "name: limit, in: query, required: true, $TEXT" to
-        "$INPUT.Query, $FORMAT(\"limit\", $STYLE.Form, true), Text(String.serializer(), true), true)",
+        "$INPUT.Query, $FORMAT(\"limit\", $STYLE.Form, true), ParameterType(String.serializer(), true), true)",
     "name: X-Trace, in: header, $TEXT" to
-        "$INPUT.Header, $FORMAT(\"X-Trace\", $STYLE.Simple, false), Text(String.serializer(), true), false)",
+        "$INPUT.Header, $FORMAT(\"X-Trace\", $STYLE.Simple, false), ParameterType(String.serializer(), true), false)",
     "name: sid, in: cookie, $TEXT" to "$INPUT.Cookie, $FORMAT(\"sid\", $STYLE.Form, true)",
-    "name: open, in: query, schema: {type: boolean}" to "Text(Boolean.serializer(), false), false)",
+    "name: open, in: query, schema: {type: boolean}" to "ParameterType(Boolean.serializer(), false), false)",
     "name: state, in: query, schema: {type: string, enum: [a, b]}" to
-        "Text(PetstoreListPetsState.serializer(), true), false)",
+        "ParameterType(PetstoreListPetsState.serializer(), true), false)",
     "name: level, in: query, schema: {type: integer, enum: [1, 2]}" to
-        "Text(PetstoreListPetsLevel.serializer(), false), false)",
+        "ParameterType(PetstoreListPetsLevel.serializer(), false), false)",
     "name: tag, in: query, schema: {type: array, items: {type: integer}}" to
         "input.items(Place.Query, $FORMAT(\"tag\", $STYLE.Form, true), $NUMBER, false)",
 )
 
+private const val MULTIPART: String =
+    "requestBody: {content: {multipart/form-data: {schema: {type: object, properties: "
+
 private val refused: Map<String, List<String>> = mapOf(
-    "a parameter that is an object" to
-        parameters("name: filter, in: query, schema: {type: object, properties: {a: {type: string}}}"),
-    "a parameter that is a map" to
+    "a parameter that is a map spread over the query" to
         parameters("name: filter, in: query, schema: {type: object, additionalProperties: {type: string}}"),
-    "a form" to get(
-        LIST_PETS,
-        "requestBody: {content: {application/x-www-form-urlencoded: {schema: {type: object, properties: {a: {}}}}}}",
-    ),
-    "a stream" to responses("'200': {description: ok, content: {text/event-stream: {}}}"),
+    "parts that are texts but no strings" to get(LIST_PETS, "$MULTIPART{a: {type: array, items: {type: integer}}}}}}}"),
 )
 
 class ServerEmitterTest : FunSpec({
@@ -108,12 +104,11 @@ class ServerEmitterTest : FunSpec({
             val kotlin = files.dropLast(1).joinToString("") { file -> file.content }
 
             kotlin shouldContain "internal class PetstoreDefaultRoutes("
-            kotlin shouldContain "internal fun install(route: Route) {"
+            kotlin shouldContain "override val operations: List<Operation>"
             kotlin shouldContain "internal interface $SERVICE {"
             kotlin shouldContain "internal sealed interface $RESPONSE {"
             kotlin shouldNotContain "public class"
             kotlin shouldNotContain "public interface"
-            kotlin shouldNotContain "public fun install"
         }
     }
 
@@ -124,7 +119,7 @@ class ServerEmitterTest : FunSpec({
             val kotlin = serverOf(lines, SERVICE)
 
             kotlin shouldContain "public interface $SERVICE {"
-            kotlin shouldContain "public suspend fun listPets(body: String, limit: String? = null): $RESPONSE"
+            kotlin shouldContain "public suspend fun listPets(body: String, limit: String?): $RESPONSE"
         }
     }
 
@@ -132,8 +127,8 @@ class ServerEmitterTest : FunSpec({
         test("bind each operation with its method, its path and the handler that serves it") {
             val kotlin = serverOf(get(LIST_PETS))
 
-            kotlin shouldContain "private val service: $SERVICE,\n    private val server: Server,"
-            kotlin shouldContain "route.operation(server, Operation("
+            kotlin shouldContain "private val service: $SERVICE,\n) : Routes {"
+            kotlin shouldContain "listOf(\n        Operation(\n"
             kotlin shouldContain """name = "listPets","""
             kotlin shouldContain """method = "GET","""
             kotlin shouldContain """path = "/pets","""
@@ -178,9 +173,10 @@ class ServerEmitterTest : FunSpec({
             )
             val kotlin = serverOf(lines)
 
-            kotlin shouldContain "val body = input.body(String.serializer(), true)"
+            kotlin shouldContain
+                "val body = input.body(String.serializer(), true, listOf(MediaRange.of(\"application/json\")))"
             kotlin shouldContain "if (!input.isValid || a == null || body == null) return input.refused()"
-            kotlin shouldContain "service.listPets(a = a, body = body, b = b)"
+            kotlin shouldContain "service.listPets(a = a, b = b, body = body)"
         }
 
         test("is checked for validity alone when nothing is required") {
@@ -190,8 +186,70 @@ class ServerEmitterTest : FunSpec({
         test("has an optional body, and bytes for what is no JSON") {
             val bytes = "requestBody: {content: {application/octet-stream: {schema: {type: string, format: binary}}}}"
 
-            serverOf(get(LIST_PETS, "requestBody: {$JSON}")) shouldContain "input.body(String.serializer(), false)"
-            serverOf(get(LIST_PETS, bytes)) shouldContain "val body = input.bytes(false)"
+            serverOf(
+                get(LIST_PETS, "requestBody: {$JSON}"),
+            ) shouldContain "input.body(String.serializer(), false, listOf("
+            serverOf(get(LIST_PETS, bytes)) shouldContain
+                "val body = input.bytes(false, listOf(MediaRange.of(\"application/octet-stream\")))"
+        }
+    }
+
+    context("what a server reads beyond single values") {
+        test("reads an object from the fields the model declares") {
+            val lines = parameters("name: filter, in: query, schema: {type: object, properties: {a: {type: string}}}")
+
+            serverOf(
+                lines,
+            ) shouldContain """input.fields(Place.Query, ParameterFormat("filter", ParameterStyle.Form, """ +
+                """true), PetstoreListPetsFilter.serializer(), false, setOf("a"))"""
+        }
+
+        test("reads a form into a class of its own and passes its fields") {
+            val form = "{type: object, required: [a], properties: {a: {type: string}, b: {type: object, " +
+                "properties: {c: {type: string}}}}}"
+            val kotlin = serverOf(
+                get(LIST_PETS, "requestBody: {content: {application/x-www-form-urlencoded: {schema: $form}}}"),
+            )
+
+            kotlin shouldContain "private class ListPetsForm("
+            kotlin shouldContain "val form = input.body(ListPetsForm.serializer(), true,"
+            kotlin shouldContain "val b = form?.b?.let { text -> Codecs.Default.decode("
+            kotlin shouldContain "service.listPets(a = form.a, b = b?.value)"
+        }
+
+        test("reads the parts of a multipart body by their names") {
+            val parts = "{f: {type: string, format: binary}, n: {type: integer}, t: {type: string}}, required: [f]"
+            val kotlin = serverOf(get(LIST_PETS, "$MULTIPART$parts}}}}"))
+
+            kotlin shouldContain "val parts = input.parts(true)"
+            kotlin shouldContain "val f = parts?.firstOrNull { part -> part.name == \"f\" }?.let { part -> FilePart("
+            kotlin shouldContain "Codecs.Default.decode(Long.serializer(), part.content, \"text/plain\")"
+            kotlin shouldContain "f == null || (n != null && n !is Decoding.Decoded)"
+        }
+
+        test("reads repeated parts as texts and a form whose fields are all optional") {
+            val tags = serverOf(get(LIST_PETS, "$MULTIPART{tags: {type: array, items: {type: string}}}}}}}"))
+            val form = "{type: object, properties: {a: {type: string}}}"
+            val optional = serverOf(
+                get(LIST_PETS, "requestBody: {content: {application/x-www-form-urlencoded: {schema: $form}}}"),
+            )
+
+            tags shouldContain "val tags = parts?.filter { part -> part.name == \"tags\" }?.map { part ->"
+            optional shouldContain "service.listPets(a = form.a)"
+        }
+
+        test("streams the bytes of a response as they come") {
+            val bytes = "'200': {description: ok, content: {application/x-tar: {x-kapi-stream: bytes}}}"
+
+            serverOf(responses(bytes)) shouldContain "stream(MediaType.parse(\"application/x-tar\"), response.items)"
+        }
+
+        test("streams the items of a response") {
+            val events = "'200': {description: ok, content: {text/event-stream: {schema: {type: string}}}}"
+            val lines = "'200': {description: ok, content: {application/x-ndjson: {schema: {type: string}}}}"
+
+            serverOf(responses(events)) shouldContain "events {\n"
+            serverOf(responses(lines)) shouldContain "lines(String.serializer(), response.items, MediaType.parse("
         }
     }
 
@@ -222,21 +280,23 @@ class ServerEmitterTest : FunSpec({
             val kotlin = serverOf(lines)
 
             kotlin shouldContain "return when (val response = service.listPets()) {"
-            kotlin shouldContain "is $RESPONSE.Ok -> server.reply(200) {"
+            kotlin shouldContain
+                "is $RESPONSE.Ok -> request.conditional(RepresentationState(entityTag = EntityTag.parseOrNull("
+            kotlin shouldContain "reply(200) {"
             kotlin shouldContain "header(\"ETag\", response.eTag)"
             kotlin shouldContain "header(\"X-Count\", response.xCount?.toString())"
             kotlin shouldContain "header(\"X-Max\", response.xMax.toString())"
-            kotlin shouldContain "json(\"application/json\", String.serializer(), response.body)"
-            kotlin shouldContain "is $RESPONSE.NotFound -> server.reply(404)"
+            kotlin shouldContain "body(MediaType.parse(\"application/json\"), String.serializer(), response.body)"
+            kotlin shouldContain "is $RESPONSE.NotFound -> reply(404)"
         }
 
         test("is replied with the status the service chose for a range or the default, and with bytes as they are") {
             val lines = responses("4XX: {description: no, content: {text/plain: {}}}, default: {description: other}")
             val kotlin = serverOf(lines)
 
-            kotlin shouldContain "is $RESPONSE.ClientError -> server.reply(response.status) {"
-            kotlin shouldContain "bytes(\"text/plain\", response.content)"
-            kotlin shouldContain "is $RESPONSE.Other -> server.reply(response.status)"
+            kotlin shouldContain "is $RESPONSE.ClientError -> reply(response.status) {"
+            kotlin shouldContain "bytes(MediaType.parse(\"text/plain\"), response.content)"
+            kotlin shouldContain "is $RESPONSE.Other -> reply(response.status)"
         }
     }
 
@@ -250,7 +310,7 @@ class ServerEmitterTest : FunSpec({
             }
         }
 
-        listOf("input", "request", "response", "service", "server").forEach { name ->
+        listOf("input", "request", "response", "service", "form", "parts", "reply").forEach { name ->
             test("is a parameter under a name the generated server uses itself: $name") {
                 serverGenerationOf(parameters("name: $name, in: query, $TEXT")).codes() shouldBe
                     listOf(CodegenCodes.NAME_COLLISION)
@@ -260,7 +320,11 @@ class ServerEmitterTest : FunSpec({
         test("is served once the parameter has another name") {
             val kotlin = serverOf(parameters("name: request, in: query, x-kapi-name: asked, $TEXT"), SERVICE)
 
-            kotlin shouldContain "listPets(asked: String? = null)"
+            kotlin shouldContain "listPets(asked: String?)"
+        }
+
+        test("is an operation under the name of a member of the routes") {
+            serverGenerationOf(get("operationId: operations")).codes() shouldBe listOf(CodegenCodes.NAME_COLLISION)
         }
     }
 

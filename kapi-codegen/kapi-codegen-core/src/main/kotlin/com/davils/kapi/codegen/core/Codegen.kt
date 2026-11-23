@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 import com.davils.kapi.codegen.core.options.GeneratorBuilder
@@ -43,7 +42,8 @@ public object Codegen {
      *
      * @param configure sets the package, the name of the API, the artifacts and the visibility of the generated code.
      * @return the generator.
-     * @throws IllegalArgumentException if the options are invalid, such as a package name that is no Kotlin package.
+     * @throws com.davils.kore.core.validation.report.ValidationException if the options are invalid, such as a package
+     * name that is no Kotlin package.
      * @since 1.0.0
      */
     public fun openApi(configure: GeneratorBuilder.() -> Unit): Generator {

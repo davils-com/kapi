@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeUse
+import com.davils.kapi.codegen.core.model.toBigDecimal
 import com.davils.kapi.codegen.core.sample.plan.SampleSpan
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
-import com.davils.kapi.codegen.core.model.toBigDecimal
+import com.davils.kapi.spec.core.value.Value
 
 private const val MOMENT: String = "2026-01-01T00:00:00Z"
 
@@ -61,7 +60,7 @@ internal object SampleScalars {
     }
 
     private fun texts(rules: List<RulePlan>): List<SampleValue> {
-        val span = SampleSpan.of(rules, LimitKind.MinLength, LimitKind.MaxLength)
+        val span = SampleSpan.of(rules = rules, least = LimitKind.MinLength, most = LimitKind.MaxLength)
         val fitted = texts.map { text -> text.padEnd(span.least, text.last()).take(span.most) }
         return fitted.distinct().map(SampleValue::Text)
     }

@@ -27,17 +27,11 @@ import java.nio.file.Files
 
 private const val PLUGIN: String = "kotlin-serialization-compiler-plugin-embeddable"
 
-private const val SHIM: String = """
-package com.davils.kapi.runtime.core.validation
-
-public typealias ViolationCodes = ConstraintViolationCodes
-"""
-
 internal object Compiler {
     fun compile(files: List<GeneratedFile>, sources: Map<String, String> = emptyMap()): Compilation {
         val root = Files.createTempDirectory("kapi-asyncapi")
         val kotlin = files.filter { file -> file.kind == GeneratedFileKind.Kotlin }
-        val written = kotlin.associate { file -> file.path to file.content } + sources + ("Shim.kt" to SHIM)
+        val written = kotlin.associate { file -> file.path to file.content } + sources
         written.forEach { (path, content) ->
             val target = root.resolve("src").resolve(path)
             Files.createDirectories(target.parent)

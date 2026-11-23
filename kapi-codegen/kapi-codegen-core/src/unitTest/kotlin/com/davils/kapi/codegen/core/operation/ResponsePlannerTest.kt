@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.fixture.LIST_PETS_RESULT
@@ -116,14 +115,14 @@ class ResponsePlannerTest : FunSpec({
             kotlin shouldContain "when (val decoding = client.decode(String.serializer(), exchange)) {"
             kotlin shouldContain "is Decoding.Decoded -> $LIST_PETS_RESULT.Ok($DECODED"
             kotlin shouldContain "is Decoding.Failed -> $LIST_PETS_RESULT.Malformed(exchange.status, $REASON"
-            kotlin shouldContain "            accept(\"application/json\")"
+            kotlin shouldContain "            accept(MediaRange.of(\"application/json\"))"
         }
 
         test("is JSON under every media type that ends in +json, whatever its parameters") {
             val content = "content: {'application/problem+json; charset=utf-8': {schema: {type: string}}}"
             val kotlin = clientOf(answering(content))
 
-            kotlin shouldContain "accept(\"application/problem+json; charset=utf-8\")"
+            kotlin shouldContain "accept(MediaRange.of(\"application/problem+json; charset=utf-8\"))"
             kotlin shouldContain "$LIST_PETS_RESULT.Ok($DECODED"
         }
 
@@ -139,8 +138,8 @@ class ResponsePlannerTest : FunSpec({
 
             kotlin shouldContain "200 to { exchange -> $LIST_PETS_RESULT.Ok($RAW },"
             kotlin shouldContain listOf(
-                "            accept(\"text/csv\")",
-                "            accept(\"text/plain\")",
+                "            accept(MediaRange.of(\"text/csv\"))",
+                "            accept(MediaRange.of(\"text/plain\"))",
             ).joinToString("\n")
         }
 

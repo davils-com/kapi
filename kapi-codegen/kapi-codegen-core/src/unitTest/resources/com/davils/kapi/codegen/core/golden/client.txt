@@ -2,7 +2,6 @@
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -11,14 +10,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/paths/~1login/post/responses/200/content/application~1json/schema",
 )
 public data class PetstoreLoginOk(
     @SerialName("token")
     public val token: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
@@ -26,7 +24,6 @@ public data class PetstoreLoginOk(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -36,7 +33,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/paths/~1pets~1pages/get/responses/200/content/application~1json/schema",
 )
 public data class PetstorePagePetsOk(
@@ -44,8 +41,7 @@ public data class PetstorePagePetsOk(
     public val items: List<PetstorePet>? = null,
     @SerialName("next")
     public val next: String? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         if (items != null) {
             each(::items, items) { item ->
@@ -58,7 +54,6 @@ public data class PetstorePagePetsOk(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -68,7 +63,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/paths/~1pets~1pages/get/responses/200/content/application~1json/schema",
 )
 public data class PetstorePagePetsOkWrite(
@@ -76,8 +71,7 @@ public data class PetstorePagePetsOkWrite(
     public val items: List<PetstorePetWrite>? = null,
     @SerialName("next")
     public val next: String? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         if (items != null) {
             each(::items, items) { item ->
@@ -90,7 +84,6 @@ public data class PetstorePagePetsOkWrite(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.Long
@@ -100,7 +93,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
 public data class PetstorePet(
@@ -108,20 +101,18 @@ public data class PetstorePet(
     public val id: Long? = null,
     @SerialName("name")
     public val name: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
 ===== com/example/petstore/model/PetstorePetPatch.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.wire.Patch
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.ViolationCodes
-import com.davils.kapi.runtime.core.wire.Patch
 import kotlin.OptIn
 import kotlin.String
 import kotlinx.serialization.EncodeDefault
@@ -132,24 +123,22 @@ import kotlinx.serialization.Serializable
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
 public data class PetstorePetPatch(
     @SerialName("name")
     @EncodeDefault(EncodeDefault.Mode.NEVER)
     public val name: Patch<String> = Patch.Absent,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (name is Patch.Null) fail(::name, "must not be null", ViolationCodes.NOT_NULL)
+        if (name is Patch.Null) fail(::name, "must not be null", ConstraintViolationCodes.NOT_NULL)
     }
 }
 ===== com/example/petstore/model/PetstorePetWrite.kt
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -158,14 +147,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/components/schemas/Pet",
 )
 public data class PetstorePetWrite(
     @SerialName("name")
     public val name: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
@@ -173,7 +161,6 @@ public data class PetstorePetWrite(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -182,22 +169,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/components/schemas/Problem",
 )
 public data class PetstoreProblem(
     @SerialName("title")
     public val title: String? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
-===== com/example/petstore/model/PetstoreSearchPetsFilter.kt
+===== com/example/petstore/model/PetstoreQueryPetsCriteria.kt
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.Int
@@ -207,7 +192,32 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
+    from = "client.yaml#/paths/~1pets~1query/query/parameters/0/content/application~1x-www-form-urlencoded/schema",
+)
+public data class PetstoreQueryPetsCriteria(
+    @SerialName("name")
+    public val name: String,
+    @SerialName("minAge")
+    public val minAge: Int? = null,
+) : Validatable {
+    override fun ValidationScope.validate() {
+    }
+}
+===== com/example/petstore/model/PetstoreSearchPetsFilter.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
     from = "client.yaml#/paths/~1pets~1search/get/parameters/0/schema",
 )
 public data class PetstoreSearchPetsFilter(
@@ -215,8 +225,7 @@ public data class PetstoreSearchPetsFilter(
     public val name: String? = null,
     @SerialName("minAge")
     public val minAge: Int? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
@@ -224,7 +233,6 @@ public data class PetstoreSearchPetsFilter(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
@@ -234,19 +242,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JvmInline
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/components/schemas/Status",
 )
 public value class PetstoreStatus(
     public val `value`: String,
-) : DataTransferObject {
+) {
     public val isKnown: Boolean
         get() = this in entries
 
     override fun toString(): String = `value`
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml#/components/schemas/Status",
     )
     public companion object {
@@ -261,7 +269,6 @@ public value class PetstoreStatus(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -270,22 +277,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml#/paths/~1pets~1{petId}~1photo/post/requestBody/content/multipart~1form-data/schema/properties/meta",
 )
 public data class PetstoreUploadPhotoRequestMeta(
     @SerialName("title")
     public val title: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
 ===== com/example/petstore/client/PetstoreAdminClient.kt
 package com.example.petstore.client
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.call.CredentialPlacement
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.call.SecurityUse
@@ -293,20 +298,20 @@ import com.davils.kapi.runtime.client.call.apiCall
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.operation.PetstoreDeletePetResult
 import kotlin.Int
 import kotlin.Long
 import kotlin.collections.Map
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public class PetstoreAdminClient(
-    private val client: Client,
+    private val client: ApiClient,
 ) {
-    private val deletePetReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreDeletePetResult> = mapOf(
+    private val deletePetReaders: Map<Int, (Exchange.Answered) -> PetstoreDeletePetResult> = mapOf(
         204 to { exchange -> PetstoreDeletePetResult.NoContent(exchange.content, exchange.headers) },
     )
 
@@ -332,11 +337,12 @@ public class PetstoreAdminClient(
 ===== com/example/petstore/client/PetstoreAuthClient.kt
 package com.example.petstore.client
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.call.apiCall
 import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstoreLoginOk
 import com.example.petstore.operation.PetstoreLoginResult
 import kotlin.Int
@@ -345,14 +351,13 @@ import kotlin.collections.List
 import kotlin.collections.Map
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public class PetstoreAuthClient(
-    private val client: Client,
+    private val client: ApiClient,
 ) {
-    private val loginReaders: Map<Int, (Exchange.Answered) -> PetstoreLoginResult> =
-            mapOf(
+    private val loginReaders: Map<Int, (Exchange.Answered) -> PetstoreLoginResult> = mapOf(
         200 to { exchange ->
             when (val decoding = client.decode(PetstoreLoginOk.serializer(), exchange)) {
                 is Decoding.Decoded -> PetstoreLoginResult.Ok(decoding.value, exchange.headers)
@@ -368,7 +373,7 @@ public class PetstoreAuthClient(
     ): PetstoreLoginResult {
         val call = apiCall("login", "POST") {
             path("/login")
-            accept("application/json")
+            accept(MediaRange.of("application/json"))
             form {
                 field("user", user)
                 field("password", password)
@@ -390,27 +395,34 @@ public class PetstoreAuthClient(
 ===== com/example/petstore/client/PetstorePetsClient.kt
 package com.example.petstore.client
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.call.CredentialPlacement
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.call.SecurityUse
 import com.davils.kapi.runtime.client.call.apiCall
-import com.davils.kapi.runtime.client.page.apiCursorPages
+import com.davils.kapi.runtime.client.conditional.Validators
+import com.davils.kapi.runtime.client.conditional.revalidate
+import com.davils.kapi.runtime.client.page.cursorPages
+import com.davils.kapi.runtime.client.stream.Reconnection
+import com.davils.kapi.runtime.client.stream.RecordFraming
 import com.davils.kapi.runtime.client.stream.StreamEvent
 import com.davils.kapi.runtime.client.stream.events
 import com.davils.kapi.runtime.client.stream.records
 import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.core.parameter.ParameterValue
 import com.davils.kapi.runtime.core.response.int
 import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePagePetsOk
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstorePetPatch
 import com.example.petstore.model.PetstorePetWrite
 import com.example.petstore.model.PetstoreProblem
+import com.example.petstore.model.PetstoreQueryPetsCriteria
 import com.example.petstore.model.PetstoreSearchPetsFilter
 import com.example.petstore.model.PetstoreStatus
 import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
@@ -419,6 +431,7 @@ import com.example.petstore.operation.PetstoreExportPetsResult
 import com.example.petstore.operation.PetstoreGetPetResult
 import com.example.petstore.operation.PetstoreListPetsResult
 import com.example.petstore.operation.PetstorePagePetsResult
+import com.example.petstore.operation.PetstoreQueryPetsResult
 import com.example.petstore.operation.PetstoreRenamePetResult
 import com.example.petstore.operation.PetstoreSearchPetsResult
 import com.example.petstore.operation.PetstoreSetAvatarResult
@@ -437,14 +450,13 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public class PetstorePetsClient(
-    private val client: Client,
+    private val client: ApiClient,
 ) {
-    private val createPetReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreCreatePetResult> = mapOf(
+    private val createPetReaders: Map<Int, (Exchange.Answered) -> PetstoreCreatePetResult> = mapOf(
         201 to { exchange ->
             when (val decoding = client.decode(PetstorePet.serializer(), exchange)) {
                 is Decoding.Decoded -> PetstoreCreatePetResult.Created(decoding.value, exchange.headers)
@@ -454,19 +466,18 @@ public class PetstorePetsClient(
         409 to { exchange -> PetstoreCreatePetResult.Conflict(exchange.content, exchange.headers) },
     )
 
-    private val exportPetsReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreExportPetsResult> = mapOf(
+    private val exportPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreExportPetsResult> =
+            mapOf(
         200 to { exchange -> PetstoreExportPetsResult.Ok(exchange.content, exchange.headers) },
     )
 
-    private val getPetReaders: Map<Int, (Exchange.Answered) -> PetstoreGetPetResult> =
-            mapOf(
+    private val getPetReaders: Map<Int, (Exchange.Answered) -> PetstoreGetPetResult> = mapOf(
         200 to ::getPetOk,
         404 to { exchange -> PetstoreGetPetResult.NotFound(exchange.content, exchange.headers) },
+        304 to { exchange -> PetstoreGetPetResult.NotModified(Validators.of(exchange.headers), exchange.headers) },
     )
 
-    private val listPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreListPetsResult>
-            = mapOf(
+    private val listPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreListPetsResult> = mapOf(
         200 to { exchange ->
             when (val decoding = client.decode(ListSerializer(PetstorePet.serializer()), exchange)) {
                 is Decoding.Decoded -> PetstoreListPetsResult.Ok(decoding.value, exchange.headers)
@@ -475,8 +486,7 @@ public class PetstorePetsClient(
         },
     )
 
-    private val listPetsRanges: Map<Int, (Exchange.Answered) -> PetstoreListPetsResult> =
-            mapOf(
+    private val listPetsRanges: Map<Int, (Exchange.Answered) -> PetstoreListPetsResult> = mapOf(
         5 to { exchange ->
             when (val decoding = client.decode(PetstoreProblem.serializer(), exchange)) {
                 is Decoding.Decoded -> PetstoreListPetsResult.ServerError(exchange.status, decoding.value, exchange.headers)
@@ -485,8 +495,7 @@ public class PetstorePetsClient(
         },
     )
 
-    private val pagePetsReaders: Map<Int, (Exchange.Answered) -> PetstorePagePetsResult>
-            = mapOf(
+    private val pagePetsReaders: Map<Int, (Exchange.Answered) -> PetstorePagePetsResult> = mapOf(
         200 to { exchange ->
             when (val decoding = client.decode(PetstorePagePetsOk.serializer(), exchange)) {
                 is Decoding.Decoded -> PetstorePagePetsResult.Ok(decoding.value, exchange.headers)
@@ -495,14 +504,22 @@ public class PetstorePetsClient(
         },
     )
 
-    private val renamePetReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreRenamePetResult> = mapOf(
+    private val queryPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreQueryPetsResult> = mapOf(
+        200 to { exchange ->
+            when (val decoding = client.decode(ListSerializer(PetstorePet.serializer()), exchange)) {
+                is Decoding.Decoded -> PetstoreQueryPetsResult.Ok(decoding.value, exchange.headers)
+                is Decoding.Failed -> PetstoreQueryPetsResult.Malformed(exchange.status, decoding.reason)
+            }
+        },
+    )
+
+    private val renamePetReaders: Map<Int, (Exchange.Answered) -> PetstoreRenamePetResult> = mapOf(
         200 to { exchange -> PetstoreRenamePetResult.Ok(exchange.content, exchange.headers) },
         418 to { exchange -> PetstoreRenamePetResult.Status418(exchange.content, exchange.headers) },
     )
 
-    private val searchPetsReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreSearchPetsResult> = mapOf(
+    private val searchPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreSearchPetsResult> =
+            mapOf(
         200 to { exchange ->
             when (val decoding = client.decode(ListSerializer(PetstorePet.serializer()), exchange)) {
                 is Decoding.Decoded -> PetstoreSearchPetsResult.Ok(decoding.value, exchange.headers)
@@ -511,26 +528,24 @@ public class PetstorePetsClient(
         },
     )
 
-    private val setAvatarReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreSetAvatarResult> = mapOf(
+    private val setAvatarReaders: Map<Int, (Exchange.Answered) -> PetstoreSetAvatarResult> = mapOf(
         204 to { exchange -> PetstoreSetAvatarResult.NoContent(exchange.content, exchange.headers) },
     )
 
-    private val uploadPhotoReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreUploadPhotoResult> = mapOf(
+    private val uploadPhotoReaders: Map<Int, (Exchange.Answered) -> PetstoreUploadPhotoResult> =
+            mapOf(
         204 to { exchange -> PetstoreUploadPhotoResult.NoContent(exchange.content, exchange.headers) },
     )
 
-    private val watchPetsReaders:
-            Map<Int, (Exchange.Answered) -> PetstoreWatchPetsResult> = mapOf(
+    private val watchPetsReaders: Map<Int, (Exchange.Answered) -> PetstoreWatchPetsResult> = mapOf(
         200 to { exchange -> PetstoreWatchPetsResult.Ok(exchange.content, exchange.headers) },
     )
 
     public suspend fun createPet(body: PetstorePetWrite): PetstoreCreatePetResult {
         val call = apiCall("createPet", "POST") {
             path("/pets")
-            accept("application/json")
-            body("application/json", client.json(PetstorePetWrite.serializer(), body))
+            accept(MediaRange.of("application/json"))
+            body(MediaType.parse("application/json"), client.json(PetstorePetWrite.serializer(), body))
             security(listOf(SecurityUse("apiKey", CredentialPlacement.Header("X-Api-Key"))))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
@@ -551,7 +566,7 @@ public class PetstorePetsClient(
             path("/pets/export")
             if (since != null) query(ParameterFormat("since", ParameterStyle.Form, true), ParameterValue.Text(since))
             idempotent()
-            accept("application/x-ndjson")
+            accept(MediaRange.of("application/x-ndjson"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -571,18 +586,19 @@ public class PetstorePetsClient(
             path("/pets/export")
             if (since != null) query(ParameterFormat("since", ParameterStyle.Form, true), ParameterValue.Text(since))
             idempotent()
-            accept("application/x-ndjson")
+            accept(MediaRange.of("application/x-ndjson"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
-        return client.records(PetstorePet.serializer(), call)
+        return client.records(PetstorePet.serializer(), call, RecordFraming.JsonLines)
     }
 
-    public suspend fun getPet(petId: Long): PetstoreGetPetResult {
+    public suspend fun getPet(petId: Long, validators: Validators? = null): PetstoreGetPetResult {
         val call = apiCall("getPet", "GET") {
             path("/pets/")
             path(ParameterFormat("petId", ParameterStyle.Simple, false), ParameterValue.Text(petId.toString()))
             idempotent()
-            accept("application/json")
+            accept(MediaRange.of("application/json"))
+            if (validators != null) revalidate(validators)
         }
         return when (val exchange = client.execute(call)) {
             is Exchange.Failed -> PetstoreGetPetResult.Failed(exchange.failure)
@@ -624,8 +640,8 @@ public class PetstorePetsClient(
             if (state != null) query(ParameterFormat("state", ParameterStyle.Form, false), ParameterValue.Items(state.map { it.toString() }))
             if (session != null) cookie(ParameterFormat("session", ParameterStyle.Form, true), ParameterValue.Text(session))
             idempotent()
-            accept("application/json")
-            accept("application/problem+json")
+            accept(MediaRange.of("application/json"))
+            accept(MediaRange.of("application/problem+json"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -650,7 +666,7 @@ public class PetstorePetsClient(
             if (size != null) query(ParameterFormat("size", ParameterStyle.Form, true), ParameterValue.Text(size.toString()))
             timeout(request = 30_000.milliseconds, connect = 2_000.milliseconds)
             idempotent()
-            accept("application/json")
+            accept(MediaRange.of("application/json"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -665,16 +681,35 @@ public class PetstorePetsClient(
         return PetstorePagePetsResult.Unexpected(exchange.status, exchange.headers, exchange.content)
     }
 
-    public fun pagePetsPages(size: Int? = null): Flow<PetstorePagePetsResult> = apiCursorPages(next = { (it as? PetstorePagePetsResult.Ok)?.body?.next }) {
+    public fun pagePetsPages(size: Int? = null): Flow<PetstorePagePetsResult> = cursorPages(next = { (it as? PetstorePagePetsResult.Ok)?.body?.next }) {
         pagePets(size = size, cursor = it)
+    }
+
+    public suspend fun queryPets(criteria: PetstoreQueryPetsCriteria): PetstoreQueryPetsResult {
+        val call = apiCall("queryPets", "QUERY") {
+            path("/pets/query")
+            query(ParameterFormat("criteria", ParameterStyle.Form, true), client.fields(PetstoreQueryPetsCriteria.serializer(), criteria))
+            accept(MediaRange.of("application/json"))
+            security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreQueryPetsResult.Failed(exchange.failure)
+            is Exchange.Answered -> queryPetsResult(exchange)
+        }
+    }
+
+    private fun queryPetsResult(exchange: Exchange.Answered): PetstoreQueryPetsResult {
+        val read = queryPetsReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreQueryPetsResult.Unexpected(exchange.status, exchange.headers, exchange.content)
     }
 
     public suspend fun renamePet(petId: Long, body: PetstorePetPatch? = null): PetstoreRenamePetResult {
         val call = apiCall("renamePet", "PATCH") {
             path("/pets/")
             path(ParameterFormat("petId", ParameterStyle.Simple, false), ParameterValue.Text(petId.toString()))
-            accept("text/plain")
-            if (body != null) body("application/merge-patch+json", client.json(PetstorePetPatch.serializer(), body))
+            accept(MediaRange.of("text/plain"))
+            if (body != null) body(MediaType.parse("application/merge-patch+json"), client.json(PetstorePetPatch.serializer(), body))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -693,9 +728,9 @@ public class PetstorePetsClient(
         val call = apiCall("searchPets", "GET") {
             path("/pets/search")
             if (filter != null) query(ParameterFormat("filter", ParameterStyle.DeepObject, false), client.fields(PetstoreSearchPetsFilter.serializer(), filter))
-            if (range != null) query(ParameterFormat("range", ParameterStyle.Form, true), client.fields(MapSerializer(String.serializer(), String.serializer()), range))
+            if (range != null) query(ParameterFormat("range", ParameterStyle.DeepObject, false), client.fields(MapSerializer(String.serializer(), String.serializer()), range))
             idempotent()
-            accept("application/json")
+            accept(MediaRange.of("application/json"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -716,7 +751,7 @@ public class PetstorePetsClient(
             path(ParameterFormat("petId", ParameterStyle.Simple, false), ParameterValue.Text(petId.toString()))
             path("/avatar")
             idempotent()
-            body("application/octet-stream", body)
+            body(MediaType.parse("application/octet-stream"), body)
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -741,10 +776,10 @@ public class PetstorePetsClient(
             path("/pets/")
             path(ParameterFormat("petId", ParameterStyle.Simple, false), ParameterValue.Text(petId.toString()))
             path("/photo")
-            multipart("multipart/form-data") {
-                file("photo", photo, "image/png")
+            multipart {
+                file("photo", photo, MediaType.parse("image/png"))
                 if (caption != null) text("caption", caption)
-                if (meta != null) part("meta", "application/json", client.json(PetstoreUploadPhotoRequestMeta.serializer(), meta))
+                if (meta != null) part("meta", MediaType.parse("application/json"), client.json(PetstoreUploadPhotoRequestMeta.serializer(), meta))
             }
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
@@ -764,7 +799,7 @@ public class PetstorePetsClient(
         val call = apiCall("watchPets", "GET") {
             path("/pets/events")
             idempotent()
-            accept("text/event-stream")
+            accept(MediaRange.of("text/event-stream"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
         return when (val exchange = client.execute(call)) {
@@ -779,34 +814,34 @@ public class PetstorePetsClient(
         return PetstoreWatchPetsResult.Unexpected(exchange.status, exchange.headers, exchange.content)
     }
 
-    public fun watchPetsStream(): Flow<StreamEvent<PetstorePet>> {
+    public fun watchPetsStream(reconnection: Reconnection? = null): Flow<StreamEvent<PetstorePet>> {
         val call = apiCall("watchPets", "GET") {
             path("/pets/events")
             idempotent()
-            accept("text/event-stream")
+            accept(MediaRange.of("text/event-stream"))
             security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
         }
-        return client.events(PetstorePet.serializer(), call)
+        return client.events(PetstorePet.serializer(), call, reconnection)
     }
 }
 ===== com/example/petstore/operation/PetstoreCreatePetResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePet
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreCreatePetResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Created(
@@ -815,7 +850,7 @@ public sealed interface PetstoreCreatePetResult {
     ) : PetstoreCreatePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Conflict(
@@ -824,7 +859,7 @@ public sealed interface PetstoreCreatePetResult {
     ) : PetstoreCreatePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -834,7 +869,7 @@ public sealed interface PetstoreCreatePetResult {
     ) : PetstoreCreatePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -843,7 +878,7 @@ public sealed interface PetstoreCreatePetResult {
     ) : PetstoreCreatePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -853,20 +888,20 @@ public sealed interface PetstoreCreatePetResult {
 ===== com/example/petstore/operation/PetstoreDeletePetResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreDeletePetResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class NoContent(
@@ -875,7 +910,7 @@ public sealed interface PetstoreDeletePetResult {
     ) : PetstoreDeletePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -885,7 +920,7 @@ public sealed interface PetstoreDeletePetResult {
     ) : PetstoreDeletePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -894,7 +929,7 @@ public sealed interface PetstoreDeletePetResult {
     ) : PetstoreDeletePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -904,20 +939,20 @@ public sealed interface PetstoreDeletePetResult {
 ===== com/example/petstore/operation/PetstoreExportPetsResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreExportPetsResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -926,7 +961,7 @@ public sealed interface PetstoreExportPetsResult {
     ) : PetstoreExportPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -936,7 +971,7 @@ public sealed interface PetstoreExportPetsResult {
     ) : PetstoreExportPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -945,7 +980,7 @@ public sealed interface PetstoreExportPetsResult {
     ) : PetstoreExportPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -955,21 +990,22 @@ public sealed interface PetstoreExportPetsResult {
 ===== com/example/petstore/operation/PetstoreGetPetResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.client.conditional.Validators
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePet
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreGetPetResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -980,7 +1016,7 @@ public sealed interface PetstoreGetPetResult {
     ) : PetstoreGetPetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class NotFound(
@@ -989,7 +1025,16 @@ public sealed interface PetstoreGetPetResult {
     ) : PetstoreGetPetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class NotModified(
+        public val validators: Validators,
+        public val headers: Headers,
+    ) : PetstoreGetPetResult
+
+    @DavilsGenerated(
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -999,7 +1044,7 @@ public sealed interface PetstoreGetPetResult {
     ) : PetstoreGetPetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1008,7 +1053,7 @@ public sealed interface PetstoreGetPetResult {
     ) : PetstoreGetPetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1018,9 +1063,9 @@ public sealed interface PetstoreGetPetResult {
 ===== com/example/petstore/operation/PetstoreListPetsResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstoreProblem
 import kotlin.Int
@@ -1029,12 +1074,12 @@ import kotlin.collections.List
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreListPetsResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1043,7 +1088,7 @@ public sealed interface PetstoreListPetsResult {
     ) : PetstoreListPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class ServerError(
@@ -1053,7 +1098,7 @@ public sealed interface PetstoreListPetsResult {
     ) : PetstoreListPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Other(
@@ -1063,7 +1108,7 @@ public sealed interface PetstoreListPetsResult {
     ) : PetstoreListPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1073,7 +1118,7 @@ public sealed interface PetstoreListPetsResult {
     ) : PetstoreListPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1082,7 +1127,7 @@ public sealed interface PetstoreListPetsResult {
     ) : PetstoreListPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1092,21 +1137,21 @@ public sealed interface PetstoreListPetsResult {
 ===== com/example/petstore/operation/PetstoreLoginResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstoreLoginOk
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreLoginResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1115,7 +1160,7 @@ public sealed interface PetstoreLoginResult {
     ) : PetstoreLoginResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1125,7 +1170,7 @@ public sealed interface PetstoreLoginResult {
     ) : PetstoreLoginResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1134,7 +1179,7 @@ public sealed interface PetstoreLoginResult {
     ) : PetstoreLoginResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1144,21 +1189,21 @@ public sealed interface PetstoreLoginResult {
 ===== com/example/petstore/operation/PetstorePagePetsResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePagePetsOk
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstorePagePetsResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1167,7 +1212,7 @@ public sealed interface PetstorePagePetsResult {
     ) : PetstorePagePetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1177,7 +1222,7 @@ public sealed interface PetstorePagePetsResult {
     ) : PetstorePagePetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1186,30 +1231,83 @@ public sealed interface PetstorePagePetsResult {
     ) : PetstorePagePetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
         public val failure: CallFailure,
     ) : PetstorePagePetsResult
 }
+===== com/example/petstore/operation/PetstoreQueryPetsResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreQueryPetsResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: List<PetstorePet>,
+        public val headers: Headers,
+    ) : PetstoreQueryPetsResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreQueryPetsResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreQueryPetsResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreQueryPetsResult
+}
 ===== com/example/petstore/operation/PetstoreRenamePetResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreRenamePetResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1218,7 +1316,7 @@ public sealed interface PetstoreRenamePetResult {
     ) : PetstoreRenamePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Status418(
@@ -1227,7 +1325,7 @@ public sealed interface PetstoreRenamePetResult {
     ) : PetstoreRenamePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1237,7 +1335,7 @@ public sealed interface PetstoreRenamePetResult {
     ) : PetstoreRenamePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1246,7 +1344,7 @@ public sealed interface PetstoreRenamePetResult {
     ) : PetstoreRenamePetResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1256,9 +1354,9 @@ public sealed interface PetstoreRenamePetResult {
 ===== com/example/petstore/operation/PetstoreSearchPetsResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.model.PetstorePet
 import kotlin.Int
 import kotlin.String
@@ -1266,12 +1364,12 @@ import kotlin.collections.List
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreSearchPetsResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1280,7 +1378,7 @@ public sealed interface PetstoreSearchPetsResult {
     ) : PetstoreSearchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1290,7 +1388,7 @@ public sealed interface PetstoreSearchPetsResult {
     ) : PetstoreSearchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1299,7 +1397,7 @@ public sealed interface PetstoreSearchPetsResult {
     ) : PetstoreSearchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1309,20 +1407,20 @@ public sealed interface PetstoreSearchPetsResult {
 ===== com/example/petstore/operation/PetstoreSetAvatarResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreSetAvatarResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class NoContent(
@@ -1331,7 +1429,7 @@ public sealed interface PetstoreSetAvatarResult {
     ) : PetstoreSetAvatarResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1341,7 +1439,7 @@ public sealed interface PetstoreSetAvatarResult {
     ) : PetstoreSetAvatarResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1350,7 +1448,7 @@ public sealed interface PetstoreSetAvatarResult {
     ) : PetstoreSetAvatarResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1360,20 +1458,20 @@ public sealed interface PetstoreSetAvatarResult {
 ===== com/example/petstore/operation/PetstoreUploadPhotoResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreUploadPhotoResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class NoContent(
@@ -1382,7 +1480,7 @@ public sealed interface PetstoreUploadPhotoResult {
     ) : PetstoreUploadPhotoResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1392,7 +1490,7 @@ public sealed interface PetstoreUploadPhotoResult {
     ) : PetstoreUploadPhotoResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1401,7 +1499,7 @@ public sealed interface PetstoreUploadPhotoResult {
     ) : PetstoreUploadPhotoResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
@@ -1411,20 +1509,20 @@ public sealed interface PetstoreUploadPhotoResult {
 ===== com/example/petstore/operation/PetstoreWatchPetsResult.kt
 package com.example.petstore.operation
 
-import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
 import kotlin.Int
 import kotlin.String
 import kotlinx.io.bytestring.ByteString
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "client.yaml",
 )
 public sealed interface PetstoreWatchPetsResult {
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Ok(
@@ -1433,7 +1531,7 @@ public sealed interface PetstoreWatchPetsResult {
     ) : PetstoreWatchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Unexpected(
@@ -1443,7 +1541,7 @@ public sealed interface PetstoreWatchPetsResult {
     ) : PetstoreWatchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Malformed(
@@ -1452,10 +1550,782 @@ public sealed interface PetstoreWatchPetsResult {
     ) : PetstoreWatchPetsResult
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "client.yaml",
     )
     public data class Failed(
         public val failure: CallFailure,
     ) : PetstoreWatchPetsResult
+}
+===== com/example/petstore/server/PetstoreAdminRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.ParameterType
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreDeletePetResponse
+import kotlin.Long
+import kotlin.collections.List
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public class PetstoreAdminRoutes(
+    private val service: PetstoreAdminService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "deletePet",
+            method = "DELETE",
+            path = "/pets/{petId}",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::deletePet,
+        ),
+    )
+
+    private suspend fun deletePet(request: Request): Reply {
+        val input = request.input()
+        val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        if (!input.isValid || petId == null) return input.refused()
+        return when (val response = service.deletePet(petId = petId)) {
+            is PetstoreDeletePetResponse.NoContent -> reply(204)
+        }
+    }
+}
+===== com/example/petstore/server/PetstoreAdminService.kt
+package com.example.petstore.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreDeletePetResponse
+import kotlin.Long
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public interface PetstoreAdminService {
+    public suspend fun deletePet(petId: Long): PetstoreDeletePetResponse
+}
+===== com/example/petstore/server/PetstoreAuthRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreLoginOk
+import com.example.petstore.operation.PetstoreLoginResponse
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public class PetstoreAuthRoutes(
+    private val service: PetstoreAuthService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "login",
+            method = "POST",
+            path = "/login",
+            security = listOf(),
+            handler = ::login,
+        ),
+    )
+
+    private suspend fun login(request: Request): Reply {
+        val input = request.input()
+        val form = input.body(LoginForm.serializer(), true, listOf(MediaRange.of("application/x-www-form-urlencoded")))
+        if (!input.isValid || form == null) return input.refused()
+        return when (val response = service.login(user = form.user, password = form.password, scopes = form.scopes)) {
+            is PetstoreLoginResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), PetstoreLoginOk.serializer(), response.body)
+            }
+        }
+    }
+
+    @Serializable
+    private class LoginForm(
+        @SerialName("user")
+        public val user: String,
+        @SerialName("password")
+        public val password: String,
+        @SerialName("scopes")
+        public val scopes: List<String>? = null,
+    )
+}
+===== com/example/petstore/server/PetstoreAuthService.kt
+package com.example.petstore.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreLoginResponse
+import kotlin.String
+import kotlin.collections.List
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public interface PetstoreAuthService {
+    public suspend fun login(
+        user: String,
+        password: String,
+        scopes: List<String>?,
+    ): PetstoreLoginResponse
+}
+===== com/example/petstore/server/PetstorePetsRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.codec.Codecs
+import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.conditional.EntityTag
+import com.davils.kapi.runtime.core.conditional.RepresentationState
+import com.davils.kapi.runtime.core.framing.ServerSentEvent
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.conditional
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.ParameterType
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePagePetsOk
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstorePetPatch
+import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreProblem
+import com.example.petstore.model.PetstoreQueryPetsCriteria
+import com.example.petstore.model.PetstoreSearchPetsFilter
+import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
+import com.example.petstore.operation.PetstoreCreatePetResponse
+import com.example.petstore.operation.PetstoreExportPetsResponse
+import com.example.petstore.operation.PetstoreGetPetResponse
+import com.example.petstore.operation.PetstoreListPetsResponse
+import com.example.petstore.operation.PetstorePagePetsResponse
+import com.example.petstore.operation.PetstoreQueryPetsResponse
+import com.example.petstore.operation.PetstoreRenamePetResponse
+import com.example.petstore.operation.PetstoreSearchPetsResponse
+import com.example.petstore.operation.PetstoreSetAvatarResponse
+import com.example.petstore.operation.PetstoreUploadPhotoResponse
+import com.example.petstore.operation.PetstoreWatchPetsResponse
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.io.bytestring.decodeToString
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public class PetstorePetsRoutes(
+    private val service: PetstorePetsService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "createPet",
+            method = "POST",
+            path = "/pets",
+            security = listOf(listOf(SchemeUse("apiKey", CredentialSource.Header("X-Api-Key"), setOf())), listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::createPet,
+        ),
+        Operation(
+            name = "exportPets",
+            method = "GET",
+            path = "/pets/export",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::exportPets,
+        ),
+        Operation(
+            name = "getPet",
+            method = "GET",
+            path = "/pets/{petId}",
+            security = listOf(),
+            handler = ::getPet,
+        ),
+        Operation(
+            name = "listPets",
+            method = "GET",
+            path = "/pets",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::listPets,
+        ),
+        Operation(
+            name = "pagePets",
+            method = "GET",
+            path = "/pets/pages",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::pagePets,
+        ),
+        Operation(
+            name = "queryPets",
+            method = "QUERY",
+            path = "/pets/query",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::queryPets,
+        ),
+        Operation(
+            name = "renamePet",
+            method = "PATCH",
+            path = "/pets/{petId}",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::renamePet,
+        ),
+        Operation(
+            name = "searchPets",
+            method = "GET",
+            path = "/pets/search",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::searchPets,
+        ),
+        Operation(
+            name = "setAvatar",
+            method = "PUT",
+            path = "/pets/{petId}/avatar",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::setAvatar,
+        ),
+        Operation(
+            name = "uploadPhoto",
+            method = "POST",
+            path = "/pets/{petId}/photo",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::uploadPhoto,
+        ),
+        Operation(
+            name = "watchPets",
+            method = "GET",
+            path = "/pets/events",
+            security = listOf(listOf(SchemeUse("bearer", CredentialSource.Bearer, setOf()))),
+            handler = ::watchPets,
+        ),
+    )
+
+    private suspend fun createPet(request: Request): Reply {
+        val input = request.input()
+        val body = input.body(PetstorePetWrite.serializer(), true, listOf(MediaRange.of("application/json")))
+        if (!input.isValid || body == null) return input.refused()
+        return when (val response = service.createPet(body = body)) {
+            is PetstoreCreatePetResponse.Created -> reply(201) {
+                body(MediaType.parse("application/json"), PetstorePet.serializer(), response.body)
+            }
+            is PetstoreCreatePetResponse.Conflict -> reply(409)
+        }
+    }
+
+    private suspend fun exportPets(request: Request): Reply {
+        val input = request.input()
+        val since = input.value(Place.Query, ParameterFormat("since", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        if (!input.isValid) return input.refused()
+        return when (val response = service.exportPets(since = since)) {
+            is PetstoreExportPetsResponse.Ok -> reply(200) {
+                lines(PetstorePet.serializer(), response.items, MediaType.parse("application/x-ndjson"))
+            }
+        }
+    }
+
+    private suspend fun getPet(request: Request): Reply {
+        val input = request.input()
+        val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        if (!input.isValid || petId == null) return input.refused()
+        return when (val response = service.getPet(petId = petId)) {
+            is PetstoreGetPetResponse.Ok -> request.conditional(RepresentationState(entityTag = EntityTag.parseOrNull(response.eTag), lastModified = null)) {
+                reply(200) {
+                    header("ETag", response.eTag)
+                    header("X-Rate-Remaining", response.xRateRemaining?.toString())
+                    body(MediaType.parse("application/json"), PetstorePet.serializer(), response.body)
+                }
+            }
+            is PetstoreGetPetResponse.NotFound -> reply(404)
+        }
+    }
+
+    private suspend fun listPets(request: Request): Reply {
+        val input = request.input()
+        val status = input.value(Place.Query, ParameterFormat("status", ParameterStyle.Form, true), ParameterType(PetstoreStatus.serializer(), true), false)
+        val tag = input.items(Place.Query, ParameterFormat("tag", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        val limit = input.value(Place.Query, ParameterFormat("limit", ParameterStyle.Form, true), ParameterType(Int.serializer(), false), false)
+        val xTrace = input.value(Place.Header, ParameterFormat("X-Trace", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false)
+        val state = input.items(Place.Query, ParameterFormat("state", ParameterStyle.Form, false), ParameterType(PetstoreStatus.serializer(), true), false)
+        val session = input.value(Place.Cookie, ParameterFormat("session", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        if (!input.isValid) return input.refused()
+        return when (val response = service.listPets(status = status, tag = tag, limit = limit, xTrace = xTrace, state = state, session = session)) {
+            is PetstoreListPetsResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), ListSerializer(PetstorePet.serializer()), response.body)
+            }
+            is PetstoreListPetsResponse.ServerError -> reply(response.status) {
+                body(MediaType.parse("application/problem+json"), PetstoreProblem.serializer(), response.body)
+            }
+            is PetstoreListPetsResponse.Other -> reply(response.status) {
+                body(MediaType.parse("application/problem+json"), PetstoreProblem.serializer(), response.body)
+            }
+        }
+    }
+
+    private suspend fun pagePets(request: Request): Reply {
+        val input = request.input()
+        val cursor = input.value(Place.Query, ParameterFormat("cursor", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        val size = input.value(Place.Query, ParameterFormat("size", ParameterStyle.Form, true), ParameterType(Int.serializer(), false), false)
+        if (!input.isValid) return input.refused()
+        return when (val response = service.pagePets(cursor = cursor, size = size)) {
+            is PetstorePagePetsResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), PetstorePagePetsOk.serializer(), response.body)
+            }
+        }
+    }
+
+    private suspend fun queryPets(request: Request): Reply {
+        val input = request.input()
+        val criteria = input.queryString(MediaType.parse("application/x-www-form-urlencoded"), PetstoreQueryPetsCriteria.serializer(), true)
+        if (!input.isValid || criteria == null) return input.refused()
+        return when (val response = service.queryPets(criteria = criteria)) {
+            is PetstoreQueryPetsResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), ListSerializer(PetstorePet.serializer()), response.body)
+            }
+        }
+    }
+
+    private suspend fun renamePet(request: Request): Reply {
+        val input = request.input()
+        val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        val body = input.body(PetstorePetPatch.serializer(), false, listOf(MediaRange.of("application/merge-patch+json")))
+        if (!input.isValid || petId == null) return input.refused()
+        return when (val response = service.renamePet(petId = petId, body = body)) {
+            is PetstoreRenamePetResponse.Ok -> reply(200) {
+                bytes(MediaType.parse("text/plain"), response.content)
+            }
+            is PetstoreRenamePetResponse.Status418 -> reply(418)
+        }
+    }
+
+    private suspend fun searchPets(request: Request): Reply {
+        val input = request.input()
+        val filter = input.fields(Place.Query, ParameterFormat("filter", ParameterStyle.DeepObject, false), PetstoreSearchPetsFilter.serializer(), false, setOf("name", "minAge"))
+        val range = input.fields(Place.Query, ParameterFormat("range", ParameterStyle.DeepObject, false), MapSerializer(String.serializer(), String.serializer()), false, setOf())
+        if (!input.isValid) return input.refused()
+        return when (val response = service.searchPets(filter = filter, range = range)) {
+            is PetstoreSearchPetsResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), ListSerializer(PetstorePet.serializer()), response.body)
+            }
+        }
+    }
+
+    private suspend fun setAvatar(request: Request): Reply {
+        val input = request.input()
+        val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        val body = input.bytes(true, listOf(MediaRange.of("application/octet-stream")))
+        if (!input.isValid || petId == null || body == null) return input.refused()
+        return when (val response = service.setAvatar(petId = petId, body = body)) {
+            is PetstoreSetAvatarResponse.NoContent -> reply(204)
+        }
+    }
+
+    private suspend fun uploadPhoto(request: Request): Reply {
+        val input = request.input()
+        val petId = input.value(Place.Path, ParameterFormat("petId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        val parts = input.parts(true)
+        val photo = parts?.firstOrNull { part -> part.name == "photo" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
+        val caption = parts?.firstOrNull { part -> part.name == "caption" }?.let { part -> part.content.decodeToString() }
+        val meta = parts?.firstOrNull { part -> part.name == "meta" }?.let { part -> Codecs.Default.decode(PetstoreUploadPhotoRequestMeta.serializer(), part.content, "application/json") }
+        if (!input.isValid || petId == null || photo == null || (meta != null && meta !is Decoding.Decoded)) return input.refused()
+        return when (val response = service.uploadPhoto(petId = petId, photo = photo, caption = caption, meta = meta?.value)) {
+            is PetstoreUploadPhotoResponse.NoContent -> reply(204)
+        }
+    }
+
+    private suspend fun watchPets(request: Request): Reply {
+        val input = request.input()
+        if (!input.isValid) return input.refused()
+        return when (val response = service.watchPets()) {
+            is PetstoreWatchPetsResponse.Ok -> reply(200) {
+                events {
+                    response.items.collect { item -> send(ServerSentEvent(data = Codecs.Default.json.encodeToString(PetstorePet.serializer(), item))) }
+                }
+            }
+        }
+    }
+}
+===== com/example/petstore/server/PetstorePetsService.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePetPatch
+import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreQueryPetsCriteria
+import com.example.petstore.model.PetstoreSearchPetsFilter
+import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
+import com.example.petstore.operation.PetstoreCreatePetResponse
+import com.example.petstore.operation.PetstoreExportPetsResponse
+import com.example.petstore.operation.PetstoreGetPetResponse
+import com.example.petstore.operation.PetstoreListPetsResponse
+import com.example.petstore.operation.PetstorePagePetsResponse
+import com.example.petstore.operation.PetstoreQueryPetsResponse
+import com.example.petstore.operation.PetstoreRenamePetResponse
+import com.example.petstore.operation.PetstoreSearchPetsResponse
+import com.example.petstore.operation.PetstoreSetAvatarResponse
+import com.example.petstore.operation.PetstoreUploadPhotoResponse
+import com.example.petstore.operation.PetstoreWatchPetsResponse
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public interface PetstorePetsService {
+    public suspend fun createPet(body: PetstorePetWrite): PetstoreCreatePetResponse
+
+    public suspend fun exportPets(since: String?): PetstoreExportPetsResponse
+
+    public suspend fun getPet(petId: Long): PetstoreGetPetResponse
+
+    public suspend fun listPets(
+        status: PetstoreStatus?,
+        tag: List<String>?,
+        limit: Int?,
+        xTrace: String?,
+        state: List<PetstoreStatus>?,
+        session: String?,
+    ): PetstoreListPetsResponse
+
+    public suspend fun pagePets(cursor: String?, size: Int?): PetstorePagePetsResponse
+
+    public suspend fun queryPets(criteria: PetstoreQueryPetsCriteria): PetstoreQueryPetsResponse
+
+    public suspend fun renamePet(petId: Long, body: PetstorePetPatch?): PetstoreRenamePetResponse
+
+    public suspend fun searchPets(filter: PetstoreSearchPetsFilter?, range: Map<String, String>?): PetstoreSearchPetsResponse
+
+    public suspend fun setAvatar(petId: Long, body: ByteString): PetstoreSetAvatarResponse
+
+    public suspend fun uploadPhoto(
+        petId: Long,
+        photo: FilePart,
+        caption: String?,
+        meta: PetstoreUploadPhotoRequestMeta?,
+    ): PetstoreUploadPhotoResponse
+
+    public suspend fun watchPets(): PetstoreWatchPetsResponse
+}
+===== com/example/petstore/operation/PetstoreCreatePetResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreCreatePetResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Created(
+        public val body: PetstorePet,
+    ) : PetstoreCreatePetResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object Conflict : PetstoreCreatePetResponse
+}
+===== com/example/petstore/operation/PetstoreDeletePetResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreDeletePetResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object NoContent : PetstoreDeletePetResponse
+}
+===== com/example/petstore/operation/PetstoreExportPetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlinx.coroutines.flow.Flow
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreExportPetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val items: Flow<PetstorePet>,
+    ) : PetstoreExportPetsResponse
+}
+===== com/example/petstore/operation/PetstoreGetPetResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlin.Int
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreGetPetResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: PetstorePet,
+        public val eTag: String,
+        public val xRateRemaining: Int?,
+    ) : PetstoreGetPetResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object NotFound : PetstoreGetPetResponse
+}
+===== com/example/petstore/operation/PetstoreListPetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstoreProblem
+import kotlin.Int
+import kotlin.collections.List
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreListPetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: List<PetstorePet>,
+    ) : PetstoreListPetsResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class ServerError(
+        public val status: Int,
+        public val body: PetstoreProblem,
+    ) : PetstoreListPetsResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Other(
+        public val status: Int,
+        public val body: PetstoreProblem,
+    ) : PetstoreListPetsResponse
+}
+===== com/example/petstore/operation/PetstoreLoginResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreLoginOk
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreLoginResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreLoginOk,
+    ) : PetstoreLoginResponse
+}
+===== com/example/petstore/operation/PetstorePagePetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePagePetsOk
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstorePagePetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: PetstorePagePetsOk,
+    ) : PetstorePagePetsResponse
+}
+===== com/example/petstore/operation/PetstoreQueryPetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlin.collections.List
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreQueryPetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: List<PetstorePet>,
+    ) : PetstoreQueryPetsResponse
+}
+===== com/example/petstore/operation/PetstoreRenamePetResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreRenamePetResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val content: ByteString,
+    ) : PetstoreRenamePetResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object Status418 : PetstoreRenamePetResponse
+}
+===== com/example/petstore/operation/PetstoreSearchPetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlin.collections.List
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreSearchPetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val body: List<PetstorePet>,
+    ) : PetstoreSearchPetsResponse
+}
+===== com/example/petstore/operation/PetstoreSetAvatarResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreSetAvatarResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object NoContent : PetstoreSetAvatarResponse
+}
+===== com/example/petstore/operation/PetstoreUploadPhotoResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreUploadPhotoResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data object NoContent : PetstoreUploadPhotoResponse
+}
+===== com/example/petstore/operation/PetstoreWatchPetsResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import kotlinx.coroutines.flow.Flow
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "client.yaml",
+)
+public sealed interface PetstoreWatchPetsResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "client.yaml",
+    )
+    public data class Ok(
+        public val items: Flow<PetstorePet>,
+    ) : PetstoreWatchPetsResponse
 }

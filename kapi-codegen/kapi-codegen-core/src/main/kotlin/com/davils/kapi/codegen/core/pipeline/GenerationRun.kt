@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.pipeline
 
-import com.davils.kapi.spec.openapi.Document
-import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.ModelCatalog
@@ -36,6 +33,7 @@ import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.ModelSplit
 import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
+import com.davils.kapi.codegen.core.model.plan.PropertyPlan
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.naming.SchemaNames
 import com.davils.kapi.codegen.core.operation.HookPlanner
@@ -47,6 +45,8 @@ import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.sample.MockPlanner
 import com.davils.kapi.codegen.core.sample.SamplePlanner
 import com.davils.kapi.codegen.core.sample.Samples
+import com.davils.kapi.spec.core.source.SourceDocument
+import com.davils.kapi.spec.openapi.Document
 
 private val served: Set<Artifact> = setOf(Artifact.Client, Artifact.Server)
 
@@ -72,8 +72,9 @@ internal class GenerationRun(
         val planned = planned(scope)
         if (findings.hasErrors) return Generation.Refused(findings.sorted())
         val models = (planned.models + planned.patches).sortedBy(ModelPlan::name)
-        val sides = clients(scope, planned.operations) + servers(scope, planned.operations)
-        val hooks = senders(scope, planned.hooks) + receivers(scope, planned.hooks)
+        val fields = fieldsOf(models)
+        val sides = clients(scope, planned.operations) + servers(scope, planned.operations, fields)
+        val hooks = senders(scope, planned.hooks) + receivers(scope, planned.hooks, fields)
         val files = emitter.emit(models) + sides + hooks + mocks(scope, planned)
         val provenance = Provenances.of(options, sources, files)
         return Generation.Generated(
@@ -159,13 +160,32 @@ internal class GenerationRun(
         return ClientEmitter(options, scope.documentName, ClientKind.Sender).emit(hooks)
     }
 
-    private fun receivers(scope: PlanScope, hooks: List<OperationPlan>): List<GeneratedFile> {
+    private fun receivers(
+        scope: PlanScope,
+        hooks: List<OperationPlan>,
+        fields: Map<String, List<String>>,
+    ): List<GeneratedFile> {
         if (Artifact.Receivers !in options.artifacts) return emptyList()
-        return ServerEmitter(options, scope.documentName, ServerKind.Receiver).emit(hooks)
+        val emitter = ServerEmitter(
+            options = options,
+            origin = scope.documentName,
+            fields = fields,
+            kind = ServerKind.Receiver,
+        )
+        return emitter.emit(hooks)
     }
 
-    private fun servers(scope: PlanScope, operations: List<OperationPlan>): List<GeneratedFile> {
+    private fun servers(
+        scope: PlanScope,
+        operations: List<OperationPlan>,
+        fields: Map<String, List<String>>,
+    ): List<GeneratedFile> {
         if (Artifact.Server !in options.artifacts) return emptyList()
-        return ServerEmitter(options, scope.documentName).emit(operations)
+        return ServerEmitter(options, scope.documentName, fields).emit(operations)
+    }
+
+    private fun fieldsOf(models: List<ModelPlan>): Map<String, List<String>> {
+        val objects = models.filterIsInstance<ModelPlan.ObjectPlan>()
+        return objects.associate { plan -> plan.name to plan.properties.map(PropertyPlan::jsonName) }
     }
 }

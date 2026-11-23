@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
+import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.spec.openapi.model.content.Encoding
 import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.codegen.core.operation.plan.BodyKind
 
 internal data class FieldSite(
     val wireName: String,

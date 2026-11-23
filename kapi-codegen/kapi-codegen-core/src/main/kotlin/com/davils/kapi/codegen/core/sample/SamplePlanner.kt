@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -53,7 +52,9 @@ internal class SamplePlanner(private val scope: PlanScope, private val prefix: S
 
     private fun named(values: List<Pair<ModelPlan, SampleValue>>): List<SamplePlan> {
         val table = NameTable(scope.findings)
-        val plans = values.map { (plan, value) -> SamplePlan(plan.name, nameOf(plan.name), value) }
+        val plans = values.map { (plan, value) ->
+            SamplePlan(model = plan.name, name = nameOf(plan.name), value = value)
+        }
         values.zip(plans).forEach { (value, plan) ->
             val origin = "The sample of ${plan.model}"
             table.claim(NameClaim(plan.name, origin, scope.locationOf(value.first.origin)))

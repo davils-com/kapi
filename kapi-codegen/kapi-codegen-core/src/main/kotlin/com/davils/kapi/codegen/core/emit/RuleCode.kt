@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
-import com.davils.kapi.spec.core.value.NumberValue
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
-import com.squareup.kotlinpoet.CodeBlock
 import com.davils.kapi.codegen.core.model.toBigDecimal
+import com.davils.kapi.spec.core.value.NumberValue
+import com.davils.kapi.spec.core.value.Value
+import com.squareup.kotlinpoet.CodeBlock
 
 private val limitCodes: Map<LimitKind, String> = mapOf(
     LimitKind.MinLength to "MIN_LENGTH",

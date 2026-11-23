@@ -1,9 +1,8 @@
 ===== com/example/chat/model/ChatJoinedPayload.kt
 package com.example.chat.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -12,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "chat.yaml#/components/messages/Joined/payload",
 )
 public data class ChatJoinedPayload(
@@ -20,19 +19,17 @@ public data class ChatJoinedPayload(
     public val type: String,
     @SerialName("member")
     public val member: ChatMember,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "joined") fail(::type, "must be joined", ViolationCodes.CONST)
+        if (type != "joined") fail(::type, "must be joined", ConstraintViolationCodes.CONST)
         within(::member) { with(member) { validate() } }
     }
 }
 ===== com/example/chat/model/ChatLeavePayload.kt
 package com.example.chat.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -41,23 +38,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "chat.yaml#/components/messages/Leave/payload",
 )
 public data class ChatLeavePayload(
     @SerialName("type")
     public val type: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "leave") fail(::type, "must be leave", ViolationCodes.CONST)
+        if (type != "leave") fail(::type, "must be leave", ConstraintViolationCodes.CONST)
     }
 }
 ===== com/example/chat/model/ChatMember.kt
 package com.example.chat.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -66,23 +61,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "chat.yaml#/components/schemas/Member",
 )
 public data class ChatMember(
     @SerialName("nick")
     public val nick: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
 ===== com/example/chat/model/ChatSaid.kt
 package com.example.chat.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -91,7 +84,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "chat.yaml#/components/schemas/Said",
 )
 public data class ChatSaid(
@@ -101,19 +94,17 @@ public data class ChatSaid(
     public val from: ChatMember,
     @SerialName("text")
     public val text: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "said") fail(::type, "must be said", ViolationCodes.CONST)
+        if (type != "said") fail(::type, "must be said", ConstraintViolationCodes.CONST)
         within(::from) { with(from) { validate() } }
     }
 }
 ===== com/example/chat/model/ChatSay.kt
 package com.example.chat.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -122,7 +113,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "chat.yaml#/components/schemas/Say",
 )
 public data class ChatSay(
@@ -130,10 +121,9 @@ public data class ChatSay(
     public val type: String,
     @SerialName("text")
     public val text: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "say") fail(::type, "must be say", ViolationCodes.CONST)
+        if (type != "say") fail(::type, "must be say", ConstraintViolationCodes.CONST)
     }
 }
 ===== com/example/chat/channel/ChatRoomClientMessage.kt
@@ -724,23 +714,23 @@ public class ChatRoutes(
   "files": [
     {
       "name": "com/example/chat/model/ChatJoinedPayload.kt",
-      "digest": "sha256:689106e8129c5b65b013ea9d8feec5f65266034f1921b2d85506b7440a72c12c"
+      "digest": "sha256:19fc64ac21de51e471cab67b011a2193ca1a6c1c6019ffb6ff53d58b66028009"
     },
     {
       "name": "com/example/chat/model/ChatLeavePayload.kt",
-      "digest": "sha256:85c9e52c9662ffd84f88be9db78b78270e5c4a214c0764b36c1fcf967a8c4b16"
+      "digest": "sha256:5d5853dea4f24258ac70b863d9000f1cac9dcc7e6b543a28a1607eb741241024"
     },
     {
       "name": "com/example/chat/model/ChatMember.kt",
-      "digest": "sha256:d0c0c6f47f26ae4bd4ab96c9f141f3478b698c7968eee0fc547ad0490ed48bfb"
+      "digest": "sha256:f91506f5994d3147f58de1fb398156a142de7c7c8fa0750dba523084aad0779c"
     },
     {
       "name": "com/example/chat/model/ChatSaid.kt",
-      "digest": "sha256:01ff3850cb29aa43d686c6f50c9c8f2482aee1bdc14349fda4d8f64318e5f4b3"
+      "digest": "sha256:5e1a805dfb8d29230700b383b3efde029be458280f76634865efd864bd86b714"
     },
     {
       "name": "com/example/chat/model/ChatSay.kt",
-      "digest": "sha256:97f1ad6aa629bac516e3f0e902f45d7b2790167c2509ff036374787c5365c228"
+      "digest": "sha256:43f921fc31c1b89ce38afddca500041610c776c0c49a7cc6eb0547df522cf912"
     },
     {
       "name": "com/example/chat/channel/ChatRoomClientMessage.kt",

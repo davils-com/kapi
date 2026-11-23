@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 internal enum class ClientKind(val packageName: String, val suffix: String) {

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.LIST_PETS
 import com.davils.kapi.codegen.core.fixture.clientGenerationOf
 import com.davils.kapi.codegen.core.fixture.clientOf
@@ -67,14 +66,16 @@ private val parts: Map<String, String> = mapOf(
     "ids: $NUMBERS" to """if (ids != null) texts("ids", ids.map { it.toString() })""",
     PHOTO to """if (photo != null) file("photo", photo)""",
     "photos: {type: array, items: $FILE}" to """if (photos != null) files("photos", photos)""",
-    "meta: $META" to """if (meta != null) part("meta", "application/json", $META_JSON)""",
-    "any: true" to """if (any != null) part("any", "application/json", client.json(JsonElement.serializer(), any))""",
+    "meta: $META" to """if (meta != null) part("meta", MediaType.parse("application/json"), $META_JSON)""",
+    "any: true" to
+        """if (any != null) part("any", MediaType.parse("application/json"), """ +
+        """client.json(JsonElement.serializer(), any))""",
 )
 
 private val encodings: Map<String, String> = mapOf(
-    PHOTO to """file("photo", photo, "image/png")""",
-    "photo: {type: array, items: $FILE}" to """files("photo", photo, "image/png")""",
-    "photo: $META" to """part("photo", "image/png", client.json(""",
+    PHOTO to """file("photo", photo, MediaType.parse("image/png"))""",
+    "photo: {type: array, items: $FILE}" to """files("photo", photo, MediaType.parse("image/png"))""",
+    "photo: $META" to """part("photo", MediaType.parse("image/png"), client.json(""",
 )
 
 private val refusedEncodings: List<String> = listOf(
@@ -98,12 +99,12 @@ class FieldPlannerTest : FunSpec({
     context("the field of a form") {
         fields.forEach { (property, code) ->
             test("is a parameter that is written as text: $property") {
-                clientOf(body(FORM, property)) shouldContain code
+                clientOf(body(type = FORM, properties = property)) shouldContain code
             }
         }
 
         test("is refused when it is a file") {
-            clientGenerationOf(body(FORM, PHOTO)).codes() shouldBe
+            clientGenerationOf(body(type = FORM, properties = PHOTO)).codes() shouldBe
                 listOf(CodegenCodes.OPERATION_UNSUPPORTED)
         }
     }
@@ -111,12 +112,12 @@ class FieldPlannerTest : FunSpec({
     context("the part of a multipart body") {
         parts.forEach { (property, code) ->
             test("is a parameter that is written as its kind of part: $property") {
-                clientOf(body(PARTS, property)) shouldContain code
+                clientOf(body(type = PARTS, properties = property)) shouldContain code
             }
         }
 
         test("is a file with its name and its type when the document says binary") {
-            val kotlin = clientOf(body(PARTS, "photo: $FILE, photos: {type: array, items: $FILE}"))
+            val kotlin = clientOf(body(type = PARTS, properties = "photo: $FILE, photos: {type: array, items: $FILE}"))
 
             kotlin shouldContain "photo: FilePart? = null"
             kotlin shouldContain "photos: List<FilePart>? = null"
@@ -140,14 +141,16 @@ class FieldPlannerTest : FunSpec({
 
     context("the fields of a body") {
         test("are required as the schema says, with what is required first") {
-            val kotlin = clientOf(body(FORM, "a: $TEXT, b: $TEXT", ", required: [b]"))
+            val kotlin = clientOf(body(type = FORM, properties = "a: $TEXT, b: $TEXT", more = ", required: [b]"))
 
             kotlin shouldContain "listPets(b: String, a: String? = null)"
             kotlin shouldContain """                field("b", b)"""
         }
 
         test("stay optional when they are required and their schema allows null") {
-            val kotlin = clientOf(body(FORM, "a: {type: [string, 'null']}", ", required: [a]"))
+            val kotlin = clientOf(
+                body(type = FORM, properties = "a: {type: [string, 'null']}", more = ", required: [a]"),
+            )
 
             kotlin shouldContain OPTIONAL
         }
@@ -168,25 +171,29 @@ class FieldPlannerTest : FunSpec({
 
         test("leave out what is only read and what x-kapi-ignore names") {
             val properties = "id: {type: string, readOnly: true}, hidden: {type: string, x-kapi-ignore: true}, a: $TEXT"
-            val kotlin = clientOf(body(FORM, properties))
+            val kotlin = clientOf(body(type = FORM, properties = properties))
 
             kotlin shouldContain OPTIONAL
             kotlin shouldNotContain "hidden"
         }
 
         test("keep a property whose x-kapi-ignore is false") {
-            clientOf(body(FORM, "a: {type: string, x-kapi-ignore: false}")) shouldContain OPTIONAL
+            clientOf(body(type = FORM, properties = "a: {type: string, x-kapi-ignore: false}")) shouldContain OPTIONAL
         }
 
         test("are written in the shape to write of a model that is read differently") {
             val account = "Account: {type: object, properties: {id: {type: string, readOnly: true}, email: $TEXT}}"
-            val lines = body(PARTS, "account: {\$ref: '#/components/schemas/Account'}") + schemas(listOf(account))
+            val lines = body(
+                type = PARTS,
+                properties = "account: {\$ref: '#/components/schemas/Account'}",
+            ) +
+                schemas(listOf(account))
 
             clientOf(lines) shouldContain "client.json(PetstoreAccountWrite.serializer(), account)"
         }
 
         test("are refused under a name the generated client uses itself") {
-            clientGenerationOf(body(FORM, "body: $TEXT")).codes() shouldBe
+            clientGenerationOf(body(type = FORM, properties = "body: $TEXT")).codes() shouldBe
                 listOf(CodegenCodes.NAME_COLLISION)
         }
 

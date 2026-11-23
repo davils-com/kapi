@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -24,6 +23,7 @@ import com.davils.kapi.codegen.core.fixture.codes
 import com.davils.kapi.codegen.core.fixture.paths
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.serverGenerationOf
+import com.davils.kapi.codegen.core.fixture.serverOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
@@ -72,13 +72,13 @@ class TransferPlannerTest : FunSpec({
             val kotlin = clientOf(answering("application/json: {schema: $PET, x-kapi-stream: records}"))
 
             kotlin shouldContain "public fun watchStream(): Flow<StreamEvent<PetstorePet>> {"
-            kotlin shouldContain "return client.records(PetstorePet.serializer(), call)"
-            kotlin shouldContain """accept("application/json")"""
+            kotlin shouldContain "return client.records(PetstorePet.serializer(), call, RecordFraming.JsonLines)"
+            kotlin shouldContain """accept(MediaRange.of("application/json"))"""
         }
 
         test("is read as events when it says so") {
             clientOf(answering("application/json: {schema: $PET, x-kapi-stream: events}")) shouldContain
-                "return client.events(PetstorePet.serializer(), call)"
+                "return client.events(PetstorePet.serializer(), call, reconnection)"
         }
 
         test("is read as bytes whatever its schema") {
@@ -96,11 +96,11 @@ class TransferPlannerTest : FunSpec({
             val kotlin = clientOf(build)
 
             kotlin shouldContain "body: Flow<ByteString>"
-            kotlin shouldContain """upload("application/x-tar", body)"""
+            kotlin shouldContain """upload(MediaType.parse("application/x-tar"), body)"""
         }
 
         test("is optional when the document does not require it") {
-            clientOf(build) shouldContain """if (body != null) upload("application/x-tar", body)"""
+            clientOf(build) shouldContain """if (body != null) upload(MediaType.parse("application/x-tar"), body)"""
         }
 
         test("is always sent when the document requires it") {
@@ -112,7 +112,7 @@ class TransferPlannerTest : FunSpec({
             )
             val kotlin = clientOf(required)
 
-            kotlin shouldContain """upload("application/x-tar", body)"""
+            kotlin shouldContain """upload(MediaType.parse("application/x-tar"), body)"""
             kotlin shouldNotContain "if (body != null)"
         }
 
@@ -173,10 +173,10 @@ class TransferPlannerTest : FunSpec({
             messages shouldContain "The generator has no Kotlin for a connection that is upgraded on a server yet"
         }
 
-        test("is not generated for an upload") {
-            val messages = serverGenerationOf(build).diagnostics.map { diagnostic -> diagnostic.message }
+        test("takes an upload as the body that is streamed") {
+            val kotlin = serverOf(build)
 
-            messages shouldBe listOf("The generator has no Kotlin for a body that is streamed on a server yet")
+            kotlin shouldContain "val body = input.upload(false, listOf(MediaRange.of(\"application/x-tar\")))"
         }
     }
 

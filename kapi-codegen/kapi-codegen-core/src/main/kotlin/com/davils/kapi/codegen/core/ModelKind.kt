@@ -14,11 +14,32 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
+/**
+ * The kinds of the models a generation emits.
+ *
+ * @since 1.0.0
+ */
 public enum class ModelKind {
+    /**
+     * A class with properties.
+     *
+     * @since 1.0.0
+     */
     Object,
+
+    /**
+     * A value class with the values the document allows.
+     *
+     * @since 1.0.0
+     */
     Enum,
+
+    /**
+     * A sealed interface over its members.
+     *
+     * @since 1.0.0
+     */
     Union,
 }

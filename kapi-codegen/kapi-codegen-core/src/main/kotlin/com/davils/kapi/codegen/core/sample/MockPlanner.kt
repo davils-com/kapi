@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -41,7 +40,7 @@ internal class MockPlanner(private val samples: Samples, private val findings: F
     }
 
     private fun answered(response: ResponsePlan): MockAnswer? {
-        val arguments = status(response) + body(response) + content(response) + headers(response)
+        val arguments = status(response) + body(response) + content(response) + items(response) + headers(response)
         val made = arguments.flatMap { (name, value) -> listOfNotNull(value).map { sample -> name to sample } }
         return MockAnswer(response, made.toMap()).takeIf { made.size == arguments.size }
     }
@@ -63,8 +62,14 @@ internal class MockPlanner(private val samples: Samples, private val findings: F
         listOfNotNull(response.body).map { type -> BODY to samples.of(type) }
 
     private fun content(response: ResponsePlan): List<Pair<String, SampleValue?>> {
-        val isRaw = response.body == null && response.accept.isNotEmpty()
+        val isRaw = response.body == null && response.stream == null && response.accept.isNotEmpty()
         return listOf(CONTENT to SampleValue.Bytes).filter { isRaw }
+    }
+
+    private fun items(response: ResponsePlan): List<Pair<String, SampleValue?>> {
+        val stream = response.stream ?: return emptyList()
+        val item = samples.of(stream.item)
+        return listOf(ITEMS to item?.let { sample -> SampleValue.Stream(listOf(sample)) })
     }
 
     private fun headers(response: ResponsePlan): List<Pair<String, SampleValue?>> =
@@ -89,5 +94,7 @@ internal class MockPlanner(private val samples: Samples, private val findings: F
         const val STATUS: String = "status"
         const val BODY: String = "body"
         const val CONTENT: String = "content"
+
+        const val ITEMS: String = "items"
     }
 }

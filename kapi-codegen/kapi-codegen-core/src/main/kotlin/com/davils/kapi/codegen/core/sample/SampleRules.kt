@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
+import com.davils.kapi.codegen.core.model.toBigDecimal
 import com.davils.kapi.codegen.core.sample.plan.SampleSpan
 import java.math.BigDecimal
-import com.davils.kapi.codegen.core.model.toBigDecimal
 
 internal object SampleRules {
     fun text(value: String, rules: List<RulePlan>): Boolean {
-        val length = value.codePointCount(0, value.length)
+        val length = value.codePointCount(beginIndex = 0, endIndex = value.length)
         val patterns = rules.filterIsInstance<RulePlan.Pattern>()
         val isMatching = patterns.all { rule -> Regex(rule.pattern).containsMatchIn(value) }
         val isSized = fits(size = length, rules = rules, least = LimitKind.MinLength, most = LimitKind.MaxLength)

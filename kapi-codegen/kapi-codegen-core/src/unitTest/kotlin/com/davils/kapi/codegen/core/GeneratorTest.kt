@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 import com.davils.kapi.codegen.core.fixture.API
@@ -35,7 +34,6 @@ import com.davils.kapi.codegen.core.fixture.responses
 import com.davils.kapi.codegen.core.fixture.schema
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.options.Visibility
-import kotlinx.io.bytestring.toHexString
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -44,6 +42,7 @@ import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.io.bytestring.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
@@ -143,7 +142,9 @@ class GeneratorTest : FunSpec({
             provenance.packageName shouldBe PACKAGE
             val source = reading.sources.single()
 
-            provenance.sources shouldBe listOf(Fingerprint("petstore.yaml", DIGEST + source.digest.toHexString()))
+            provenance.sources shouldBe listOf(
+                Fingerprint(name = "petstore.yaml", digest = DIGEST + source.digest.toHexString()),
+            )
             provenance.options shouldStartWith DIGEST
             provenance.options.length shouldBe DIGEST_LENGTH
             provenance.files shouldBe emptyList()

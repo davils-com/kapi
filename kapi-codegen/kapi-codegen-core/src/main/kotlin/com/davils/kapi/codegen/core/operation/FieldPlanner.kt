@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.core.diagnostic.Location
-import com.davils.kapi.spec.openapi.model.content.MediaType
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.ModelPlanner
@@ -33,6 +27,11 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.FieldKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
+import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.content.MediaType
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 private const val FILE_PART: String = "com.davils.kapi.runtime.core.wire.FilePart"
 

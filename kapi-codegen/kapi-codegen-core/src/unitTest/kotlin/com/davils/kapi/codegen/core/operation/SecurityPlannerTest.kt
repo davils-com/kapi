@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -66,26 +65,28 @@ class SecurityPlannerTest : FunSpec({
     context("the scheme an operation requires") {
         schemes.forEach { (scheme, placement) ->
             test("is placed as the document declares it: $scheme") {
-                val kotlin = clientOf(secured(scheme, REQUIRED))
+                val kotlin = clientOf(secured(schemes = scheme, security = REQUIRED))
 
                 kotlin shouldContain """            security(listOf($USE("token", $placement)))"""
             }
         }
 
         test("is refused when the generator has no way to place it") {
-            val lines = secured("token: {type: http, scheme: digest}", REQUIRED)
+            val lines = secured(schemes = "token: {type: http, scheme: digest}", security = REQUIRED)
 
             clientGenerationOf(lines).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
         }
 
         test("adds nothing to the call when it is the certificate of the connection") {
-            val kotlin = clientOf(secured("token: {type: mutualTLS}", REQUIRED))
+            val kotlin = clientOf(secured(schemes = "token: {type: mutualTLS}", security = REQUIRED))
 
             kotlin shouldContain "            security(listOf())\n"
         }
 
         test("leaves the certificate of the connection out and places the schemes required with it") {
-            val kotlin = clientOf(secured("tls: {type: mutualTLS}, $BEARER", "security: [{tls: [], token: []}]"))
+            val kotlin = clientOf(
+                secured(schemes = "tls: {type: mutualTLS}, $BEARER", security = "security: [{tls: [], token: []}]"),
+            )
 
             kotlin shouldContain "            security(listOf($TOKEN_USE))\n"
         }
@@ -93,26 +94,28 @@ class SecurityPlannerTest : FunSpec({
 
     context("the requirements of an operation") {
         test("are those of the document when it names none") {
-            val kotlin = clientOf(secured(BEARER, "tags: [pets]", REQUIRED), "PetstorePetsClient")
+            val kotlin = clientOf(secured(schemes = BEARER, security = "tags: [pets]", REQUIRED), "PetstorePetsClient")
 
             kotlin shouldContain "security(listOf($TOKEN_USE))"
         }
 
         test("replace those of the document") {
-            val kotlin = clientOf(secured("$BEARER, $KEY", "security: [{key: []}]", REQUIRED))
+            val kotlin = clientOf(secured(schemes = "$BEARER, $KEY", security = "security: [{key: []}]", REQUIRED))
 
             kotlin shouldContain "security(listOf($KEY_USE))"
             kotlin shouldNotContain TOKEN_USE
         }
 
         test("are none when the operation says so") {
-            val kotlin = clientOf(secured(BEARER, "security: []", REQUIRED))
+            val kotlin = clientOf(secured(schemes = BEARER, security = "security: []", REQUIRED))
 
             kotlin shouldNotContain "security("
         }
 
         test("are alternatives in the order of the document, each with every scheme it needs together") {
-            val kotlin = clientOf(secured("$BEARER, $KEY", "security: [{token: [], key: []}, {key: []}, {}]"))
+            val kotlin = clientOf(
+                secured(schemes = "$BEARER, $KEY", security = "security: [{token: [], key: []}, {key: []}, {}]"),
+            )
 
             kotlin shouldContain listOf(
                 "            security(listOf($TOKEN_USE, $KEY_USE))",

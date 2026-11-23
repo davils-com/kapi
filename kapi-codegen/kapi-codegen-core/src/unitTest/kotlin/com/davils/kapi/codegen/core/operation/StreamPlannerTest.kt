@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -53,35 +52,36 @@ class StreamPlannerTest : FunSpec({
         test("has a function that reads each event as what the document declares") {
             val kotlin = clientOf(streaming("$SSE: {schema: $PET}"))
 
-            kotlin shouldContain "public fun $STREAM(): Flow<$EVENT<PetstorePet>> {"
-            kotlin shouldContain "return client.events(PetstorePet.serializer(), call)"
-            kotlin shouldContain """accept("text/event-stream")"""
+            kotlin shouldContain "public fun $STREAM(reconnection: Reconnection? = null): Flow<$EVENT<PetstorePet>> {"
+            kotlin shouldContain "return client.events(PetstorePet.serializer(), call, reconnection)"
+            kotlin shouldContain """accept(MediaRange.of("text/event-stream"))"""
         }
 
         test("is recognised whatever the case and the parameters of the media type") {
             val kotlin = clientOf(streaming("'Text/Event-Stream; charset=utf-8': {schema: $PET}"))
 
-            kotlin shouldContain "return client.events(PetstorePet.serializer(), call)"
+            kotlin shouldContain "return client.events(PetstorePet.serializer(), call, reconnection)"
         }
 
         test("reads any JSON when the document declares no schema for an event") {
             val kotlin = clientOf(streaming("$SSE: {}"))
 
             kotlin shouldContain "Flow<$EVENT<JsonElement>>"
-            kotlin shouldContain "client.events(JsonElement.serializer(), call)"
+            kotlin shouldContain "client.events(JsonElement.serializer(), call, reconnection)"
         }
 
         test("names the type of an event after the operation when the document gives it none") {
             val kotlin = clientOf(streaming("$SSE: {schema: {type: object, properties: {a: {type: string}}}}"))
 
-            kotlin shouldContain "client.events(PetstoreListPetsOkItem.serializer(), call)"
+            kotlin shouldContain "client.events(PetstoreListPetsOkItem.serializer(), call, reconnection)"
         }
 
         test("takes the parameters of the operation") {
             val parameters = "parameters: [{name: since, in: query, schema: {type: string}}]"
             val kotlin = clientOf(streaming("$SSE: {schema: $PET}", parameters))
 
-            kotlin shouldContain "public fun $STREAM(since: String? = null): Flow<$EVENT<PetstorePet>> {"
+            kotlin shouldContain
+                "public fun $STREAM(since: String? = null, reconnection: Reconnection? = null): Flow<$EVENT<PetstorePet>> {"
         }
     }
 
@@ -90,7 +90,7 @@ class StreamPlannerTest : FunSpec({
             test("has a function that reads each line: $type") {
                 val kotlin = clientOf(streaming("$type: {schema: $PET}"))
 
-                kotlin shouldContain "return client.records(PetstorePet.serializer(), call)"
+                kotlin shouldContain "return client.records(PetstorePet.serializer(), call, RecordFraming.JsonLines)"
             }
         }
     }

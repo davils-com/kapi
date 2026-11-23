@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.LIST_PETS_RESULT
 import com.davils.kapi.codegen.core.fixture.OK
 import com.davils.kapi.codegen.core.fixture.clientGenerationOf

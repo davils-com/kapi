@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.pipeline
 
 import com.davils.kapi.codegen.core.model.plan.ModelPlan

@@ -19,3 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   offset, number and `Link`, multipart and form bodies, OAuth 2 token sources (client credentials, refresh,
   authorization code with PKCE, device authorization, token exchange, JWT client authentication, DPoP, discovery and
   revocation), WebSocket channel sessions, and spans, meters and events in kollect and konfetti.
+- **The generator** `kapi-codegen-core`: `Codegen.openApi { }` turns an OpenAPI 3.0, 3.1 or 3.2 document into
+  Kotlin on the kapi runtimes, with the provenance of every file: models with kotlinx.serialization, Kore validation
+  and the wire types of the core runtime; clients on `ApiClient` with a sealed result per operation, typed
+  `NotModified` for conditional requests, streams, server-sent events and pages; servers as `Routes` with a service
+  interface and sealed responses, mounted with `mount(...)`; mocks on the server runtime; senders and receivers of
+  webhooks and callbacks. The `QUERY` method and `querystring` parameters of OpenAPI 3.2 are generated, and every
+  text of a document is escaped where it is written, invisible characters included.

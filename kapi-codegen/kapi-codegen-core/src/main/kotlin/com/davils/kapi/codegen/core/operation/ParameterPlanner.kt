@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.parameter.Parameter
-import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
-import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.openapi.model.path.PathItem
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.ModelPlanner
@@ -34,6 +26,13 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.parameter.Parameter
+import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
+import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
+import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kapi.spec.openapi.model.path.PathItem
+import com.davils.kapi.spec.openapi.resolve
 
 private val places: Map<ParameterPlacement, ParameterPlace> = mapOf(
     ParameterPlacement.Path to ParameterPlace.Path,
@@ -41,6 +40,8 @@ private val places: Map<ParameterPlacement, ParameterPlace> = mapOf(
     ParameterPlacement.Header to ParameterPlace.Header,
     ParameterPlacement.Cookie to ParameterPlace.Cookie,
 )
+
+private const val FORM: String = "application/x-www-form-urlencoded"
 
 private val owned: Set<String> = setOf("accept", "content-type", "authorization")
 
@@ -56,20 +57,41 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
         val (whole, single) = effective.values.partition { parameter ->
             parameter.placement == ParameterPlacement.QueryString
         }
-        whole.forEach(::refuse)
+        val strings = whole.mapNotNull { parameter -> queryString(context, parameter) }
         val (ignored, kept) = single.partition(::isOwned)
         ignored.forEach(::ignore)
-        return kept.map { parameter -> parameter(context, parameter) }
+        return kept.map { parameter -> parameter(context, parameter) } + strings
     }
 
     private fun isOwned(parameter: Parameter): Boolean =
         parameter.placement == ParameterPlacement.Header && parameter.name.lowercase() in owned
 
-    private fun refuse(parameter: Parameter) {
-        scope.findings.error(
-            CodegenCodes.OPERATION_UNSUPPORTED,
-            "The parameter ${parameter.name} takes the whole query string, which the generator does not support yet",
-            parameter.location,
+    private fun queryString(context: String, parameter: Parameter): ParameterPlan? {
+        val content = scope.contentOf(parameter.content).entries.singleOrNull()
+        val essence = content?.run { key.substringBefore(';') }
+        val isForm = essence?.run { trim().lowercase() } == FORM
+        val schema = content?.value?.schema?.takeIf { isForm }
+        val name = nameOf(parameter)
+        val use = schema?.let { found -> models.typeOf(found, context + Identifiers.type(name)) }
+        val type = use?.takeIf { found -> types.isFields(found.shape) && found.shape !is TypeShape.Entries }
+        if (type == null) {
+            scope.findings.error(
+                CodegenCodes.OPERATION_UNSUPPORTED,
+                "The parameter ${parameter.name} takes the whole query string, which the generator supports only " +
+                    "as an object in $FORM",
+                parameter.location,
+            )
+            return null
+        }
+        names.audit(name, "The parameter ${parameter.name}", parameter.location)
+        return ParameterPlan(
+            name = name,
+            wireName = parameter.name,
+            placement = ParameterPlace.QueryString,
+            style = ParameterStyle.Form.name,
+            isExploded = true,
+            type = type.copy(isNullable = type.isNullable || !parameter.isRequired),
+            isQuoted = false,
         )
     }
 
@@ -94,6 +116,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
             isExploded = parameter.isExploded ?: (style == ParameterStyle.Form),
             type = type,
             isQuoted = types.isQuoted(type.shape),
+            isReservedAllowed = parameter.isReservedAllowed,
         )
     }
 

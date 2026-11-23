@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.model.schema.Bound
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
+import com.davils.kapi.spec.openapi.model.schema.Bound
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 internal object SchemaRules {
     fun scalar(definition: SchemaDefinition, kind: ScalarKind): List<RulePlan> {

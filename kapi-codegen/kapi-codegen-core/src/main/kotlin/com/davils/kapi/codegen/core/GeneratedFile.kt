@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 /**
@@ -33,8 +32,11 @@ public class GeneratedFile(
     public val content: String,
     public val platform: GeneratedPlatform = GeneratedPlatform.Common,
 ) {
-    override fun equals(other: Any?): Boolean = other is GeneratedFile && path == other.path && kind == other.kind &&
-        content == other.content && platform == other.platform
+    override fun equals(other: Any?): Boolean = other is GeneratedFile &&
+        path == other.path &&
+        kind == other.kind &&
+        content == other.content &&
+        platform == other.platform
 
     override fun hashCode(): Int = listOf(path, kind, content, platform).hashCode()
 

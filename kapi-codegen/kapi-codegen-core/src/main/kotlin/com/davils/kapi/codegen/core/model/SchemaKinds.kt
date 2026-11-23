@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
+import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.spec.openapi.model.schema.SchemaType
-import com.davils.kapi.codegen.core.ModelKind
 
 private val onlyNull: Set<SchemaType> = setOf(SchemaType.Null)
 
@@ -55,8 +54,7 @@ internal object SchemaKinds {
         return members.singleOrNull().takeIf { isWrapper && isPlain }
     }
 
-    fun alternativesOf(definition: SchemaDefinition): List<Schema> =
-        definition.oneOf.ifEmpty { definition.anyOf }
+    fun alternativesOf(definition: SchemaDefinition): List<Schema> = definition.oneOf.ifEmpty { definition.anyOf }
 
     fun optionalOf(definition: SchemaDefinition): Schema? {
         val alternatives = alternativesOf(definition)

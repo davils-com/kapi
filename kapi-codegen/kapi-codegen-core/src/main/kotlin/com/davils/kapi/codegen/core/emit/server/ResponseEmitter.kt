@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.server
 
 import com.davils.kapi.codegen.core.emit.Annotations
@@ -26,9 +25,12 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+
+private val flow: ClassName = ClassName("kotlinx.coroutines.flow", "Flow")
 
 internal class ResponseEmitter(private val types: TypeNames, private val visibility: KModifier) {
     fun type(operation: OperationPlan, self: ClassName, origin: String): TypeSpec {
@@ -44,10 +46,12 @@ internal class ResponseEmitter(private val types: TypeNames, private val visibil
     private fun fields(response: ResponsePlan): List<Pair<String, TypeName>> {
         val status = listOf(STATUS to INT).filter { response.status == null }
         val body = listOfNotNull(response.body).map { type -> BODY to types.of(type) }
-        val isRaw = response.body == null && response.accept.isNotEmpty()
+        val stream = response.stream
+        val isRaw = response.body == null && stream == null && response.accept.isNotEmpty()
         val content = listOf(CONTENT to Kotlin.byteString).filter { isRaw }
+        val items = listOfNotNull(stream).map { found -> ITEMS to flow.parameterizedBy(types.of(found.item)) }
         val headers = response.headers.map { header -> header.name to types.of(header.type) }
-        return status + body + content + headers
+        return status + body + content + items + headers
     }
 
     private fun variant(self: ClassName, response: ResponsePlan): TypeSpec {
@@ -80,5 +84,7 @@ internal class ResponseEmitter(private val types: TypeNames, private val visibil
         const val BODY: String = "body"
 
         const val CONTENT: String = "content"
+
+        const val ITEMS: String = "items"
     }
 }

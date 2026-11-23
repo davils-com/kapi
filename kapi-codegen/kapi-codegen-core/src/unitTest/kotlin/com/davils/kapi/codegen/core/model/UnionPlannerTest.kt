@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.codegen.core.fixture.kotlinOf
@@ -52,7 +51,7 @@ class UnionPlannerTest : FunSpec({
 
             kotlinOf(lines, UNION) shouldContain "@Serializable(with = PetstoreAnimalSerializer::class)"
             kotlinOf(lines, UNION) shouldContain
-                "public sealed interface PetstoreAnimal : DataTransferObject, Validatable"
+                "public sealed interface PetstoreAnimal : Validatable"
             kotlinOf(lines, "PetstoreCat") shouldContain "    PetstoreAnimal {"
             kotlinOf(lines, "PetstoreDog") shouldContain "    PetstoreAnimal {"
         }

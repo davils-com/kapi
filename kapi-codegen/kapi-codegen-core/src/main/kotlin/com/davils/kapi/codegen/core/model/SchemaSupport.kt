@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -51,6 +50,5 @@ internal object SchemaSupport {
         loose.keys.forEach { keyword -> scope.unchecked(definition, keyword) }
     }
 
-    fun typesOf(definition: SchemaDefinition): Set<SchemaType> =
-        definition.types - SchemaType.Null
+    fun typesOf(definition: SchemaDefinition): Set<SchemaType> = definition.types - SchemaType.Null
 }

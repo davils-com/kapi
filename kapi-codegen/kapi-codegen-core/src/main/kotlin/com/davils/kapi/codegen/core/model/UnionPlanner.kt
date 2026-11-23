@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.model.schema.Discriminator
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.UnionMemberPlan
+import com.davils.kapi.spec.openapi.model.schema.Discriminator
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 private const val SEPARATOR: Char = '/'
 
@@ -40,10 +39,7 @@ internal class UnionPlanner(private val scope: PlanScope, private val compositio
         )
     }
 
-    private fun members(
-        definition: SchemaDefinition,
-        shapes: Map<String, ObjectShape>,
-    ): List<UnionMemberPlan> {
+    private fun members(definition: SchemaDefinition, shapes: Map<String, ObjectShape>): List<UnionMemberPlan> {
         val discriminator = definition.discriminator ?: return deduced(definition, shapes)
         return tagged(definition, shapes, discriminator)
     }
@@ -91,20 +87,18 @@ internal class UnionPlanner(private val scope: PlanScope, private val compositio
         return values.map { value -> UnionMemberPlan(value, scope.names.getValue(key)) }
     }
 
-    private fun deduced(
-        definition: SchemaDefinition,
-        shapes: Map<String, ObjectShape>,
-    ): List<UnionMemberPlan> = shapes.keys.mapNotNull { key ->
-        val others = (shapes - key).values.flatMap { shape -> shape.properties.keys }
-        val own = shapes.getValue(key).required.firstOrNull { property -> property !in others }
-        deducedMember(definition, key, own)
-    }
+    private fun deduced(definition: SchemaDefinition, shapes: Map<String, ObjectShape>): List<UnionMemberPlan> =
+        shapes.keys.mapNotNull { key ->
+            val others = (shapes - key).values.flatMap { shape -> shape.properties.keys }
+            val own = shapes.getValue(key).required.firstOrNull { property -> property !in others }
+            deducedMember(definition, key, own)
+        }
 
     private fun deducedMember(definition: SchemaDefinition, key: String, own: String?): UnionMemberPlan? {
         if (own == null) {
             scope.unsupported(definition, "a union whose member $key has no required property the others lack")
             return null
         }
-        return UnionMemberPlan(own, scope.names.getValue(key))
+        return UnionMemberPlan(value = own, type = scope.names.getValue(key))
     }
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.server
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 
 internal object ServerTypes {
@@ -27,9 +27,17 @@ internal object ServerTypes {
 
     private const val REQUEST: String = "$SERVER.request"
 
-    private const val PARAMETER: String = "com.davils.kapi.runtime.core.parameter"
+    private const val REPLY: String = "$SERVER.reply"
 
-    val server: ClassName = ClassName(SERVER, "Server")
+    private const val CORE: String = "com.davils.kapi.runtime.core"
+
+    private const val PARAMETER: String = "$CORE.parameter"
+
+    private const val NEGOTIATION: String = "$CORE.negotiation"
+
+    private const val CONDITIONAL: String = "$CORE.conditional"
+
+    val routes: ClassName = ClassName(OPERATION, "Routes")
 
     val operation: ClassName = ClassName(OPERATION, "Operation")
 
@@ -41,15 +49,44 @@ internal object ServerTypes {
 
     val place: ClassName = ClassName(REQUEST, "Place")
 
-    val text: ClassName = ClassName(REQUEST, "Text")
+    val text: ClassName = ClassName(REQUEST, "ParameterType")
 
-    val reply: ClassName = ClassName("$SERVER.reply", "Reply")
+    val upload: ClassName = ClassName(REQUEST, "Upload")
 
-    val route: ClassName = ClassName("io.ktor.server.routing", "Route")
+    val reply: ClassName = ClassName(REPLY, "Reply")
+
+    val replying: MemberName = MemberName(packageName = REPLY, simpleName = "reply")
+
+    val conditional: MemberName = MemberName(packageName = REPLY, simpleName = "conditional", isExtension = true)
 
     val format: ClassName = ClassName(PARAMETER, "ParameterFormat")
 
     val style: ClassName = ClassName(PARAMETER, "ParameterStyle")
 
-    val bind: MemberName = MemberName("$SERVER.ktor", "operation", isExtension = true)
+    val mediaType: ClassName = ClassName(NEGOTIATION, "MediaType")
+
+    val mediaRange: ClassName = ClassName(NEGOTIATION, "MediaRange")
+
+    val state: ClassName = ClassName(CONDITIONAL, "RepresentationState")
+
+    val entityTag: ClassName = ClassName(CONDITIONAL, "EntityTag")
+
+    val httpDate: ClassName = ClassName(CONDITIONAL, "HttpDate")
+
+    val codecs: ClassName = ClassName("$CORE.codec", "Codecs")
+
+    val decoded: ClassName = ClassName("$CORE.codec", "Decoding").nestedClass("Decoded")
+
+    val event: ClassName = ClassName("$CORE.framing", "ServerSentEvent")
+
+    val filePart: ClassName = ClassName("$CORE.wire", "FilePart")
+
+    val decodeToString: MemberName = MemberName(packageName = "kotlinx.io.bytestring", simpleName = "decodeToString")
+
+    val encodeToByteString: MemberName =
+        MemberName(packageName = "kotlinx.io.bytestring", simpleName = "encodeToByteString")
+
+    fun mediaType(text: String): CodeBlock = CodeBlock.of("%T.parse(%S)", mediaType, text)
+
+    fun ranges(text: String): CodeBlock = CodeBlock.of("listOf(%T.of(%S))", mediaRange, text)
 }

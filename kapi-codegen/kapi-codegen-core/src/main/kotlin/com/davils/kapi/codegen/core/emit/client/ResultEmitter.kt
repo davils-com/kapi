@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Conditionals
 import com.davils.kapi.codegen.core.emit.Kotlin
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
@@ -37,7 +37,12 @@ internal class ResultEmitter(private val types: TypeNames, private val visibilit
         val unexpected = listOf(STATUS to INT, HEADERS to ClientTypes.headers, CONTENT to Kotlin.byteString)
         val malformed = listOf(STATUS to INT, "reason" to STRING)
         val failed = listOf("failure" to ClientTypes.failure)
-        val variants = declared + listOf(UNEXPECTED to unexpected, MALFORMED to malformed, FAILED to failed)
+        val notModified = listOf(Conditionals.VALIDATORS to ClientTypes.validators, HEADERS to ClientTypes.headers)
+        val revalidated = listOf(Conditionals.NOT_MODIFIED_NAME to notModified)
+            .filter { Conditionals.addsNotModified(operation) }
+        val variants = declared +
+            revalidated +
+            listOf(UNEXPECTED to unexpected, MALFORMED to malformed, FAILED to failed)
         val builder = TypeSpec.interfaceBuilder(self)
         builder.addModifiers(visibility, KModifier.SEALED)
         builder.addAnnotation(Annotations.generated(origin))

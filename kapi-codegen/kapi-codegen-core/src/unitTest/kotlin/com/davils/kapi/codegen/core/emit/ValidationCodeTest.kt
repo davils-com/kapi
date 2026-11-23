@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.fixture.kotlinOf
@@ -42,43 +41,43 @@ private val rules: Map<String, String> = mapOf(
         """if (Constraints.length(a) < 2) fail(::a, "must have at least 2 characters"""",
     "a: {type: string, maxLength: 9}" to
         """if (Constraints.length(a) > 9) fail(::a, "must have at most 9 characters"""",
-    PATTERNED to """if (!A_PATTERN.containsMatchIn(a)) fail(::a, "must match ^x", ViolationCodes.PATTERN)""",
+    PATTERNED to """if (!A_PATTERN.containsMatchIn(a)) fail(::a, "must match ^x", ConstraintViolationCodes.PATTERN)""",
     "a: {type: integer, minimum: 1}" to """if (a < 1L) fail(::a, "must be at least 1"""",
     "a: {type: integer, exclusiveMinimum: 0}" to
-        """if (a <= 0L) fail(::a, "must be greater than 0", ViolationCodes.MINIMUM)""",
+        """if (a <= 0L) fail(::a, "must be greater than 0", ConstraintViolationCodes.MINIMUM)""",
     "a: {type: integer, maximum: 9.5}" to
-        """if (a.toDouble() > 9.5) fail(::a, "must be at most 9.5", ViolationCodes.MAXIMUM)""",
+        """if (a.toDouble() > 9.5) fail(::a, "must be at most 9.5", ConstraintViolationCodes.MAXIMUM)""",
     "a: {type: number, exclusiveMaximum: 10}" to
-        """if (a >= 10.0) fail(::a, "must be less than 10", ViolationCodes.MAXIMUM)""",
+        """if (a >= 10.0) fail(::a, "must be less than 10", ConstraintViolationCodes.MAXIMUM)""",
     "a: {type: number, format: float, minimum: 1}" to
-        """if (a.toDouble() < 1.0) fail(::a, "must be at least 1", ViolationCodes.MINIMUM)""",
+        """if (a.toDouble() < 1.0) fail(::a, "must be at least 1", ConstraintViolationCodes.MINIMUM)""",
     "a: {type: integer, multipleOf: 3}" to
         """if (!Constraints.isMultipleOf(a, 3L)) fail(::a, "must be a multiple of 3"""",
     "a: {type: integer, format: int32, multipleOf: 3}" to "if (!Constraints.isMultipleOf(a.toLong(), 3L))",
     "a: {type: integer, multipleOf: 0.5}" to "if (!Constraints.isMultipleOf(a.toDouble(), 0.5))",
     "a: {type: number, multipleOf: 0.5}" to "if (!Constraints.isMultipleOf(a, 0.5))",
     "a: {type: array, minItems: 1}" to
-        """if (a.size < 1) fail(::a, "must have at least 1 items", ViolationCodes.MIN_ITEMS)""",
+        """if (a.size < 1) fail(::a, "must have at least 1 items", ConstraintViolationCodes.MIN_ITEMS)""",
     "a: {type: array, maxItems: 4}" to
-        """if (a.size > 4) fail(::a, "must have at most 4 items", ViolationCodes.MAX_ITEMS)""",
+        """if (a.size > 4) fail(::a, "must have at most 4 items", ConstraintViolationCodes.MAX_ITEMS)""",
     "a: {type: array, uniqueItems: true}" to
         """if (!Constraints.isUnique(a)) fail(::a, "must not repeat an item"""",
     "a: {type: object, minProperties: 1}" to
-        """if (a.size < 1) fail(::a, "must have at least 1 entries", ViolationCodes.MIN_PROPERTIES)""",
+        """if (a.size < 1) fail(::a, "must have at least 1 entries", ConstraintViolationCodes.MIN_PROPERTIES)""",
     "a: {type: object, maxProperties: 4}" to
-        """if (a.size > 4) fail(::a, "must have at most 4 entries", ViolationCodes.MAX_PROPERTIES)""",
+        """if (a.size > 4) fail(::a, "must have at most 4 entries", ConstraintViolationCodes.MAX_PROPERTIES)""",
     "a: {enum: [x]}" to
-        """if (!a.isKnown) fail(::a, "must be one of the values this API knows", ViolationCodes.ENUM)""",
+        """if (!a.isKnown) fail(::a, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)""",
     "a: {type: object, properties: {b: {type: string}}}" to "within(::a) { with(a) { validate() } }",
-    "a: {const: fixed}" to """if (a != "fixed") fail(::a, "must be fixed", ViolationCodes.CONST)""",
-    "a: {type: integer, const: 5}" to """if (a != 5L) fail(::a, "must be 5", ViolationCodes.CONST)""",
+    "a: {const: fixed}" to """if (a != "fixed") fail(::a, "must be fixed", ConstraintViolationCodes.CONST)""",
+    "a: {type: integer, const: 5}" to """if (a != 5L) fail(::a, "must be 5", ConstraintViolationCodes.CONST)""",
     "a: {type: integer, format: int32, const: 5}" to "if (a.toLong() != 5L) fail(",
     "a: {type: number, const: 5}" to "if (a != 5.0) fail(",
     "a: {const: 1.5}" to "if (a != 1.5) fail(",
     "a: {const: 7}" to "public val a: Long,",
-    "a: {const: true}" to """if (a != true) fail(::a, "must be true", ViolationCodes.CONST)""",
+    "a: {const: true}" to """if (a != true) fail(::a, "must be true", ConstraintViolationCodes.CONST)""",
     "a: {type: array, items: {type: string, pattern: '^x'}}" to
-        """if (!A_1_PATTERN.containsMatchIn(item)) fail("must match ^x", ViolationCodes.PATTERN)""",
+        """if (!A_1_PATTERN.containsMatchIn(item)) fail("must match ^x", ConstraintViolationCodes.PATTERN)""",
     "a: {type: array, items: {type: array, items: {type: string, minLength: 1}}}" to
         """if (Constraints.length(item1) < 1) fail("must have at least 1 characters"""",
     "a: {type: array, items: {type: array, items: {type: string, maxLength: 1}}}" to "item.forEach { item1 ->",
@@ -164,7 +163,7 @@ class ValidationCodeTest : FunSpec({
         test("is masked when the object is rendered") {
             val kotlin = kotlinOf(pet("a: {type: string, x-kapi-sensitive: true}", "b: {type: string}"))
 
-            kotlin shouldContain """= "PetstorePet(" + "a=" + Secret.MASK + ", b=" + b + ")""""
+            kotlin shouldContain """= "PetstorePet(" + "a=" + "****" + ", b=" + b + ")""""
         }
     }
 })

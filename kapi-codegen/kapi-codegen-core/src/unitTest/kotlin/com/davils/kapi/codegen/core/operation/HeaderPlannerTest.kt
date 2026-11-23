@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -122,7 +121,7 @@ class HeaderPlannerTest : FunSpec({
     context("the headers of a response") {
         test("are fields in the order of their names, between the body and every header it came with") {
             val content = ", content: {application/json: {schema: {type: string}}}"
-            val lines = ok("X-B: {$TEXT}, X-A: {$TEXT}", content)
+            val lines = ok(headers = "X-B: {$TEXT}, X-A: {$TEXT}", more = content)
 
             clientOf(lines) shouldContain "$LIST_PETS_RESULT.Ok(decoding.value, xA, xB, exchange.headers)"
             clientOf(lines, LIST_PETS_RESULT) shouldContain

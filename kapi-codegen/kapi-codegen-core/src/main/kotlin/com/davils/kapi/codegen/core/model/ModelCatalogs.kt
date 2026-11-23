@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.codegen.core.CatalogModel
 import com.davils.kapi.codegen.core.ModelCatalog
 import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.TypeShape
+import com.davils.kapi.spec.core.model.Reference
 
 private const val COMPONENT_DEPTH: Int = 3
 

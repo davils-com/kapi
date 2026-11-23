@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
+/**
+ * The kinds of the files a generation writes.
+ *
+ * @since 1.0.0
+ */
 public enum class GeneratedFileKind {
+    /**
+     * A Kotlin source file.
+     *
+     * @since 1.0.0
+     */
     Kotlin,
+
+    /**
+     * A resource, such as the provenance.
+     *
+     * @since 1.0.0
+     */
     Resource,
 }

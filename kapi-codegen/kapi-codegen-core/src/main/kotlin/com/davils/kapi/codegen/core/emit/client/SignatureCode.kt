@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.emit.TypeNames

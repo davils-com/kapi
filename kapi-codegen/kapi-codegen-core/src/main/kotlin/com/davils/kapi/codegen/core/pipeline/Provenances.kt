@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.pipeline
 
-import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kapi.codegen.core.Fingerprint
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.Provenance
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.spec.core.source.SourceDocument
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.toHexString
-import java.security.MessageDigest
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import java.security.MessageDigest
 
 private const val FOLDER: String = "META-INF/kapi/openapi/"
 
@@ -45,19 +44,18 @@ private val readable: Json = Json {
 }
 
 internal object Provenances {
-    fun of(
-        options: GeneratorOptions,
-        sources: List<SourceDocument>,
-        files: List<GeneratedFile>,
-    ): Provenance = Provenance(
-        protocol = Provenance.PROTOCOL,
-        generator = options.generatorVersion,
-        api = options.apiName,
-        packageName = options.packageName,
-        options = digestOf(canonical(options)),
-        sources = sources.map { source -> fingerprint(source.uri.value.substringAfterLast(SEPARATOR), source.digest) },
-        files = files.map { file -> Fingerprint(file.path, digestOf(file.content)) },
-    )
+    fun of(options: GeneratorOptions, sources: List<SourceDocument>, files: List<GeneratedFile>): Provenance =
+        Provenance(
+            protocol = Provenance.PROTOCOL,
+            generator = options.generatorVersion,
+            api = options.apiName,
+            packageName = options.packageName,
+            options = digestOf(canonical(options)),
+            sources = sources.map { source ->
+                fingerprint(name = source.uri.value.substringAfterLast(SEPARATOR), digest = source.digest)
+            },
+            files = files.map { file -> Fingerprint(name = file.path, digest = digestOf(file.content)) },
+        )
 
     fun file(provenance: Provenance): GeneratedFile = GeneratedFile(
         path = FOLDER + provenance.api.lowercase() + SUFFIX,
@@ -83,7 +81,7 @@ internal object Provenances {
     }
 
     private fun fingerprint(name: String, digest: ByteString): Fingerprint =
-        Fingerprint(name, rendered(digest))
+        Fingerprint(name = name, digest = rendered(digest))
 
     private fun rendered(digest: ByteString): String = "sha256:" + digest.toHexString()
 }

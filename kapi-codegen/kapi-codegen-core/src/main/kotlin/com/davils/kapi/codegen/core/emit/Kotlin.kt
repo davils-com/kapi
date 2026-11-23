@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.squareup.kotlinpoet.ClassName
 
 internal object Kotlin {
-    const val GENERATOR: String = "kide-common-openapi-generator"
+    const val GENERATOR: String = "kapi"
 
     private const val SERIALIZATION: String = "kotlinx.serialization"
 
@@ -60,10 +59,6 @@ internal object Kotlin {
 
     val generated: ClassName = ClassName("com.davils.kore.core.annotation", "DavilsGenerated")
 
-    val secret: ClassName = ClassName("com.davils.kore.core.secret", "Secret")
-
-    val transferObject: ClassName = ClassName("com.davils.kore.core.architecture.data", "DataTransferObject")
-
     val validatable: ClassName = ClassName("com.davils.kore.core.validation", "Validatable")
 
     val validationScope: ClassName = ClassName("com.davils.kore.core.validation", "ValidationScope")
@@ -73,7 +68,7 @@ internal object Kotlin {
         "Constraints",
     )
 
-    val codes: ClassName = ClassName("com.davils.kapi.runtime.core.validation", "ViolationCodes")
+    val codes: ClassName = ClassName("com.davils.kapi.runtime.core.validation", "ConstraintViolationCodes")
 
     val patch: ClassName = ClassName("com.davils.kapi.runtime.core.wire", "Patch")
 

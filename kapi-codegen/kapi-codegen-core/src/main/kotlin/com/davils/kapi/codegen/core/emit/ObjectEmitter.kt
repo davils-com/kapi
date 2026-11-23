@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.model.plan.DependencyPlan
@@ -30,6 +29,8 @@ import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
+private const val MASK: String = "****"
+
 internal class ObjectEmitter(private val types: TypeNames, private val visibility: KModifier) {
     fun type(plan: ModelPlan.ObjectPlan): TypeSpec {
         val patterns = PatternTable()
@@ -42,7 +43,6 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         builder.addAnnotation(Annotations.generated(plan.origin))
         builder.primaryConstructor(constructor(plan))
         builder.addProperties(plan.properties.map(::property))
-        builder.addSuperinterface(Kotlin.transferObject)
         builder.addSuperinterface(Kotlin.validatable)
         plan.unions.forEach { union -> builder.addSuperinterface(types.model(union)) }
         builder.addFunction(validate)
@@ -118,7 +118,7 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
     }
 
     private fun shown(property: PropertyPlan): CodeBlock {
-        if (property.isSensitive) return CodeBlock.of("%T.MASK", Kotlin.secret)
+        if (property.isSensitive) return CodeBlock.of("%S", MASK)
         return CodeBlock.of("%N", property.name)
     }
 

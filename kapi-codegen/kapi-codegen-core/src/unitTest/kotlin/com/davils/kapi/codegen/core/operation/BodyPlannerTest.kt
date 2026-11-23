@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -45,28 +44,30 @@ private const val ACCOUNT: String =
 
 private val whole: Map<String, String> = mapOf(
     "requestBody: {required: true, content: {$JSON}}" to
-        "            body(\"application/json\", client.json(String.serializer(), body))",
+        "            body(MediaType.parse(\"application/json\"), client.json(String.serializer(), body))",
     "requestBody: {content: {$JSON}}" to
-        "if (body != null) body(\"application/json\", client.json(String.serializer(), body))",
+        "if (body != null) body(MediaType.parse(\"application/json\"), client.json(String.serializer(), body))",
     "requestBody: {required: true, content: {application/merge-patch+json: $TEXT}}" to
-        "body(\"application/merge-patch+json\", client.json(String.serializer(), body))",
+        "body(MediaType.parse(\"application/merge-patch+json\"), client.json(String.serializer(), body))",
     "requestBody: {required: true, content: {'application/json; charset=utf-8': $TEXT}}" to
-        "            body(\"application/json\", client.json(String.serializer(), body))",
+        "            body(MediaType.parse(\"application/json\"), client.json(String.serializer(), body))",
     "requestBody: {required: true, content: {application/json: {}}}" to
-        "body(\"application/json\", client.json(JsonElement.serializer(), body))",
+        "body(MediaType.parse(\"application/json\"), client.json(JsonElement.serializer(), body))",
     "requestBody: {content: {application/json: {}}}" to "listPets(body: JsonElement? = null)",
     "requestBody: {required: true, content: {application/json: {schema: {type: [string, 'null']}}}}" to
         "listPets(body: String? = null)",
     "requestBody: {required: true, content: {application/json: {schema: {type: object, properties: {a: {}}}}}}" to
         "listPets(body: PetstoreListPetsRequest)",
-    "requestBody: {required: true, content: {$BYTES}}" to "            body(\"application/octet-stream\", body)",
-    "requestBody: {required: true, content: {image/*: $TEXT}}" to "body(\"application/octet-stream\", body)",
-    "requestBody: {content: {text/plain: $TEXT}}" to "if (body != null) body(\"text/plain\", body)",
+    "requestBody: {required: true, content: {$BYTES}}" to
+        "            body(MediaType.parse(\"application/octet-stream\"), body)",
+    "requestBody: {required: true, content: {image/*: $TEXT}}" to
+        "body(MediaType.parse(\"application/octet-stream\"), body)",
+    "requestBody: {content: {text/plain: $TEXT}}" to "if (body != null) body(MediaType.parse(\"text/plain\"), body)",
 )
 
 private val preferred: Map<String, String> = mapOf(
     "text/plain: $TEXT, $FORM: $FLAT, $PARTS: $FLAT, $JSON" to "client.json(String.serializer(), body)",
-    "text/plain: $TEXT, $FORM: $FLAT, $PARTS: $FLAT" to "multipart(\"multipart/form-data\") {",
+    "text/plain: $TEXT, $FORM: $FLAT, $PARTS: $FLAT" to "multipart {",
     "text/plain: $TEXT, $FORM: $FLAT" to "            form {",
 )
 

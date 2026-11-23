@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.model.schema.FixedSchema
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.openapi.model.schema.SchemaType
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
+import com.davils.kapi.spec.core.value.Value
+import com.davils.kapi.spec.openapi.model.schema.FixedSchema
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
+import com.davils.kapi.spec.openapi.model.schema.SchemaType
 
 private const val TYPE: String = "type"
 
@@ -81,7 +80,7 @@ internal class SchemaTypes(private val scope: PlanScope, private val planner: Mo
         val value = definition.extensions[Keywords.TYPE]
         val entries = (value as? Value.Mapping)?.entries.orEmpty()
         val type = textOf(value) ?: textOf(entries[TYPE])
-        return type?.let { name -> TypeUse(TypeShape.External(name, textOf(entries[SERIALIZER]))) }
+        return type?.let { name -> TypeUse(TypeShape.External(type = name, serializer = textOf(entries[SERIALIZER]))) }
     }
 
     private fun optional(definition: SchemaDefinition, context: String): TypeUse? {
@@ -124,11 +123,7 @@ internal class SchemaTypes(private val scope: PlanScope, private val planner: Mo
         return TypeUse(TypeShape.Scalar(kind), rules = rules, hints = hints)
     }
 
-    private fun structured(
-        definition: SchemaDefinition,
-        context: String,
-        type: SchemaType?,
-    ): TypeUse {
+    private fun structured(definition: SchemaDefinition, context: String, type: SchemaType?): TypeUse {
         if (type == SchemaType.Array) {
             val items = TypeShape.Items(nested(definition.items, context + "Item"))
             return TypeUse(items, rules = SchemaRules.items(definition))

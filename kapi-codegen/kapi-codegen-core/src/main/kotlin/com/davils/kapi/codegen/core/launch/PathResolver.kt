@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.launch
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
@@ -35,8 +34,8 @@ internal class PathResolver(root: Path, private val maximumLength: Int) : Resolv
     private val root: Path = root.toRealPath()
 
     override suspend fun resolve(uri: DocumentUri): Resolution {
-        if (uri.scheme != FILE) return Resolution.Refused(Refusal.Unresolvable)
-        val path = pathOf(uri) ?: return Resolution.Refused(Refusal.Unresolvable)
+        val local = uri.takeIf { found -> found.scheme == FILE }
+        val path = local?.let(::pathOf) ?: return Resolution.Refused(Refusal.Unresolvable)
         return read(path)
     }
 
@@ -52,8 +51,8 @@ internal class PathResolver(root: Path, private val maximumLength: Int) : Resolv
     }
 
     private fun answer(path: Path, isInside: Boolean, isSmall: Boolean): Resolution {
-        if (!isInside) return Resolution.Refused(Refusal.Confinement)
-        if (!isSmall) return Resolution.Refused(Refusal.Size)
+        val refusal = Refusal.Confinement.takeUnless { isInside } ?: Refusal.Size.takeUnless { isSmall }
+        if (refusal != null) return Resolution.Refused(refusal)
         return Resolution.Found(ByteString(Files.readAllBytes(path)))
     }
 
@@ -66,6 +65,10 @@ internal class PathResolver(root: Path, private val maximumLength: Int) : Resolv
     }
 
     companion object {
-        fun uriOf(path: Path): DocumentUri = DocumentUri(path.toAbsolutePath().normalize().toUri().toString())
+        fun uriOf(path: Path): DocumentUri {
+            val normal = path.toAbsolutePath().normalize()
+            val uri = normal.toUri()
+            return DocumentUri(uri.toString())
+        }
     }
 }

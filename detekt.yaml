@@ -164,6 +164,13 @@ libraries:
       - '**/runtime/server/security/PresentedCredential.kt'
       - '**/runtime/server/webhook/Verdict.kt'
       - '**/runtime/server/webhook/VerificationKey.kt'
+      - '**/codegen/core/CatalogModel.kt'
+      - '**/codegen/core/Fingerprint.kt'
+      - '**/codegen/core/GeneratedFile.kt'
+      - '**/codegen/core/Generation.kt'
+      - '**/codegen/core/ModelCatalog.kt'
+      - '**/codegen/core/launch/LaunchReport.kt'
+      - '**/codegen/core/launch/LaunchRequest.kt'
       - '**/runtime/testing/fake/RefreshOutcome.kt'
       - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
@@ -295,6 +302,13 @@ style:
       - '**/runtime/server/security/PresentedCredential.kt'
       - '**/runtime/server/webhook/Verdict.kt'
       - '**/runtime/server/webhook/VerificationKey.kt'
+      - '**/codegen/core/CatalogModel.kt'
+      - '**/codegen/core/Fingerprint.kt'
+      - '**/codegen/core/GeneratedFile.kt'
+      - '**/codegen/core/Generation.kt'
+      - '**/codegen/core/ModelCatalog.kt'
+      - '**/codegen/core/launch/LaunchReport.kt'
+      - '**/codegen/core/launch/LaunchRequest.kt'
       - '**/runtime/testing/fake/RefreshOutcome.kt'
       - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
@@ -397,6 +411,9 @@ complexity:
   LongParameterList:
     allowedFunctionParameters: 8
     allowedConstructorParameters: 10
+    # The request of the generator worker carries every option of the Gradle task as one serializable value.
+    excludes:
+      - '**/codegen/core/launch/LaunchRequest.kt'
   LabeledExpression:
     active: true
     ignoredLabels:

@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.Document
-import com.davils.kapi.spec.core.diagnostic.Location
-import com.davils.kapi.spec.core.model.Referable
-import com.davils.kapi.spec.core.model.Reference
-import com.davils.kapi.spec.openapi.model.content.MediaType
-import com.davils.kapi.spec.openapi.resolve
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.ModelCatalog
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
@@ -32,6 +23,14 @@ import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kapi.spec.core.model.Referable
+import com.davils.kapi.spec.core.model.Reference
+import com.davils.kapi.spec.openapi.Document
+import com.davils.kapi.spec.openapi.model.content.MediaType
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
+import com.davils.kapi.spec.openapi.resolve
 
 private const val SEPARATOR: Char = '/'
 
@@ -97,7 +96,7 @@ internal class PlanScope(
     }
 
     fun claim(name: String, schema: Schema) {
-        table.claim(NameClaim(name, "The schema ${originOf(schema)}", schema.location))
+        table.claim(NameClaim(name = name, origin = "The schema ${originOf(schema)}", location = schema.location))
     }
 
     fun claimName(name: String, origin: String) {

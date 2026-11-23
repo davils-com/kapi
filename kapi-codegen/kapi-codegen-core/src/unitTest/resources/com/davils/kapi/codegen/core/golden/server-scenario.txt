@@ -1,9 +1,11 @@
 package com.example.petstore
 
-import com.davils.kore.core.principal.requirePrincipal
-import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.conditional.Validators
+import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.wire.Patch
-import com.davils.kapi.runtime.server.Server
+import com.davils.kapi.runtime.server.mount
+import com.davils.kore.core.principal.currentPrincipal
 import com.example.petstore.client.PetstoreAdminClient
 import com.example.petstore.client.PetstorePetsClient
 import com.example.petstore.model.PetstorePet
@@ -34,7 +36,7 @@ import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
 
-public class Scenario(client: Client) {
+public class Scenario(client: ApiClient, base: String) {
     private val pets: PetstorePetsClient = PetstorePetsClient(client)
 
     private val admin: PetstoreAdminClient = PetstoreAdminClient(client)
@@ -48,9 +50,12 @@ public class Scenario(client: Client) {
         listed(pets.listPets(status = PetstoreStatus.OPEN, tag = listOf("a", "b"), limit = 5, xTrace = "t1")),
         listed(pets.listPets(limit = -1)),
         found(pets.getPet(1)),
+        found(pets.getPet(1, Validators(entityTag = EntityTag("v1")))),
+        found(pets.getPet(1, Validators(entityTag = EntityTag("v0")))),
         found(pets.getPet(9)),
         renamed(pets.renamePet(1, PetstorePetPatch(name = Patch.Value("Rexy")))),
         renamed(pets.renamePet(1, PetstorePetPatch(status = Patch.Null))),
+        renamed(pets.renamePet(1, PetstorePetPatch(name = Patch.Null))),
         renamed(pets.renamePet(9, PetstorePetPatch())),
         stored(pets.setAvatar(1, "PNG".encodeToByteString())),
         pictured(pets.getAvatar(1)),
@@ -79,6 +84,7 @@ public class Scenario(client: Client) {
 
     private fun found(result: PetstoreGetPetResult): String = when (result) {
         is PetstoreGetPetResult.Ok -> "found " + shown(result.body) + " as ${result.eTag}"
+        is PetstoreGetPetResult.NotModified -> "not modified ${result.validators.entityTag}"
         is PetstoreGetPetResult.NotFound -> "not found"
         is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status}"
         is PetstoreGetPetResult.Malformed -> "malformed ${result.status} ${result.reason}"
@@ -88,7 +94,7 @@ public class Scenario(client: Client) {
     private fun renamed(result: PetstoreRenamePetResult): String = when (result) {
         is PetstoreRenamePetResult.Ok -> "renamed " + shown(result.body)
         is PetstoreRenamePetResult.NotFound -> "not found"
-        is PetstoreRenamePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreRenamePetResult.Unexpected -> "unexpected ${result.status} ${result.content.decodeToString()}"
         is PetstoreRenamePetResult.Malformed -> "malformed ${result.status}"
         is PetstoreRenamePetResult.Failed -> "failed ${result.failure}"
     }
@@ -118,10 +124,10 @@ public class Scenario(client: Client) {
 }
 
 public object Wiring {
-    public fun install(route: Route, server: Server) {
+    public fun install(route: Route) {
         val store = Store()
-        PetstorePetsRoutes(PetsService(store), server).install(route)
-        PetstoreAdminRoutes(AdminService(store), server).install(route)
+        route.mount(PetstorePetsRoutes(PetsService(store)))
+        route.mount(PetstoreAdminRoutes(AdminService(store)))
     }
 }
 
@@ -133,10 +139,10 @@ private class Store {
 
 private class PetsService(private val store: Store) : PetstorePetsService {
     override suspend fun createPet(body: PetstorePetWrite): PetstoreCreatePetResponse {
-        check(requirePrincipal().id == "writer")
+        check(currentPrincipal()?.id == "writer")
         if (store.pets.values.any { pet -> pet.name == body.name }) return PetstoreCreatePetResponse.Conflict
         val pet = PetstorePet(id = store.pets.size + 1L, name = body.name, status = body.status)
-        store.pets[store.pets.size + 1L] = pet
+        store.pets[pet.id ?: 0L] = pet
         return PetstoreCreatePetResponse.Created(pet)
     }
 
@@ -146,24 +152,30 @@ private class PetsService(private val store: Store) : PetstorePetsService {
         limit: Int?,
         xTrace: String?,
     ): PetstoreListPetsResponse {
-        if (limit != null && limit < 0) return PetstoreListPetsResponse.Other(400, PetstoreProblem("bad limit"))
-        val wanted = store.pets.values.filter { pet -> status == null || pet.status == status }
-        val traced = wanted.filter { tag == null || tag == listOf("a", "b") && xTrace == "t1" }
-        return PetstoreListPetsResponse.Ok(traced, traced.size)
+        if (limit != null && limit < 0) return PetstoreListPetsResponse.Other(400, PetstoreProblem(title = "bad limit"))
+        val chosen = store.pets.values.filter { pet -> status == null || pet.status == status }
+        val pets = chosen.take(limit ?: chosen.size)
+        check(tag == null || tag == listOf("a", "b"))
+        check(xTrace == null || xTrace == "t1")
+        return PetstoreListPetsResponse.Ok(pets, pets.size)
     }
 
     override suspend fun getPet(petId: Long): PetstoreGetPetResponse {
         val pet = store.pets[petId] ?: return PetstoreGetPetResponse.NotFound
-        return PetstoreGetPetResponse.Ok(pet, "v" + pet.name.length)
+        return PetstoreGetPetResponse.Ok(pet, "\"v1\"")
     }
 
     override suspend fun renamePet(petId: Long, body: PetstorePetPatch): PetstoreRenamePetResponse {
         val pet = store.pets[petId] ?: return PetstoreRenamePetResponse.NotFound
-        val named = (body.name as? Patch.Value)?.value ?: pet.name
-        val cleared = pet.status.takeIf { body.status !is Patch.Null }
-        val patched = pet.copy(name = named, status = (body.status as? Patch.Value)?.value ?: cleared)
-        store.pets[petId] = patched
-        return PetstoreRenamePetResponse.Ok(patched)
+        val name = (body.name as? Patch.Value)?.value ?: pet.name
+        val status = when (val change = body.status) {
+            is Patch.Value -> change.value
+            Patch.Null -> null
+            Patch.Absent -> pet.status
+        }
+        val renamed = PetstorePet(id = pet.id, name = name, status = status)
+        store.pets[petId] = renamed
+        return PetstoreRenamePetResponse.Ok(renamed)
     }
 
     override suspend fun setAvatar(petId: Long, body: ByteString): PetstoreSetAvatarResponse {

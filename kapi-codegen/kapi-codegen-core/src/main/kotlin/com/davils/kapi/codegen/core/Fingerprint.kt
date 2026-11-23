@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core
 
 import kotlinx.serialization.Serializable
 
+/**
+ * The SHA-256 digest of a file a generation read or wrote.
+ *
+ * @property name the name or path of the file.
+ * @property digest the digest of the content, written as `sha-256:` followed by its hexadecimal digits.
+ * @since 1.0.0
+ */
 @Serializable
-public data class Fingerprint(public val name: String, public val digest: String)
+public class Fingerprint(public val name: String, public val digest: String) {
+    override fun equals(other: Any?): Boolean = other is Fingerprint && name == other.name && digest == other.digest
+
+    override fun hashCode(): Int = listOf(name, digest).hashCode()
+
+    override fun toString(): String = "Fingerprint($name, $digest)"
+}

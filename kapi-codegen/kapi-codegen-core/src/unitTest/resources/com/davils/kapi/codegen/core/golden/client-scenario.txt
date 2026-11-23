@@ -1,44 +1,80 @@
 package com.example.petstore
 
-import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.conditional.Validators
 import com.davils.kapi.runtime.client.stream.StreamEvent
+import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.wire.FilePart
 import com.davils.kapi.runtime.core.wire.Patch
+import com.davils.kapi.runtime.server.mount
 import com.example.petstore.client.PetstoreAdminClient
 import com.example.petstore.client.PetstoreAuthClient
 import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.model.PetstoreLoginOk
+import com.example.petstore.model.PetstorePagePetsOk
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstorePetPatch
 import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreProblem
+import com.example.petstore.model.PetstoreQueryPetsCriteria
 import com.example.petstore.model.PetstoreSearchPetsFilter
-import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
 import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
+import com.example.petstore.operation.PetstoreCreatePetResponse
 import com.example.petstore.operation.PetstoreCreatePetResult
+import com.example.petstore.operation.PetstoreDeletePetResponse
 import com.example.petstore.operation.PetstoreDeletePetResult
+import com.example.petstore.operation.PetstoreExportPetsResponse
+import com.example.petstore.operation.PetstoreGetPetResponse
 import com.example.petstore.operation.PetstoreGetPetResult
+import com.example.petstore.operation.PetstoreListPetsResponse
 import com.example.petstore.operation.PetstoreListPetsResult
+import com.example.petstore.operation.PetstoreLoginResponse
 import com.example.petstore.operation.PetstoreLoginResult
+import com.example.petstore.operation.PetstorePagePetsResponse
 import com.example.petstore.operation.PetstorePagePetsResult
+import com.example.petstore.operation.PetstoreQueryPetsResponse
+import com.example.petstore.operation.PetstoreQueryPetsResult
+import com.example.petstore.operation.PetstoreRenamePetResponse
 import com.example.petstore.operation.PetstoreRenamePetResult
+import com.example.petstore.operation.PetstoreSearchPetsResponse
 import com.example.petstore.operation.PetstoreSearchPetsResult
+import com.example.petstore.operation.PetstoreSetAvatarResponse
 import com.example.petstore.operation.PetstoreSetAvatarResult
+import com.example.petstore.operation.PetstoreUploadPhotoResponse
 import com.example.petstore.operation.PetstoreUploadPhotoResult
+import com.example.petstore.operation.PetstoreWatchPetsResponse
+import com.example.petstore.server.PetstoreAdminRoutes
+import com.example.petstore.server.PetstoreAdminService
+import com.example.petstore.server.PetstoreAuthRoutes
+import com.example.petstore.server.PetstoreAuthService
+import com.example.petstore.server.PetstorePetsRoutes
+import com.example.petstore.server.PetstorePetsService
+import io.ktor.server.routing.Route
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
 
-public class Scenario(client: Client) {
+private val rex: PetstorePet = PetstorePet(id = 1, name = "Rex")
+
+private val max: PetstorePet = PetstorePet(id = 2, name = "Max")
+
+public class Scenario(client: ApiClient, base: String) {
     private val pets: PetstorePetsClient = PetstorePetsClient(client)
 
     private val admin: PetstoreAdminClient = PetstoreAdminClient(client)
 
     private val auth: PetstoreAuthClient = PetstoreAuthClient(client)
 
-    public suspend fun run(): List<String> = listOf(
+    public suspend fun run(): List<String> = answers() + listOf("--") + Seen.lines
+
+    private suspend fun answers(): List<String> = listOf(
         listed(
             pets.listPets(
                 status = PetstoreStatus.OPEN,
-                tag = listOf("a b", "c"),
+                tag = listOf("a b", "c&d"),
                 limit = 2,
                 xTrace = "t-1",
                 state = listOf(PetstoreStatus.OPEN, PetstoreStatus.CLOSED),
@@ -50,21 +86,22 @@ public class Scenario(client: Client) {
         created(pets.createPet(PetstorePetWrite(name = "Rex"))),
         created(pets.createPet(PetstorePetWrite(name = "Taken"))),
         found(pets.getPet(7)),
+        found(pets.getPet(7, Validators(entityTag = EntityTag("v1")))),
         found(pets.getPet(404)),
         found(pets.getPet(500)),
-        found(pets.getPet(0)),
         renamed(pets.renamePet(7, PetstorePetPatch(name = Patch.Value("Max")))),
         renamed(pets.renamePet(418)),
         deleted(admin.deletePet(7)),
-        loggedIn(auth.login(user = "a b", password = "p&w", scopes = listOf("read", "write"))),
+        loggedIn(auth.login(user = "a b", password = "p&w=", scopes = listOf("read", "write"))),
         uploaded(
             pets.uploadPhoto(
                 petId = 7,
-                photo = FilePart("PNG".encodeToByteString(), filename = "rex.png"),
+                photo = FilePart("PNG".encodeToByteString(), filename = "../rex.png", contentType = "image/png"),
                 caption = "Rex",
                 meta = PetstoreUploadPhotoRequestMeta(title = "Portrait"),
             ),
         ),
+        uploaded(pets.uploadPhoto(petId = 8, photo = FilePart("GIF".encodeToByteString()))),
         avatarSet(pets.setAvatar(petId = 7, body = "RAW".encodeToByteString())),
         searched(
             pets.searchPets(
@@ -72,8 +109,8 @@ public class Scenario(client: Client) {
                 range = mapOf("from" to "1", "to" to "9"),
             ),
         ),
+        queried(pets.queryPets(PetstoreQueryPetsCriteria(name = "Rex", minAge = 2))),
         paged(pets.pagePetsPages(size = 1).toList()),
-        found(pets.getPet(9)),
         streamed(pets.watchPetsStream().toList()),
         streamed(pets.exportPetsStream(since = "2026").toList()),
     )
@@ -82,12 +119,13 @@ public class Scenario(client: Client) {
         "streamed " + events.joinToString(" | ", transform = ::event)
 
     private fun event(event: StreamEvent<PetstorePet>): String = when (event) {
-        is StreamEvent.Item -> "${event.name}:${event.value.name}"
+        is StreamEvent.Item -> "${event.type}:${event.value.name}"
         is StreamEvent.Malformed -> "malformed"
         is StreamEvent.Ended -> "ended"
     }
 
-    private fun paged(results: List<PetstorePagePetsResult>): String = "paged " + results.joinToString(" | ", transform = ::page)
+    private fun paged(results: List<PetstorePagePetsResult>): String =
+        "paged " + results.joinToString(" | ", transform = ::page)
 
     private fun page(result: PetstorePagePetsResult): String = when (result) {
         is PetstorePagePetsResult.Ok -> result.body.items.orEmpty().joinToString { pet -> pet.name }
@@ -124,6 +162,13 @@ public class Scenario(client: Client) {
         is PetstoreSearchPetsResult.Failed -> "failed ${result.failure}"
     }
 
+    private fun queried(result: PetstoreQueryPetsResult): String = when (result) {
+        is PetstoreQueryPetsResult.Ok -> "queried " + result.body.joinToString { pet -> "${pet.id}:${pet.name}" }
+        is PetstoreQueryPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreQueryPetsResult.Malformed -> "malformed ${result.status}"
+        is PetstoreQueryPetsResult.Failed -> "failed ${result.failure}"
+    }
+
     private fun listed(result: PetstoreListPetsResult): String = when (result) {
         is PetstoreListPetsResult.Ok -> "listed " + result.body.joinToString { pet -> "${pet.id}:${pet.name}" }
         is PetstoreListPetsResult.ServerError -> "server error ${result.status} ${result.body.title}"
@@ -142,9 +187,10 @@ public class Scenario(client: Client) {
     }
 
     private fun found(result: PetstoreGetPetResult): String = when (result) {
-        is PetstoreGetPetResult.Ok -> "found ${result.body.id}:${result.body.name} as ${result.eTag}"
+        is PetstoreGetPetResult.Ok -> "found ${result.body.id}:${result.body.name} as ${result.eTag} ${result.xRateRemaining}"
+        is PetstoreGetPetResult.NotModified -> "not modified ${result.validators.entityTag}"
         is PetstoreGetPetResult.NotFound -> "not found"
-        is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status} ${result.content.decodeToString()}"
+        is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status}"
         is PetstoreGetPetResult.Malformed -> "malformed ${result.status}"
         is PetstoreGetPetResult.Failed -> "failed ${result.failure}"
     }
@@ -162,5 +208,105 @@ public class Scenario(client: Client) {
         is PetstoreDeletePetResult.Unexpected -> "unexpected ${result.status}"
         is PetstoreDeletePetResult.Malformed -> "malformed ${result.status}"
         is PetstoreDeletePetResult.Failed -> "failed ${result.failure}"
+    }
+}
+
+public object Wiring {
+    public fun install(route: Route) {
+        route.mount(PetstorePetsRoutes(PetsService()))
+        route.mount(PetstoreAdminRoutes(AdminService()))
+        route.mount(PetstoreAuthRoutes(AuthService()))
+    }
+}
+
+internal object Seen {
+    val lines: MutableList<String> = mutableListOf()
+}
+
+private class PetsService : PetstorePetsService {
+    override suspend fun listPets(
+        status: PetstoreStatus?,
+        tag: List<String>?,
+        limit: Int?,
+        xTrace: String?,
+        state: List<PetstoreStatus>?,
+        session: String?,
+    ): PetstoreListPetsResponse {
+        Seen.lines += "listPets $status $tag $limit $xTrace $state $session"
+        if (limit == 503) return PetstoreListPetsResponse.ServerError(503, PetstoreProblem(title = "down"))
+        if (limit == 400) return PetstoreListPetsResponse.Other(400, PetstoreProblem(title = "bad"))
+        return PetstoreListPetsResponse.Ok(listOf(rex, max))
+    }
+
+    override suspend fun createPet(body: PetstorePetWrite): PetstoreCreatePetResponse {
+        Seen.lines += "createPet ${body.name}"
+        if (body.name == "Taken") return PetstoreCreatePetResponse.Conflict
+        return PetstoreCreatePetResponse.Created(PetstorePet(id = 3, name = body.name))
+    }
+
+    override suspend fun getPet(petId: Long): PetstoreGetPetResponse {
+        check(petId != 500L) { "broken" }
+        if (petId == 404L) return PetstoreGetPetResponse.NotFound
+        return PetstoreGetPetResponse.Ok(PetstorePet(id = petId, name = "Rex"), "\"v1\"", 5)
+    }
+
+    override suspend fun renamePet(petId: Long, body: PetstorePetPatch?): PetstoreRenamePetResponse {
+        Seen.lines += "renamePet $petId ${body?.name}"
+        if (petId == 418L) return PetstoreRenamePetResponse.Status418
+        val name = (body?.name as? Patch.Value)?.value.orEmpty()
+        return PetstoreRenamePetResponse.Ok(name.encodeToByteString())
+    }
+
+    override suspend fun uploadPhoto(
+        petId: Long,
+        photo: FilePart,
+        caption: String?,
+        meta: PetstoreUploadPhotoRequestMeta?,
+    ): PetstoreUploadPhotoResponse {
+        val content = photo.content.decodeToString()
+        Seen.lines += "uploadPhoto $petId ${photo.filename} ${photo.contentType} $content $caption ${meta?.title}"
+        return PetstoreUploadPhotoResponse.NoContent
+    }
+
+    override suspend fun setAvatar(petId: Long, body: ByteString): PetstoreSetAvatarResponse {
+        Seen.lines += "setAvatar $petId ${body.decodeToString()}"
+        return PetstoreSetAvatarResponse.NoContent
+    }
+
+    override suspend fun searchPets(filter: PetstoreSearchPetsFilter?, range: Map<String, String>?): PetstoreSearchPetsResponse {
+        Seen.lines += "searchPets ${filter?.name} ${filter?.minAge} $range"
+        return PetstoreSearchPetsResponse.Ok(listOf(rex))
+    }
+
+    override suspend fun queryPets(criteria: PetstoreQueryPetsCriteria): PetstoreQueryPetsResponse {
+        Seen.lines += "queryPets ${criteria.name} ${criteria.minAge}"
+        return PetstoreQueryPetsResponse.Ok(listOf(rex))
+    }
+
+    override suspend fun pagePets(cursor: String?, size: Int?): PetstorePagePetsResponse {
+        Seen.lines += "pagePets $cursor $size"
+        if (cursor == null) return PetstorePagePetsResponse.Ok(PetstorePagePetsOk(items = listOf(rex), next = "c2"))
+        return PetstorePagePetsResponse.Ok(PetstorePagePetsOk(items = listOf(max)))
+    }
+
+    override suspend fun watchPets(): PetstoreWatchPetsResponse = PetstoreWatchPetsResponse.Ok(flowOf(rex, max))
+
+    override suspend fun exportPets(since: String?): PetstoreExportPetsResponse {
+        Seen.lines += "exportPets $since"
+        return PetstoreExportPetsResponse.Ok(flowOf(rex, max))
+    }
+}
+
+private class AdminService : PetstoreAdminService {
+    override suspend fun deletePet(petId: Long): PetstoreDeletePetResponse {
+        Seen.lines += "deletePet $petId"
+        return PetstoreDeletePetResponse.NoContent
+    }
+}
+
+private class AuthService : PetstoreAuthService {
+    override suspend fun login(user: String, password: String, scopes: List<String>?): PetstoreLoginResponse {
+        Seen.lines += "login $user $password $scopes"
+        return PetstoreLoginResponse.Ok(PetstoreLoginOk(token = "t-1"))
     }
 }

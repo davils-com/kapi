@@ -1,9 +1,8 @@
 ===== com/example/quotes/model/QuotesPrice.kt
 package com.example.quotes.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.Long
@@ -13,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "quotes.yaml#/components/schemas/Price",
 )
 public data class QuotesPrice(
@@ -23,10 +22,9 @@ public data class QuotesPrice(
     public val request: QuotesRequest,
     @SerialName("cents")
     public val cents: Long,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "price") fail(::type, "must be price", ViolationCodes.CONST)
+        if (type != "price") fail(::type, "must be price", ConstraintViolationCodes.CONST)
         within(::request) { with(request) { validate() } }
     }
 }
@@ -34,7 +32,6 @@ public data class QuotesPrice(
 package com.example.quotes.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -43,7 +40,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "quotes.yaml#/components/schemas/Quote",
 )
 public data class QuotesQuote(
@@ -51,8 +48,7 @@ public data class QuotesQuote(
     public val request: QuotesRequest,
     @SerialName("symbol")
     public val symbol: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         within(::request) { with(request) { validate() } }
     }
@@ -61,7 +57,6 @@ public data class QuotesQuote(
 package com.example.quotes.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -70,23 +65,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "quotes.yaml#/components/schemas/Request",
 )
 public data class QuotesRequest(
     @SerialName("id")
     public val id: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
 ===== com/example/quotes/model/QuotesTick.kt
 package com.example.quotes.model
 
-import com.davils.kapi.runtime.core.validation.ViolationCodes
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.Long
@@ -96,7 +89,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "quotes.yaml#/components/schemas/Tick",
 )
 public data class QuotesTick(
@@ -106,10 +99,9 @@ public data class QuotesTick(
     public val symbol: String,
     @SerialName("cents")
     public val cents: Long,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (type != "tick") fail(::type, "must be tick", ViolationCodes.CONST)
+        if (type != "tick") fail(::type, "must be tick", ConstraintViolationCodes.CONST)
     }
 }
 ===== com/example/quotes/channel/QuotesQuotesServerMessage.kt
@@ -578,19 +570,19 @@ public class QuotesRoutes(
   "files": [
     {
       "name": "com/example/quotes/model/QuotesPrice.kt",
-      "digest": "sha256:6d2f12199c31c20a0f53a60f40ea9394d315abf1ceb3778580d132cfeca5fc0e"
+      "digest": "sha256:7353003130dc50768996bde184290f3249a15de96f2ca96c7aab111acf46d16a"
     },
     {
       "name": "com/example/quotes/model/QuotesQuote.kt",
-      "digest": "sha256:2e9ffe0a13683242eeb1b5c070fc9296e09af7193d3f79a377d07beeb6511111"
+      "digest": "sha256:5891a04e34dcda07342cd028103c6192c4dca367b4b24bf0094a4030d816ab47"
     },
     {
       "name": "com/example/quotes/model/QuotesRequest.kt",
-      "digest": "sha256:fcc5eb2d8aa924a3fcb20f8b428d39d6c5039a90b30e4fa548fcbcdd90d5233a"
+      "digest": "sha256:bbe5cbdbdefabd8731ecb0b174551c438f81dfbeb7dc2a1e4805ca1b1e2ce302"
     },
     {
       "name": "com/example/quotes/model/QuotesTick.kt",
-      "digest": "sha256:dfa4a1eeab28c128a7f3969b1454bd53224f1eeaa712cd9d8dfd75135fd7413e"
+      "digest": "sha256:ec5f3aed68a4a906075abd60d82de91037ba5279bacfd93734844bb076cdd1f1"
     },
     {
       "name": "com/example/quotes/channel/QuotesQuotesServerMessage.kt",

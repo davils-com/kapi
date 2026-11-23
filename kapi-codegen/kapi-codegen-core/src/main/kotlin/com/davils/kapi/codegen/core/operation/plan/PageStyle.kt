@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation.plan
 
 internal enum class PageStyle(val function: String) {
-    Cursor("apiCursorPages"),
-    Offset("apiOffsetPages"),
-    Numbered("apiNumberedPages"),
+    Cursor("cursorPages"),
+    Offset("offsetPages"),
+    Numbered("numberedPages"),
 }

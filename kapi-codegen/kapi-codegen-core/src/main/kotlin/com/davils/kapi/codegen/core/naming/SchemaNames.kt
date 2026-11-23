@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.naming
 
-import com.davils.kapi.spec.openapi.Document
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.Document
+import com.davils.kapi.spec.openapi.model.schema.Schema
 
 internal class SchemaNames(private val options: GeneratorOptions, private val table: NameTable) {
     fun name(document: Document): Map<String, String> {

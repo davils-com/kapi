@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -90,7 +89,7 @@ class ModelPatchesTest : FunSpec({
             val kotlin = clientOf(pet(TRI_STATE), PATCH)
 
             kotlin shouldContain
-                """if (name is Patch.Null) fail(::name, "must not be null", ViolationCodes.NOT_NULL)"""
+                """if (name is Patch.Null) fail(::name, "must not be null", ConstraintViolationCodes.NOT_NULL)"""
             kotlin shouldNotContain "if (nick is Patch.Null)"
         }
 

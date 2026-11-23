@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.extension
 
-import com.davils.kapi.spec.openapi.Document
-import com.davils.kapi.spec.core.model.Element
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.core.value.ExtensionName
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.core.value.ExtensionName
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.core.value.Value
+import com.davils.kapi.spec.openapi.Document
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 internal class ExtensionAudit(private val findings: Findings) {
     fun audit(document: Document) {

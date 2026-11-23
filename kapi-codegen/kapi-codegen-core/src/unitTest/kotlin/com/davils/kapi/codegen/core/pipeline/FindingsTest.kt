@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.pipeline
 
-import com.davils.kore.core.text.TextRange
+import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
-import com.davils.kapi.codegen.core.CodegenCodes
-import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kore.core.text.TextRange
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 

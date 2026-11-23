@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Conditionals
+import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
@@ -30,11 +31,10 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
-
-private const val INDENT: String = "    "
 
 private const val CLIENT: String = "client"
 
@@ -75,10 +75,14 @@ internal class ClientEmitter(
     fun emit(operations: List<OperationPlan>): List<GeneratedFile> {
         val groups = operations.groupBy(OperationPlan::group).toSortedMap()
         val clients = groups.map { (group, members) ->
-            file(clientPackage, group + kind.suffix, client(group + kind.suffix, members))
+            file(packageName = clientPackage, name = group + kind.suffix, type = client(group + kind.suffix, members))
         }
         val outcomes = operations.sortedBy(OperationPlan::result).map { operation ->
-            file(operationPackage, operation.result, results.type(operation, resultOf(operation), origin))
+            file(
+                packageName = operationPackage,
+                name = operation.result,
+                type = results.type(operation, resultOf(operation), origin),
+            )
         }
         return clients + outcomes
     }
@@ -117,6 +121,7 @@ internal class ClientEmitter(
         signatures.taken(operation).forEach { (name, type) ->
             function.addParameter(signatures.parameter(name, type))
         }
+        if (Conditionals.isConditional(operation)) function.addParameter(validators())
         function.returns(result)
         function.addCode(calls.of(operation))
         function.addCode("return when (val exchange = %N.execute(call)) {\n", CLIENT)
@@ -125,14 +130,19 @@ internal class ClientEmitter(
         return function.build()
     }
 
+    private fun validators(): ParameterSpec {
+        val parameter = ParameterSpec.builder(Conditionals.VALIDATORS, ClientTypes.validators.copy(nullable = true))
+        parameter.defaultValue("null")
+        return parameter.build()
+    }
+
     private fun file(packageName: String, name: String, type: TypeSpec): GeneratedFile {
-        val file = FileSpec.builder(packageName, name)
-        file.indent(INDENT)
+        val file = FileSpec.builder(packageName = packageName, fileName = name)
         file.addType(type)
         return GeneratedFile(
-            path = packageName.replace('.', '/') + "/" + name + ".kt",
+            path = packageName.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,
-            content = file.build().toString(),
+            content = Sources.of(file),
         )
     }
 }

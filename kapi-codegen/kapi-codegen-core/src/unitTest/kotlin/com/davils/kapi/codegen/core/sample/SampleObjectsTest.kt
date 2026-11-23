@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.Generation
@@ -53,15 +52,15 @@ class SampleObjectsTest : FunSpec({
     context("a member of a union") {
         test("carries the value the discriminator maps to it") {
             val text = "{type: string}"
-            val samples = samplesOf(animal + member("Cat", text) + member("Dog", text))
+            val samples = samplesOf(animal + member(name = "Cat", kind = text) + member(name = "Dog", kind = text))
 
             samples shouldContain "kind = \"cat\","
             samples shouldContain "kind = \"hound\","
         }
 
         test("carries that value as the entry of an enumeration") {
-            val cat = member("Cat", "{type: string, enum: [tiger, cat]}")
-            val dog = member("Dog", "{type: string, enum: [wolf]}")
+            val cat = member(name = "Cat", kind = "{type: string, enum: [tiger, cat]}")
+            val dog = member(name = "Dog", kind = "{type: string, enum: [wolf]}")
             val samples = samplesOf(animal + cat + dog)
 
             samples shouldContain "kind = PetstoreCatKind.CAT,"

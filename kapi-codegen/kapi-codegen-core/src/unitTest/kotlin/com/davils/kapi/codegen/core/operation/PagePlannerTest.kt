@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.fixture.LIST_PETS
 import com.davils.kapi.codegen.core.fixture.LIST_PETS_RESULT
 import com.davils.kapi.codegen.core.fixture.OK
@@ -61,53 +60,84 @@ private fun paged(pagination: String, parameter: String, body: String, place: St
 }
 
 private val invalid: Map<String, List<String>> = mapOf(
-    "a parameter the operation does not have" to paged("style: cursor, parameter: other, next: next", TEXT, PAGE),
-    "no parameter at all" to paged("style: cursor, next: next", TEXT, PAGE),
-    "a cursor that is a number" to paged(CURSOR, NUMBER, PAGE),
-    "an offset that is a text" to paged(OFFSET, TEXT, PAGE),
+    "a success without a body and a failure with one" to paths(
+        "/pets: {get: {$LIST_PETS, x-kapi-pagination: {style: cursor, parameter: position, next: next}, " +
+            "parameters: [{name: position, in: query, schema: $TEXT}], responses: {'200': {description: ok}, " +
+            "'404': {description: no, content: {application/json: {schema: $TEXT}}}}}}",
+    ),
+    "a parameter the operation does not have" to paged(
+        pagination = "style: cursor, parameter: other, next: next",
+        parameter = TEXT,
+        body = PAGE,
+    ),
+    "no parameter at all" to paged(pagination = "style: cursor, next: next", parameter = TEXT, body = PAGE),
+    "a cursor that is a number" to paged(pagination = CURSOR, parameter = NUMBER, body = PAGE),
+    "an offset that is a text" to paged(pagination = OFFSET, parameter = TEXT, body = PAGE),
     "a parameter outside the query" to paged(pagination = CURSOR, parameter = TEXT, body = PAGE, place = "header"),
-    "a next the response does not have" to paged("style: cursor, parameter: position, next: other", TEXT, PAGE),
-    "a next that is no text" to paged("style: cursor, parameter: position, next: items", TEXT, PAGE),
-    "no next" to paged("style: cursor, parameter: position", TEXT, PAGE),
-    "items that are no list" to paged("style: offset, parameter: position, items: next", NUMBER, PAGE),
-    "no items in a response that is no list" to paged("style: page, parameter: position", NUMBER, PAGE),
+    "a next the response does not have" to paged(
+        pagination = "style: cursor, parameter: position, next: other",
+        parameter = TEXT,
+        body = PAGE,
+    ),
+    "a next that is no text" to paged(
+        pagination = "style: cursor, parameter: position, next: items",
+        parameter = TEXT,
+        body = PAGE,
+    ),
+    "no next" to paged(pagination = "style: cursor, parameter: position", parameter = TEXT, body = PAGE),
+    "items that are no list" to paged(
+        pagination = "style: offset, parameter: position, items: next",
+        parameter = NUMBER,
+        body = PAGE,
+    ),
+    "no items in a response that is no list" to paged(
+        pagination = "style: page, parameter: position",
+        parameter = NUMBER,
+        body = PAGE,
+    ),
 )
 
 class PagePlannerTest : FunSpec({
     context("an operation that pages by a cursor") {
         test("has a function that follows the cursor of each page, without the parameter it fills itself") {
-            val kotlin = clientOf(paged(CURSOR, TEXT, PAGE))
+            val kotlin = clientOf(paged(pagination = CURSOR, parameter = TEXT, body = PAGE))
 
             kotlin shouldContain SIGNATURE
-            kotlin shouldContain "= apiCursorPages(next = { $ANSWER?.next }) {"
+            kotlin shouldContain "= cursorPages(next = { $ANSWER?.next }) {"
             kotlin shouldContain "        $CALL\n    }"
         }
 
         test("follows a response that is the cursor itself") {
-            val kotlin = clientOf(paged("style: cursor, parameter: position", TEXT, TEXT))
+            val kotlin = clientOf(
+                paged(pagination = "style: cursor, parameter: position", parameter = TEXT, body = TEXT),
+            )
 
-            kotlin shouldContain "apiCursorPages(next = { $ANSWER }) {"
+            kotlin shouldContain "cursorPages(next = { $ANSWER }) {"
         }
     }
 
     context("an operation that pages by an offset") {
         test("has a function that moves by the items of each page") {
-            val kotlin = clientOf(paged(OFFSET, NUMBER, PAGE))
+            val kotlin = clientOf(paged(pagination = OFFSET, parameter = NUMBER, body = PAGE))
 
             kotlin shouldContain SIGNATURE
-            kotlin shouldContain "= apiOffsetPages(size = { $ANSWER?.items?.size }) {\n        $CALL\n"
+            kotlin shouldContain "= offsetPages(size = { $ANSWER?.items?.size }) {\n        $CALL\n"
         }
 
         test("hands a small parameter the position as the number it takes") {
-            clientOf(paged(OFFSET, SMALL, PAGE)) shouldContain "listPets(limit = limit, position = it.toInt())"
+            clientOf(
+                paged(pagination = OFFSET, parameter = SMALL, body = PAGE),
+            ) shouldContain "listPets(limit = limit, position = it.toInt())"
         }
     }
 
     context("an operation that pages by a number") {
         test("has a function that counts the pages of a response that is the list itself") {
-            val kotlin = clientOf(paged("style: page, parameter: position", NUMBER, LIST))
+            val kotlin = clientOf(
+                paged(pagination = "style: page, parameter: position", parameter = NUMBER, body = LIST),
+            )
 
-            kotlin shouldContain "= apiNumberedPages(size = { $ANSWER?.size }) {\n        $CALL\n"
+            kotlin shouldContain "= numberedPages(size = { $ANSWER?.size }) {\n        $CALL\n"
         }
     }
 
@@ -119,7 +149,7 @@ class PagePlannerTest : FunSpec({
 
     context("an operation that pages by a link") {
         test("is a warning and has no function for its pages yet") {
-            val lines = paged("style: link", TEXT, PAGE)
+            val lines = paged(pagination = "style: link", parameter = TEXT, body = PAGE)
             val generation = clientGenerationOf(lines)
 
             generation.shouldBeInstanceOf<Generation.Generated>()

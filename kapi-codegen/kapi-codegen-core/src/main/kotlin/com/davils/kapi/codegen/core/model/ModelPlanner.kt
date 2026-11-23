@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
-import com.davils.kapi.spec.openapi.model.schema.FixedSchema
-import com.davils.kapi.spec.openapi.model.schema.Schema
-import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.ModelKind
@@ -32,6 +27,10 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.schema.FixedSchema
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 
 internal class ModelPlanner(private val scope: PlanScope) {
     private val types: SchemaTypes = SchemaTypes(scope, this)
@@ -77,7 +76,8 @@ internal class ModelPlanner(private val scope: PlanScope) {
         val kept = shape.properties.filterNot { (jsonName, schema) -> isIgnored(shape, jsonName, schema) }
         val properties = kept.map { (jsonName, schema) -> property(name, shape, jsonName to schema) }
         properties.forEach { property ->
-            members.claim(NameClaim(property.name, "The property ${property.jsonName}", definition.location))
+            val origin = "The property ${property.jsonName}"
+            members.claim(NameClaim(name = property.name, origin = origin, location = definition.location))
         }
         val dependencies = shape.dependencies.flatMap { (trigger, names) ->
             dependencies(definition, properties, trigger to names)

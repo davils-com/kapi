@@ -1,0 +1,595 @@
+===== com/example/petstore/model/PetstoreWhen.kt
+package com.example.petstore.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Long
+import kotlin.String
+import kotlin.text.Regex
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml#/components/schemas/when",
+)
+public data class PetstoreWhen(
+    @SerialName("val")
+    public val `val`: PetstoreWhenVal,
+    @SerialName("it")
+    public val it: String? = null,
+    @SerialName("\"pwned\"")
+    public val pwned: Long? = null,
+    @SerialName("a\\b")
+    public val aB: String? = null,
+    @SerialName("class")
+    public val `class`: PetstoreWhen? = null,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (!`val`.isKnown) fail(::`val`, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+        if (it != null) {
+            if (Constraints.length(it) < 1) fail(::it, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
+            if (!IT_PATTERN.containsMatchIn(it)) fail(::it, "must match \\${'$'}\\{pwned\\}|\"\"\"", ConstraintViolationCodes.PATTERN)
+        }
+        if (pwned != null) {
+            if (pwned != 3L) fail(::pwned, "must be 3", ConstraintViolationCodes.CONST)
+        }
+        if (`class` != null) {
+            within(::`class`) { with(`class`) { validate() } }
+        }
+    }
+
+    override fun toString(): String = "PetstoreWhen(" + "val=" + `val` + ", it=" + it + ", pwned=" + pwned + ", aB=" + "****" + ", class=" + `class` + ")"
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml#/components/schemas/when",
+    )
+    public companion object {
+        private val IT_PATTERN: Regex = Regex("\\${'$'}\\{pwned\\}|\"\"\"")
+    }
+}
+===== com/example/petstore/model/PetstoreWhenVal.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlin.Boolean
+import kotlin.String
+import kotlin.collections.List
+import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml#/components/schemas/when/properties/val",
+)
+public value class PetstoreWhenVal(
+    public val `value`: String,
+) {
+    public val isKnown: Boolean
+        get() = this in entries
+
+    override fun toString(): String = `value`
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml#/components/schemas/when/properties/val",
+    )
+    public companion object {
+        public val EMPTY: PetstoreWhenVal = PetstoreWhenVal("\"\"\"")
+
+        public val PWNED: PetstoreWhenVal = PetstoreWhenVal("${'$'}{pwned}")
+
+        public val X_Y: PetstoreWhenVal = PetstoreWhenVal("x*/y")
+
+        public val A_B: PetstoreWhenVal = PetstoreWhenVal("a\u202Eb")
+
+        public val C_D: PetstoreWhenVal = PetstoreWhenVal("c\\d")
+
+        public val FUN: PetstoreWhenVal = PetstoreWhenVal("fun")
+
+        public val VALUE: PetstoreWhenVal = PetstoreWhenVal("VALUE")
+
+        public val entries: List<PetstoreWhenVal> = listOf(EMPTY, PWNED, X_Y, A_B, C_D, FUN, VALUE)
+    }
+}
+===== com/example/petstore/client/PetstoreDefaultClient.kt
+package com.example.petstore.client
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.call.CredentialPlacement
+import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.client.call.SecurityUse
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreValResult
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.Map
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public class PetstoreDefaultClient(
+    private val client: ApiClient,
+) {
+    private val valReaders: Map<Int, (Exchange.Answered) -> PetstoreValResult> = mapOf(
+        204 to { exchange -> PetstoreValResult.NoContent(exchange.content, exchange.headers) },
+    )
+
+    public suspend fun `val`(
+        id: String,
+        fileName: FilePart? = null,
+        pwned: String? = null,
+    ): PetstoreValResult {
+        val call = apiCall("val", "POST") {
+            path("/pets/")
+            path(ParameterFormat("id", ParameterStyle.Simple, false), ParameterValue.Text(id))
+            multipart {
+                if (fileName != null) file("file\"name", fileName, MediaType.parse("image/png; name=\"*/\""))
+                if (pwned != null) text("${'$'}{pwned}", pwned)
+            }
+            security(listOf(SecurityUse("key", CredentialPlacement.Header("X-Key\"); pwned(); (\""))))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreValResult.Failed(exchange.failure)
+            is Exchange.Answered -> valResult(exchange)
+        }
+    }
+
+    private fun valResult(exchange: Exchange.Answered): PetstoreValResult {
+        val read = valReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreValResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+}
+===== com/example/petstore/client/PetstoreObjectClient.kt
+package com.example.petstore.client
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.call.CredentialPlacement
+import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.client.call.SecurityUse
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreWhen
+import com.example.petstore.operation.PetstoreClassResult
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.Map
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public class PetstoreObjectClient(
+    private val client: ApiClient,
+) {
+    private val classReaders: Map<Int, (Exchange.Answered) -> PetstoreClassResult> = mapOf(
+        200 to ::classOk,
+    )
+
+    public suspend fun `class`(
+        id: String,
+        xValPwned: String? = null,
+        `fun`: String? = null,
+        evil: String? = null,
+        pwned: String? = null,
+    ): PetstoreClassResult {
+        val call = apiCall("class", "GET") {
+            path("/pets/")
+            path(ParameterFormat("id", ParameterStyle.Simple, false), ParameterValue.Text(id))
+            if (xValPwned != null) query(ParameterFormat("x\"); val pwned = (\"", ParameterStyle.Form, true), ParameterValue.Text(xValPwned))
+            if (`fun` != null) header(ParameterFormat("fun", ParameterStyle.Simple, false), ParameterValue.Text(`fun`))
+            if (evil != null) query(ParameterFormat("\u202Eevil\u2066", ParameterStyle.Form, true), ParameterValue.Text(evil))
+            if (pwned != null) cookie(ParameterFormat("${'$'}pwned", ParameterStyle.Form, true), ParameterValue.Text(pwned))
+            idempotent()
+            accept(MediaRange.of("application/json; x=\"*/\""))
+            security(listOf(SecurityUse("key", CredentialPlacement.Header("X-Key\"); pwned(); (\""))))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreClassResult.Failed(exchange.failure)
+            is Exchange.Answered -> classResult(exchange)
+        }
+    }
+
+    private fun classResult(exchange: Exchange.Answered): PetstoreClassResult {
+        val read = classReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreClassResult.Other(exchange.status, exchange.content, exchange.headers)
+    }
+
+    private fun classOk(exchange: Exchange.Answered): PetstoreClassResult {
+        val xPwned = exchange.headers["X-${'$'}pwned'|`~"]
+        return when (val decoding = client.decode(PetstoreWhen.serializer(), exchange)) {
+            is Decoding.Decoded -> PetstoreClassResult.Ok(decoding.value, xPwned, exchange.headers)
+            is Decoding.Failed -> PetstoreClassResult.Malformed(exchange.status, decoding.reason)
+        }
+    }
+}
+===== com/example/petstore/operation/PetstoreClassResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreWhen
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public sealed interface PetstoreClassResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreWhen,
+        public val xPwned: String?,
+        public val headers: Headers,
+    ) : PetstoreClassResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Other(
+        public val status: Int,
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreClassResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreClassResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreClassResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreClassResult
+}
+===== com/example/petstore/operation/PetstoreValResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public sealed interface PetstoreValResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class NoContent(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreValResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreValResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreValResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreValResult
+}
+===== com/example/petstore/server/PetstoreDefaultRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.ParameterType
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreValResponse
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.io.bytestring.decodeToString
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public class PetstoreDefaultRoutes(
+    private val service: PetstoreDefaultService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "val",
+            method = "POST",
+            path = "/pets/{id}",
+            security = listOf(listOf(SchemeUse("key", CredentialSource.Header("X-Key\"); pwned(); (\""), setOf("scope\"\"\"${'$'}{pwned}")))),
+            handler = ::`val`,
+        ),
+    )
+
+    private suspend fun `val`(request: Request): Reply {
+        val input = request.input()
+        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
+        val parts = input.parts(true)
+        val fileName = parts?.firstOrNull { part -> part.name == "file\"name" }?.let { part -> FilePart(part.content, part.filename, part.contentType?.toString()) }
+        val pwned = parts?.firstOrNull { part -> part.name == "${'$'}{pwned}" }?.let { part -> part.content.decodeToString() }
+        if (!input.isValid || id == null) return input.refused()
+        return when (val response = service.`val`(id = id, fileName = fileName, pwned = pwned)) {
+            is PetstoreValResponse.NoContent -> reply(204)
+        }
+    }
+}
+===== com/example/petstore/server/PetstoreDefaultService.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreValResponse
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public interface PetstoreDefaultService {
+    public suspend fun `val`(
+        id: String,
+        fileName: FilePart?,
+        pwned: String?,
+    ): PetstoreValResponse
+}
+===== com/example/petstore/server/PetstoreObjectRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.ParameterType
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreWhen
+import com.example.petstore.operation.PetstoreClassResponse
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public class PetstoreObjectRoutes(
+    private val service: PetstoreObjectService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "class",
+            method = "GET",
+            path = "/pets/{id}",
+            security = listOf(listOf(SchemeUse("key", CredentialSource.Header("X-Key\"); pwned(); (\""), setOf("scope\"\"\"${'$'}{pwned}")))),
+            handler = ::`class`,
+        ),
+    )
+
+    private suspend fun `class`(request: Request): Reply {
+        val input = request.input()
+        val id = input.value(Place.Path, ParameterFormat("id", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), true)
+        val xValPwned = input.value(Place.Query, ParameterFormat("x\"); val pwned = (\"", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        val `fun` = input.value(Place.Header, ParameterFormat("fun", ParameterStyle.Simple, false), ParameterType(String.serializer(), true), false)
+        val evil = input.value(Place.Query, ParameterFormat("\u202Eevil\u2066", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        val pwned = input.value(Place.Cookie, ParameterFormat("${'$'}pwned", ParameterStyle.Form, true), ParameterType(String.serializer(), true), false)
+        if (!input.isValid || id == null) return input.refused()
+        return when (val response = service.`class`(id = id, xValPwned = xValPwned, `fun` = `fun`, evil = evil, pwned = pwned)) {
+            is PetstoreClassResponse.Ok -> reply(200) {
+                header("X-${'$'}pwned'|`~", response.xPwned)
+                body(MediaType.parse("application/json; x=\"*/\""), PetstoreWhen.serializer(), response.body)
+            }
+            is PetstoreClassResponse.Other -> reply(response.status)
+        }
+    }
+}
+===== com/example/petstore/server/PetstoreObjectService.kt
+package com.example.petstore.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreClassResponse
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public interface PetstoreObjectService {
+    public suspend fun `class`(
+        id: String,
+        xValPwned: String?,
+        `fun`: String?,
+        evil: String?,
+        pwned: String?,
+    ): PetstoreClassResponse
+}
+===== com/example/petstore/operation/PetstoreClassResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreWhen
+import kotlin.Int
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public sealed interface PetstoreClassResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreWhen,
+        public val xPwned: String?,
+    ) : PetstoreClassResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data class Other(
+        public val status: Int,
+    ) : PetstoreClassResponse
+}
+===== com/example/petstore/operation/PetstoreValResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public sealed interface PetstoreValResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "hostile.yaml",
+    )
+    public data object NoContent : PetstoreValResponse
+}
+===== com/example/petstore/testing/PetstoreDefaultMockService.kt
+package com.example.petstore.testing
+
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreValResponse
+import com.example.petstore.server.PetstoreDefaultService
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public open class PetstoreDefaultMockService : PetstoreDefaultService {
+    override suspend fun `val`(
+        id: String,
+        fileName: FilePart?,
+        pwned: String?,
+    ): PetstoreValResponse = PetstoreValResponse.NoContent
+}
+===== com/example/petstore/testing/PetstoreObjectMockService.kt
+package com.example.petstore.testing
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.operation.PetstoreClassResponse
+import com.example.petstore.server.PetstoreObjectService
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public open class PetstoreObjectMockService : PetstoreObjectService {
+    override suspend fun `class`(
+        id: String,
+        xValPwned: String?,
+        `fun`: String?,
+        evil: String?,
+        pwned: String?,
+    ): PetstoreClassResponse = PetstoreClassResponse.Ok(
+        body = PetstoreSamples.`when`,
+        xPwned = null,
+    )
+}
+===== com/example/petstore/testing/PetstoreSamples.kt
+package com.example.petstore.testing
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreWhen
+import com.example.petstore.model.PetstoreWhenVal
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "hostile.yaml",
+)
+public object PetstoreSamples {
+    public val `when`: PetstoreWhen
+        get() = PetstoreWhen(
+            `val` = PetstoreWhenVal.EMPTY,
+            pwned = 3L,
+            aB = "string",
+        )
+}
