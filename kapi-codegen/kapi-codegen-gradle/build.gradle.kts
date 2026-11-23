@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+import org.gradle.api.attributes.java.TargetJvmEnvironment
+import org.gradle.api.attributes.plugin.GradlePluginApiVersion
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetAttribute
 
 plugins {
     id("kapi.gradle-plugin")
@@ -23,7 +27,13 @@ kreate {
     project {
         description = "The Gradle plugin of kapi, the API toolkit of Davils: generates Kotlin from OpenAPI and " +
             "AsyncAPI documents in an isolated worker, wires the sources and runtimes into JVM and multiplatform " +
-            "projects and reports every diagnostic as JSON and SARIF."
+            "projects, lints the documents and reports every diagnostic as JSON and SARIF."
+
+        coverage {
+            instrumentation {
+                includedClasses.add("com.davils.kapi.codegen.gradle.*")
+            }
+        }
     }
 }
 
@@ -50,4 +60,55 @@ configurations.matching { configuration -> configuration.name == "unitTestImplem
     dependencies.add(project.dependencies.gradleApi())
     dependencies.add(project.dependencies.gradleTestKit())
     dependencies.add(project.dependencies.create(libs.kotlin.gradle.plugin.get()))
+    dependencies.add(project.dependencies.project(":kapi-codegen:kapi-codegen-core"))
+}
+
+val generator: String = ":kapi-codegen:kapi-codegen-core"
+val client: String = ":kapi-runtime:kapi-runtime-client"
+val server: String = ":kapi-runtime:kapi-runtime-server"
+
+fun classpathOf(name: String, notations: List<Any>, wasm: Boolean): NamedDomainObjectProvider<ResolvableConfiguration> {
+    val scope = configurations.dependencyScope("${name}Dependencies") {
+        notations.forEach { notation -> dependencies.add(project.dependencies.create(notation)) }
+    }
+    return configurations.resolvable(name) {
+        extendsFrom(scope.get())
+        attributes {
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
+            if (wasm) {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named("kotlin-runtime"))
+                attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, objects.named("non-jvm"))
+                attribute(KotlinPlatformType.attribute, KotlinPlatformType.wasm)
+                attribute(KotlinWasmTargetAttribute.wasmTargetAttribute, KotlinWasmTargetAttribute.js)
+                return@attributes
+            }
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+            attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, objects.named("standard-jvm"))
+            attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+            attribute(GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE, objects.named(gradle.gradleVersion))
+        }
+    }
+}
+
+val pluginsUnderTest = classpathOf(
+    name = "functionalTestPlugins",
+    notations = listOf(libs.kotlin.gradle.plugin.get(), libs.kotlin.serialization.gradle.plugin.get()),
+    wasm = false,
+)
+val generatorUnderTest = classpathOf(name = "functionalTestGenerator", notations = listOf(project(generator)), wasm = false)
+val jvmRuntimes = classpathOf(name = "functionalTestJvm", notations = listOf(project(client), project(server)), wasm = false)
+val wasmRuntimes = classpathOf(name = "functionalTestWasm", notations = listOf(project(client)), wasm = true)
+
+tasks.withType<Test>().matching { task -> task.name == "unitTest" }.configureEach {
+    val main = sourceSets.main.get()
+    val classpaths = mapOf(
+        "kapi.test.plugin" to files(main.runtimeClasspath, pluginsUnderTest),
+        "kapi.test.generator" to files(generatorUnderTest),
+        "kapi.test.jvm" to files(jvmRuntimes),
+        "kapi.test.wasm" to files(wasmRuntimes),
+    )
+    classpaths.forEach { (name, classpath) -> inputs.files(classpath).withPropertyName(name).withNormalizer(ClasspathNormalizer::class) }
+    jvmArgumentProviders.add(CommandLineArgumentProvider { classpaths.map { (name, classpath) -> "-D$name=${classpath.asPath}" } })
+    maxHeapSize = "3g"
 }
