@@ -127,6 +127,15 @@ libraries:
       - '**/runtime/core/wire/Patch.kt'
       - '**/spec/schema/Compilation.kt'
       - '**/spec/schema/YamlConversion.kt'
+      - '**/runtime/server/ApiServer.kt'
+      - '**/runtime/server/operation/CredentialSource.kt'
+      - '**/runtime/server/reply/ReplyBody.kt'
+      - '**/runtime/server/request/ParameterType.kt'
+      - '**/runtime/server/request/PeerIdentity.kt'
+      - '**/runtime/server/security/Authorization.kt'
+      - '**/runtime/server/security/PresentedCredential.kt'
+      - '**/runtime/server/webhook/Verdict.kt'
+      - '**/runtime/server/webhook/VerificationKey.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -217,6 +226,15 @@ style:
       - '**/runtime/core/wire/Patch.kt'
       - '**/spec/schema/Compilation.kt'
       - '**/spec/schema/YamlConversion.kt'
+      - '**/runtime/server/ApiServer.kt'
+      - '**/runtime/server/operation/CredentialSource.kt'
+      - '**/runtime/server/reply/ReplyBody.kt'
+      - '**/runtime/server/request/ParameterType.kt'
+      - '**/runtime/server/request/PeerIdentity.kt'
+      - '**/runtime/server/security/Authorization.kt'
+      - '**/runtime/server/security/PresentedCredential.kt'
+      - '**/runtime/server/webhook/Verdict.kt'
+      - '**/runtime/server/webhook/VerificationKey.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false
