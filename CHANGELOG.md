@@ -69,3 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The test support of documents** adds `HostileDocuments.collidingKeys` and
   `HostileDocuments.collidingKeysDocument`, keys that share one hash code and a document whose components, properties,
   extensions and enum use them.
+- **The OpenAPI model and reader** keep every map keyed by document input, such as paths, operations, responses,
+  components, properties, extensions and the targets of references, in balanced trees through `KeyedMap`, group,
+  deduplicate and filter what a document names without hashing it, and hold every public map, list and set as an
+  immutable copy; `PathTemplate` and `ResponseStatus` are `Comparable`.

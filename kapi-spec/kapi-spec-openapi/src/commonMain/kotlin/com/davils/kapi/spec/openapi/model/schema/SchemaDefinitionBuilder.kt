@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.schema
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.info.ExternalDocs
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [SchemaDefinition], filled by the readers of kapi. Every `var` holds the value of the keyword
@@ -71,7 +75,7 @@ public class SchemaDefinitionBuilder internal constructor() :
      */
     public var comment: String? = null
 
-    internal val definitions: MutableMap<String, Schema> = linkedMapOf()
+    internal val definitions: MutableMap<String, Schema> = KeyedMap()
 
     /**
      * The value of `$ref`.
@@ -196,9 +200,9 @@ public class SchemaDefinitionBuilder internal constructor() :
      */
     public var unevaluatedItems: Schema? = null
 
-    internal val properties: MutableMap<String, Schema> = linkedMapOf()
+    internal val properties: MutableMap<String, Schema> = KeyedMap()
 
-    internal val patternProperties: MutableMap<String, Schema> = linkedMapOf()
+    internal val patternProperties: MutableMap<String, Schema> = KeyedMap()
 
     /**
      * The value of `additionalProperties`.
@@ -216,9 +220,9 @@ public class SchemaDefinitionBuilder internal constructor() :
 
     internal val required: MutableList<String> = mutableListOf()
 
-    internal val dependentRequired: MutableMap<String, List<String>> = linkedMapOf()
+    internal val dependentRequired: MutableMap<String, List<String>> = KeyedMap()
 
-    internal val dependentSchemas: MutableMap<String, Schema> = linkedMapOf()
+    internal val dependentSchemas: MutableMap<String, Schema> = KeyedMap()
 
     /**
      * The value of `minProperties`.
@@ -375,7 +379,7 @@ public class SchemaDefinitionBuilder internal constructor() :
      */
     public var externalDocs: ExternalDocs? = null
 
-    internal val unknownKeywords: MutableMap<String, Value> = linkedMapOf()
+    internal val unknownKeywords: MutableMap<String, Value> = KeyedMap()
 
     override fun assemble(): SchemaDefinition = SchemaDefinition(this)
 }

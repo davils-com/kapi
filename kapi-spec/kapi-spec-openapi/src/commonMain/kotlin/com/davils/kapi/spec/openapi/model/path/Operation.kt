@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.content.RequestBody
@@ -24,6 +27,7 @@ import com.davils.kapi.spec.openapi.model.info.ExternalDocs
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An operation object: one method on one path, with its parameters, its request body and its responses.
@@ -65,7 +69,7 @@ public class Operation internal constructor(builder: OperationBuilder) :
      *
      * @since 1.0.0
      */
-    public val tags: List<String> = builder.tags.toList()
+    public val tags: List<String> = builder.tags.frozen()
 
     /**
      * The `externalDocs` of the operation; `null` when the document leaves it out.
@@ -84,7 +88,7 @@ public class Operation internal constructor(builder: OperationBuilder) :
      *
      * @since 1.0.0
      */
-    public val parameters: List<Referable<Parameter>> = builder.parameters.toList()
+    public val parameters: List<Referable<Parameter>> = builder.parameters.frozen()
 
     /**
      * The `requestBody` of the operation, inline or by reference; `null` when the operation takes none.
@@ -105,7 +109,7 @@ public class Operation internal constructor(builder: OperationBuilder) :
      *
      * @since 1.0.0
      */
-    public val callbacks: Map<String, Referable<Callback>> = builder.callbacks.toMap()
+    public val callbacks: Map<String, Referable<Callback>> = builder.callbacks.frozen()
 
     /**
      * Whether the operation is `deprecated` and should no longer be used; `false` when the document leaves it out.
@@ -120,7 +124,7 @@ public class Operation internal constructor(builder: OperationBuilder) :
      *
      * @since 1.0.0
      */
-    public val security: List<SecurityRequirement>? = builder.security?.toList()
+    public val security: List<SecurityRequirement>? = builder.security?.frozen()
 
     /**
      * The `servers` that serve the operation instead of those of the path item and the document; empty when it names
@@ -128,7 +132,7 @@ public class Operation internal constructor(builder: OperationBuilder) :
      *
      * @since 1.0.0
      */
-    public val servers: List<Server> = builder.servers.toList()
+    public val servers: List<Server> = builder.servers.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

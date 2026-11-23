@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A callback object: the requests the API may send on its own to an address the caller gave, related to an
@@ -36,7 +40,7 @@ public class Callback internal constructor(builder: CallbackBuilder) :
      *
      * @since 1.0.0
      */
-    public val expressions: Map<String, PathItem> = builder.expressions.toMap()
+    public val expressions: Map<String, PathItem> = builder.expressions.frozen()
 
     override val identity: List<Any?> get() = listOf(expressions)
 }

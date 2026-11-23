@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.openapi.ReaderConfiguration
 import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.read.reference.ReferenceQueue
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 import com.davils.kore.core.text.TextSnippet
 import com.davils.kore.core.validation.violation.ViolationCode
 
@@ -32,16 +37,16 @@ internal class ReadScope(
 ) {
     val references: ReferenceQueue = ReferenceQueue()
 
-    private val adopted: MutableSet<DocumentUri> = linkedSetOf()
+    private val adopted: OrderedSet<DocumentUri> = OrderedSet()
 
-    private val bases: MutableMap<DocumentUri, DocumentUri> = linkedMapOf()
+    private val bases: MutableMap<DocumentUri, DocumentUri> = KeyedMap()
 
-    private val retrievals: MutableMap<DocumentUri, DocumentUri> = linkedMapOf()
+    private val retrievals: MutableMap<DocumentUri, DocumentUri> = KeyedMap()
 
     fun isAdopted(retrieval: DocumentUri): Boolean = retrieval in adopted
 
     fun adopt(retrieval: DocumentUri, self: DocumentUri?) {
-        adopted += retrieval
+        adopted.add(retrieval)
         self?.let { base ->
             bases[retrieval] = base
             retrievals.getOrPut(base) { retrieval }

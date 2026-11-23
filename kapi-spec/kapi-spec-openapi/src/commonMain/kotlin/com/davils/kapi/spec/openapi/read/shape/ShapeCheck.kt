@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read.shape
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.spec.core.value.Extensions
 import com.davils.kapi.spec.core.value.Value
@@ -24,6 +27,7 @@ import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.Entry
 import com.davils.kapi.spec.openapi.read.Values
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val MERGE_KEY: String = "<<"
 
@@ -31,11 +35,11 @@ internal class ShapeCheck private constructor(
     private val family: VersionFamily,
     private val shape: ObjectShape,
 ) {
-    private val present: MutableMap<String, Cursor> = linkedMapOf()
+    private val present: MutableMap<String, Cursor> = KeyedMap()
 
-    private val extensions: MutableMap<ExtensionName, Value> = linkedMapOf()
+    private val extensions: MutableMap<ExtensionName, Value> = KeyedMap()
 
-    private val unknown: MutableMap<String, Cursor> = linkedMapOf()
+    private val unknown: MutableMap<String, Cursor> = KeyedMap()
 
     private fun fields(cursor: Cursor): Fields {
         cursor.entries().forEach(::sort)

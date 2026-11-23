@@ -1447,7 +1447,7 @@ final class com.davils.kapi.spec.openapi/Version { // com.davils.kapi.spec.opena
     }
 }
 
-final value class com.davils.kapi.spec.openapi.model.content/ResponseStatus { // com.davils.kapi.spec.openapi.model.content/ResponseStatus|null[0]
+final value class com.davils.kapi.spec.openapi.model.content/ResponseStatus : kotlin/Comparable<com.davils.kapi.spec.openapi.model.content/ResponseStatus> { // com.davils.kapi.spec.openapi.model.content/ResponseStatus|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.openapi.model.content/ResponseStatus.<init>|<init>(kotlin.String){}[0]
 
     final val code // com.davils.kapi.spec.openapi.model.content/ResponseStatus.code|{}code[0]
@@ -1459,6 +1459,7 @@ final value class com.davils.kapi.spec.openapi.model.content/ResponseStatus { //
     final val value // com.davils.kapi.spec.openapi.model.content/ResponseStatus.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.openapi.model.content/ResponseStatus.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.openapi.model.content/ResponseStatus): kotlin/Int // com.davils.kapi.spec.openapi.model.content/ResponseStatus.compareTo|compareTo(com.davils.kapi.spec.openapi.model.content.ResponseStatus){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.openapi.model.content/ResponseStatus.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.openapi.model.content/ResponseStatus.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.openapi.model.content/ResponseStatus.toString|toString(){}[0]
@@ -1471,7 +1472,7 @@ final value class com.davils.kapi.spec.openapi.model.content/ResponseStatus { //
     }
 }
 
-final value class com.davils.kapi.spec.openapi.model.path/PathTemplate { // com.davils.kapi.spec.openapi.model.path/PathTemplate|null[0]
+final value class com.davils.kapi.spec.openapi.model.path/PathTemplate : kotlin/Comparable<com.davils.kapi.spec.openapi.model.path/PathTemplate> { // com.davils.kapi.spec.openapi.model.path/PathTemplate|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.openapi.model.path/PathTemplate.<init>|<init>(kotlin.String){}[0]
 
     final val parameters // com.davils.kapi.spec.openapi.model.path/PathTemplate.parameters|{}parameters[0]
@@ -1479,6 +1480,7 @@ final value class com.davils.kapi.spec.openapi.model.path/PathTemplate { // com.
     final val value // com.davils.kapi.spec.openapi.model.path/PathTemplate.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.openapi.model.path/PathTemplate.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.openapi.model.path/PathTemplate): kotlin/Int // com.davils.kapi.spec.openapi.model.path/PathTemplate.compareTo|compareTo(com.davils.kapi.spec.openapi.model.path.PathTemplate){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.openapi.model.path/PathTemplate.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.openapi.model.path/PathTemplate.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.openapi.model.path/PathTemplate.toString|toString(){}[0]

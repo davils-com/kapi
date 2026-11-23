@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [RequestBody], filled by the readers of kapi.
@@ -39,7 +43,7 @@ public class RequestBodyBuilder internal constructor() :
      */
     public var description: String? = null
 
-    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = KeyedMap()
 
     /**
      * The value of `required`, whether a request must carry the body.

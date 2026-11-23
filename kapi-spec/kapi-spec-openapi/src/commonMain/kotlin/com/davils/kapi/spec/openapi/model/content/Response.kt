@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A response object: one response of an operation, with its headers, its content and its links.
@@ -50,7 +54,7 @@ public class Response internal constructor(builder: ResponseBuilder) :
      *
      * @since 1.0.0
      */
-    public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
+    public val headers: Map<String, Referable<Header>> = builder.headers.frozen()
 
     /**
      * The `content` of the response by media type, such as `application/json`, or by media type range; empty for a
@@ -60,7 +64,7 @@ public class Response internal constructor(builder: ResponseBuilder) :
      *
      * @since 1.0.0
      */
-    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.frozen()
 
     /**
      * The `links` from the response to other operations by name, inline or by reference; empty when the document
@@ -68,7 +72,7 @@ public class Response internal constructor(builder: ResponseBuilder) :
      *
      * @since 1.0.0
      */
-    public val links: Map<String, Referable<Link>> = builder.links.toMap()
+    public val links: Map<String, Referable<Link>> = builder.links.frozen()
 
     override val identity: List<Any?> get() = listOf(summary, description, headers, content, links)
 }

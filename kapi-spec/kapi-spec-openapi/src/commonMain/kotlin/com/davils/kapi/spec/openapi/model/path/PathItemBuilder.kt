@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [PathItem], filled by the readers of kapi.
@@ -67,9 +71,9 @@ public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>()
             field = value
         }
 
-    internal val operations: MutableMap<Method, Operation> = linkedMapOf()
+    internal val operations: MutableMap<Method, Operation> = KeyedMap()
 
-    internal val additionalOperations: MutableMap<String, Operation> = linkedMapOf()
+    internal val additionalOperations: MutableMap<String, Operation> = KeyedMap()
 
     internal val servers: MutableList<Server> = mutableListOf()
 

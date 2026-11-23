@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Callback], filled by the readers of kapi.
@@ -30,7 +34,7 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class CallbackBuilder internal constructor() : ElementBuilder<Callback>() {
     override val subject: String get() = "openapi callback"
 
-    internal val expressions: MutableMap<String, PathItem> = linkedMapOf()
+    internal val expressions: MutableMap<String, PathItem> = KeyedMap()
 
     override fun assemble(): Callback = Callback(this)
 }

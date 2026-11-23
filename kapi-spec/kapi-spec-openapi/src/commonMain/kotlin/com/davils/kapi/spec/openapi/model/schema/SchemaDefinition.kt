@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.schema
 
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.frozen
+import com.davils.kapi.spec.core.collection.frozenSet
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.info.ExternalDocs
+import com.davils.kore.core.annotation.DavilsInternal
+
+private fun frozenLists(source: Map<String, List<String>>): Map<String, List<String>> {
+    val copy = KeyedMap<String, List<String>>()
+    source.forEach { (key, value) -> copy[key] = value.frozen() }
+    return copy.frozen()
+}
 
 /**
  * A schema written as an object: its keywords of JSON Schema and of OpenAPI, as they were written.
@@ -72,7 +84,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val definitions: Map<String, Schema> = builder.definitions.toMap()
+    public val definitions: Map<String, Schema> = builder.definitions.frozen()
 
     /**
      * The `$ref` of the schema. In OpenAPI 3.0 a schema with a reference holds nothing else; from 3.1 on the other
@@ -97,7 +109,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val types: Set<SchemaType> = builder.types.toSet()
+    public val types: Set<SchemaType> = builder.types.frozenSet()
 
     /**
      * The `format` of the value, such as `date-time` or `int64`, as it was written.
@@ -165,7 +177,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val prefixItems: List<Schema> = builder.prefixItems.toList()
+    public val prefixItems: List<Schema> = builder.prefixItems.frozen()
 
     /**
      * The schema of `contains`, which at least one item of an array matches; from OpenAPI 3.1 on.
@@ -221,7 +233,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val properties: Map<String, Schema> = builder.properties.toMap()
+    public val properties: Map<String, Schema> = builder.properties.frozen()
 
     /**
      * The schemas of `patternProperties` by a regular expression that names of properties match; from OpenAPI 3.1 on.
@@ -229,7 +241,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val patternProperties: Map<String, Schema> = builder.patternProperties.toMap()
+    public val patternProperties: Map<String, Schema> = builder.patternProperties.frozen()
 
     /**
      * The schema of `additionalProperties`, which every property that neither [properties] nor [patternProperties]
@@ -251,7 +263,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val required: List<String> = builder.required.toList()
+    public val required: List<String> = builder.required.frozen()
 
     /**
      * The `dependentRequired` properties: for the name of a property, the properties an object must have when it has
@@ -259,7 +271,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val dependentRequired: Map<String, List<String>> = builder.dependentRequired.toMap()
+    public val dependentRequired: Map<String, List<String>> = frozenLists(builder.dependentRequired)
 
     /**
      * The `dependentSchemas`: for the name of a property, the schema an object matches when it has that property; from
@@ -267,7 +279,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val dependentSchemas: Map<String, Schema> = builder.dependentSchemas.toMap()
+    public val dependentSchemas: Map<String, Schema> = builder.dependentSchemas.frozen()
 
     /**
      * The `minProperties` of an object; a reading reports one larger than [maxProperties].
@@ -296,21 +308,21 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val allOf: List<Schema> = builder.allOf.toList()
+    public val allOf: List<Schema> = builder.allOf.frozen()
 
     /**
      * The schemas of `anyOf`, which a value matches at least one of.
      *
      * @since 1.0.0
      */
-    public val anyOf: List<Schema> = builder.anyOf.toList()
+    public val anyOf: List<Schema> = builder.anyOf.frozen()
 
     /**
      * The schemas of `oneOf`, which a value matches exactly one of.
      *
      * @since 1.0.0
      */
-    public val oneOf: List<Schema> = builder.oneOf.toList()
+    public val oneOf: List<Schema> = builder.oneOf.frozen()
 
     /**
      * The schema of `not`, which a value must not match.
@@ -366,7 +378,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val examples: List<Value> = builder.examples.toList()
+    public val examples: List<Value> = builder.examples.frozen()
 
     /**
      * Whether the schema is `deprecated` and should no longer be used.
@@ -416,7 +428,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val enumeration: List<Value>? = builder.enumeration?.toList()
+    public val enumeration: List<Value>? = builder.enumeration?.frozen()
 
     /**
      * The value of `const`, which a value equals; `null` when the schema has no `const`, and [Value.Null] for a `const`
@@ -453,7 +465,7 @@ public class SchemaDefinition internal constructor(builder: SchemaDefinitionBuil
      *
      * @since 1.0.0
      */
-    public val unknownKeywords: Map<String, Value> = builder.unknownKeywords.toMap()
+    public val unknownKeywords: Map<String, Value> = builder.unknownKeywords.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

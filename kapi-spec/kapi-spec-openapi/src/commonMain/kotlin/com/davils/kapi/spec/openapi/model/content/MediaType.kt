@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A media type object: the schema and the examples of a body or a parameter in one media type, such as
@@ -58,7 +62,7 @@ public class MediaType internal constructor(builder: MediaTypeBuilder) :
      *
      * @since 1.0.0
      */
-    public val examples: Map<String, Referable<Example>> = builder.examples.toMap()
+    public val examples: Map<String, Referable<Example>> = builder.examples.frozen()
 
     /**
      * The `encoding` of the properties of a `multipart` or `application/x-www-form-urlencoded` body, by the name of the
@@ -66,7 +70,7 @@ public class MediaType internal constructor(builder: MediaTypeBuilder) :
      *
      * @since 1.0.0
      */
-    public val encoding: Map<String, Encoding> = builder.encoding.toMap()
+    public val encoding: Map<String, Encoding> = builder.encoding.frozen()
 
     /**
      * The `prefixEncoding`: the encodings of the leading items of a sequential or `multipart` media type, by
@@ -76,7 +80,7 @@ public class MediaType internal constructor(builder: MediaTypeBuilder) :
      *
      * @since 1.0.0
      */
-    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.toList()
+    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.frozen()
 
     /**
      * The `itemEncoding`: the encoding of every item of a sequential or `multipart` media type that

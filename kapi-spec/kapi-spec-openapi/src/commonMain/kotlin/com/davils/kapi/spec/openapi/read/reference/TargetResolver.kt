@@ -20,6 +20,8 @@ package com.davils.kapi.spec.openapi.read.reference
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kaml.document.pointer.at
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
@@ -28,16 +30,17 @@ import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.ReadScope
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 internal class TargetResolver(
     private val scope: ReadScope,
     private val loader: DocumentLoader,
 ) {
-    private val targets: MutableMap<Target, Element> = linkedMapOf()
+    private val targets: MutableMap<Target, Element> = KeyedMap()
 
-    private val aliases: MutableMap<Target, Target> = linkedMapOf()
+    private val aliases: MutableMap<Target, Target> = KeyedMap()
 
-    private val requests: MutableMap<Target, PendingReference> = linkedMapOf()
+    private val requests: MutableMap<Target, PendingReference> = KeyedMap()
 
     suspend fun resolve(): Map<Target, Element> {
         var pending = scope.references.next()
@@ -85,7 +88,7 @@ internal class TargetResolver(
 
     private fun aliased(): Map<Target, Element> {
         val resolved = aliases.keys.mapNotNull { start -> end(start)?.let { element -> start to element } }
-        return resolved.toMap()
+        return resolved.toKeyedMap()
     }
 
     private fun end(start: Target): Element? {
@@ -101,7 +104,7 @@ internal class TargetResolver(
 
     private fun chained(start: Target, hops: List<Target>) {
         val from = requests.getValue(start).from
-        if (hops.distinct().size < hops.size) {
+        if (OrderedSet(hops).size < hops.size) {
             return from.report(DiagnosticCodes.REFERENCE_CYCLE, "The reference leads back to itself")
         }
         val message = "The reference passes through more references than a reading follows"

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.validation
 
 import com.davils.kapi.spec.core.model.Referable
@@ -23,6 +25,8 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.resolve
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 internal object QueryStringRules {
     fun check(scope: RuleScope) {
@@ -67,8 +71,8 @@ internal object QueryStringRules {
         parameters.mapNotNull { parameter -> scope.document.resolve(parameter) }
 
     private fun effective(shared: List<Parameter>, own: List<Parameter>): List<Parameter> {
-        val overridden = own.map { parameter -> parameter.name to parameter.placement }.toSet()
-        val inherited = shared.filterNot { parameter -> parameter.name to parameter.placement in overridden }
+        val overridden = OrderedSet(own.map(::keyOf))
+        val inherited = shared.filterNot { parameter -> keyOf(parameter) in overridden }
         return inherited + own
     }
 }

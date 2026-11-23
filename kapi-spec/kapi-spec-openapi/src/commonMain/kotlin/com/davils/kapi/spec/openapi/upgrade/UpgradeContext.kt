@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.upgrade
 
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kaml.core.node.string
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kore.core.annotation.DavilsInternal
 
 private val bodyPlacements: Set<String> = setOf(SwaggerKeys.BODY, SwaggerKeys.FORM_DATA)
 
@@ -57,6 +61,6 @@ internal class UpgradeContext(root: YamlNode.Mapping, notes: UpgradeNotes) {
         val named = Trees.entriesOf(node).mapNotNull { entry ->
             Trees.keyOf(entry)?.let { name -> name to entry.value }
         }
-        return named.toMap()
+        return named.toKeyedMap()
     }
 }

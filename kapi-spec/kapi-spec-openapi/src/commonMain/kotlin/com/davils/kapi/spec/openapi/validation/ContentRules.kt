@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.validation
 
+import com.davils.kapi.spec.core.collection.groupByKeyed
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.content.Example
@@ -27,11 +30,12 @@ import com.davils.kapi.spec.openapi.model.info.Tag
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object ContentRules {
     fun check(scope: RuleScope) {
         val tags = scope.document.tags
-        val named = tags.groupBy(Tag::name)
+        val named = tags.groupByKeyed(Tag::name)
         val repeated = named.values.flatMap { same -> same.drop(1) }
         repeated.forEach { tag ->
             scope.report(DiagnosticCodes.TAG_DUPLICATE, "The tag ${tag.name} is declared more than once", tag)

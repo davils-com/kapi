@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Target
@@ -29,6 +32,7 @@ import com.davils.kapi.spec.openapi.model.path.Paths
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * Builds a [Document]; the readers of kapi use it, and code may use it to build a document by hand.
@@ -98,7 +102,7 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
             field = value
         }
 
-    internal val webhooks: MutableMap<String, PathItem> = linkedMapOf()
+    internal val webhooks: MutableMap<String, PathItem> = KeyedMap()
 
     /**
      * The `components` of the document.
@@ -126,7 +130,7 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
             field = value
         }
 
-    internal val targets: MutableMap<Target, Element> = linkedMapOf()
+    internal val targets: MutableMap<Target, Element> = KeyedMap()
 
     override fun assemble(): Document = Document(this)
 }

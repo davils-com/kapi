@@ -41,7 +41,7 @@ private fun isStatus(text: String): Boolean {
  * @since 1.0.0
  */
 @JvmInline
-public value class ResponseStatus(public val value: String) {
+public value class ResponseStatus(public val value: String) : Comparable<ResponseStatus> {
     init {
         require(isStatus(value)) { "'$value' is no response status such as 200, 4XX or default" }
     }
@@ -68,6 +68,15 @@ public value class ResponseStatus(public val value: String) {
     public val code: Int? get() = value.toIntOrNull()
 
     override fun toString(): String = value
+
+    /**
+     * Compares the statuses by their text, so that they can key an ordered map.
+     *
+     * @param other the other one.
+     * @return a negative number, zero or a positive number as this one sorts before, with or after [other].
+     * @since 1.0.0
+     */
+    override fun compareTo(other: ResponseStatus): Int = value.compareTo(other.value)
 
     /**
      * Creates response statuses.

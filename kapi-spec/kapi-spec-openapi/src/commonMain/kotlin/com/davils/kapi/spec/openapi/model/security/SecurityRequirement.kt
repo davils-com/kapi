@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.security
 
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
+
+private fun frozenLists(source: Map<String, List<String>>): Map<String, List<String>> {
+    val copy = KeyedMap<String, List<String>>()
+    source.forEach { (key, value) -> copy[key] = value.frozen() }
+    return copy.frozen()
+}
 
 /**
  * A security requirement object: the security schemes a request must satisfy together. Of the requirements of a
@@ -37,7 +48,7 @@ public class SecurityRequirement internal constructor(builder: SecurityRequireme
      *
      * @since 1.0.0
      */
-    public val schemes: Map<String, List<String>> = builder.schemes.toMap()
+    public val schemes: Map<String, List<String>> = frozenLists(builder.schemes)
 
     override val identity: List<Any?> get() = listOf(schemes)
 }

@@ -18,6 +18,8 @@
 
 package com.davils.kapi.spec.openapi.read
 
+import com.davils.kapi.spec.core.collection.associateKeyed
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
@@ -57,7 +59,7 @@ internal fun <T : Element, B : ElementBuilder<T>> Cursor.keyed(
     return builder.build()
 }
 
-internal fun <V> List<Entry>.mapped(read: (Cursor) -> V): Map<String, V> = associate { entry ->
+internal fun <V : Any> List<Entry>.mapped(read: (Cursor) -> V): Map<String, V> = associateKeyed { entry ->
     entry.key to read(entry.value)
 }
 
@@ -66,7 +68,7 @@ internal fun <T : Element> List<Entry>.referables(
     inline: (Cursor) -> T?,
 ): Map<String, Referable<T>> {
     val read = mapNotNull { entry -> Referables.read(entry.value, kind, inline)?.let { found -> entry.key to found } }
-    return read.toMap()
+    return read.toKeyedMap()
 }
 
 private fun <B : ElementBuilder<*>> B.keyed(entry: Entry, add: B.(Entry) -> Unit) {

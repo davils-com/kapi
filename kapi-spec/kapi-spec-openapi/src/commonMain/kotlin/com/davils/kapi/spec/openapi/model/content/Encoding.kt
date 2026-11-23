@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An encoding object: how one property or item of a `multipart` or `application/x-www-form-urlencoded` body is
@@ -45,7 +49,7 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
      *
      * @since 1.0.0
      */
-    public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
+    public val headers: Map<String, Referable<Header>> = builder.headers.frozen()
 
     /**
      * The `style` the value is serialized in, as for a query parameter; `null` when the document leaves it out.
@@ -78,7 +82,7 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
      *
      * @since 1.0.0
      */
-    public val nestedEncoding: Map<String, Encoding> = builder.encoding.toMap()
+    public val nestedEncoding: Map<String, Encoding> = builder.encoding.frozen()
 
     /**
      * The `prefixEncoding`: the encodings of the leading items of a nested part, by position; empty when the
@@ -86,7 +90,7 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
      *
      * @since 1.0.0
      */
-    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.toList()
+    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.frozen()
 
     /**
      * The `itemEncoding`: the encoding of every item of a nested part that [prefixEncoding] does not cover; `null`

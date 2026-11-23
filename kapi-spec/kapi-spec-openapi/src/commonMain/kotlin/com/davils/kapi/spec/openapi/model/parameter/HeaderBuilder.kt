@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.parameter
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
@@ -23,6 +26,7 @@ import com.davils.kapi.spec.openapi.model.content.Example
 import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Header], filled by the readers of kapi.
@@ -101,7 +105,7 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
             field = value
         }
 
-    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = KeyedMap()
 
     /**
      * The value of `example`, an example of the value.
@@ -114,7 +118,7 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
             field = value
         }
 
-    internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
+    internal val examples: MutableMap<String, Referable<Example>> = KeyedMap()
 
     override fun assemble(): Header = Header(this)
 }

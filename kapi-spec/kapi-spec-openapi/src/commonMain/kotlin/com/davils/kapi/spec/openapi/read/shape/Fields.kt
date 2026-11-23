@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read.shape
 
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.value.Extensions
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
@@ -23,6 +26,7 @@ import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.Entry
 import com.davils.kapi.spec.openapi.read.Values
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class Fields(
@@ -54,7 +58,7 @@ internal class Fields(
     fun textsByName(name: String): Map<String, String> {
         val entries = entries(name)
         val read = entries.mapNotNull { entry -> textOf(name, entry.value)?.let { text -> entry.key to text } }
-        return read.toMap()
+        return read.toKeyedMap()
     }
 
     fun report(name: String, code: ViolationCode, message: String) {

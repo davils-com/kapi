@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.validation
 
+import com.davils.kapi.spec.core.collection.groupByKeyed
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object OperationRules {
     fun check(scope: RuleScope) {
         val operations = scope.all<Operation>()
         val named = operations.filter { operation -> operation.operationId != null }
-        val repeated = named.groupBy(Operation::operationId).values.flatMap { same -> same.drop(1) }
+        val groups = named.groupByKeyed { operation -> operation.operationId.orEmpty() }
+        val repeated = groups.values.flatMap { same -> same.drop(1) }
         repeated.forEach { operation ->
             val message = "The operation id ${operation.operationId.orEmpty()} names more than one operation"
             scope.report(DiagnosticCodes.OPERATION_ID_DUPLICATE, message, operation)

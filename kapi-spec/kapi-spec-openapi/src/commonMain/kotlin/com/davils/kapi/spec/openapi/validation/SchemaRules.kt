@@ -64,10 +64,8 @@ internal object SchemaRules {
         val components = scope.document.components
         val known = components?.schemas.orEmpty().keys
         val values = schema.discriminator?.mapping.orEmpty()
-        val names = values.mapValues { (_, target) -> target.removePrefix(SCHEMA_POINTER) }
-        val unknown = names.filterValues { name -> isLocal(name) && name !in known }
-        unknown.keys.forEach { value ->
-            val target = values.getValue(value)
+        val unknown = values.entries.filter { (_, target) -> isUnknown(target.removePrefix(SCHEMA_POINTER), known) }
+        unknown.forEach { (value, target) ->
             val message = "The discriminator maps $value to $target, which is no schema of the components"
             scope.report(DiagnosticCodes.SCHEMA_DISCRIMINATOR_MAPPING, message, schema)
         }
@@ -77,6 +75,8 @@ internal object SchemaRules {
         val message = "The discriminator maps by default to $fallback, which is no schema of the components"
         scope.report(DiagnosticCodes.SCHEMA_DISCRIMINATOR_MAPPING, message, schema)
     }
+
+    private fun isUnknown(name: String, known: Set<String>): Boolean = isLocal(name) && name !in known
 
     private fun isLocal(name: String): Boolean = name.isNotEmpty() && name.none { character -> character in "#/" }
 

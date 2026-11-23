@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of an [Encoding], filled by the readers of kapi.
@@ -44,7 +48,7 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
             field = value
         }
 
-    internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
+    internal val headers: MutableMap<String, Referable<Header>> = KeyedMap()
 
     /**
      * The value of `style`, the style the value is serialized in.
@@ -79,7 +83,7 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
             field = value
         }
 
-    internal val encoding: MutableMap<String, Encoding> = linkedMapOf()
+    internal val encoding: MutableMap<String, Encoding> = KeyedMap()
 
     internal val prefixEncoding: MutableList<Encoding> = mutableListOf()
 

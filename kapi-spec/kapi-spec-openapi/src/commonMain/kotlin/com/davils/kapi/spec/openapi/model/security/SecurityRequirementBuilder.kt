@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.security
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [SecurityRequirement], filled by the readers of kapi.
@@ -31,7 +35,7 @@ public class SecurityRequirementBuilder internal constructor() :
     ElementBuilder<SecurityRequirement>() {
     override val subject: String get() = "openapi security requirement"
 
-    internal val schemes: MutableMap<String, List<String>> = linkedMapOf()
+    internal val schemes: MutableMap<String, List<String>> = KeyedMap()
 
     override fun assemble(): SecurityRequirement = SecurityRequirement(this)
 }

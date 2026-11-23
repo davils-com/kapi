@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.validation
 
+import com.davils.kapi.spec.core.collection.groupByKeyed
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.DiagnosticCodes
@@ -25,6 +28,7 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.resolve
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object ParameterRules {
     fun check(scope: RuleScope) {
@@ -68,9 +72,11 @@ internal object ParameterRules {
 
     private fun repeated(scope: RuleScope, owner: Element, parameters: List<Referable<Parameter>>) {
         val resolved = parameters.mapNotNull { parameter -> scope.document.resolve(parameter) }
-        val alike = resolved.groupBy { parameter -> parameter.name to parameter.placement }
-        val repeated = alike.filterValues { same -> same.size > 1 }
-        repeated.keys.forEach { (name, placement) ->
+        val alike = resolved.groupByKeyed(::keyOf)
+        val repeated = alike.values.filter { same -> same.size > 1 }
+        repeated.forEach { same ->
+            val name = same.first().name
+            val placement = same.first().placement
             val message = "The parameter $name in ${placement.keyword} is declared more than once"
             scope.report(DiagnosticCodes.PARAMETER_DUPLICATE, message, owner)
         }

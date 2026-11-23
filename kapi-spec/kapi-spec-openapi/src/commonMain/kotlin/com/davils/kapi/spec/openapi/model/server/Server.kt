@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.server
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A `server` object: a server that offers the API, which a document, a path item, an operation or a link may name.
@@ -58,7 +62,7 @@ public class Server internal constructor(builder: ServerBuilder) : Element(build
      *
      * @since 1.0.0
      */
-    public val variables: Map<String, ServerVariable> = builder.variables.toMap()
+    public val variables: Map<String, ServerVariable> = builder.variables.frozen()
 
     override val identity: List<Any?> get() = listOf(url, description, name, variables)
 }

@@ -387,9 +387,12 @@ public final class com/davils/kapi/spec/openapi/model/content/ResponseBuilder : 
 	public final fun setSummary (Ljava/lang/String;)V
 }
 
-public final class com/davils/kapi/spec/openapi/model/content/ResponseStatus {
+public final class com/davils/kapi/spec/openapi/model/content/ResponseStatus : java/lang/Comparable {
 	public static final field Companion Lcom/davils/kapi/spec/openapi/model/content/ResponseStatus$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/openapi/model/content/ResponseStatus;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-w-z46cw (Ljava/lang/String;)I
+	public static fun compareTo-w-z46cw (Ljava/lang/String;Ljava/lang/String;)I
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
@@ -711,9 +714,12 @@ public final class com/davils/kapi/spec/openapi/model/path/PathItemBuilder : com
 	public final fun setSummary (Ljava/lang/String;)V
 }
 
-public final class com/davils/kapi/spec/openapi/model/path/PathTemplate {
+public final class com/davils/kapi/spec/openapi/model/path/PathTemplate : java/lang/Comparable {
 	public static final field Companion Lcom/davils/kapi/spec/openapi/model/path/PathTemplate$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/openapi/model/path/PathTemplate;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-bQx8JYw (Ljava/lang/String;)I
+	public static fun compareTo-bQx8JYw (Ljava/lang/String;Ljava/lang/String;)I
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z

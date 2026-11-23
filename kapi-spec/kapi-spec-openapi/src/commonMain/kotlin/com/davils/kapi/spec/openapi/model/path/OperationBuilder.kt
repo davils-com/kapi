@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.content.RequestBody
@@ -26,6 +29,7 @@ import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of an [Operation], filled by the readers of kapi.
@@ -108,7 +112,7 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
             field = value
         }
 
-    internal val callbacks: MutableMap<String, Referable<Callback>> = linkedMapOf()
+    internal val callbacks: MutableMap<String, Referable<Callback>> = KeyedMap()
 
     /**
      * The value of `deprecated`, whether the operation should no longer be used.
