@@ -18,19 +18,57 @@ package com.davils.kapi.spec.openapi.model.schema
 
 import com.davils.kapi.spec.core.model.Element
 
+/**
+ * An XML object: how a schema maps to XML.
+ *
+ * The element is immutable and safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 public class Xml internal constructor(builder: XmlBuilder) : Element(builder) {
+    /**
+     * The `name` of the element or attribute; `null` when the document leaves it out, so that the name of the property
+     * or of the schema applies.
+     *
+     * @since 1.0.0
+     */
     public val name: String? = builder.name
 
+    /**
+     * The `namespace` of the element or attribute, an absolute IRI kept as written; `null` when the document leaves it
+     * out.
+     *
+     * @since 1.0.0
+     */
     public val namespace: String? = builder.namespace
 
+    /**
+     * The `prefix` used for the namespace; `null` when the document leaves it out.
+     *
+     * @since 1.0.0
+     */
     public val prefix: String? = builder.prefix
 
+    /**
+     * Whether the property is an `attribute` instead of an element; `false` when the document leaves it out.
+     * OpenAPI 3.2 deprecates it in favor of [nodeType].
+     *
+     * @since 1.0.0
+     */
     public val isAttribute: Boolean = builder.isAttribute
 
+    /**
+     * Whether the items of an array are `wrapped` in an element of their own; `false` when the document leaves it out.
+     * OpenAPI 3.2 deprecates it in favor of [nodeType].
+     *
+     * @since 1.0.0
+     */
     public val isWrapped: Boolean = builder.isWrapped
 
     /**
-     * The kind of node the schema maps to; `null` when the document leaves it out and before OpenAPI 3.2.
+     * The `nodeType`: the kind of node the schema maps to; `null` when the document leaves it out and before
+     * OpenAPI 3.2.
+
      *
      * A reading warns when [isAttribute] or [isWrapped] are written beside it, which OpenAPI 3.2 deprecates.
      *
