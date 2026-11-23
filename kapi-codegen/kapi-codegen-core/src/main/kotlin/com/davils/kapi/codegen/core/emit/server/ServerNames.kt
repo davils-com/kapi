@@ -27,5 +27,5 @@ internal object ServerNames {
     fun response(operationPackage: String, operation: OperationPlan): ClassName =
         ClassName(operationPackage, operation.result.removeSuffix(RESULT) + "Response")
 
-    fun form(name: String): String = name.replaceFirstChar(Char::uppercaseChar)
+    fun form(name: String): String = name.take(1).uppercase() + name.drop(1)
 }

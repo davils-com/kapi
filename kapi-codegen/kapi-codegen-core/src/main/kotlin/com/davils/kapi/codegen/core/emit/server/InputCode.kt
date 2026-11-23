@@ -55,7 +55,7 @@ private const val LET: String = "%L?.let { part -> %L }"
 private const val MAP: String = "%L?.map { part -> %L }"
 
 internal class InputCode(private val serializers: SerializerCode, private val fields: Map<String, List<String>>) {
-    fun of(operation: OperationPlan, form: ClassName?): Reading {
+    fun of(operation: OperationPlan, form: ClassName): Reading {
         val code = CodeBlock.builder()
         val checks = mutableListOf(CodeBlock.of("!%N.isValid", INPUT))
         val arguments = mutableListOf<Pair<String, CodeBlock>>()
@@ -76,7 +76,7 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         return Reading(code.build(), emptyList(), arguments)
     }
 
-    private fun body(body: BodyPlan, form: ClassName?): Reading = when (body.kind) {
+    private fun body(body: BodyPlan, form: ClassName): Reading = when (body.kind) {
         BodyKind.Json -> whole(
             body,
             CodeBlock.of("%N.body(%L, %L, %L)", INPUT, serializer(body.type), required(body), ranges(body)),
@@ -97,21 +97,16 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
         return Reading(code, checks, listOf(BODY to CodeBlock.of("%N", BODY)))
     }
 
-    private fun form(body: BodyPlan, form: ClassName?): Reading {
-        val type = form ?: return Reading(CodeBlock.of(""), emptyList(), emptyList())
-        val isRequired = isRequired(body)
+    private fun form(body: BodyPlan, form: ClassName): Reading {
         val read = CodeBlock.of(
-            "%N.body(%T.serializer(), %L, %L)",
+            "%N.body(%T.serializer(), true, %L)",
             INPUT,
-            type,
-            isRequired,
+            form,
             ServerTypes.ranges(FORM_TYPE),
         )
-        val access = ".".takeIf { isRequired } ?: "?."
         val code = CodeBlock.builder()
         code.add(DECLARED, FORM, read)
-        val required = listOf(CodeBlock.of(ABSENT, FORM)).filter { isRequired }
-        val checks = required.toMutableList()
+        val checks = mutableListOf(CodeBlock.of(ABSENT, FORM))
         val arguments = body.fields.map { field ->
             val isDecoded = isDecoded(field)
             if (isDecoded) {
@@ -120,7 +115,7 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
                 code.add("val %N = %N?.%N?.let { text -> %L }\n", field.name, FORM, field.name, decoding)
                 checks += decodedChecks(field)
             }
-            val value = CodeBlock.of("%N%L%N", FORM, access, field.name)
+            val value = CodeBlock.of("%N.%N", FORM, field.name)
             field.name to (decodedArgument(field).takeIf { isDecoded } ?: value)
         }
         return Reading(code.build(), checks, arguments)

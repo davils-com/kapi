@@ -31,6 +31,7 @@ import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.Reading
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
+import com.davils.kore.core.validation.report.ValidationException
 import com.davils.kore.core.validation.violation.Severity
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -97,8 +98,8 @@ internal class Launch(private val request: LaunchRequest) {
                 visibility = Visibility.valueOf(request.visibility)
                 generatorVersion = request.generatorVersion
             }
-        } catch (failure: IllegalArgumentException) {
-            return failed(failure.message.orEmpty())
+        } catch (failure: ValidationException) {
+            return failed(failure.message)
         }
         return when (val generation = generator.generate(reading.document, reading.sources)) {
             is Generation.Generated -> written(generation, reading.diagnostics)

@@ -21,7 +21,7 @@ import com.davils.kore.core.dsl.ValidatingBuilder
 
 /**
  * Configures a generator; [com.davils.kapi.codegen.core.Codegen.openApi] builds the options and refuses invalid ones
- * with an [IllegalArgumentException]. A builder is not safe to share between threads.
+ * with a [com.davils.kore.core.validation.report.ValidationException]. A builder is not safe to share between threads.
  *
  * @since 1.0.0
  */

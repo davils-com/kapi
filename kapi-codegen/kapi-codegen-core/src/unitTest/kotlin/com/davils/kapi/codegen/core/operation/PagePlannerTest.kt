@@ -60,6 +60,11 @@ private fun paged(pagination: String, parameter: String, body: String, place: St
 }
 
 private val invalid: Map<String, List<String>> = mapOf(
+    "a success without a body and a failure with one" to paths(
+        "/pets: {get: {$LIST_PETS, x-kapi-pagination: {style: cursor, parameter: position, next: next}, " +
+            "parameters: [{name: position, in: query, schema: $TEXT}], responses: {'200': {description: ok}, " +
+            "'404': {description: no, content: {application/json: {schema: $TEXT}}}}}}",
+    ),
     "a parameter the operation does not have" to paged(
         pagination = "style: cursor, parameter: other, next: next",
         parameter = TEXT,

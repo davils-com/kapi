@@ -88,5 +88,22 @@ class OpenApi32Test : FunSpec({
         test("is refused for a query string that is no form, which the client runtime cannot send") {
             generationOf(searched("application/json")).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
         }
+
+        test("is refused for a form of the query string that is no object with properties") {
+            val map = searched("'application/x-www-form-urlencoded; charset=utf-8'")
+                .replace(
+                    oldValue = "schema: $OBJECT}",
+                    newValue = "schema: {type: object, additionalProperties: true}}",
+                )
+            val bare = document(
+                "  /pets:",
+                "    get:",
+                "      parameters: [{name: q, in: querystring, content: {application/x-www-form-urlencoded: {}}}]",
+                "      responses: {'200': {description: ok}}",
+            )
+
+            generationOf(map).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
+            generationOf(bare).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
+        }
     }
 })

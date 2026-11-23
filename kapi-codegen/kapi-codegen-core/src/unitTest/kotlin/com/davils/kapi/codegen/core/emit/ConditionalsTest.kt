@@ -84,9 +84,11 @@ class ConditionalsTest : FunSpec({
         }
 
         test("is refused on a server when a header has a name that HTTP does not allow") {
-            val lines = responses("'200': {description: ok, headers: {'X (bad)': {$TEXT}}}")
+            listOf("'X (bad)'", "X-\u00C4").forEach { name ->
+                val lines = responses("'200': {description: ok, headers: {$name: {$TEXT}}}")
 
-            serverGenerationOf(lines).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
+                serverGenerationOf(lines).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
+            }
         }
     }
 })

@@ -135,7 +135,8 @@ internal class ServerEmitter(
         sorted.forEach { operation ->
             val form = formOf(self, operation)
             builder.addFunction(handler(operation, form))
-            if (form != null) builder.addType(form(form, operation))
+            val body = operation.body?.takeIf { plan -> plan.kind == BodyKind.Form }
+            if (body != null) builder.addType(form(form, body.fields))
         }
         return builder.build()
     }
@@ -183,13 +184,10 @@ internal class ServerEmitter(
         return CodeBlock.of("%T.%L(%S)", ServerTypes.source, plan.placement, name)
     }
 
-    private fun formOf(self: ClassName, operation: OperationPlan): ClassName? {
-        val isForm = operation.body?.kind == BodyKind.Form
-        return self.nestedClass(ServerNames.form(operation.name) + FORM_SUFFIX).takeIf { isForm }
-    }
+    private fun formOf(self: ClassName, operation: OperationPlan): ClassName =
+        self.nestedClass(ServerNames.form(operation.name) + FORM_SUFFIX)
 
-    private fun form(name: ClassName, operation: OperationPlan): TypeSpec {
-        val fields = operation.body?.fields.orEmpty()
+    private fun form(name: ClassName, fields: List<FieldPlan>): TypeSpec {
         val constructor = FunSpec.constructorBuilder()
         fields.forEach { field -> constructor.addParameter(parameter(field)) }
         val builder = TypeSpec.classBuilder(name)
@@ -216,7 +214,7 @@ internal class ServerEmitter(
         return parameter.build()
     }
 
-    private fun handler(operation: OperationPlan, form: ClassName?): FunSpec {
+    private fun handler(operation: OperationPlan, form: ClassName): FunSpec {
         val reading = inputs.of(operation, form)
         val function = FunSpec.builder(operation.name)
         function.addModifiers(KModifier.PRIVATE, KModifier.SUSPEND)

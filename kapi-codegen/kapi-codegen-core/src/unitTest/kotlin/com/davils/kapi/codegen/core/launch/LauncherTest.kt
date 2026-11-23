@@ -71,6 +71,7 @@ private fun requestIn(
     acknowledgements: Map<String, String> = emptyMap(),
     visibility: String = "Public",
     folder: String = "api",
+    packageName: String = "com.example.petstore",
 ): LaunchRequest {
     val root = Files.createDirectories(base.resolve("api"))
     val specification = Files.createDirectories(base.resolve(folder)).resolve("petstore.yaml")
@@ -84,7 +85,7 @@ private fun requestIn(
         resources = base.resolve("out/resources"),
         report = base.resolve("report/report.json"),
         sarif = base.resolve("report/report.sarif"),
-        packageName = "com.example.petstore",
+        packageName = packageName,
         apiName = "Petstore",
         typePrefix = "",
         artifacts = artifacts,
@@ -154,6 +155,7 @@ class LauncherTest : FunSpec({
             Launcher.run(requestIn(base, visibility = "Secret")).failures shouldContain
                 "The visibility Secret is unknown"
             Launcher.run(requestIn(base, folder = "elsewhere")).isAccepted shouldBe false
+            Launcher.run(requestIn(base, packageName = "not a package")).isAccepted shouldBe false
         }
 
         test("refuses a document that is no YAML and one the generator has no Kotlin for") {
