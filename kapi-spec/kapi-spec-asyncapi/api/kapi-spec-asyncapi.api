@@ -1,0 +1,873 @@
+public final class com/davils/kapi/spec/asyncapi/AsyncApi {
+	public static final field INSTANCE Lcom/davils/kapi/spec/asyncapi/AsyncApi;
+	public final fun reader (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/asyncapi/Reader;
+	public static synthetic fun reader$default (Lcom/davils/kapi/spec/asyncapi/AsyncApi;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/asyncapi/Reader;
+	public final fun write (Lcom/davils/kapi/spec/asyncapi/Document;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/asyncapi/DiagnosticCodes;
+	public final fun getAll ()Ljava/util/List;
+	public final fun getBINDING_WEBSOCKET_METHOD-J_S2PC0 ()Ljava/lang/String;
+	public final fun getBINDING_WEBSOCKET_SCHEMA-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_ADDRESS_TEMPLATE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_PARAMETER_UNDECLARED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_PARAMETER_UNUSED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_SERVER_PLACEMENT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDOCUMENT_ID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDOCUMENT_NOT_MAPPING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFIELD_MISSING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFIELD_TYPE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFIELD_UNKNOWN-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFIELD_VERSION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getKEY_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLIMIT_DIAGNOSTICS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_DOCUMENTS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_FAILED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_MISSING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_REMOTE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_SCHEME-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOAD_SIZE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_CONTENT_TYPE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_EXAMPLE_EMPTY-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_HEADERS_TYPE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_ACTION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_CHANNEL_PLACEMENT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_MESSAGE_NOT_IN_CHANNEL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_CHAIN_TOO_LONG-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_CYCLE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_KIND-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_NO_BASE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_OUTSIDE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_POINTER-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_REQUIRED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_SIBLING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_SYNTAX-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_UNRESOLVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREPLY_ADDRESS_CONFLICT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREPLY_MESSAGE_NOT_IN_CHANNEL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRUNTIME_EXPRESSION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSCHEMA_FORMAT_UNKNOWN-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_LOCATION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_SCOPES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_TYPE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_TEMPLATE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_VARIABLE_DEFAULT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_VARIABLE_UNDECLARED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSOURCE_ENCODING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSOURCE_KEY_NOT_SCALAR-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSOURCE_MERGE_KEY-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSOURCE_MULTIPLE_DOCUMENTS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSOURCE_NON_JSON_VALUE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTAG_DUPLICATE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getVERSION_MISSING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getVERSION_PATCH_MISSING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getVERSION_UNSUPPORTED-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Document : com/davils/kapi/spec/core/model/Element {
+	public final fun getChannels ()Ljava/util/Map;
+	public final fun getComponents ()Lcom/davils/kapi/spec/asyncapi/model/component/Components;
+	public final fun getDefaultContentType ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getInfo ()Lcom/davils/kapi/spec/asyncapi/model/info/Info;
+	public final fun getOperations ()Ljava/util/Map;
+	public final fun getServers ()Ljava/util/Map;
+	public final fun getTargets ()Ljava/util/Map;
+	public final fun getVersion ()Lcom/davils/kapi/spec/asyncapi/Version;
+}
+
+public final class com/davils/kapi/spec/asyncapi/DocumentBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getComponents ()Lcom/davils/kapi/spec/asyncapi/model/component/Components;
+	public final fun getDefaultContentType ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getInfo ()Lcom/davils/kapi/spec/asyncapi/model/info/Info;
+	public final fun getVersion ()Lcom/davils/kapi/spec/asyncapi/Version;
+	public final fun setComponents (Lcom/davils/kapi/spec/asyncapi/model/component/Components;)V
+	public final fun setDefaultContentType (Ljava/lang/String;)V
+	public final fun setId (Ljava/lang/String;)V
+	public final fun setInfo (Lcom/davils/kapi/spec/asyncapi/model/info/Info;)V
+	public final fun setVersion (Lcom/davils/kapi/spec/asyncapi/Version;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/DocumentsKt {
+	public static final fun effective (Lcom/davils/kapi/spec/asyncapi/Document;Lcom/davils/kapi/spec/asyncapi/model/message/Message;)Lcom/davils/kapi/spec/asyncapi/model/message/Message;
+	public static final fun effective (Lcom/davils/kapi/spec/asyncapi/Document;Lcom/davils/kapi/spec/asyncapi/model/operation/Operation;)Lcom/davils/kapi/spec/asyncapi/model/operation/Operation;
+	public static final fun resolve (Lcom/davils/kapi/spec/asyncapi/Document;Lcom/davils/kapi/spec/core/model/Reference;)Lcom/davils/kapi/spec/core/model/Element;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Reader {
+	public final fun getConfiguration ()Lcom/davils/kapi/spec/asyncapi/ReaderConfiguration;
+	public final fun read (Lcom/davils/kapi/spec/core/source/Source;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/ReaderBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getHasMergeKeys ()Z
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public final fun getReferences ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
+	public final fun getResolver ()Lcom/davils/kapi/spec/core/source/Resolver;
+	public final fun getSeverities ()Lcom/davils/kapi/spec/core/policy/SeverityPolicy;
+	public final fun limits (Lkotlin/jvm/functions/Function1;)V
+	public final fun references (Lkotlin/jvm/functions/Function1;)V
+	public final fun setHasMergeKeys (Z)V
+	public final fun setLimits (Lcom/davils/kapi/spec/core/policy/ReadLimits;)V
+	public final fun setReferences (Lcom/davils/kapi/spec/core/policy/ReferencePolicy;)V
+	public final fun setResolver (Lcom/davils/kapi/spec/core/source/Resolver;)V
+	public final fun setSeverities (Lcom/davils/kapi/spec/core/policy/SeverityPolicy;)V
+	public final fun severities (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/ReaderConfiguration : com/davils/kore/core/validation/Validatable {
+	public final fun getHasMergeKeys ()Z
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public final fun getReferences ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
+	public final fun getResolver ()Lcom/davils/kapi/spec/core/source/Resolver;
+	public final fun getSeverities ()Lcom/davils/kapi/spec/core/policy/SeverityPolicy;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/ReaderViolationCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/asyncapi/ReaderViolationCodes;
+	public final fun getSEVERITY_FIXED-J_S2PC0 ()Ljava/lang/String;
+}
+
+public abstract class com/davils/kapi/spec/asyncapi/Reading {
+	public fun equals (Ljava/lang/Object;)Z
+	public abstract fun getDiagnostics ()Ljava/util/List;
+	public abstract fun getSources ()Ljava/util/List;
+	public fun hashCode ()I
+}
+
+public final class com/davils/kapi/spec/asyncapi/Reading$Invalid : com/davils/kapi/spec/asyncapi/Reading {
+	public fun getDiagnostics ()Ljava/util/List;
+	public final fun getPartial ()Lcom/davils/kapi/spec/asyncapi/Document;
+	public fun getSources ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Reading$Malformed : com/davils/kapi/spec/asyncapi/Reading {
+	public fun getDiagnostics ()Ljava/util/List;
+	public fun getSources ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Reading$Read : com/davils/kapi/spec/asyncapi/Reading {
+	public fun getDiagnostics ()Ljava/util/List;
+	public final fun getDocument ()Lcom/davils/kapi/spec/asyncapi/Document;
+	public fun getSources ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Version {
+	public static final field Companion Lcom/davils/kapi/spec/asyncapi/Version$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFamily ()Lcom/davils/kapi/spec/asyncapi/VersionFamily;
+	public final fun getHasPatch ()Z
+	public final fun getLiteral ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/Version$Companion {
+	public final fun getLatest ()Lcom/davils/kapi/spec/asyncapi/Version;
+	public final fun parseOrNull (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/Version;
+}
+
+public final class com/davils/kapi/spec/asyncapi/VersionFamily : java/lang/Enum {
+	public static final field V30 Lcom/davils/kapi/spec/asyncapi/VersionFamily;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getPrefix ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/VersionFamily;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/VersionFamily;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/ChannelBindings : com/davils/kapi/spec/core/model/Element {
+	public final fun getProtocols ()Ljava/util/Map;
+	public final fun getWebSocket ()Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketChannelBinding;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/ChannelBindingsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getWebSocket ()Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketChannelBinding;
+	public final fun setWebSocket (Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketChannelBinding;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/MessageBindings : com/davils/kapi/spec/core/model/Element {
+	public final fun getHasWebSocket ()Z
+	public final fun getProtocols ()Ljava/util/Map;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/MessageBindingsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getHasWebSocket ()Z
+	public final fun setHasWebSocket (Z)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/OperationBindings : com/davils/kapi/spec/core/model/Element {
+	public final fun getHasWebSocket ()Z
+	public final fun getProtocols ()Ljava/util/Map;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/OperationBindingsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getHasWebSocket ()Z
+	public final fun setHasWebSocket (Z)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/ServerBindings : com/davils/kapi/spec/core/model/Element {
+	public final fun getHasWebSocket ()Z
+	public final fun getProtocols ()Ljava/util/Map;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/ServerBindingsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getHasWebSocket ()Z
+	public final fun setHasWebSocket (Z)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/WebSocketChannelBinding : com/davils/kapi/spec/core/model/Element {
+	public final fun getBindingVersion ()Ljava/lang/String;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getMethod ()Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+	public final fun getQuery ()Lcom/davils/kapi/spec/core/model/Referable;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/WebSocketChannelBindingBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBindingVersion ()Ljava/lang/String;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getMethod ()Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+	public final fun getQuery ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun setBindingVersion (Ljava/lang/String;)V
+	public final fun setHeaders (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setMethod (Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;)V
+	public final fun setQuery (Lcom/davils/kapi/spec/core/model/Referable;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod : java/lang/Enum {
+	public static final field Get Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+	public static final field Post Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKeyword ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/binding/WebSocketMethod;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/channel/Channel : com/davils/kapi/spec/core/model/Element {
+	public final fun getAddress ()Ljava/lang/String;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getMessages ()Ljava/util/Map;
+	public final fun getParameters ()Ljava/util/Map;
+	public final fun getServers ()Ljava/util/List;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/channel/ChannelBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAddress ()Ljava/lang/String;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setAddress (Ljava/lang/String;)V
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/channel/Parameter : com/davils/kapi/spec/core/model/Element {
+	public final fun getDefault ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getEnumeration ()Ljava/util/List;
+	public final fun getExamples ()Ljava/util/List;
+	public final fun getExpression ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/channel/ParameterBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDefault ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+	public final fun setDefault (Ljava/lang/String;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExpression (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/component/Components : com/davils/kapi/spec/core/model/Element {
+	public final fun getChannelBindings ()Ljava/util/Map;
+	public final fun getChannels ()Ljava/util/Map;
+	public final fun getCorrelationIds ()Ljava/util/Map;
+	public final fun getExternalDocs ()Ljava/util/Map;
+	public final fun getMessageBindings ()Ljava/util/Map;
+	public final fun getMessageTraits ()Ljava/util/Map;
+	public final fun getMessages ()Ljava/util/Map;
+	public final fun getOperationBindings ()Ljava/util/Map;
+	public final fun getOperationTraits ()Ljava/util/Map;
+	public final fun getOperations ()Ljava/util/Map;
+	public final fun getParameters ()Ljava/util/Map;
+	public final fun getReplies ()Ljava/util/Map;
+	public final fun getReplyAddresses ()Ljava/util/Map;
+	public final fun getSchemas ()Ljava/util/Map;
+	public final fun getSecuritySchemes ()Ljava/util/Map;
+	public final fun getServerBindings ()Ljava/util/Map;
+	public final fun getServerVariables ()Ljava/util/Map;
+	public final fun getServers ()Ljava/util/Map;
+	public final fun getTags ()Ljava/util/Map;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/component/ComponentsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/Contact : com/davils/kapi/spec/core/model/Element {
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/ContactBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+	public final fun setEmail (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setUrl (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/ExternalDocs : com/davils/kapi/spec/core/model/Element {
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/ExternalDocsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setUrl (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/Info : com/davils/kapi/spec/core/model/Element {
+	public final fun getContact ()Lcom/davils/kapi/spec/asyncapi/model/info/Contact;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getLicense ()Lcom/davils/kapi/spec/asyncapi/model/info/License;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTermsOfService ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/InfoBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getContact ()Lcom/davils/kapi/spec/asyncapi/model/info/Contact;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getLicense ()Lcom/davils/kapi/spec/asyncapi/model/info/License;
+	public final fun getTermsOfService ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+	public final fun setContact (Lcom/davils/kapi/spec/asyncapi/model/info/Contact;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setLicense (Lcom/davils/kapi/spec/asyncapi/model/info/License;)V
+	public final fun setTermsOfService (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+	public final fun setVersion (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/License : com/davils/kapi/spec/core/model/Element {
+	public final fun getName ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/LicenseBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setUrl (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/Tag : com/davils/kapi/spec/core/model/Element {
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/info/TagBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setName (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/CorrelationId : com/davils/kapi/spec/core/model/Element {
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/CorrelationIdBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExpression (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/Message : com/davils/kapi/spec/core/model/Element {
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getCorrelationId ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExamples ()Ljava/util/List;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPayload ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getTraits ()Ljava/util/List;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/MessageBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getCorrelationId ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPayload ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setContentType (Ljava/lang/String;)V
+	public final fun setCorrelationId (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setHeaders (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setPayload (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/MessageExample : com/davils/kapi/spec/core/model/Element {
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPayload ()Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getSummary ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/MessageExampleBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPayload ()Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setPayload (Lcom/davils/kapi/spec/core/value/Value;)V
+	public final fun setSummary (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/MessageTrait : com/davils/kapi/spec/core/model/Element {
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getCorrelationId ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExamples ()Ljava/util/List;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/message/MessageTraitBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getCorrelationId ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHeaders ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setContentType (Ljava/lang/String;)V
+	public final fun setCorrelationId (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setHeaders (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/Operation : com/davils/kapi/spec/core/model/Element {
+	public final fun getAction ()Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getChannel ()Lcom/davils/kapi/spec/core/model/Reference;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getMessages ()Ljava/util/List;
+	public final fun getReply ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSecurity ()Ljava/util/List;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getTraits ()Ljava/util/List;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationAction : java/lang/Enum {
+	public static final field Receive Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+	public static final field Send Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKeyword ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAction ()Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getChannel ()Lcom/davils/kapi/spec/core/model/Reference;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getReply ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setAction (Lcom/davils/kapi/spec/asyncapi/model/operation/OperationAction;)V
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setChannel (Lcom/davils/kapi/spec/core/model/Reference;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setReply (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationReply : com/davils/kapi/spec/core/model/Element {
+	public final fun getAddress ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getChannel ()Lcom/davils/kapi/spec/core/model/Reference;
+	public final fun getMessages ()Ljava/util/List;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationReplyBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAddress ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getChannel ()Lcom/davils/kapi/spec/core/model/Reference;
+	public final fun setAddress (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setChannel (Lcom/davils/kapi/spec/core/model/Reference;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationTrait : com/davils/kapi/spec/core/model/Element {
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSecurity ()Ljava/util/List;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/OperationTraitBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/ReplyAddress : com/davils/kapi/spec/core/model/Element {
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/operation/ReplyAddressBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExpression (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/schema/Schema : com/davils/kapi/spec/core/model/Element {
+	public final fun getDefinition ()Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getFormat ()Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public final fun getSchemaFormat ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/schema/SchemaBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDefinition ()Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getFormat ()Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public final fun getSchemaFormat ()Ljava/lang/String;
+	public final fun setDefinition (Lcom/davils/kapi/spec/core/value/Value;)V
+	public final fun setFormat (Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;)V
+	public final fun setSchemaFormat (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/schema/SchemaFormat : java/lang/Enum {
+	public static final field AsyncApi Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field Avro Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field JsonSchema Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field OpenApi Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field Protobuf Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field Raml Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static final field Unknown Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/schema/SchemaFormat;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement : java/lang/Enum {
+	public static final field Password Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+	public static final field User Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKeyword ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/ApiKeyScheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getPlacement ()Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/ApiKeySchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getPlacement ()Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setPlacement (Lcom/davils/kapi/spec/asyncapi/model/security/ApiKeyPlacement;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement : java/lang/Enum {
+	public static final field Cookie Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public static final field Header Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public static final field Query Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKeyword ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/HttpApiKeyScheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPlacement ()Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/HttpApiKeySchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPlacement ()Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setPlacement (Lcom/davils/kapi/spec/asyncapi/model/security/HttpApiKeyPlacement;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/HttpScheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public final fun getBearerFormat ()Ljava/lang/String;
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/HttpSchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBearerFormat ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public final fun setBearerFormat (Ljava/lang/String;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setScheme (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuth2Scheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getFlows ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlows;
+	public final fun getScopes ()Ljava/util/List;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuth2SchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getFlows ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlows;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setFlows (Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlows;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuthFlow : com/davils/kapi/spec/core/model/Element {
+	public final fun getAuthorizationUrl ()Ljava/lang/String;
+	public final fun getAvailableScopes ()Ljava/util/Map;
+	public final fun getRefreshUrl ()Ljava/lang/String;
+	public final fun getTokenUrl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuthFlowBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAuthorizationUrl ()Ljava/lang/String;
+	public final fun getRefreshUrl ()Ljava/lang/String;
+	public final fun getTokenUrl ()Ljava/lang/String;
+	public final fun setAuthorizationUrl (Ljava/lang/String;)V
+	public final fun setRefreshUrl (Ljava/lang/String;)V
+	public final fun setTokenUrl (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuthFlows : com/davils/kapi/spec/core/model/Element {
+	public final fun getAuthorizationCode ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getClientCredentials ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getImplicit ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getPassword ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OAuthFlowsBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAuthorizationCode ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getClientCredentials ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getImplicit ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun getPassword ()Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;
+	public final fun setAuthorizationCode (Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;)V
+	public final fun setClientCredentials (Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;)V
+	public final fun setImplicit (Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;)V
+	public final fun setPassword (Lcom/davils/kapi/spec/asyncapi/model/security/OAuthFlow;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OpenIdConnectScheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getOpenIdConnectUrl ()Ljava/lang/String;
+	public final fun getScopes ()Ljava/util/List;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/OpenIdConnectSchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getOpenIdConnectUrl ()Ljava/lang/String;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setOpenIdConnectUrl (Ljava/lang/String;)V
+}
+
+public abstract class com/davils/kapi/spec/asyncapi/model/security/SecurityScheme : com/davils/kapi/spec/core/model/Element {
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/model/ElementBuilder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType : java/lang/Enum {
+	public static final field ApiKey Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field AsymmetricEncryption Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field Gssapi Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field Http Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field HttpApiKey Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field OAuth2 Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field OpenIdConnect Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field Plain Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field ScramSha256 Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field ScramSha512 Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field SymmetricEncryption Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field UserPassword Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static final field X509 Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKeyword ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/SimpleScheme : com/davils/kapi/spec/asyncapi/model/security/SecurityScheme {
+	public fun getDescription ()Ljava/lang/String;
+	public fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/security/SimpleSchemeBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getType ()Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setType (Lcom/davils/kapi/spec/asyncapi/model/security/SecuritySchemeType;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/server/Server : com/davils/kapi/spec/core/model/Element {
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPathname ()Ljava/lang/String;
+	public final fun getProtocol ()Ljava/lang/String;
+	public final fun getProtocolVersion ()Ljava/lang/String;
+	public final fun getSecurity ()Ljava/util/List;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTags ()Ljava/util/List;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getVariables ()Ljava/util/Map;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/server/ServerBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getBindings ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExternalDocs ()Lcom/davils/kapi/spec/core/model/Referable;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPathname ()Ljava/lang/String;
+	public final fun getProtocol ()Ljava/lang/String;
+	public final fun getProtocolVersion ()Ljava/lang/String;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun setBindings (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setDescription (Ljava/lang/String;)V
+	public final fun setExternalDocs (Lcom/davils/kapi/spec/core/model/Referable;)V
+	public final fun setHost (Ljava/lang/String;)V
+	public final fun setPathname (Ljava/lang/String;)V
+	public final fun setProtocol (Ljava/lang/String;)V
+	public final fun setProtocolVersion (Ljava/lang/String;)V
+	public final fun setSummary (Ljava/lang/String;)V
+	public final fun setTitle (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/server/ServerVariable : com/davils/kapi/spec/core/model/Element {
+	public final fun getDefault ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getEnumeration ()Ljava/util/List;
+	public final fun getExamples ()Ljava/util/List;
+}
+
+public final class com/davils/kapi/spec/asyncapi/model/server/ServerVariableBuilder : com/davils/kapi/spec/core/model/ElementBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDefault ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun setDefault (Ljava/lang/String;)V
+	public final fun setDescription (Ljava/lang/String;)V
+}
+
