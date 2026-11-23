@@ -44,9 +44,9 @@ private const val ESCAPE_WIDTH: Int = 3
 private const val PERCENT: Char = '%'
 
 internal class Targets(private val document: Document) {
-    val origin: DocumentUri? = document.location?.document
+    val origin: DocumentUri = document.location?.document ?: DocumentUri.MEMORY
 
-    fun channel(key: String): Target? = origin?.let { uri -> Target(uri, JsonPointer.of("channels", key)) }
+    fun channel(key: String): Target = Target(origin, JsonPointer.of("channels", key))
 
     fun componentKey(target: Target): String? {
         val tokens = target.pointer.tokens
@@ -68,10 +68,7 @@ internal class Targets(private val document: Document) {
         is Referable.Inline -> referable.value.location?.let { location -> Target(location.document, location.pointer) }
     }
 
-    fun referenceOf(value: Value): String? {
-        val mapping = value as? Value.Mapping
-        return (mapping?.get(REFERENCE) as? Value.Text)?.value
-    }
+    fun referenceOf(value: Value): String? = Fields.text(value, REFERENCE)
 
     fun targetOf(text: String, base: DocumentUri): Target? {
         val reference = UriReference.parseOrNull(text)
@@ -87,7 +84,7 @@ internal class Targets(private val document: Document) {
         var text = current?.let(::referenceOf)
         while (text != null && hops < MOST_HOPS) {
             val base = current?.location?.document ?: origin
-            val target = base?.let { uri -> targetOf(text, uri) }
+            val target = targetOf(text, base)
             current = target?.let(::schemaAt)?.definition
             text = current?.let(::referenceOf)
             hops += 1

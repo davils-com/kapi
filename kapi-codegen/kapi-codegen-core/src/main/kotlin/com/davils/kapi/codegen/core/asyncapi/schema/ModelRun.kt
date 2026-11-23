@@ -66,9 +66,8 @@ internal class ModelRun(private val options: GeneratorOptions, private val repor
 
     private fun remapped(diagnostic: Diagnostic, byKey: Map<String, Hoisted>, root: Location?) {
         val tokens = diagnostic.location?.run { pointer.tokens }.orEmpty()
-        val isSchema = tokens.size >= COMPONENT_DEPTH && tokens.take(2) == componentPath
-        val key = tokens.getOrNull(2)?.takeIf { isSchema }
-        val hoisted = key?.let(byKey::get)
+        val isSchema = tokens.take(2) == componentPath
+        val hoisted = byKey[tokens.getOrNull(2).takeIf { isSchema }]
         val location = hoisted?.let { found -> located(found, tokens.drop(COMPONENT_DEPTH)) } ?: root
         val isKept = hoisted != null || diagnostic.isError
         val moved = Diagnostic(
@@ -81,20 +80,15 @@ internal class ModelRun(private val options: GeneratorOptions, private val repor
     }
 
     private fun located(hoisted: Hoisted, rest: List<String>): Location? {
-        var current: Value? = hoisted.schema.definition
-        var deepest: Location? = current?.location ?: hoisted.schema.location
-        rest.forEach { token ->
-            current = childOf(current, token)
-            current?.location?.let { found -> deepest = found }
-        }
-        return deepest
+        val path = rest.runningFold<String, Value?>(hoisted.schema.definition) { value, token -> childOf(value, token) }
+        val found = path.mapNotNull { value -> value?.location }
+        return found.lastOrNull() ?: hoisted.schema.location
     }
 
-    private fun childOf(value: Value?, token: String): Value? {
-        val mapping = value as? Value.Mapping
-        val sequence = value as? Value.Sequence
-        val items = sequence?.items.orEmpty()
-        return mapping?.get(token) ?: token.toIntOrNull()?.let(items::getOrNull)
+    private fun childOf(value: Value?, token: String): Value? = when (value) {
+        is Value.Mapping -> value[token]
+        is Value.Sequence -> token.toIntOrNull()?.let(value.items::getOrNull)
+        is Value.Text, is Value.Number, is Value.Flag, is Value.Null, null -> null
     }
 
     private fun rewritten(files: List<GeneratedFile>, uri: DocumentUri, hoisted: List<Hoisted>): List<GeneratedFile> {

@@ -89,3 +89,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Diagnostics of the generator** show every text of a document, such as the name of a parameter, a property, a
   field, a header, a schema or a reference, quoted and escaped through `SafeText` of Kore, exactly once, where the
   message is written.
+- **The generator** locates every finding of a partial AsyncAPI document, such as a handshake whose schema the reader
+  could not resolve, which is now reported at its ws binding.
