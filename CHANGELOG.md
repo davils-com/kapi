@@ -57,6 +57,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   headers, security that is added, removed or needs other scopes, changed security schemes, and every change of the
   schemas of parameters, bodies and headers, judged as requests or responses. References are followed through the
   targets of each document within the limits of a reading.
+- **The comparison of two AsyncAPI documents**: `AsyncApi.compare(baseline, candidate) { limits { } }` reports, with
+  the codes of `CompatibilityCodes` (`asyncapi.compatibility.<rule>`), removed and added servers, channels, operations
+  and messages, changed server and channel addresses, actions, channels of operations, content types and bindings,
+  security that is added or removed, and every change of the payloads and headers of messages, with traits applied,
+  judged by whether the application sends or receives them; schemas of other formats, such as Avro, are compared as
+  written.
 
 ### Changed
 
