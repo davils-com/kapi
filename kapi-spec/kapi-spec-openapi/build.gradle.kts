@@ -28,6 +28,7 @@ kreate {
 
 dependencies {
     commonMainApi(project(":kapi-spec:kapi-spec-core"))
+    commonMainImplementation(project(":kapi-spec:kapi-spec-schema"))
 }
 
 val testConfigurations: Set<String> = setOf("commonUnitTestImplementation", "wasmJsTestImplementation")

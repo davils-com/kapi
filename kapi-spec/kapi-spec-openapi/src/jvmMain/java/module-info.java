@@ -18,10 +18,11 @@
  * OpenAPI of kapi: the model of OpenAPI 3.0, 3.1 and 3.2, the strict reader, the upgrade of Swagger 2.0, the rules
  * and the writer.
  */
-@SuppressWarnings("module")
+@SuppressWarnings({"module", "requires-automatic"})
 module com.davils.kapi.spec.openapi {
     requires transitive kotlin.stdlib;
     requires transitive com.davils.kapi.spec.core;
+    requires com.davils.kapi.spec.schema;
 
     exports com.davils.kapi.spec.openapi;
     exports com.davils.kapi.spec.openapi.model.component;
