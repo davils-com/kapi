@@ -36,6 +36,10 @@ public class FieldLimitsBuilder internal constructor() : ValidatingBuilder<Field
      * @since 1.0.0
      */
     public var maxFieldLength: Int = DEFAULT_FIELD_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most members of a list or a dictionary.
@@ -43,6 +47,10 @@ public class FieldLimitsBuilder internal constructor() : ValidatingBuilder<Field
      * @since 1.0.0
      */
     public var maxMembers: Int = DEFAULT_MEMBERS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most parameters of one member.
@@ -50,6 +58,10 @@ public class FieldLimitsBuilder internal constructor() : ValidatingBuilder<Field
      * @since 1.0.0
      */
     public var maxParameters: Int = DEFAULT_PARAMETERS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most ranges of one `Range` field.
@@ -57,6 +69,10 @@ public class FieldLimitsBuilder internal constructor() : ValidatingBuilder<Field
      * @since 1.0.0
      */
     public var maxRanges: Int = DEFAULT_RANGES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): FieldLimits = FieldLimits(this)
 

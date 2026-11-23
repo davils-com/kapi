@@ -47,6 +47,10 @@ public class CodecsBuilder internal constructor() : ValidatingBuilder<Codecs>() 
      * @since 1.0.0
      */
     public var json: Json = defaultJson
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes of content [Codecs.decode] reads, at most [Codecs.HARD_CONTENT_BYTES]; 16 MiB by default.
@@ -54,6 +58,10 @@ public class CodecsBuilder internal constructor() : ValidatingBuilder<Codecs>() 
      * @since 1.0.0
      */
     public var maxContentBytes: Int = DEFAULT_CONTENT_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The deepest nesting of arrays and objects that JSON and CBOR content may have, at most [Codecs.HARD_DEPTH]; 64
@@ -62,6 +70,10 @@ public class CodecsBuilder internal constructor() : ValidatingBuilder<Codecs>() 
      * @since 1.0.0
      */
     public var maxDepth: Int = DEFAULT_DEPTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The limits of the codec of `application/x-www-form-urlencoded`.
@@ -69,6 +81,10 @@ public class CodecsBuilder internal constructor() : ValidatingBuilder<Codecs>() 
      * @since 1.0.0
      */
     public var formLimits: FormLimits = FormLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val codecs: List<Codec> get() = added
 
@@ -79,6 +95,7 @@ public class CodecsBuilder internal constructor() : ValidatingBuilder<Codecs>() 
      * @since 1.0.0
      */
     public fun codec(codec: Codec) {
+        checkOpen()
         added += codec
     }
 

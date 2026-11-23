@@ -49,3 +49,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The test support** calls the operations of generated server routes without Ktor on the JVM: `Routes.call` with a
   request of `Request.of` or one it builds, and `Reply.content`, `Reply.text`, `Reply.mediaType` and `Reply.decoded`
   to read the reply.
+- **Every builder** of the DSLs closes after its first `build()` or `validate()`: a setter or a function that changes
+  it afterwards throws an `IllegalStateException` instead of losing the change silently.

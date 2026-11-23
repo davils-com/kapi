@@ -38,6 +38,10 @@ public class PatternLimitsBuilder internal constructor() : ValidatingBuilder<Pat
      * @since 1.0.0
      */
     public var maximumSourceLength: Int = DEFAULT_SOURCE_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most states the automaton of a source may have after every counted repetition is expanded, from 1 to
@@ -46,6 +50,10 @@ public class PatternLimitsBuilder internal constructor() : ValidatingBuilder<Pat
      * @since 1.0.0
      */
     public var maximumStates: Int = DEFAULT_STATES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most UTF-16 code units an input of a match may have, from 1 to [HARD_INPUT_LENGTH]; [DEFAULT_INPUT_LENGTH]
@@ -54,6 +62,10 @@ public class PatternLimitsBuilder internal constructor() : ValidatingBuilder<Pat
      * @since 1.0.0
      */
     public var maximumInputLength: Int = DEFAULT_INPUT_LENGTH
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The deepest the groups of a source may nest, from 1 to [HARD_NESTING]; [DEFAULT_NESTING] by default. It bounds
@@ -62,6 +74,10 @@ public class PatternLimitsBuilder internal constructor() : ValidatingBuilder<Pat
      * @since 1.0.0
      */
     public var maximumNesting: Int = DEFAULT_NESTING
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): PatternLimits = PatternLimits(this)
 

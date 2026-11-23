@@ -36,6 +36,10 @@ public class FramingLimitsBuilder internal constructor() : ValidatingBuilder<Fra
      * @since 1.0.0
      */
     public var maxRecordBytes: Int = DEFAULT_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes of data of one server-sent event.
@@ -43,6 +47,10 @@ public class FramingLimitsBuilder internal constructor() : ValidatingBuilder<Fra
      * @since 1.0.0
      */
     public var maxEventBytes: Int = DEFAULT_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): FramingLimits = FramingLimits(this)
 

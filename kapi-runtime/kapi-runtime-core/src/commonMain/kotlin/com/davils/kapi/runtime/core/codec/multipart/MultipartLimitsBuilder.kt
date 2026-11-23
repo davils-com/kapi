@@ -36,6 +36,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxParts: Int = DEFAULT_PARTS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes of the header block of one part.
@@ -43,6 +47,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxHeaderBytes: Int = DEFAULT_HEADER_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most header fields of one part.
@@ -50,6 +58,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxHeaders: Int = DEFAULT_HEADERS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes of the content of one part.
@@ -57,6 +69,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxPartBytes: Long = DEFAULT_PART_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes of the whole body.
@@ -64,6 +80,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxBodyBytes: Long = DEFAULT_BODY_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The most bytes before the first boundary.
@@ -71,6 +91,10 @@ public class MultipartLimitsBuilder internal constructor() : ValidatingBuilder<M
      * @since 1.0.0
      */
     public var maxPreambleBytes: Int = DEFAULT_PREAMBLE_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): MultipartLimits = MultipartLimits(this)
 
