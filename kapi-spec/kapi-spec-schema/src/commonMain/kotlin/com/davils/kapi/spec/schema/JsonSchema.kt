@@ -59,7 +59,10 @@ public object JsonSchema {
      * limit above its ceiling or a URI registered twice; its report names every problem.
      * @since 1.0.0
      */
-    public fun compiler(block: CompilerBuilder.() -> Unit = {}): Compiler = CompilerBuilder().apply(block).build()
+    public fun compiler(block: CompilerBuilder.() -> Unit = {}): Compiler {
+        val builder = CompilerBuilder().apply(block)
+        return builder.build()
+    }
 
     /**
      * Converts a YAML node, such as an OpenAPI document read by kaml, into JSON.

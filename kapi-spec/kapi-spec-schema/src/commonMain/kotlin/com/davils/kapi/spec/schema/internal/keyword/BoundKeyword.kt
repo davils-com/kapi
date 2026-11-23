@@ -31,7 +31,8 @@ internal class BoundKeyword(
         val number = (frame.instance as? Instance.NumberValue)?.value ?: return true
         val order = number.compareTo(limit) * (1.takeIf { isMaximum } ?: -1)
         val isWithin = order < 0 || (order == 0 && !isExclusive)
-        val relation = ("less than" .takeIf { isMaximum } ?: "greater than") + (" or equal to".takeIf { !isExclusive } ?: "")
+        val relation =
+            ("less than".takeIf { isMaximum } ?: "greater than") + (" or equal to".takeIf { !isExclusive } ?: "")
         return isWithin || frame.fail(name, "The number $number must be $relation $limit")
     }
 }

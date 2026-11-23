@@ -26,13 +26,13 @@ import com.davils.kapi.spec.schema.DiagnosticCodes
 import com.davils.kapi.spec.schema.SchemaLimits
 import com.davils.kapi.spec.schema.internal.Uris
 import com.davils.kapi.spec.schema.internal.dialect.Profile
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kapi.spec.schema.internal.dialect.Profiles
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.collection.OrderedMap
 import com.davils.kore.core.collection.OrderedSet
 import com.davils.kore.core.text.SafeText
 import com.davils.kore.core.validation.violation.Severity
+import com.davils.kore.core.validation.violation.ViolationCode
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -70,7 +70,11 @@ internal class Session(
 
     fun addDocument(uri: String, root: JsonElement): Document {
         if (documents.size >= limits.maximumDocuments) {
-            abort(DiagnosticCodes.LIMIT_EXCEEDED, "The schema needs more than ${limits.maximumDocuments} documents", null)
+            abort(
+                DiagnosticCodes.LIMIT_EXCEEDED,
+                "The schema needs more than ${limits.maximumDocuments} documents",
+                null,
+            )
         }
         val location = DocumentUri.parseOrNull(uri) ?: DocumentUri.MEMORY
         val document = Document(documents.size, uri, root, location)

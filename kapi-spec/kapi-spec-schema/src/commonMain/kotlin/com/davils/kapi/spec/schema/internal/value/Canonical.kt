@@ -28,7 +28,7 @@ internal object Canonical {
         when (instance) {
             is Instance.NullValue -> out.append('n')
             is Instance.BooleanValue -> out.append('t'.takeIf { instance.value } ?: 'f')
-            is Instance.NumberValue -> out.append('d').append(instance.value.canonical).append(';')
+            is Instance.NumberValue -> number(instance.value, out)
             is Instance.StringValue -> text(instance.value, out, meter)
             is Instance.ArrayValue -> items(instance, out, meter)
             is Instance.ObjectValue -> members(instance, out, meter)
@@ -37,7 +37,16 @@ internal object Canonical {
 
     private fun text(value: String, out: StringBuilder, meter: Meter) {
         meter.charge(value.length.toLong() / CHARACTERS_PER_STEP)
-        out.append('s').append(value.length).append(':').append(value)
+        out.append('s')
+        out.append(value.length)
+        out.append(':')
+        out.append(value)
+    }
+
+    private fun number(value: Decimal, out: StringBuilder) {
+        out.append('d')
+        out.append(value.canonical)
+        out.append(';')
     }
 
     private fun items(instance: Instance.ArrayValue, out: StringBuilder, meter: Meter) {

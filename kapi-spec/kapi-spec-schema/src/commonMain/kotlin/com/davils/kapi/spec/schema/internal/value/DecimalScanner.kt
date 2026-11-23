@@ -59,7 +59,8 @@ internal class DecimalScanner(private val text: String) {
         val significant = digits.trimStart('0')
         val isBounded = digits.isNotEmpty() && significant.length <= MAXIMUM_EXPONENT_DIGITS
         val sign = (-1L).takeIf { isNegative } ?: 1L
-        return significant.ifEmpty { "0" }.takeIf { isBounded }?.let { it.toLong() * sign }
+        val bounded = significant.ifEmpty { "0" }.takeIf { isBounded }
+        return bounded?.let { it.toLong() * sign }
     }
 
     private fun accept(expected: Char): Boolean {

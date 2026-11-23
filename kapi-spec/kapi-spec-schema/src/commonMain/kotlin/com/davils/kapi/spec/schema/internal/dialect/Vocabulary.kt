@@ -33,6 +33,11 @@ internal enum class Vocabulary(val uri201909: String?, val uri202012: String?) {
     ;
 
     companion object {
+        val DEFAULT_201909: Set<Vocabulary> = setOf(Core, Applicator, Validation, MetaData, FormatAnnotation, Content)
+
+        val DEFAULT_202012: Set<Vocabulary> =
+            setOf(Core, Applicator, Unevaluated, Validation, MetaData, FormatAnnotation, Content)
+
         fun of(uri: String, draft: Draft): Vocabulary? {
             val is201909 = draft == Draft.Draft201909
             return entries.firstOrNull { vocabulary ->
@@ -40,10 +45,5 @@ internal enum class Vocabulary(val uri201909: String?, val uri202012: String?) {
                 own == uri
             }
         }
-
-        val DEFAULT_201909: Set<Vocabulary> = setOf(Core, Applicator, Validation, MetaData, FormatAnnotation, Content)
-
-        val DEFAULT_202012: Set<Vocabulary> =
-            setOf(Core, Applicator, Unevaluated, Validation, MetaData, FormatAnnotation, Content)
     }
 }

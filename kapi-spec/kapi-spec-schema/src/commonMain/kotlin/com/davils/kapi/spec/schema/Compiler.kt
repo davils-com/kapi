@@ -52,6 +52,8 @@ import kotlinx.serialization.json.JsonElement
  * @property defaultDialect the dialect of a schema without `$schema`.
  * @property formatAssertion whether `format` asserts.
  * @property limits the limits of compilation and of validation.
+ * @param schemas the documents registered by URI.
+ * @param loader the loader of unknown documents.
  * @since 1.0.0
  */
 public class Compiler internal constructor(
@@ -77,7 +79,9 @@ public class Compiler internal constructor(
      * @throws kotlinx.coroutines.CancellationException if the calling coroutine is cancelled while the loader runs.
      * @since 1.0.0
      */
-    public suspend fun compile(schema: JsonElement, uri: DocumentUri? = null): Compilation = Driver(this).compile(schema, uri)
+    public suspend fun compile(schema: JsonElement, uri: DocumentUri? = null): Compilation = Driver(
+        this,
+    ).compile(schema, uri)
 
     /**
      * Compiles the YAML node [schema], converted into JSON as [JsonSchema.json] does, within
@@ -103,7 +107,8 @@ public class Compiler internal constructor(
     }
 
     override fun ValidationScope.validate() {
-        val duplicates = uris.groupingBy { it }.eachCount().filterValues { it > 1 }
+        val counts = uris.groupingBy { it }.eachCount()
+        val duplicates = counts.filterValues { it > 1 }
         if (duplicates.isNotEmpty()) {
             fail("registers ${duplicates.size} URIs more than once", ViolationCode.DUPLICATE)
         }

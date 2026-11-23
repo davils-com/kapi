@@ -29,13 +29,16 @@ internal class AdditionalPropertiesKeyword(
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for ((index, property) in members.keys.withIndex()) {
-            if (isCovered(frame, property)) continue
-            frame.evaluated.mark(index)
-            val passed = frame.descend(child, members.values[index], property, frame.trail(name), frame.sink)
+            val passed = isCovered(frame, property) || checked(frame, members, index, property)
             isValid = isValid && passed
             if (!isValid && !frame.collects) break
         }
         return isValid
+    }
+
+    private fun checked(frame: Frame, members: Instance.ObjectValue, index: Int, property: String): Boolean {
+        frame.evaluated.mark(index)
+        return frame.descend(child, members.values[index], property, frame.trail(name), frame.sink)
     }
 
     private fun isCovered(frame: Frame, property: String): Boolean {

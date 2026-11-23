@@ -25,12 +25,16 @@ internal class PropertiesKeyword(private val entries: List<Pair<String, Int>>) :
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for ((property, child) in entries) {
-            val index = members.indexOf(property) ?: continue
-            val passed = frame.descend(child, members.values[index], property, frame.trail(name, property), frame.sink)
-            frame.evaluated.mark(index)
+            val passed = checked(frame, members, property, child)
             isValid = isValid && passed
             if (!isValid && !frame.collects) break
         }
         return isValid
+    }
+
+    private fun checked(frame: Frame, members: Instance.ObjectValue, property: String, child: Int): Boolean {
+        val index = members.indexOf(property) ?: return true
+        frame.evaluated.mark(index)
+        return frame.descend(child, members.values[index], property, frame.trail(name, property), frame.sink)
     }
 }

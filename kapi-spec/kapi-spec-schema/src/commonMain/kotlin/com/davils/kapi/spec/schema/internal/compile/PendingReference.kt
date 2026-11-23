@@ -17,6 +17,5 @@
 package com.davils.kapi.spec.schema.internal.compile
 
 import com.davils.kapi.spec.schema.internal.dialect.Profile
-import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class PendingReference(val uri: String, val profile: Profile)

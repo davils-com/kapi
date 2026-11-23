@@ -16,6 +16,7 @@
 
 package com.davils.kapi.spec.schema.internal.compile
 
+import com.davils.kapi.spec.schema.internal.PatternBridge
 import com.davils.kapi.spec.schema.internal.dialect.Draft
 import com.davils.kapi.spec.schema.internal.dialect.Vocabulary
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
@@ -40,6 +41,22 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
+private const val ITEMS: String = "items"
+
+private const val PREFIX_ITEMS: String = "prefixItems"
+
+private const val PATTERN_PROPERTIES: String = "patternProperties"
+
+private const val DEPENDENCIES: String = "dependencies"
+
+private const val DEPENDENT_SCHEMAS: String = "dependentSchemas"
+
+private const val MIN_CONTAINS: String = "minContains"
+
+private const val MAX_CONTAINS: String = "maxContains"
+
+private const val CONTAINS: String = "contains"
+
 internal object ApplicatorRules {
     fun allOf(context: KeywordContext, element: JsonElement): Keyword? =
         context.schemas("allOf", element)?.let(::AllOfKeyword)
@@ -50,9 +67,9 @@ internal object ApplicatorRules {
     fun oneOf(context: KeywordContext, element: JsonElement): Keyword? =
         context.schemas("oneOf", element)?.let(::OneOfKeyword)
 
-    fun not(context: KeywordContext, element: JsonElement): Keyword = NotKeyword(context.child("not"))
+    fun not(context: KeywordContext): Keyword = NotKeyword(context.child("not"))
 
-    fun conditional(context: KeywordContext, element: JsonElement): Keyword {
+    fun conditional(context: KeywordContext): Keyword {
         val condition = context.child("if")
         val consequence = context.members["then"]?.let { context.child("then") }
         val alternative = context.members["else"]?.let { context.child("else") }
@@ -64,79 +81,77 @@ internal object ApplicatorRules {
 
     fun patternProperties(context: KeywordContext, element: JsonElement): Keyword? {
         val members = element as? JsonObject
-            ?: return context.report("patternProperties", "The keyword patternProperties must be an object of schemas")
+            ?: return context.report(PATTERN_PROPERTIES, "The keyword patternProperties must be an object of schemas")
         val entries = members.keys.mapNotNull { source ->
-            val matcher = context.pattern("patternProperties", source)
-            matcher?.let { PatternEntry(source, it, context.child("patternProperties", source)) }
+            val matcher = context.pattern(PATTERN_PROPERTIES, source)
+            matcher?.let { PatternEntry(source, it, context.child(PATTERN_PROPERTIES, source)) }
         }
         return PatternPropertiesKeyword(entries)
     }
 
     fun additionalProperties(context: KeywordContext, element: JsonElement): Keyword {
         val named = context.active("properties") as? JsonObject
-        val patterned = context.active("patternProperties") as? JsonObject
+        val patterned = context.active(PATTERN_PROPERTIES) as? JsonObject
         val names = named?.keys.orEmpty().sorted()
-        val patterns = patterned?.keys.orEmpty().mapNotNull { source ->
-            com.davils.kapi.spec.schema.internal.PatternBridge.compile(source)
-        }
-        return AdditionalPropertiesKeyword(context.schemaOrFlag(element, "additionalProperties"), names, patterns)
+        val patterns = patterned?.keys.orEmpty().mapNotNull(PatternBridge::compile)
+        val child = context.schemaOrFlag(element, "additionalProperties")
+        return AdditionalPropertiesKeyword(child, names, patterns)
     }
 
-    fun propertyNames(context: KeywordContext, element: JsonElement): Keyword =
-        PropertyNamesKeyword(context.child("propertyNames"))
+    fun propertyNames(context: KeywordContext): Keyword = PropertyNamesKeyword(context.child("propertyNames"))
 
     fun dependentSchemas(context: KeywordContext, element: JsonElement): Keyword? {
-        val entries = context.schemaMap("dependentSchemas", element) ?: return null
-        return DependenciesKeyword("dependentSchemas", entries.map { (name, node) -> Dependency(name, null, node) })
+        val entries = context.schemaMap(DEPENDENT_SCHEMAS, element) ?: return null
+        val dependencies = entries.map { (name, node) -> Dependency(name, required = null, schema = node) }
+        return DependenciesKeyword(DEPENDENT_SCHEMAS, dependencies)
     }
 
     fun dependencies(context: KeywordContext, element: JsonElement): Keyword? {
         val members = element as? JsonObject
-            ?: return context.report("dependencies", "The keyword dependencies must be an object")
+            ?: return context.report(DEPENDENCIES, "The keyword dependencies must be an object")
         val entries = members.mapNotNull { (name, value) ->
-            val required = (value as? JsonArray)?.let { context.texts("dependencies", it) }
-            val schema = value.takeIf { it !is JsonArray }?.let { context.child("dependencies", name) }
+            val required = (value as? JsonArray)?.let { context.texts(DEPENDENCIES, it) }
+            val schema = value.takeIf { it !is JsonArray }?.let { context.child(DEPENDENCIES, name) }
             Dependency(name, required, schema).takeIf { required != null || schema != null }
         }
-        return DependenciesKeyword("dependencies", entries)
+        return DependenciesKeyword(DEPENDENCIES, entries)
     }
 
     fun items(context: KeywordContext, element: JsonElement): Keyword? {
-        if (element is JsonArray) return context.report("items", "The keyword items must be a single schema")
-        val prefix = context.active("prefixItems") as? JsonArray
-        return RestItemsKeyword("items", prefix?.size ?: 0, context.child("items"))
+        if (element is JsonArray) return context.report(ITEMS, "The keyword items must be a single schema")
+        val prefix = context.active(PREFIX_ITEMS) as? JsonArray
+        return RestItemsKeyword(ITEMS, prefix?.size ?: 0, context.child(ITEMS))
     }
 
-    fun legacyItems(context: KeywordContext, element: JsonElement): Keyword? {
-        val items = element as? JsonArray ?: return RestItemsKeyword("items", 0, context.child("items"))
-        return TupleKeyword("items", items.indices.map { index -> context.child("items", index.toString()) })
+    fun legacyItems(context: KeywordContext, element: JsonElement): Keyword {
+        val items = element as? JsonArray ?: return RestItemsKeyword(ITEMS, 0, context.child(ITEMS))
+        return TupleKeyword(ITEMS, items.indices.map { index -> context.child(ITEMS, index.toString()) })
     }
 
     fun prefixItems(context: KeywordContext, element: JsonElement): Keyword? =
-        context.schemas("prefixItems", element)?.let { TupleKeyword("prefixItems", it) }
+        context.schemas(PREFIX_ITEMS, element)?.let { TupleKeyword(PREFIX_ITEMS, it) }
 
     fun additionalItems(context: KeywordContext, element: JsonElement): Keyword? {
-        val items = context.members["items"] as? JsonArray ?: return null
+        val items = context.members[ITEMS] as? JsonArray ?: return null
         return RestItemsKeyword("additionalItems", items.size, context.schemaOrFlag(element, "additionalItems"))
     }
 
-    fun contains(context: KeywordContext, element: JsonElement): Keyword {
-        val counts = context.draft != Draft.Draft06 && context.draft != Draft.Draft07 &&
-            context.profile.enables(Vocabulary.Validation)
-        val minimum = context.members["minContains"]?.takeIf { counts }?.let { context.count("minContains", it) }
-        val maximum = context.members["maxContains"]?.takeIf { counts }?.let { context.count("maxContains", it) }
+    fun contains(context: KeywordContext): Keyword {
+        val isLegacy = context.draft == Draft.Draft06 || context.draft == Draft.Draft07
+        val counts = !isLegacy && context.profile.enables(Vocabulary.Validation)
+        val minimum = context.members[MIN_CONTAINS]?.takeIf { counts }?.let { context.count(MIN_CONTAINS, it) }
+        val maximum = context.members[MAX_CONTAINS]?.takeIf { counts }?.let { context.count(MAX_CONTAINS, it) }
         return ContainsKeyword(
-            child = context.child("contains"),
+            child = context.child(CONTAINS),
             minimum = minimum ?: 1L,
             maximum = maximum,
-            minimumName = "minContains".takeIf { minimum != null } ?: "contains",
+            minimumName = MIN_CONTAINS.takeIf { minimum != null } ?: CONTAINS,
             marks = context.draft == Draft.Draft202012,
         )
     }
 
-    fun unevaluatedItems(context: KeywordContext, element: JsonElement): Keyword =
-        UnevaluatedItemsKeyword(context.child("unevaluatedItems"))
+    fun unevaluatedItems(context: KeywordContext): Keyword = UnevaluatedItemsKeyword(context.child("unevaluatedItems"))
 
-    fun unevaluatedProperties(context: KeywordContext, element: JsonElement): Keyword =
+    fun unevaluatedProperties(context: KeywordContext): Keyword =
         UnevaluatedPropertiesKeyword(context.child("unevaluatedProperties"))
 }

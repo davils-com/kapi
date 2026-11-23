@@ -43,7 +43,9 @@ object TestSuite {
 
     private val OPTIONAL: List<String> = listOf("bignum.json", "ecmascript-regex.json", "float-overflow.json")
 
-    private val root: Path = Paths.get(checkNotNull(TestSuite::class.java.getResource("/json-schema-test-suite")).toURI())
+    private val root: Path = Paths.get(
+        checkNotNull(TestSuite::class.java.getResource("/json-schema-test-suite")).toURI(),
+    )
 
     private val remotes: List<Pair<DocumentUri, JsonElement>> = Files.walk(root.resolve("remotes")).use { paths ->
         paths.filter { it.isRegularFile() && it.extension == "json" }.toList().map { path ->
@@ -79,18 +81,30 @@ object TestSuite {
             val tests = group["tests"] as JsonArray
             tests.forEach { test ->
                 val case = test as JsonObject
-                val key = listOf(draft.folder, nameOf(draft, file), textOf(group["description"]), textOf(case["description"]))
-                    .joinToString(" / ")
+                val key = listOf(
+                    draft.folder,
+                    nameOf(draft, file),
+                    textOf(group["description"]),
+                    textOf(case["description"]),
+                ).joinToString(" / ")
                 val expected = (case["valid"] as JsonPrimitive).content == "true"
                 val schema = (compilation as? Compilation.Compiled)?.schema
                 val actual = schema?.validate(checkNotNull(case["data"]))
                 val flag = schema?.validate(checkNotNull(case["data"]), OutputFormat.Flag)
                 val isExpected = actual?.isValid == expected && flag?.isValid == expected
-                val reason = SkipList.reasonOf(nameOf(draft, file), textOf(group["description"]), textOf(case["description"]))
+                val reason = SkipList.reasonOf(
+                    nameOf(draft, file),
+                    textOf(group["description"]),
+                    textOf(case["description"]),
+                )
                 skipped += 1.takeIf { reason != null } ?: 0
                 passed += 1.takeIf { reason == null && isExpected } ?: 0
                 if (reason != null && isExpected) stale += key
-                if (reason == null && !isExpected) unexpected += "$key: expected valid=$expected, got ${actual ?: compilation}"
+                if (reason == null &&
+                    !isExpected
+                ) {
+                    unexpected += "$key: expected valid=$expected, got ${actual ?: compilation}"
+                }
             }
         }
         return SuiteOutcome(passed, skipped, unexpected, stale)

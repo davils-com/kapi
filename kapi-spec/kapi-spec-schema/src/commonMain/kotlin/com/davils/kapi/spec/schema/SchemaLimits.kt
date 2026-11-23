@@ -28,52 +28,97 @@ import kotlin.reflect.KProperty0
  * [Compilation.Invalid] with a [DiagnosticCodes.LIMIT_EXCEEDED] diagnostic, and a validation that exceeds a limit of
  * validation is [Validation.Refused] with its [RefusalReason]. Limits are immutable and safe to share between threads.
  *
- * @property maximumSchemaDepth the most levels a schema document may nest, at most [CEILING_SCHEMA_DEPTH].
- * @property maximumSubschemas the most subschemas a compilation may compile, the meta-schemas and every document it
- * loads included, at most [CEILING_SUBSCHEMAS].
- * @property maximumDocuments the most documents a compilation may read: the schema, registered and loaded documents
- * and the built-in meta-schemas it refers to, at most [CEILING_DOCUMENTS].
- * @property maximumEvaluationSteps the most steps one validation may take, at most [CEILING_EVALUATION_STEPS]. Every
- * subschema applied, every failing keyword, every comparison of `uniqueItems` and `enum`, every pattern and format
- * and every long string read costs steps, so no combination of schema and value can make a validation run long.
- * @property maximumEvaluationDepth the most subschemas a validation may nest, through the value and through
- * references alike, at most [CEILING_EVALUATION_DEPTH], which keeps the stack bounded.
- * @property maximumInstanceDepth the most levels a validated value may nest, at most [CEILING_INSTANCE_DEPTH].
- * @property maximumInstanceNodes the most nodes a validated YAML value may have, aliases expanded, at most
- * [CEILING_INSTANCE_NODES].
- * @property maximumErrors the most errors a validation may report and the most diagnostics a compilation may report,
- * at most [CEILING_ERRORS]. A value with more errors is refused with [RefusalReason.ReportedErrors].
- * @property maximumStringLength the longest string a pattern or an asserted format may read, at most
- * [CEILING_STRING_LENGTH].
- * @property maximumPatternLength the longest pattern a schema may have, at most [CEILING_PATTERN_LENGTH].
- * @property maximumEnumValues the most values an `enum` may have, at most [CEILING_ENUM_VALUES].
- * @property maximumLiteralNodes the most nodes the value of a `const` or an `enum` may have, at most
- * [CEILING_LITERAL_NODES].
  * @since 1.0.0
  */
 public class SchemaLimits internal constructor(builder: SchemaLimitsBuilder) : Validatable {
+    /**
+     * The most levels a schema document may nest, at most [CEILING_SCHEMA_DEPTH].
+     *
+     * @since 1.0.0
+     */
     public val maximumSchemaDepth: Int = builder.maximumSchemaDepth
 
+    /**
+     * The most subschemas a compilation may compile, the meta-schemas and every document it loads included, at most
+     * [CEILING_SUBSCHEMAS].
+     *
+     * @since 1.0.0
+     */
     public val maximumSubschemas: Int = builder.maximumSubschemas
 
+    /**
+     * The most documents a compilation may read: the schema, registered and loaded documents and the built-in
+     * meta-schemas it refers to, at most [CEILING_DOCUMENTS].
+     *
+     * @since 1.0.0
+     */
     public val maximumDocuments: Int = builder.maximumDocuments
 
+    /**
+     * The most steps one validation may take, at most [CEILING_EVALUATION_STEPS]. Every subschema applied, every
+     * failing keyword, every comparison of `uniqueItems` and `enum`, every pattern and format and every long string
+     * read costs steps, so no combination of schema and value can make a validation run long.
+     *
+     * @since 1.0.0
+     */
     public val maximumEvaluationSteps: Long = builder.maximumEvaluationSteps
 
+    /**
+     * The most subschemas a validation may nest, through the value and through references alike, at most
+     * [CEILING_EVALUATION_DEPTH], which keeps the stack bounded.
+     *
+     * @since 1.0.0
+     */
     public val maximumEvaluationDepth: Int = builder.maximumEvaluationDepth
 
+    /**
+     * The most levels a validated value may nest, at most [CEILING_INSTANCE_DEPTH].
+     *
+     * @since 1.0.0
+     */
     public val maximumInstanceDepth: Int = builder.maximumInstanceDepth
 
+    /**
+     * The most nodes a validated YAML value may have, aliases expanded, at most [CEILING_INSTANCE_NODES].
+     *
+     * @since 1.0.0
+     */
     public val maximumInstanceNodes: Int = builder.maximumInstanceNodes
 
+    /**
+     * The most errors a validation may report and the most diagnostics a compilation may report, at most
+     * [CEILING_ERRORS]. A value with more errors is refused with [RefusalReason.ReportedErrors].
+     *
+     * @since 1.0.0
+     */
     public val maximumErrors: Int = builder.maximumErrors
 
+    /**
+     * The longest string a pattern or an asserted format may read, at most [CEILING_STRING_LENGTH].
+     *
+     * @since 1.0.0
+     */
     public val maximumStringLength: Int = builder.maximumStringLength
 
+    /**
+     * The longest pattern a schema may have, at most [CEILING_PATTERN_LENGTH].
+     *
+     * @since 1.0.0
+     */
     public val maximumPatternLength: Int = builder.maximumPatternLength
 
+    /**
+     * The most values an `enum` may have, at most [CEILING_ENUM_VALUES].
+     *
+     * @since 1.0.0
+     */
     public val maximumEnumValues: Int = builder.maximumEnumValues
 
+    /**
+     * The most nodes the value of a `const` or an `enum` may have, at most [CEILING_LITERAL_NODES].
+     *
+     * @since 1.0.0
+     */
     public val maximumLiteralNodes: Int = builder.maximumLiteralNodes
 
     private val identity: List<Long>

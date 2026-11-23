@@ -66,7 +66,13 @@ internal class Frame(
         return run.evaluate(index, inner, sink)
     }
 
-    fun descend(index: Int, child: Instance, token: String, keywordTrail: Trail?, sink: MutableList<Failure>?): Boolean {
+    fun descend(
+        index: Int,
+        child: Instance,
+        token: String,
+        keywordTrail: Trail?,
+        sink: MutableList<Failure>?,
+    ): Boolean {
         val inner = Visit(child, Trail(visit.instanceTrail, token), keywordTrail, visit.scope, null)
         return run.evaluate(index, inner, sink) != null
     }

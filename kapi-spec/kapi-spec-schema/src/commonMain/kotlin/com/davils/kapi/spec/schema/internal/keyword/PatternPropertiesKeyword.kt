@@ -32,7 +32,13 @@ internal class PatternPropertiesKeyword(private val entries: List<PatternEntry>)
         return isValid
     }
 
-    private fun check(frame: Frame, members: Instance.ObjectValue, index: Int, property: String, entry: PatternEntry): Boolean {
+    private fun check(
+        frame: Frame,
+        members: Instance.ObjectValue,
+        index: Int,
+        property: String,
+        entry: PatternEntry,
+    ): Boolean {
         if (!Patterns.matches(entry.matcher, property, frame.run)) return true
         frame.evaluated.mark(index)
         val trail = frame.trail(name, entry.source)

@@ -61,7 +61,8 @@ internal object Uris {
             chunk.forEach { bytes += it }
             index += ESCAPE_LENGTH.takeIf { escape } ?: 1
         }
-        return bytes.toByteArray().decodeToString().takeIf { isValid }
+        val decoded = bytes.toByteArray().decodeToString()
+        return decoded.takeIf { isValid }
     }
 
     private fun hexAt(text: String, start: Int): Int? {

@@ -49,13 +49,27 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
 
     private fun read(node: YamlNode, trail: Trail?, depth: Int): JsonElement {
         nodes++
-        if (nodes > maximumNodes) refuse(RefusalReason.InstanceSize, "The YAML has more than $maximumNodes nodes", trail)
-        if (depth > maximumDepth) refuse(RefusalReason.InstanceDepth, "The YAML is nested deeper than $maximumDepth levels", trail)
+        if (nodes > maximumNodes) {
+            refuse(
+                RefusalReason.InstanceSize,
+                "The YAML has more than $maximumNodes nodes",
+                trail,
+            )
+        }
+        if (depth > maximumDepth) {
+            refuse(
+                RefusalReason.InstanceDepth,
+                "The YAML is nested deeper than $maximumDepth levels",
+                trail,
+            )
+        }
         return when (node) {
             is YamlNode.Scalar -> scalar(node, trail)
+
             is YamlNode.Sequence -> JsonArray(
                 node.items.mapIndexed { index, item -> read(item, Trail(trail, index.toString()), depth + 1) },
             )
+
             is YamlNode.Mapping -> mapping(node, trail, depth)
         }
     }
@@ -66,7 +80,13 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
             val key = (entry.key as? YamlNode.Scalar)?.value
                 ?: refuse(RefusalReason.UnsupportedValue, "A key of the YAML mapping is no scalar", trail)
             val isDuplicate = key in members
-            if (isDuplicate) refuse(RefusalReason.UnsupportedValue, "The key ${SafeText.quoted(key)} appears twice", trail)
+            if (isDuplicate) {
+                refuse(
+                    RefusalReason.UnsupportedValue,
+                    "The key ${SafeText.quoted(key)} appears twice",
+                    trail,
+                )
+            }
             members[key] = read(entry.value, Trail(trail, key), depth + 1)
         }
         return JsonObject(members)
@@ -76,7 +96,9 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
         val converted = scalars[node.tag]?.invoke(node)
         return converted ?: refuse(
             RefusalReason.UnsupportedValue,
-            "The YAML value ${SafeText.quoted(node.value)} with the tag ${SafeText.quoted(node.tag.uri)} is no JSON value",
+            "The YAML value ${SafeText.quoted(
+                node.value,
+            )} with the tag ${SafeText.quoted(node.tag.uri)} is no JSON value",
             trail,
         )
     }
@@ -86,5 +108,9 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
         return decimal?.let { JsonUnquotedLiteral(scalar.value) }
     }
 
-    private fun refuse(reason: RefusalReason, message: String, trail: Trail?): Nothing = throw Refusal(reason, message, trail)
+    private fun refuse(reason: RefusalReason, message: String, trail: Trail?): Nothing = throw Refusal(
+        reason,
+        message,
+        trail,
+    )
 }

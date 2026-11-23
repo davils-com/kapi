@@ -27,12 +27,15 @@ internal class UnevaluatedItemsKeyword(private val child: Int) : Keyword("uneval
         val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
         var isValid = true
         for ((index, item) in items.withIndex()) {
-            if (frame.evaluated.isMarked(index)) continue
-            val passed = frame.descend(child, item, index.toString(), frame.trail(name), frame.sink)
-            frame.evaluated.mark(index)
+            val passed = frame.evaluated.isMarked(index) || checked(frame, index, item)
             isValid = isValid && passed
             if (!isValid && !frame.collects) break
         }
         return isValid
+    }
+
+    private fun checked(frame: Frame, index: Int, item: Instance): Boolean {
+        frame.evaluated.mark(index)
+        return frame.descend(child, item, index.toString(), frame.trail(name), frame.sink)
     }
 }

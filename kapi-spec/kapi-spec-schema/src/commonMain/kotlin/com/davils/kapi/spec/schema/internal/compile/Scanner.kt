@@ -22,9 +22,9 @@ import com.davils.kapi.spec.schema.DiagnosticCodes
 import com.davils.kapi.spec.schema.internal.Uris
 import com.davils.kapi.spec.schema.internal.dialect.Draft
 import com.davils.kapi.spec.schema.internal.dialect.Profile
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
+import com.davils.kore.core.validation.violation.ViolationCode
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -104,7 +104,13 @@ internal class Scanner(private val session: Session, private val document: Docum
 
     private fun anchor(name: String, target: Target, resource: Int, draft: Draft) {
         val isValid = Anchors.isValid(name, draft)
-        if (!isValid) report("The anchor ${SafeText.quoted(name)} is no valid name", target, DiagnosticCodes.ANCHOR_INVALID)
+        if (!isValid) {
+            report(
+                "The anchor ${SafeText.quoted(name)} is no valid name",
+                target,
+                DiagnosticCodes.ANCHOR_INVALID,
+            )
+        }
         if (isValid) session.addAnchor(resource, name, target)
     }
 
@@ -139,10 +145,24 @@ internal class Scanner(private val session: Session, private val document: Docum
 
     private fun listed(value: JsonElement, pointer: List<String>, resource: Int, profile: Profile) {
         val items = value as? JsonArray ?: return
-        items.forEachIndexed { index, item -> scan(item, pointer + index.toString(), resource, profile, isRoot = false) }
+        items.forEachIndexed { index, item ->
+            scan(
+                item,
+                pointer + index.toString(),
+                resource,
+                profile,
+                isRoot = false,
+            )
+        }
     }
 
-    private fun mapped(value: JsonElement, pointer: List<String>, resource: Int, profile: Profile, onlySchemas: Boolean) {
+    private fun mapped(
+        value: JsonElement,
+        pointer: List<String>,
+        resource: Int,
+        profile: Profile,
+        onlySchemas: Boolean,
+    ) {
         val members = value as? JsonObject ?: return
         members.forEach { (key, item) ->
             val isSkipped = onlySchemas && item is JsonArray

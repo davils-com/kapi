@@ -18,13 +18,14 @@ package com.davils.kapi.spec.schema.internal.compile
 
 import com.davils.kapi.spec.schema.internal.dialect.Draft
 import com.davils.kapi.spec.schema.internal.dialect.Profile
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kapi.spec.schema.internal.dialect.Vocabulary
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 import com.davils.kapi.spec.schema.internal.keyword.Measure
 import kotlinx.serialization.json.JsonElement
 
-private typealias Compile = (KeywordContext, JsonElement) -> Keyword?
+private const val EXCLUSIVE_MAXIMUM: String = "exclusiveMaximum"
+
+private const val EXCLUSIVE_MINIMUM: String = "exclusiveMinimum"
 
 internal object KeywordRules {
     private val ALL: Set<Draft> = Draft.entries.toSet()
@@ -69,29 +70,25 @@ internal object KeywordRules {
         rule("allOf", ALL, applicator, Shape.List, ApplicatorRules::allOf)
         rule("anyOf", ALL, applicator, Shape.List, ApplicatorRules::anyOf)
         rule("oneOf", ALL, applicator, Shape.List, ApplicatorRules::oneOf)
-        rule("not", ALL, applicator, Shape.Single, ApplicatorRules::not)
-        rule("if", FROM_07, applicator, Shape.Single, ApplicatorRules::conditional)
+        rule("not", ALL, applicator, Shape.Single, contextual(ApplicatorRules::not))
+        rule("if", FROM_07, applicator, Shape.Single, contextual(ApplicatorRules::conditional))
         rule("then", FROM_07, applicator, Shape.Single)
         rule("else", FROM_07, applicator, Shape.Single)
         rule("properties", ALL, applicator, Shape.Map, ApplicatorRules::properties)
         rule("patternProperties", JSON, applicator, Shape.Map, ApplicatorRules::patternProperties)
         rule("additionalProperties", ALL, applicator, Shape.Single, ApplicatorRules::additionalProperties)
-        rule("propertyNames", FROM_06, applicator, Shape.Single, ApplicatorRules::propertyNames)
+        rule("propertyNames", FROM_06, applicator, Shape.Single, contextual(ApplicatorRules::propertyNames))
         rule("dependentSchemas", MODERN, applicator, Shape.Map, ApplicatorRules::dependentSchemas)
         rule("dependencies", UNTIL_07, null, Shape.Dependencies, ApplicatorRules::dependencies)
         rule("items", setOf(Draft.Draft202012, Draft.OpenApi30), applicator, Shape.Single, ApplicatorRules::items)
         rule("items", UNTIL_2019, applicator, Shape.SingleOrList, ApplicatorRules::legacyItems)
         rule("prefixItems", setOf(Draft.Draft202012), applicator, Shape.List, ApplicatorRules::prefixItems)
         rule("additionalItems", UNTIL_2019, applicator, Shape.Single, ApplicatorRules::additionalItems)
-        rule("contains", FROM_06, applicator, Shape.Single, ApplicatorRules::contains)
-        rule("unevaluatedItems", MODERN, Vocabulary.Unevaluated, Shape.Single, ApplicatorRules::unevaluatedItems)
-        rule(
-            "unevaluatedProperties",
-            MODERN,
-            Vocabulary.Unevaluated,
-            Shape.Single,
-            ApplicatorRules::unevaluatedProperties,
-        )
+        rule("contains", FROM_06, applicator, Shape.Single, contextual(ApplicatorRules::contains))
+        val unevaluated = Vocabulary.Unevaluated
+        rule("unevaluatedItems", MODERN, unevaluated, Shape.Single, contextual(ApplicatorRules::unevaluatedItems))
+        val properties = contextual(ApplicatorRules::unevaluatedProperties)
+        rule("unevaluatedProperties", MODERN, unevaluated, Shape.Single, properties)
     }
 
     private fun MutableList<KeywordRule>.validations() {
@@ -102,10 +99,11 @@ internal object KeywordRules {
         rule("multipleOf", ALL, validation, compile = ValidationRules::multipleOf)
         rule("maximum", ALL, validation, compile = ValidationRules::maximum)
         rule("minimum", ALL, validation, compile = ValidationRules::minimum)
-        rule("exclusiveMaximum", FROM_06, validation, compile = ValidationRules::exclusiveMaximum)
-        rule("exclusiveMinimum", FROM_06, validation, compile = ValidationRules::exclusiveMinimum)
-        rule("exclusiveMaximum", BOOLEAN_EXCLUSIVE, validation, compile = named("exclusiveMaximum", ValidationRules::flag))
-        rule("exclusiveMinimum", BOOLEAN_EXCLUSIVE, validation, compile = named("exclusiveMinimum", ValidationRules::flag))
+        rule(EXCLUSIVE_MAXIMUM, FROM_06, validation, compile = ValidationRules::exclusiveMaximum)
+        rule(EXCLUSIVE_MINIMUM, FROM_06, validation, compile = ValidationRules::exclusiveMinimum)
+        val flag = ValidationRules::flag
+        rule(EXCLUSIVE_MAXIMUM, BOOLEAN_EXCLUSIVE, validation, compile = named(EXCLUSIVE_MAXIMUM, flag))
+        rule(EXCLUSIVE_MINIMUM, BOOLEAN_EXCLUSIVE, validation, compile = named(EXCLUSIVE_MINIMUM, flag))
         count("maxLength", Measure.Length, isMaximum = true)
         count("minLength", Measure.Length, isMaximum = false)
         count("maxItems", Measure.Items, isMaximum = true)
@@ -122,11 +120,18 @@ internal object KeywordRules {
         rule("nullable", setOf(Draft.OpenApi30), null, compile = named("nullable", ValidationRules::flag))
     }
 
-    private fun named(name: String, compile: (KeywordContext, JsonElement, String) -> Keyword?): Compile =
-        { context, element -> compile(context, element, name) }
+    private fun named(
+        name: String,
+        compile: (KeywordContext, JsonElement, String) -> Keyword?,
+    ): (KeywordContext, JsonElement) -> Keyword? = { context, element -> compile(context, element, name) }
+
+    private fun contextual(compile: (KeywordContext) -> Keyword): (KeywordContext, JsonElement) -> Keyword? =
+        { context, _ -> compile(context) }
 
     private fun MutableList<KeywordRule>.count(name: String, measure: Measure, isMaximum: Boolean) {
-        val compile: Compile = { context, element -> ValidationRules.count(context, element, name, measure, isMaximum) }
+        val compile: (KeywordContext, JsonElement) -> Keyword? = { context, element ->
+            ValidationRules.count(context, element, Counted(name, measure, isMaximum))
+        }
         rule(name, ALL, Vocabulary.Validation, compile = compile)
     }
 
@@ -135,7 +140,7 @@ internal object KeywordRules {
         drafts: Set<Draft>,
         vocabulary: Vocabulary?,
         shape: Shape = Shape.None,
-        compile: Compile? = null,
+        compile: ((KeywordContext, JsonElement) -> Keyword?)? = null,
     ) {
         add(KeywordRule(name, drafts, vocabulary, shape, compile))
     }

@@ -49,6 +49,7 @@ internal class Driver(private val compiler: Compiler) {
         val built = try {
             build(schema, uri)
         } catch (abort: CompileAbort) {
+            check(session.diagnostics.isNotEmpty()) { abort.message.orEmpty() }
             null
         }
         val isValid = built != null && session.diagnostics.isEmpty()
@@ -81,7 +82,12 @@ internal class Driver(private val compiler: Compiler) {
         val diagnostics = session.diagnostics.size
         val references = session.references.size
         val root = session.resourceIndexOf(document.uri) ?: 0
-        val scan = runCatching { Scanner(session, document).scan(document.root, emptyList(), root, profile, isRoot = true) }
+        val scan = runCatching {
+            Scanner(
+                session,
+                document,
+            ).scan(document.root, emptyList(), root, profile, isRoot = true)
+        }
         val missing = scan.exceptionOrNull()
         missing?.takeIf { it !is MetaSchemaNeeded }?.let { throw it }
         if (missing != null) {

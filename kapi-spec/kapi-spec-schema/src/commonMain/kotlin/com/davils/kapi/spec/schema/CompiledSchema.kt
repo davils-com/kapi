@@ -81,7 +81,10 @@ public class CompiledSchema internal constructor(
         Validation.Refused(refusal.reason, refusal.description, Trail.pointerOf(refusal.trail))
     }
 
-    private fun validated(instance: com.davils.kapi.spec.schema.internal.value.Instance, output: OutputFormat): Validation {
+    private fun validated(
+        instance: com.davils.kapi.spec.schema.internal.value.Instance,
+        output: OutputFormat,
+    ): Validation {
         val sink = ArrayList<Failure>().takeIf { output == OutputFormat.Basic }
         val result = Run(graph, limits).evaluate(root, Visit(instance, null, null, null, null), sink)
         if (result != null) return Validation.Valid

@@ -24,7 +24,9 @@ import com.davils.kore.core.annotation.DavilsInternal
 
 internal class DynamicRefKeyword(private val initial: Int, private val anchor: String) : Keyword("\$dynamicRef") {
     override fun evaluate(frame: Frame): Boolean {
-        val scope = frame.visit.scope?.outermostFirst().orEmpty()
+        val scope = frame.visit.scope
+            ?.outermostFirst()
+            .orEmpty()
         frame.run.charge(scope.size.toLong())
         val dynamic = scope.firstNotNullOfOrNull { resource -> frame.run.resource(resource).dynamicAnchors[anchor] }
         val result = frame.referenced(dynamic ?: initial, frame.trail(name))

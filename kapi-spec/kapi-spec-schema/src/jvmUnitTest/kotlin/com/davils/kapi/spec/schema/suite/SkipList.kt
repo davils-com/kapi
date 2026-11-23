@@ -47,21 +47,33 @@ object SkipList {
         }
         put(key("ECMA 262 regex escapes control codes with \\c and lower letter", "matches"), CONTROL)
         listOf(PATTERN_DIGITS, PROPERTY_DIGITS).forEach { group ->
-            listOf("ascii digits", "ascii non-digits", BENGALI).forEach { test -> put(key(group, test), DIGIT_PROPERTY) }
+            listOf(
+                "ascii digits",
+                "ascii non-digits",
+                BENGALI,
+            ).forEach { test -> put(key(group, test), DIGIT_PROPERTY) }
         }
     }
 
-    fun reasonOf(file: String, group: String, test: String): String? = reasons[listOf(file, group, test).joinToString(" / ")]
+    fun reasonOf(file: String, group: String, test: String): String? = reasons[
+        listOf(
+            file,
+            group,
+            test,
+        ).joinToString(" / "),
+    ]
 
     private fun key(group: String, test: String): String = listOf(FILE, group, test).joinToString(" / ")
 
-    private fun spaceMatches(space: String): String = space + mapOf(
-        "EM SPACE" to " matches (Space_Separator)",
-        "paragraph separator" to " matches (line terminator)",
-    ).getOrDefault(space, " matches")
+    private fun spaceMatches(space: String): String = space +
+        mapOf(
+            "EM SPACE" to " matches (Space_Separator)",
+            "paragraph separator" to " matches (line terminator)",
+        ).getOrDefault(space, " matches")
 
-    private fun spaceMismatches(space: String): String = space + mapOf(
-        "EM SPACE" to " does not match (Space_Separator)",
-        "paragraph separator" to " does not match (line terminator)",
-    ).getOrDefault(space, " does not match")
+    private fun spaceMismatches(space: String): String = space +
+        mapOf(
+            "EM SPACE" to " does not match (Space_Separator)",
+            "paragraph separator" to " does not match (line terminator)",
+        ).getOrDefault(space, " does not match")
 }

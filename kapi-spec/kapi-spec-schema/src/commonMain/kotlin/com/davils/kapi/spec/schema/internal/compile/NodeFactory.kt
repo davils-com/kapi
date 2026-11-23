@@ -47,7 +47,8 @@ internal class NodeFactory(private val session: Session) {
 
     fun constant(value: Boolean, resource: Int, absolute: String): Int {
         val index = reserved(null)
-        nodes[index] = Node(resource, absolute, listOf(FalseKeyword()).takeIf { !value }.orEmpty())
+        val keywords = listOf(FalseKeyword()).takeIf { !value }
+        nodes[index] = Node(resource, absolute, keywords.orEmpty())
         return index
     }
 
@@ -66,8 +67,7 @@ internal class NodeFactory(private val session: Session) {
 
     private fun isSchema(entry: LocationEntry): Boolean {
         val element = session.elementAt(entry.target)
-        val content = (element as? JsonPrimitive)?.takeIf { !it.isString }?.content
-        val isFlag = (content == "true" || content == "false") && entry.profile.draft.allowsBooleanSchemas
+        val isFlag = flagOf(element) != null && entry.profile.draft.allowsBooleanSchemas
         return element is JsonObject || isFlag
     }
 
@@ -79,7 +79,12 @@ internal class NodeFactory(private val session: Session) {
 
     private fun infoOf(resource: Resource): ResourceInfo {
         val anchors = OrderedMap<String, Int>()
-        resource.dynamicAnchors.entries.forEach { (name, pointer) -> anchors[name] = nodeAt(resource.document, pointer) }
+        resource.dynamicAnchors.entries.forEach { (name, pointer) ->
+            anchors[name] = nodeAt(
+                resource.document,
+                pointer,
+            )
+        }
         val root = nodeAt(resource.document, resource.pointer).takeIf { resource.recursiveAnchor }
         return ResourceInfo(resource.uri, anchors, root)
     }
@@ -128,13 +133,19 @@ internal class NodeFactory(private val session: Session) {
     }
 
     private fun flagKeywords(element: JsonElement, target: Target, entry: LocationEntry): List<Keyword> {
-        val content = (element as? JsonPrimitive)?.takeIf { !it.isString }?.content
-        val isFlag = content == "true" || content == "false"
-        val isAllowed = isFlag && entry.profile.draft.allowsBooleanSchemas
+        val flag = flagOf(element)
+        val isAllowed = flag != null && entry.profile.draft.allowsBooleanSchemas
         if (!isAllowed) {
             session.report(DiagnosticCodes.NOT_A_SCHEMA, "The value is no schema of the dialect", target)
         }
-        return listOf(FalseKeyword()).takeIf { content == "false" }.orEmpty()
+        val keywords = listOf(FalseKeyword()).takeIf { flag == false }
+        return keywords.orEmpty()
+    }
+
+    private fun flagOf(element: JsonElement?): Boolean? {
+        val content = (element as? JsonPrimitive)?.takeIf { !it.isString }?.content
+        val isFlag = content == "true" || content == "false"
+        return (content == "true").takeIf { isFlag }
     }
 
     private fun detached(target: Target): LocationEntry {
@@ -154,7 +165,8 @@ internal class NodeFactory(private val session: Session) {
             )
         }
         session.isStrict = wasStrict
-        scanned.exceptionOrNull()?.takeIf { it !is MetaSchemaNeeded }?.let { throw it }
+        val failure = scanned.exceptionOrNull()
+        failure?.takeIf { it !is MetaSchemaNeeded }?.let { throw it }
         return session.locationOf(target) ?: LocationEntry(target, ancestor.resource, ancestor.profile)
     }
 }

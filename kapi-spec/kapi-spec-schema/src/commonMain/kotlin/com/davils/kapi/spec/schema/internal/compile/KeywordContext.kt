@@ -88,7 +88,13 @@ internal class KeywordContext(
         flagOf(element) ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a boolean")
 
     fun number(keyword: String, element: JsonElement): Decimal? {
-        val primitive = (element as? JsonPrimitive)?.takeIf { !it.isString && flagOf(it) == null && it.content != "null" }
+        val primitive = (element as? JsonPrimitive)?.takeIf {
+            !it.isString &&
+                flagOf(
+                    it,
+                ) == null &&
+                it.content != "null"
+        }
         val number = primitive?.let { Decimal.parse(it.content) }
         return number ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a number")
     }
@@ -113,7 +119,11 @@ internal class KeywordContext(
             return report(keyword, "The pattern is longer than $maximum characters", DiagnosticCodes.LIMIT_EXCEEDED)
         }
         return PatternBridge.compile(source)
-            ?: report(keyword, "The pattern ${SafeText.quoted(source)} is not supported", DiagnosticCodes.PATTERN_REFUSED)
+            ?: report(
+                keyword,
+                "The pattern ${SafeText.quoted(source)} is not supported",
+                DiagnosticCodes.PATTERN_REFUSED,
+            )
     }
 
     fun reference(keyword: String, element: JsonElement): Reference? {
@@ -142,7 +152,8 @@ internal class KeywordContext(
 
     private fun longOf(number: Decimal): Long {
         val isSmall = number.digits.length + number.exponent <= MAXIMUM_LONG_DIGITS
-        val text = (number.digits.ifEmpty { "0" } + "0".repeat(number.exponent.toInt().coerceAtLeast(0))).takeIf { isSmall }
+        val zeros = "0".repeat(number.exponent.toInt().coerceAtLeast(0))
+        val text = (number.digits.ifEmpty { "0" } + zeros).takeIf { isSmall }
         return text?.toLongOrNull() ?: Long.MAX_VALUE
     }
 
