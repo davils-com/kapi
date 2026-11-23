@@ -74,8 +74,8 @@ internal object BindingReader {
     }
 
     private fun protocolsOf(fields: Fields): Map<String, Value> {
-        val others = fields.names.filterNot { name -> name == Keys.WEB_SOCKET }
-        return others.mapNotNull { name -> fields.value(name)?.let { value -> name to value } }.toMap()
+        val values = fields.values()
+        return values.filterKeys { name -> name != Keys.WEB_SOCKET }
     }
 
     private fun methodOf(fields: Fields): WebSocketMethod? {

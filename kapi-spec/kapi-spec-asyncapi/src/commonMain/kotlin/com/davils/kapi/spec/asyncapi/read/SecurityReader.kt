@@ -40,14 +40,6 @@ import com.davils.kapi.spec.asyncapi.read.shape.SecurityShapes
 import com.davils.kapi.spec.core.model.Referable
 
 internal object SecurityReader {
-    private val typed: Map<SecuritySchemeType, (Cursor) -> SecurityScheme> = mapOf(
-        SecuritySchemeType.ApiKey to ::apiKey,
-        SecuritySchemeType.HttpApiKey to ::httpApiKey,
-        SecuritySchemeType.Http to ::http,
-        SecuritySchemeType.OAuth2 to ::oauth2,
-        SecuritySchemeType.OpenIdConnect to ::openIdConnect,
-    )
-
     private val types: String = SecuritySchemeType.entries.joinToString { type -> type.keyword }
 
     fun schemesOf(fields: Fields): List<Referable<SecurityScheme>> =
@@ -55,7 +47,27 @@ internal object SecurityReader {
 
     fun scheme(cursor: Cursor): SecurityScheme? {
         val type = typeOf(cursor) ?: return null
-        return typed[type]?.invoke(cursor) ?: simple(cursor, type)
+        return when (type) {
+            SecuritySchemeType.ApiKey -> apiKey(cursor)
+
+            SecuritySchemeType.HttpApiKey -> httpApiKey(cursor)
+
+            SecuritySchemeType.Http -> http(cursor)
+
+            SecuritySchemeType.OAuth2 -> oauth2(cursor)
+
+            SecuritySchemeType.OpenIdConnect -> openIdConnect(cursor)
+
+            SecuritySchemeType.UserPassword,
+            SecuritySchemeType.X509,
+            SecuritySchemeType.SymmetricEncryption,
+            SecuritySchemeType.AsymmetricEncryption,
+            SecuritySchemeType.Plain,
+            SecuritySchemeType.ScramSha256,
+            SecuritySchemeType.ScramSha512,
+            SecuritySchemeType.Gssapi,
+            -> simple(cursor, type)
+        }
     }
 
     private fun typeOf(cursor: Cursor): SecuritySchemeType? {
@@ -107,7 +119,7 @@ internal object SecurityReader {
         OAuth2SchemeBuilder(),
     ) { fields ->
         description = fields.text(Keys.DESCRIPTION)
-        flows = fields.cursor(Keys.FLOWS)?.let(::flows) ?: flows
+        fields.cursor(Keys.FLOWS)?.let { declared -> flows = flows(declared) }
         scopes.addAll(fields.texts(Keys.SCOPES))
     }
 

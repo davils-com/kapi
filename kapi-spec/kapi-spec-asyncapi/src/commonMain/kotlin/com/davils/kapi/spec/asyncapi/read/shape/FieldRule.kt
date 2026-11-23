@@ -16,13 +16,8 @@
 
 package com.davils.kapi.spec.asyncapi.read.shape
 
-import com.davils.kapi.spec.asyncapi.VersionFamily
-
-internal class FieldRule(
+internal data class FieldRule(
     val name: String,
     val kind: FieldKind,
     val isRequired: Boolean = false,
-    val since: VersionFamily = VersionFamily.V30,
-) {
-    fun isIn(family: VersionFamily): Boolean = family.isAtLeast(since)
-}
+)

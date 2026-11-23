@@ -55,10 +55,9 @@ internal object ChannelRules {
 
     private fun placement(scope: RuleScope, server: Reference) {
         val target = server.target
-        val root = scope.document.location?.document
         val tokens = target.pointer.tokens
         val isRootServer = tokens.size == 2 && tokens.first() == SERVERS && tokens.last() in scope.document.servers
-        if (target.document == root && isRootServer) return
+        if (target.document == scope.root && isRootServer) return
         val message = "A channel of the document names ${shown(server.text)}, which is no server of the root servers"
         scope.report(DiagnosticCodes.CHANNEL_SERVER_PLACEMENT, message, server.location)
     }

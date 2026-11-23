@@ -29,13 +29,13 @@ internal class Fields(
     private val present: Map<String, Cursor>,
     val extensions: Extensions,
 ) {
-    val names: List<String> get() = present.keys.toList()
-
     fun cursor(name: String): Cursor? = present[name]
 
     fun text(name: String): String? = present[name]?.text
 
     fun value(name: String): Value? = present[name]?.let(Values::of)
+
+    fun values(): Map<String, Value> = present.mapValues { (_, field) -> Values.of(field) }
 
     fun items(name: String): List<Cursor> = present[name]?.items().orEmpty()
 
@@ -50,8 +50,7 @@ internal class Fields(
     }
 
     fun report(name: String, code: ViolationCode, message: String) {
-        val place = present[name] ?: cursor
-        place.report(code, message)
+        present.getValue(name).report(code, message)
     }
 
     private fun textOf(name: String, item: Cursor): String? {

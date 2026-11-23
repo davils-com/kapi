@@ -31,7 +31,6 @@ internal object DocumentRules {
         ChannelRules::check,
         OperationRules::check,
         MessageRules::check,
-        SchemaRules::check,
         SecurityRules::check,
         BindingRules::check,
         TagRules::check,

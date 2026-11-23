@@ -28,6 +28,8 @@ import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
 
 internal object Nodes {
+    private val fractional: Set<Char> = setOf('.', 'e', 'E')
+
     fun of(value: Value): YamlNode = when (value) {
         is Value.Null -> yamlNull()
         is Value.Flag -> yamlScalar(value.isTrue)
@@ -44,8 +46,7 @@ internal object Nodes {
 
     private fun of(number: NumberValue): YamlNode {
         val literal = number.literal
-        val magnitude = literal.removePrefix("-")
-        val isInteger = magnitude.isNotEmpty() && magnitude.all { character -> character in '0'..'9' }
+        val isInteger = literal.none { character -> character in fractional }
         val tag = YamlTag.INTEGER.takeIf { isInteger } ?: YamlTag.FLOAT
         return yamlTagged(literal, tag)
     }

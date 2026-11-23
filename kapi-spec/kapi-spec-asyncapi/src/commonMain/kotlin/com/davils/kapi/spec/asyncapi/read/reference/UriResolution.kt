@@ -30,8 +30,6 @@ private const val PERCENT: Char = '%'
 
 private const val ESCAPE_WIDTH: Int = 3
 
-private const val ASCII_END: Int = 0x80
-
 internal object UriResolution {
     fun parse(text: String): UriReference? = UriReference.parseOrNull(text)
 
@@ -65,19 +63,16 @@ internal object UriResolution {
         var index = 0
         while (index < fragment.length) {
             val isEscape = fragment[index] == PERCENT
-            val octet = octetAt(fragment, index, isEscape) ?: return null
-            bytes.add(octet.toByte())
+            bytes.add(octetAt(fragment, index, isEscape).toByte())
             index += ESCAPE_WIDTH.takeIf { isEscape } ?: 1
         }
         return strict(bytes.toByteArray())
     }
 
-    private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int? {
-        if (!isEscape) return fragment[index].code.takeIf { code -> code < ASCII_END }
-        val high = fragment.getOrNull(index + 1)?.digitToIntOrNull(HEX_RADIX)
-        val low = fragment.getOrNull(index + 2)?.digitToIntOrNull(HEX_RADIX)
-        val octet = listOfNotNull(high, low).takeIf { halves -> halves.size == 2 }
-        return octet?.let { (upper, lower) -> upper * HEX_RADIX + lower }
+    private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int {
+        if (!isEscape) return fragment[index].code
+        val escape = fragment.substring(startIndex = index + 1, endIndex = index + ESCAPE_WIDTH)
+        return escape.toInt(HEX_RADIX)
     }
 
     private fun strict(bytes: ByteArray): String? = try {

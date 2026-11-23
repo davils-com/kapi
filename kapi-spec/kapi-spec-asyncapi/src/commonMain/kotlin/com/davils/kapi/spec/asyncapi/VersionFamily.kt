@@ -19,8 +19,8 @@ package com.davils.kapi.spec.asyncapi
 /**
  * A line of AsyncAPI versions that share one set of fields.
  *
- * The entries are ordered from the oldest to the newest line; a field introduced in one line is valid in every later
- * line unless a later line removes it. kapi reads AsyncAPI 3.0 and is prepared for the later lines of AsyncAPI 3.
+ * The entries are ordered from the oldest to the newest line. kapi reads AsyncAPI 3.0 and is prepared for the later
+ * lines of AsyncAPI 3.
  *
  * @property prefix the major and minor version of the line, such as `3.0`.
  * @since 1.0.0
@@ -33,14 +33,4 @@ public enum class VersionFamily(public val prefix: String) {
      * @since 1.0.0
      */
     V30("3.0"),
-    ;
-
-    /**
-     * Whether this line is [other] or a later one.
-     *
-     * @param other the line to compare with.
-     * @return `true` if this line is [other] or newer.
-     * @since 1.0.0
-     */
-    public fun isAtLeast(other: VersionFamily): Boolean = ordinal >= other.ordinal
 }

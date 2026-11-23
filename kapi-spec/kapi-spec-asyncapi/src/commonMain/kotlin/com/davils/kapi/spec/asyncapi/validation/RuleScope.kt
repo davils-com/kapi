@@ -35,6 +35,8 @@ internal class RuleScope(
 ) {
     private val loaded: Map<DocumentUri, LoadedDocument> = documents.associateBy(LoadedDocument::uri)
 
+    val root: DocumentUri = documents.first().uri
+
     val elements: List<Element> by lazy {
         val walked = document.walk().toList()
         walked.distinctBy { element -> element.location ?: element }

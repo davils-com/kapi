@@ -57,10 +57,9 @@ internal object OperationRules {
 
     private fun placement(scope: RuleScope, channel: Reference) {
         val target = channel.target
-        val root = scope.document.location?.document
         val tokens = target.pointer.tokens
         val isRootChannel = tokens.size == 2 && tokens.first() == CHANNELS && tokens.last() in scope.document.channels
-        if (target.document == root && isRootChannel) return
+        if (target.document == scope.root && isRootChannel) return
         val message = "An operation of the document names ${shown(
             channel.text,
         )}, which is no channel of the root channels"

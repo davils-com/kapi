@@ -40,8 +40,6 @@ internal class Cursor(
 
     val text: String? get() = (node as? YamlNode.Scalar)?.takeIf { scalar -> scalar.tag == YamlTag.STRING }?.value
 
-    val isNull: Boolean get() = (node as? YamlNode.Scalar)?.tag == YamlTag.NULL
-
     fun child(token: String, node: YamlNode): Cursor = Cursor(
         scope = scope,
         document = document,

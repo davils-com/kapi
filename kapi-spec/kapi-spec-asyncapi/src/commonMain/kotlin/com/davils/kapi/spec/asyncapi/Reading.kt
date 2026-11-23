@@ -19,8 +19,6 @@ package com.davils.kapi.spec.asyncapi
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.source.SourceDocument
 
-private const val READING: String = "Reading"
-
 /**
  * The outcome of one reading: the document, the findings in the order of their place and the documents the reading
  * loaded.
@@ -52,11 +50,6 @@ public sealed class Reading {
 
     override fun hashCode(): Int = identity.hashCode()
 
-    override fun toString(): String {
-        val name = this::class.simpleName ?: READING
-        return "$name(${diagnostics.size} diagnostics)"
-    }
-
     /**
      * The document was read without errors; [diagnostics] holds warnings only.
      *
@@ -71,6 +64,8 @@ public sealed class Reading {
         override val sources: List<SourceDocument>,
     ) : Reading() {
         override val identity: List<Any?> get() = listOf(document, diagnostics, sources)
+
+        override fun toString(): String = "Read(${diagnostics.size} diagnostics)"
     }
 
     /**
@@ -87,6 +82,8 @@ public sealed class Reading {
         override val sources: List<SourceDocument>,
     ) : Reading() {
         override val identity: List<Any?> get() = listOf(partial, diagnostics, sources)
+
+        override fun toString(): String = "Invalid(${diagnostics.size} diagnostics)"
     }
 
     /**
@@ -101,5 +98,7 @@ public sealed class Reading {
         override val sources: List<SourceDocument>,
     ) : Reading() {
         override val identity: List<Any?> get() = listOf(diagnostics, sources)
+
+        override fun toString(): String = "Malformed(${diagnostics.size} diagnostics)"
     }
 }

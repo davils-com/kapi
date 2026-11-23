@@ -23,7 +23,6 @@ import com.davils.kapi.spec.asyncapi.diagnostic.shown
 import com.davils.kapi.spec.asyncapi.read.Cursor
 import com.davils.kapi.spec.asyncapi.read.Entry
 import com.davils.kapi.spec.asyncapi.read.shape.Keys
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.core.model.Target
 import com.davils.kore.core.annotation.DavilsInternal
@@ -73,19 +72,14 @@ internal object References {
         val target = uri?.let { parsed -> UriResolution.target(base, parsed) }
         if (target == null) {
             val message = "${shown(text)} names no document and JSON pointer the reader can follow"
-            written.report(codeOf(base, uri), message)
+            written.report(codeOf(uri), message)
         }
         return target
     }
 
-    private fun codeOf(base: DocumentUri, uri: UriReference?): ViolationCode {
+    private fun codeOf(uri: UriReference?): ViolationCode {
         val pointer = uri?.let(UriResolution::pointerOf)
-        val document = uri?.let { parsed -> UriResolution.documentOf(base, parsed) }
-        val failures = listOf(
-            DiagnosticCodes.REFERENCE_POINTER to (pointer == null),
-            DiagnosticCodes.REFERENCE_NO_BASE to (document == null),
-        )
-        val failed = failures.firstOrNull { (_, isFailed) -> isFailed }?.first.takeIf { uri != null }
-        return failed ?: DiagnosticCodes.REFERENCE_SYNTAX
+        val code = DiagnosticCodes.REFERENCE_NO_BASE.takeIf { pointer != null } ?: DiagnosticCodes.REFERENCE_POINTER
+        return code.takeIf { uri != null } ?: DiagnosticCodes.REFERENCE_SYNTAX
     }
 }

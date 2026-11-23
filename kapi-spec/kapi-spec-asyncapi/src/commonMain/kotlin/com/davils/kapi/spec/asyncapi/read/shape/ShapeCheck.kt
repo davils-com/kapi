@@ -38,7 +38,7 @@ internal class ShapeCheck private constructor(
 
     private fun fields(cursor: Cursor): Fields {
         cursor.entries().forEach(::sort)
-        val missing = shape.required.filter { rule -> rule.isIn(family) && rule.name !in present }
+        val missing = shape.required.filter { rule -> rule.name !in present }
         missing.forEach { rule ->
             cursor.report(DiagnosticCodes.FIELD_MISSING, "${shape.subject} needs the field ${rule.name}")
         }
@@ -56,10 +56,6 @@ internal class ShapeCheck private constructor(
 
     private fun declared(entry: Entry) {
         val rule = shape.rule(entry.key) ?: return undeclared(entry)
-        if (!rule.isIn(family)) {
-            val message = "${shown(entry.key)} is no field of ${shape.subject} in AsyncAPI ${family.prefix}"
-            return entry.report(DiagnosticCodes.FIELD_VERSION, message)
-        }
         typed(entry, rule)
     }
 

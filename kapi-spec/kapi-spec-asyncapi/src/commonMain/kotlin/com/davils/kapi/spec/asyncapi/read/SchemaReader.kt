@@ -19,6 +19,7 @@
 package com.davils.kapi.spec.asyncapi.read
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
+import com.davils.kapi.spec.asyncapi.diagnostic.shown
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaBuilder
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
@@ -73,10 +74,19 @@ internal object SchemaReader {
     private fun multiFormat(cursor: Cursor): Schema = cursor.read(Shapes.multiFormatSchema, SchemaBuilder()) { fields ->
         val written = fields.text(Keys.SCHEMA_FORMAT)
         schemaFormat = written
-        format = written?.let(SchemaFormats::of) ?: format
+        written?.let { text -> format = formatOf(fields, text) }
         val body = fields.cursor(Keys.SCHEMA)
         body?.let { declared -> definition = Values.of(declared) }
         body?.takeIf { format in resolvable }?.let { declared -> nested(declared, isNameMap = false) }
+    }
+
+    private fun formatOf(fields: Fields, text: String): SchemaFormat {
+        val format = SchemaFormats.of(text)
+        if (format == SchemaFormat.Unknown) {
+            val message = "The schema format ${shown(text)} is unknown to kapi, the schema is kept as it was written"
+            fields.report(Keys.SCHEMA_FORMAT, DiagnosticCodes.SCHEMA_FORMAT_UNKNOWN, message)
+        }
+        return format
     }
 
     private fun nested(cursor: Cursor, isNameMap: Boolean) {
