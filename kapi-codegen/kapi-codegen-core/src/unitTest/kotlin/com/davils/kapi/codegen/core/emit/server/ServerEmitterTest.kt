@@ -241,6 +241,16 @@ class ServerEmitterTest : FunSpec({
             optional shouldContain "service.listPets(a = form.a)"
         }
 
+        test("reads a part of JSON in the media type of its encoding and an optional body as optional") {
+            val meta = "{meta: {type: object, properties: {a: {type: string}}}}}, " +
+                "encoding: {meta: {contentType: application/vnd.pet+json}}}}}"
+            val kotlin = serverOf(get(LIST_PETS, "$MULTIPART$meta"))
+
+            kotlin shouldContain "val parts = input.parts(false)"
+            kotlin shouldContain "PetstoreListPetsRequestMeta.serializer(), false, " +
+                "MediaType.parse(\"application/vnd.pet+json\"))"
+        }
+
         test("reads repeated parts that are numbers, each by the codecs of the server") {
             val numbers = serverOf(get(LIST_PETS, "$MULTIPART{a: {type: array, items: {type: integer}}}}}}}"))
 

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.codegen.core.emit.server
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -25,6 +27,8 @@ import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
+import com.davils.kapi.runtime.core.header.FieldSyntax
+import com.davils.kore.core.annotation.DavilsInternal
 
 private val taken: Set<String> = setOf("input", "request", "response", "service", "form", "parts", "reply")
 
@@ -45,7 +49,7 @@ internal class ServerSupport(private val findings: Findings) {
         val upgrades = listOfNotNull(operation.upgrade)
         val headers = operation.responses
             .flatMap { response -> response.headers }
-            .filterNot { header -> isToken(header.wireName) }
+            .filterNot { header -> FieldSyntax.isToken(header.wireName) }
         return maps.map { parameter ->
             "the parameter ${shown(parameter.wireName)}, a map spread over the query, on a server"
         } +
@@ -60,9 +64,6 @@ internal class ServerSupport(private val findings: Findings) {
         val isSpread = parameter.isExploded && parameter.style != DEEP_OBJECT
         return parameter.type.shape is TypeShape.Entries && isQuery && isSpread
     }
-
-    private fun isToken(name: String): Boolean =
-        name.isNotEmpty() && name.all { char -> char in TOKEN_MARKS || (char.code < ASCII && char.isLetterOrDigit()) }
 
     private fun refuse(operation: OperationPlan, what: String) {
         findings.error(
@@ -92,9 +93,5 @@ internal class ServerSupport(private val findings: Findings) {
 
     private companion object {
         const val DEEP_OBJECT: String = "DeepObject"
-
-        const val TOKEN_MARKS: String = "!#$%&'*+-.^_`|~"
-
-        const val ASCII: Int = 128
     }
 }

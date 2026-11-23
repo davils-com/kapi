@@ -91,3 +91,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   message is written.
 - **The generator** locates every finding of a partial AsyncAPI document, such as a handshake whose schema the reader
   could not resolve, which is now reported at its ws binding.
+- **Generated servers** read a multipart body that the document does not require as optional, instead of refusing a
+  request without one, and check the names of response headers with `FieldSyntax` of the core runtime.
