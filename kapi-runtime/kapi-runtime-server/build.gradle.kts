@@ -33,8 +33,8 @@ dependencies {
     api(libs.ktor.server.sse)
     api(libs.kollect.core)
     api(libs.konfetti.core)
-    implementation(libs.krypt.jose)
-    implementation(libs.krypt.x509)
+    api(libs.krypt.jose)
+    api(libs.krypt.x509)
 }
 
 configurations.matching { configuration -> configuration.name == "unitTestImplementation" }.configureEach {
