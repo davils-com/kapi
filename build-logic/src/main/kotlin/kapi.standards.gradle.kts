@@ -28,7 +28,13 @@ kreate {
 
             inventory {
                 includes.set(setOf("*.md", "kapi-*/kapi-*/src/**"))
-                excludes.set(setOf("kapi-spec/kapi-spec-schema/src/jvmUnitTest/resources/json-schema-test-suite/**"))
+                excludes.set(
+                    setOf(
+                        "kapi-spec/kapi-spec-schema/src/jvmUnitTest/resources/json-schema-test-suite/**",
+                        "kapi-spec/kapi-spec-asyncapi/src/commonMain/kotlin/com/davils/kapi/spec/asyncapi/structure/" +
+                            "Schema300Texts.kt",
+                    ),
+                )
             }
 
             github("OAI/OpenAPI-Specification") {
@@ -178,6 +184,10 @@ kreate {
             }
             rfc(9111) {
                 note = "HTTP caching: Cache-Control and Vary of kapi-runtime-core."
+            }
+            rfc(9207) {
+                note = "OAuth 2.0 issuer identification: the iss parameter kapi-runtime-client checks in an " +
+                    "authorization response against the issuer of the client."
             }
             rfc(9421) {
                 note = "HTTP message signatures: the verification of webhook deliveries in kapi-runtime-server."

@@ -1256,6 +1256,20 @@
             }
         },
         {
+            "id": "rfc:9207",
+            "reviewedOn": "2026-11-23",
+            "note": "Checked the iss parameter of authorization responses against the issuer of the client in kapi-runtime-client.",
+            "snapshot": {
+                "title": "OAuth 2.0 Authorization Server Issuer Identification",
+                "status": "PROPOSED STANDARD",
+                "published": "March 2022",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
             "id": "rfc:9421",
             "reviewedOn": "2026-11-23",
             "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
