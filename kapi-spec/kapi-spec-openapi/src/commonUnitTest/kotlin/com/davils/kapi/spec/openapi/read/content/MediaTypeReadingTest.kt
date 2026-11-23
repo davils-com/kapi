@@ -90,7 +90,7 @@ class MediaTypeReadingTest : FunSpec({
             events.itemSchema.defined().properties.keys shouldBe setOf("data")
             mixed.prefixEncoding.single().contentType shouldBe "application/json"
             item.contentType shouldBe "multipart/form-data"
-            item.encoding.getValue("file").contentType shouldBe "image/png"
+            item.nestedEncoding.getValue("file").contentType shouldBe "image/png"
         }
 
         test("is written with them and reads back") {

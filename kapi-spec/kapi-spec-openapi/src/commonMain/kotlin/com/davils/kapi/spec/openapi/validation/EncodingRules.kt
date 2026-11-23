@@ -27,7 +27,7 @@ internal object EncodingRules {
             isMixed(type.encoding, type.prefixEncoding, type.itemEncoding)
         }
         val encodings = scope.all<Encoding>().filter { encoding ->
-            isMixed(encoding.encoding, encoding.prefixEncoding, encoding.itemEncoding)
+            isMixed(encoding.nestedEncoding, encoding.prefixEncoding, encoding.itemEncoding)
         }
         (media + encodings).forEach { owner -> mixed(scope, owner) }
     }

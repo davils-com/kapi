@@ -104,6 +104,9 @@ libraries:
       - '**/spec/core/value/Value.kt'
       - '**/spec/core/diagnostic/Location.kt'
       - '**/spec/core/model/Reference.kt'
+      - '**/spec/openapi/model/schema/Bound.kt'
+      - '**/spec/openapi/Reading.kt'
+      - '**/spec/openapi/Version.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -165,6 +168,9 @@ style:
       - '**/spec/core/value/Value.kt'
       - '**/spec/core/diagnostic/Location.kt'
       - '**/spec/core/model/Reference.kt'
+      - '**/spec/openapi/model/schema/Bound.kt'
+      - '**/spec/openapi/Reading.kt'
+      - '**/spec/openapi/Version.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false

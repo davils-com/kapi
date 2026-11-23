@@ -98,7 +98,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.text(Keys.STYLE, encoding.style?.keyword)
         out.choice(Keys.EXPLODE, encoding.isExploded)
         out.flag(Keys.ALLOW_RESERVED, encoding.isReservedAllowed)
-        out.map(Keys.ENCODING, encoding.encoding.takeIf { isCurrent }.orEmpty(), ::encoding)
+        out.map(Keys.ENCODING, encoding.nestedEncoding.takeIf { isCurrent }.orEmpty(), ::encoding)
         nested(out, encoding.prefixEncoding, encoding.itemEncoding)
         return out.build(encoding)
     }

@@ -45,3 +45,4 @@ bin/
 # The settings lock file is the exception: the settings declare no locking.
 /settings-gradle.lockfile
 .claude/worktrees/
+kotlin-js-store/

@@ -78,7 +78,7 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
      *
      * @since 1.0.0
      */
-    public val encoding: Map<String, Encoding> = builder.encoding.toMap()
+    public val nestedEncoding: Map<String, Encoding> = builder.encoding.toMap()
 
     /**
      * The `prefixEncoding`: the encodings of the leading items of a nested part, by position; empty when the
@@ -103,7 +103,7 @@ public class Encoding internal constructor(builder: EncodingBuilder) :
             style,
             isExploded,
             isReservedAllowed,
-            encoding,
+            nestedEncoding,
             prefixEncoding,
             itemEncoding,
         )

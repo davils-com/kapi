@@ -30,7 +30,14 @@ import com.davils.kapi.spec.core.value.NumberValue
  * @property isExclusive whether the limit itself is outside the allowed range.
  * @since 1.0.0
  */
-public data class Bound(
+public class Bound(
     public val value: NumberValue,
     public val isExclusive: Boolean = false,
-)
+) {
+    override fun equals(other: Any?): Boolean =
+        other is Bound && value == other.value && isExclusive == other.isExclusive
+
+    override fun hashCode(): Int = 31 * value.hashCode() + isExclusive.hashCode()
+
+    override fun toString(): String = "Bound($value, isExclusive=$isExclusive)"
+}
