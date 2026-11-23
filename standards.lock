@@ -76,6 +76,20 @@
             }
         },
         {
+            "id": "github:asyncapi/spec-json-schemas",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: release 6.11.1, schemas/3.0.0-without-$id.json embedded unchanged by the structure check of kapi-spec-asyncapi.",
+            "snapshot": {
+                "title": "asyncapi/spec-json-schemas",
+                "revision": "v6.11.1",
+                "published": "2026-01-30",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
             "id": "github:json-schema-org/json-schema-test-suite",
             "reviewedOn": "2026-11-23",
             "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",

@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.asyncapi.read
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
+import com.davils.kapi.spec.asyncapi.StructureCheck
 import com.davils.kapi.spec.asyncapi.fixture.codes
 import com.davils.kapi.spec.asyncapi.fixture.parts
 import com.davils.kapi.spec.asyncapi.fixture.reading
@@ -63,7 +64,11 @@ class EdgeReadingTest : FunSpec({
                 """.trimMargin(),
             )
 
-            reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_TYPE, DiagnosticCodes.FIELD_TYPE)
+            reading.codes() shouldBe listOf(
+                DiagnosticCodes.FIELD_TYPE,
+                DiagnosticCodes.STRUCTURE_SCHEMA,
+                DiagnosticCodes.FIELD_TYPE,
+            )
         }
 
         test("that is required is reported for every object that misses it") {
@@ -118,7 +123,7 @@ class EdgeReadingTest : FunSpec({
             schema.value.format shouldBe SchemaFormat.AsyncApi
         }
 
-        test("of a schema takes a reference that is no string as a keyword") {
+        test("of a schema takes a reference that is no string as a keyword the official schema refuses") {
             val reading = readingOf(
                 """
                     |components:
@@ -131,7 +136,17 @@ class EdgeReadingTest : FunSpec({
                 """.trimMargin(),
             )
 
-            reading.diagnostics.shouldBeEmpty()
+            reading.codes() shouldBe listOf(DiagnosticCodes.STRUCTURE_SCHEMA)
+            readingOf(
+                """
+                    |components:
+                    |  schemas:
+                    |    Pet:
+                    |      properties:
+                    |        name:
+                    |          ${'$'}ref: 1
+                """.trimMargin(),
+            ) { structure = StructureCheck.Reader }.diagnostics.shouldBeEmpty()
         }
     }
 

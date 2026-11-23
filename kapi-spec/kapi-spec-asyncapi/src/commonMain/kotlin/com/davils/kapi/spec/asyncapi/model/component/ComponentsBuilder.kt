@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.component
 
 import com.davils.kapi.spec.asyncapi.model.binding.ChannelBindings
@@ -35,9 +37,11 @@ import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.model.security.SecurityScheme
 import com.davils.kapi.spec.asyncapi.model.server.Server
 import com.davils.kapi.spec.asyncapi.model.server.ServerVariable
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Components]: collects its fields while a reader of kapi reads it.
@@ -50,43 +54,43 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class ComponentsBuilder internal constructor() : ElementBuilder<Components>() {
     override val subject: String get() = "asyncapi components"
 
-    internal val schemas: MutableMap<String, Referable<Schema>> = linkedMapOf()
+    internal val schemas: MutableMap<String, Referable<Schema>> = KeyedMap()
 
-    internal val servers: MutableMap<String, Referable<Server>> = linkedMapOf()
+    internal val servers: MutableMap<String, Referable<Server>> = KeyedMap()
 
-    internal val channels: MutableMap<String, Referable<Channel>> = linkedMapOf()
+    internal val channels: MutableMap<String, Referable<Channel>> = KeyedMap()
 
-    internal val operations: MutableMap<String, Referable<Operation>> = linkedMapOf()
+    internal val operations: MutableMap<String, Referable<Operation>> = KeyedMap()
 
-    internal val messages: MutableMap<String, Referable<Message>> = linkedMapOf()
+    internal val messages: MutableMap<String, Referable<Message>> = KeyedMap()
 
-    internal val securitySchemes: MutableMap<String, Referable<SecurityScheme>> = linkedMapOf()
+    internal val securitySchemes: MutableMap<String, Referable<SecurityScheme>> = KeyedMap()
 
-    internal val serverVariables: MutableMap<String, Referable<ServerVariable>> = linkedMapOf()
+    internal val serverVariables: MutableMap<String, Referable<ServerVariable>> = KeyedMap()
 
-    internal val parameters: MutableMap<String, Referable<Parameter>> = linkedMapOf()
+    internal val parameters: MutableMap<String, Referable<Parameter>> = KeyedMap()
 
-    internal val correlationIds: MutableMap<String, Referable<CorrelationId>> = linkedMapOf()
+    internal val correlationIds: MutableMap<String, Referable<CorrelationId>> = KeyedMap()
 
-    internal val replies: MutableMap<String, Referable<OperationReply>> = linkedMapOf()
+    internal val replies: MutableMap<String, Referable<OperationReply>> = KeyedMap()
 
-    internal val replyAddresses: MutableMap<String, Referable<ReplyAddress>> = linkedMapOf()
+    internal val replyAddresses: MutableMap<String, Referable<ReplyAddress>> = KeyedMap()
 
-    internal val externalDocs: MutableMap<String, Referable<ExternalDocs>> = linkedMapOf()
+    internal val externalDocs: MutableMap<String, Referable<ExternalDocs>> = KeyedMap()
 
-    internal val tags: MutableMap<String, Referable<Tag>> = linkedMapOf()
+    internal val tags: MutableMap<String, Referable<Tag>> = KeyedMap()
 
-    internal val operationTraits: MutableMap<String, Referable<OperationTrait>> = linkedMapOf()
+    internal val operationTraits: MutableMap<String, Referable<OperationTrait>> = KeyedMap()
 
-    internal val messageTraits: MutableMap<String, Referable<MessageTrait>> = linkedMapOf()
+    internal val messageTraits: MutableMap<String, Referable<MessageTrait>> = KeyedMap()
 
-    internal val serverBindings: MutableMap<String, Referable<ServerBindings>> = linkedMapOf()
+    internal val serverBindings: MutableMap<String, Referable<ServerBindings>> = KeyedMap()
 
-    internal val channelBindings: MutableMap<String, Referable<ChannelBindings>> = linkedMapOf()
+    internal val channelBindings: MutableMap<String, Referable<ChannelBindings>> = KeyedMap()
 
-    internal val operationBindings: MutableMap<String, Referable<OperationBindings>> = linkedMapOf()
+    internal val operationBindings: MutableMap<String, Referable<OperationBindings>> = KeyedMap()
 
-    internal val messageBindings: MutableMap<String, Referable<MessageBindings>> = linkedMapOf()
+    internal val messageBindings: MutableMap<String, Referable<MessageBindings>> = KeyedMap()
 
     override fun assemble(): Components = Components(this)
 }

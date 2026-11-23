@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.read
 
 import com.davils.kaml.core.model.YamlTag
@@ -21,9 +23,11 @@ import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.boolean
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.diagnostic.shown
+import com.davils.kapi.spec.core.collection.associateKeyed
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object Values {
     private val scalars: Map<YamlTag, (YamlNode.Scalar, Location) -> Value?> = mapOf(
@@ -47,7 +51,7 @@ internal object Values {
 
     private fun mapping(cursor: Cursor): Value {
         val entries = cursor.entries()
-        val values = entries.associate { entry -> entry.key to of(entry.value) }
+        val values = entries.associateKeyed { entry -> entry.key to of(entry.value) }
         return Value.Mapping(values, cursor.location)
     }
 

@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.schema
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A discriminator object: the property whose value tells which of the schemas of a `oneOf`, an `anyOf` or an
@@ -46,7 +50,7 @@ public class Discriminator internal constructor(builder: DiscriminatorBuilder) :
      *
      * @since 1.0.0
      */
-    public val mapping: Map<String, String> = builder.mapping.toMap()
+    public val mapping: Map<String, String> = builder.mapping.frozen()
 
     /**
      * The `defaultMapping`: the schema, by name or by reference, of a value whose discriminating property is missing

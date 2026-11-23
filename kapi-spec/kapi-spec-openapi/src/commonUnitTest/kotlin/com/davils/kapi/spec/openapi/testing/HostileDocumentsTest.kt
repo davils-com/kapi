@@ -22,9 +22,12 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.Reading
+import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.spec.testing.Corpus
 import com.davils.kapi.spec.testing.HostileDocuments
 import com.davils.kore.core.validation.violation.ViolationCode
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
@@ -37,6 +40,8 @@ private const val DEEP: Int = 5_000
 private const val MANY: Int = 5_000
 
 private const val LONG: Int = 200
+
+private const val COLLIDING: Int = 4096
 
 private suspend fun reading(text: String): Reading = OpenApi.reader().read(Source.Text(text))
 
@@ -64,6 +69,22 @@ class HostileDocumentsTest : FunSpec({
             reading.shouldBeInstanceOf<Reading.Invalid>()
             reading.diagnostics.size shouldBe ReadLimitsBuilder.DEFAULT_DIAGNOSTICS + 1
             reading.codes().last() shouldBe DiagnosticCodes.LIMIT_DIAGNOSTICS
+        }
+
+        test("cannot slow a reading down with keys whose hash codes collide") {
+            val reading = reading(HostileDocuments.collidingKeysDocument(COLLIDING))
+            val keys = HostileDocuments.collidingKeys(COLLIDING)
+
+            val read = reading.shouldBeInstanceOf<Reading.Read>()
+            val components = read.document.components
+            val schemas = components?.schemas.orEmpty()
+            val colliding = schemas["Colliding"].shouldBeInstanceOf<SchemaDefinition>()
+            schemas.size shouldBe COLLIDING + 1
+            keys.all { key -> key in schemas && key in colliding.properties } shouldBe true
+            colliding.enumeration.orEmpty().size shouldBe COLLIDING
+            colliding.extensions.names.size shouldBe COLLIDING
+            shouldThrowAny { (schemas as MutableMap<String, Schema>).clear() }
+            shouldThrowAny { (colliding.properties as MutableMap<String, Schema>).clear() }
         }
 
         test("cannot send a reading through an endless chain of references") {

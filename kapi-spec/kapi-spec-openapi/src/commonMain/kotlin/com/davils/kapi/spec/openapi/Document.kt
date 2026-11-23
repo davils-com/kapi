@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Target
 import com.davils.kapi.spec.openapi.model.component.Components
@@ -26,6 +29,7 @@ import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.Paths
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An OpenAPI document as it was read, with every element a reference leads to.
@@ -76,7 +80,7 @@ public class Document internal constructor(builder: DocumentBuilder) :
      *
      * @since 1.0.0
      */
-    public val servers: List<Server> = builder.servers.toList()
+    public val servers: List<Server> = builder.servers.frozen()
 
     /**
      * The `paths` of the document; `null` when absent, which OpenAPI 3.1 allows.
@@ -90,7 +94,7 @@ public class Document internal constructor(builder: DocumentBuilder) :
      *
      * @since 1.0.0
      */
-    public val webhooks: Map<String, PathItem> = builder.webhooks.toMap()
+    public val webhooks: Map<String, PathItem> = builder.webhooks.frozen()
 
     /**
      * The `components` of the document; `null` when absent.
@@ -104,14 +108,14 @@ public class Document internal constructor(builder: DocumentBuilder) :
      *
      * @since 1.0.0
      */
-    public val security: List<SecurityRequirement> = builder.security.toList()
+    public val security: List<SecurityRequirement> = builder.security.frozen()
 
     /**
      * The `tags` of the document, in their order.
      *
      * @since 1.0.0
      */
-    public val tags: List<Tag> = builder.tags.toList()
+    public val tags: List<Tag> = builder.tags.frozen()
 
     /**
      * The `externalDocs` of the document; `null` when absent.
@@ -125,7 +129,7 @@ public class Document internal constructor(builder: DocumentBuilder) :
      *
      * @since 1.0.0
      */
-    public val targets: Map<Target, Element> = builder.targets.toMap()
+    public val targets: Map<Target, Element> = builder.targets.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

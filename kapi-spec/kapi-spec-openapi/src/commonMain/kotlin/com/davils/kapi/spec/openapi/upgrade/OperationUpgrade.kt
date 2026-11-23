@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.upgrade
 
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kaml.core.node.string
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 private val replacedKeys: Set<String> = setOf(
     SwaggerKeys.CONSUMES,
@@ -59,7 +63,7 @@ internal class OperationUpgrade(private val context: UpgradeContext) {
     }
 
     private fun merged(own: List<Located>, inherited: List<Located>): List<Located> {
-        val identities = own.map(::identityOf).toSet()
+        val identities = OrderedSet(own.map(::identityOf))
         return own + inherited.filterNot { parameter -> identityOf(parameter) in identities }
     }
 

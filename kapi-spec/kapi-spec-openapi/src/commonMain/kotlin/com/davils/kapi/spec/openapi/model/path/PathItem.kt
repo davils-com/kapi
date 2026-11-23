@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.server.Server
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A path item object: the operations available on one path, in `paths`, in `webhooks`, in a callback or, from
@@ -61,7 +65,7 @@ public class PathItem internal constructor(builder: PathItemBuilder) :
      *
      * @since 1.0.0
      */
-    public val operations: Map<Method, Operation> = builder.operations.toMap()
+    public val operations: Map<Method, Operation> = builder.operations.frozen()
 
     /**
      * The `additionalOperations`: the operations of methods without a field of their own, such as `COPY`, keyed by
@@ -73,7 +77,7 @@ public class PathItem internal constructor(builder: PathItemBuilder) :
      *
      * @since 1.0.0
      */
-    public val additionalOperations: Map<String, Operation> = builder.additionalOperations.toMap()
+    public val additionalOperations: Map<String, Operation> = builder.additionalOperations.frozen()
 
     /**
      * The `servers` that serve every operation of the path item instead of those of the document; empty when the path
@@ -81,7 +85,7 @@ public class PathItem internal constructor(builder: PathItemBuilder) :
      *
      * @since 1.0.0
      */
-    public val servers: List<Server> = builder.servers.toList()
+    public val servers: List<Server> = builder.servers.frozen()
 
     /**
      * The `parameters` that every operation of the path item shares, inline or by reference; empty when the path item
@@ -92,7 +96,7 @@ public class PathItem internal constructor(builder: PathItemBuilder) :
      *
      * @since 1.0.0
      */
-    public val parameters: List<Referable<Parameter>> = builder.parameters.toList()
+    public val parameters: List<Referable<Parameter>> = builder.parameters.frozen()
 
     override val identity: List<Any?>
         get() = listOf(reference, summary, description, operations, additionalOperations, servers, parameters)

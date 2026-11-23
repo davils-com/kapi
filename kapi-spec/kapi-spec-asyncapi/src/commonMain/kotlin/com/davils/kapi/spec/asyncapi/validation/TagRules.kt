@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
@@ -26,8 +28,10 @@ import com.davils.kapi.spec.asyncapi.model.message.MessageTrait
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.operation.OperationTrait
 import com.davils.kapi.spec.asyncapi.model.server.Server
+import com.davils.kapi.spec.core.collection.groupByKeyed
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object TagRules {
     fun check(scope: RuleScope) {
@@ -43,9 +47,9 @@ internal object TagRules {
 
     private fun duplicates(scope: RuleScope, element: Element, tags: List<Referable<Tag>>) {
         val names = tags.mapNotNull { tag -> scope.resolve(tag)?.name }
-        val counts = names.groupingBy { name -> name }.eachCount()
-        val repeated = counts.filterValues { count -> count > 1 }
-        repeated.keys.forEach { name ->
+        val groups = names.groupByKeyed { name -> name }
+        val repeated = groups.entries.filter { (_, same) -> same.size > 1 }
+        repeated.forEach { (name, _) ->
             scope.report(DiagnosticCodes.TAG_DUPLICATE, "The tag ${shown(name)} is listed more than once", element)
         }
     }

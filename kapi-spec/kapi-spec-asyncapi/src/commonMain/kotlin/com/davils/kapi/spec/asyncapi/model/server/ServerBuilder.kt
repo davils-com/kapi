@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.server
 
 import com.davils.kapi.spec.asyncapi.model.binding.ServerBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.security.SecurityScheme
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Server]: collects its fields while a reader of kapi reads it.
@@ -112,7 +116,7 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
             field = value
         }
 
-    internal val variables: MutableMap<String, Referable<ServerVariable>> = linkedMapOf()
+    internal val variables: MutableMap<String, Referable<ServerVariable>> = KeyedMap()
 
     internal val security: MutableList<Referable<SecurityScheme>> = mutableListOf()
 

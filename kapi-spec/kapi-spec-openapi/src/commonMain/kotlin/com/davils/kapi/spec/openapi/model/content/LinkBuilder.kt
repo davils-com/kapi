@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Link], filled by the readers of kapi.
@@ -54,7 +58,7 @@ public class LinkBuilder internal constructor() : ElementBuilder<Link>() {
             field = value
         }
 
-    internal val parameters: MutableMap<String, Value> = linkedMapOf()
+    internal val parameters: MutableMap<String, Value> = KeyedMap()
 
     /**
      * The value of `requestBody`, the body to send to the operation.

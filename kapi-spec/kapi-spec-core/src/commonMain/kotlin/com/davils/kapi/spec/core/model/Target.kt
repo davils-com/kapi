@@ -29,7 +29,20 @@ import com.davils.kapi.spec.core.diagnostic.DocumentUri
 public class Target(
     public val document: DocumentUri,
     public val pointer: JsonPointer,
-) {
+) : Comparable<Target> {
+    /**
+     * Compares the targets by their document and then by their pointer, so that targets can key an ordered map.
+     *
+     * @param other the other target.
+     * @return a negative number, zero or a positive number as this target sorts before, with or after [other].
+     * @since 1.0.0
+     */
+    override fun compareTo(other: Target): Int {
+        val documents = document.compareTo(other.document)
+        if (documents != 0) return documents
+        return pointer.text.compareTo(other.pointer.text)
+    }
+
     override fun equals(other: Any?): Boolean =
         other is Target && document == other.document && pointer == other.pointer
 

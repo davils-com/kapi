@@ -19,10 +19,13 @@ package com.davils.kapi.spec.asyncapi.testing
 import com.davils.kapi.spec.asyncapi.AsyncApi
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.Reading
+import com.davils.kapi.spec.asyncapi.model.channel.Channel
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kore.core.validation.violation.ViolationCode
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
@@ -43,6 +46,8 @@ private const val LONG: Int = 200
 
 private const val KEY: Int = 100_000
 
+private const val COLLIDING: Int = 4096
+
 private suspend fun reading(text: String): Reading = AsyncApi.reader().read(Source.Text(text))
 
 private fun Reading.codes(): List<ViolationCode> = diagnostics.map(Diagnostic::code)
@@ -54,6 +59,20 @@ class HostileDocumentsTest : FunSpec({
 
             reading.shouldBeInstanceOf<Reading.Malformed>()
             reading.codes() shouldContain ViolationCode("kaml.limit.alias-expansion")
+        }
+
+        test("cannot slow a reading down with keys whose hash codes collide") {
+            val reading = reading(HostileDocuments.collidingChannels(COLLIDING))
+            val keys = HostileDocuments.collidingKeys(COLLIDING)
+
+            val read = reading.shouldBeInstanceOf<Reading.Read>()
+            val channels = read.document.channels
+            val components = read.document.components
+            val messages = components?.messages.orEmpty()
+            channels.size shouldBe COLLIDING
+            keys.all { key -> key in channels && key in messages } shouldBe true
+            read.document.extensions.names.size shouldBe COLLIDING
+            shouldThrowAny { (channels as MutableMap<String, Referable<Channel>>).clear() }
         }
 
         test("cannot nest deeper than a reading follows") {

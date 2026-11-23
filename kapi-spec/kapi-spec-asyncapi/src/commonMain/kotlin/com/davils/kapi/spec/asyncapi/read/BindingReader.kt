@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.read
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
@@ -33,7 +35,9 @@ import com.davils.kapi.spec.asyncapi.read.shape.Fields
 import com.davils.kapi.spec.asyncapi.read.shape.Keys
 import com.davils.kapi.spec.asyncapi.read.shape.ShapeCheck
 import com.davils.kapi.spec.asyncapi.read.shape.Shapes
+import com.davils.kapi.spec.core.collection.filterKeyed
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object BindingReader {
     fun server(cursor: Cursor): ServerBindings = cursor.read(Shapes.bindings, ServerBindingsBuilder()) { fields ->
@@ -75,7 +79,7 @@ internal object BindingReader {
 
     private fun protocolsOf(fields: Fields): Map<String, Value> {
         val values = fields.values()
-        return values.filterKeys { name -> name != Keys.WEB_SOCKET }
+        return values.filterKeyed { name, _ -> name != Keys.WEB_SOCKET }
     }
 
     private fun methodOf(fields: Fields): WebSocketMethod? {

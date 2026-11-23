@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.operation
 
 import com.davils.kapi.spec.asyncapi.model.binding.OperationBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.security.SecurityScheme
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An operation of an application: whether it sends or receives messages, on which channel, and which messages.
@@ -73,14 +77,14 @@ public class Operation internal constructor(builder: OperationBuilder) : Element
      *
      * @since 1.0.0
      */
-    public val security: List<Referable<SecurityScheme>> = builder.security.toList()
+    public val security: List<Referable<SecurityScheme>> = builder.security.frozen()
 
     /**
      * The tags, each written inline or as a reference.
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.
@@ -101,14 +105,14 @@ public class Operation internal constructor(builder: OperationBuilder) : Element
      *
      * @since 1.0.0
      */
-    public val traits: List<Referable<OperationTrait>> = builder.traits.toList()
+    public val traits: List<Referable<OperationTrait>> = builder.traits.frozen()
 
     /**
      * The references to the messages of the channel the operation sends or receives; empty for all of them.
      *
      * @since 1.0.0
      */
-    public val messages: List<Reference> = builder.messages.toList()
+    public val messages: List<Reference> = builder.messages.frozen()
 
     /**
      * The reply to the operation, for request and reply.

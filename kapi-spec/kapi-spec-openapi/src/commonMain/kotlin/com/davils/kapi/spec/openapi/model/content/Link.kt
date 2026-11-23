@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.server.Server
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A link object: an operation that a caller may call with values taken from a response, which OpenAPI calls a
@@ -52,7 +56,7 @@ public class Link internal constructor(builder: LinkBuilder) : Element(builder) 
      *
      * @since 1.0.0
      */
-    public val parameters: Map<String, Value> = builder.parameters.toMap()
+    public val parameters: Map<String, Value> = builder.parameters.frozen()
 
     /**
      * The `requestBody` to send to the operation, a constant or a runtime expression kept as written; `null` when the

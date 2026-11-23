@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.channel
 
 import com.davils.kapi.spec.asyncapi.model.binding.ChannelBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.message.Message
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Channel]: collects its fields while a reader of kapi reads it.
@@ -47,7 +51,7 @@ public class ChannelBuilder internal constructor() : ElementBuilder<Channel>() {
             field = value
         }
 
-    internal val messages: MutableMap<String, Referable<Message>> = linkedMapOf()
+    internal val messages: MutableMap<String, Referable<Message>> = KeyedMap()
 
     /**
      * A human-friendly title.
@@ -84,7 +88,7 @@ public class ChannelBuilder internal constructor() : ElementBuilder<Channel>() {
 
     internal val servers: MutableList<Reference> = mutableListOf()
 
-    internal val parameters: MutableMap<String, Referable<Parameter>> = linkedMapOf()
+    internal val parameters: MutableMap<String, Referable<Parameter>> = KeyedMap()
 
     internal val tags: MutableList<Referable<Tag>> = mutableListOf()
 

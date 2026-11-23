@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.binding
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [ChannelBindings]: collects its fields while a reader of kapi reads it.
@@ -42,7 +46,7 @@ public class ChannelBindingsBuilder internal constructor() : ElementBuilder<Chan
             field = value
         }
 
-    internal val protocols: MutableMap<String, Value> = linkedMapOf()
+    internal val protocols: MutableMap<String, Value> = KeyedMap()
 
     override fun assemble(): ChannelBindings = ChannelBindings(this)
 }

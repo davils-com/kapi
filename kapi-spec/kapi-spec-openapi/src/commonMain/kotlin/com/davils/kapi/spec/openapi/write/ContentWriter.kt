@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.core.collection.filterKeyed
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.VersionFamily
@@ -30,6 +33,7 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 import com.davils.kapi.spec.openapi.read.shape.Keys
 import com.davils.kapi.spec.openapi.resolve
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class ContentWriter(private val schemas: SchemaWriter, private val document: Document) {
     private val isCurrent: Boolean = document.version.family.isAtLeast(VersionFamily.V32)
@@ -38,7 +42,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, private val docu
         parameters.filter(::isExpressible)
 
     fun parameters(parameters: Map<String, Referable<Parameter>>): Map<String, Referable<Parameter>> =
-        parameters.filterValues(::isExpressible)
+        parameters.filterKeyed { _, parameter -> isExpressible(parameter) }
 
     fun parameter(parameter: Parameter): YamlNode {
         val out = Out()

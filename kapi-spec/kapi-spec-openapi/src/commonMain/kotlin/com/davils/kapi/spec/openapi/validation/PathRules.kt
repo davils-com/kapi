@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.validation
 
+import com.davils.kapi.spec.core.collection.groupByKeyed
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
@@ -25,6 +28,8 @@ import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.PathTemplate
 import com.davils.kapi.spec.openapi.model.path.Placeholders
 import com.davils.kapi.spec.openapi.resolve
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 private const val PLACEHOLDER: String = "{}"
 
@@ -35,7 +40,7 @@ internal object PathRules {
         val paths = scope.document.paths
         val items = paths?.items.orEmpty()
         items.forEach { (template, item) -> path(scope, template, item) }
-        val alike = items.entries.groupBy { (template, _) -> replaced(template, PLACEHOLDER) }
+        val alike = items.entries.groupByKeyed { (template, _) -> replaced(template, PLACEHOLDER) }
         val ambiguous = alike.values.flatMap { same -> same.drop(1) }
         ambiguous.forEach { (template, item) ->
             val message = "The path $template differs from another path only by the names of its parameters"
@@ -46,7 +51,7 @@ internal object PathRules {
     private fun path(scope: RuleScope, template: PathTemplate, item: PathItem) {
         val names = template.parameters
         val rest = replaced(template, "")
-        val isBroken = rest.indexOfAny(braces) >= 0 || names.distinct().size < names.size
+        val isBroken = rest.indexOfAny(braces) >= 0 || OrderedSet(names).size < names.size
         if (isBroken) {
             val message = "The path $template must name every parameter once between a pair of braces"
             return scope.report(DiagnosticCodes.PATH_TEMPLATE, message, item)
@@ -75,7 +80,7 @@ internal object PathRules {
     private fun declared(scope: RuleScope, parameters: List<Referable<Parameter>>): Set<String> {
         val resolved = parameters.mapNotNull { parameter -> scope.document.resolve(parameter) }
         val inPath = resolved.filter { parameter -> parameter.placement == ParameterPlacement.Path }
-        return inPath.map(Parameter::name).toSet()
+        return OrderedSet(inPath.map(Parameter::name))
     }
 
     private fun replaced(template: PathTemplate, replacement: String): String =

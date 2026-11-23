@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.read
 
 import com.davils.kapi.spec.asyncapi.model.message.CorrelationId
@@ -28,8 +30,10 @@ import com.davils.kapi.spec.asyncapi.read.reference.ReferenceKind
 import com.davils.kapi.spec.asyncapi.read.shape.Fields
 import com.davils.kapi.spec.asyncapi.read.shape.Keys
 import com.davils.kapi.spec.asyncapi.read.shape.Shapes
+import com.davils.kapi.spec.core.collection.associateKeyed
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object MessageReader {
     fun message(cursor: Cursor): Message = cursor.read(Shapes.message, MessageBuilder()) { fields ->
@@ -85,6 +89,6 @@ internal object MessageReader {
 
     private fun headersOf(fields: Fields): Map<String, Value> {
         val entries = fields.entries(Keys.HEADERS)
-        return entries.associate { entry -> entry.key to Values.of(entry.value) }
+        return entries.associateKeyed { entry -> entry.key to Values.of(entry.value) }
     }
 }

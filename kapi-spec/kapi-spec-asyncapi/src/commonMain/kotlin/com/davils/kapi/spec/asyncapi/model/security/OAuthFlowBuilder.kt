@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.security
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [OAuthFlow]: collects its fields while a reader of kapi reads it.
@@ -63,7 +67,7 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
             field = value
         }
 
-    internal val availableScopes: MutableMap<String, String> = linkedMapOf()
+    internal val availableScopes: MutableMap<String, String> = KeyedMap()
 
     override fun assemble(): OAuthFlow = OAuthFlow(this)
 }

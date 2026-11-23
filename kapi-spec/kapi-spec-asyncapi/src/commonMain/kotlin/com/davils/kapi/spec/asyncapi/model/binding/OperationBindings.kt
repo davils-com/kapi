@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.binding
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The protocol-specific details of an operation, by the name of the protocol.
@@ -38,7 +42,7 @@ public class OperationBindings internal constructor(builder: OperationBindingsBu
      *
      * @since 1.0.0
      */
-    public val protocols: Map<String, Value> = builder.protocols.toMap()
+    public val protocols: Map<String, Value> = builder.protocols.frozen()
 
     override val identity: List<Any?> get() = listOf(hasWebSocket, protocols)
 }

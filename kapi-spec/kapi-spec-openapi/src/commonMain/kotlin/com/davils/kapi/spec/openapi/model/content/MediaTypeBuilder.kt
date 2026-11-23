@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [MediaType], filled by the readers of kapi.
@@ -66,9 +70,9 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
             field = value
         }
 
-    internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
+    internal val examples: MutableMap<String, Referable<Example>> = KeyedMap()
 
-    internal val encoding: MutableMap<String, Encoding> = linkedMapOf()
+    internal val encoding: MutableMap<String, Encoding> = KeyedMap()
 
     internal val prefixEncoding: MutableList<Encoding> = mutableListOf()
 

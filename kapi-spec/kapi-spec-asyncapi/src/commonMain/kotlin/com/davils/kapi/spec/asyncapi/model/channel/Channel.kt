@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.channel
 
 import com.davils.kapi.spec.asyncapi.model.binding.ChannelBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.message.Message
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A channel of an application: an address messages flow through, and the messages that may flow through it.
@@ -46,7 +50,7 @@ public class Channel internal constructor(builder: ChannelBuilder) : Element(bui
      *
      * @since 1.0.0
      */
-    public val messages: Map<String, Referable<Message>> = builder.messages.toMap()
+    public val messages: Map<String, Referable<Message>> = builder.messages.frozen()
 
     /**
      * A human-friendly title.
@@ -74,21 +78,21 @@ public class Channel internal constructor(builder: ChannelBuilder) : Element(bui
      *
      * @since 1.0.0
      */
-    public val servers: List<Reference> = builder.servers.toList()
+    public val servers: List<Reference> = builder.servers.frozen()
 
     /**
      * The parameters of the address, by name.
      *
      * @since 1.0.0
      */
-    public val parameters: Map<String, Referable<Parameter>> = builder.parameters.toMap()
+    public val parameters: Map<String, Referable<Parameter>> = builder.parameters.frozen()
 
     /**
      * The tags, each written inline or as a reference.
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.

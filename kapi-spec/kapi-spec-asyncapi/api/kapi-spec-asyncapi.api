@@ -1,8 +1,70 @@
 public final class com/davils/kapi/spec/asyncapi/AsyncApi {
 	public static final field INSTANCE Lcom/davils/kapi/spec/asyncapi/AsyncApi;
+	public final fun compare (Lcom/davils/kapi/spec/asyncapi/Document;Lcom/davils/kapi/spec/asyncapi/Document;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/core/compatibility/Comparison;
+	public static synthetic fun compare$default (Lcom/davils/kapi/spec/asyncapi/AsyncApi;Lcom/davils/kapi/spec/asyncapi/Document;Lcom/davils/kapi/spec/asyncapi/Document;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/core/compatibility/Comparison;
 	public final fun reader (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/asyncapi/Reader;
 	public static synthetic fun reader$default (Lcom/davils/kapi/spec/asyncapi/AsyncApi;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/asyncapi/Reader;
 	public final fun write (Lcom/davils/kapi/spec/asyncapi/Document;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/CompatibilityCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/asyncapi/CompatibilityCodes;
+	public final fun getACCEPTS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getADDITIONAL_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getALL_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getANY_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getAll ()Ljava/util/List;
+	public final fun getCHANNEL_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_ADDRESS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_BINDINGS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCHANNEL_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCONST-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDEPRECATED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDISCRIMINATOR-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM_VALUE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM_VALUE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFORMAT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getINCOMPLETE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAXIMUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_ITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_LENGTH-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_BINDINGS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_CONTENT_TYPE_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMESSAGE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMINIMUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_ITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_LENGTH-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMULTIPLE_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNULLABLE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNULLABLE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getONE_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPAQUE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_ACTION_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_BINDINGS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_CHANNEL_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATTERN-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_OPTIONAL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_REQUIRED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUIRED_PROPERTY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_ADDRESS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_BINDINGS_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_NARROWED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_WIDENED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getUNIQUE_ITEMS-J_S2PC0 ()Ljava/lang/String;
 }
 
 public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
@@ -33,6 +95,7 @@ public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
 	public final fun getMESSAGE_HEADERS_TYPE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getOPERATION_ACTION-J_S2PC0 ()Ljava/lang/String;
 	public final fun getOPERATION_CHANNEL_PLACEMENT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_KEY_DUPLICATE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getOPERATION_MESSAGE_NOT_IN_CHANNEL-J_S2PC0 ()Ljava/lang/String;
 	public final fun getREFERENCE_CHAIN_TOO_LONG-J_S2PC0 ()Ljava/lang/String;
 	public final fun getREFERENCE_CYCLE-J_S2PC0 ()Ljava/lang/String;
@@ -49,6 +112,7 @@ public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
 	public final fun getRUNTIME_EXPRESSION-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_FORMAT_UNKNOWN-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSECURITY_LOCATION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_REFERENCE_PLACEMENT-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSECURITY_SCOPES-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSECURITY_TYPE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSERVER_TEMPLATE-J_S2PC0 ()Ljava/lang/String;
@@ -59,6 +123,7 @@ public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
 	public final fun getSOURCE_MERGE_KEY-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSOURCE_MULTIPLE_DOCUMENTS-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSOURCE_NON_JSON_VALUE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSTRUCTURE_SCHEMA-J_S2PC0 ()Ljava/lang/String;
 	public final fun getTAG_DUPLICATE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getVERSION_MISSING-J_S2PC0 ()Ljava/lang/String;
 	public final fun getVERSION_PATCH_MISSING-J_S2PC0 ()Ljava/lang/String;
@@ -110,6 +175,7 @@ public final class com/davils/kapi/spec/asyncapi/ReaderBuilder : com/davils/kore
 	public final fun getReferences ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
 	public final fun getResolver ()Lcom/davils/kapi/spec/core/source/Resolver;
 	public final fun getSeverities ()Lcom/davils/kapi/spec/core/policy/SeverityPolicy;
+	public final fun getStructure ()Lcom/davils/kapi/spec/asyncapi/StructureCheck;
 	public final fun limits (Lkotlin/jvm/functions/Function1;)V
 	public final fun references (Lkotlin/jvm/functions/Function1;)V
 	public final fun setHasMergeKeys (Z)V
@@ -117,6 +183,7 @@ public final class com/davils/kapi/spec/asyncapi/ReaderBuilder : com/davils/kore
 	public final fun setReferences (Lcom/davils/kapi/spec/core/policy/ReferencePolicy;)V
 	public final fun setResolver (Lcom/davils/kapi/spec/core/source/Resolver;)V
 	public final fun setSeverities (Lcom/davils/kapi/spec/core/policy/SeverityPolicy;)V
+	public final fun setStructure (Lcom/davils/kapi/spec/asyncapi/StructureCheck;)V
 	public final fun severities (Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -126,6 +193,7 @@ public final class com/davils/kapi/spec/asyncapi/ReaderConfiguration : com/davil
 	public final fun getReferences ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
 	public final fun getResolver ()Lcom/davils/kapi/spec/core/source/Resolver;
 	public final fun getSeverities ()Lcom/davils/kapi/spec/core/policy/SeverityPolicy;
+	public final fun getStructure ()Lcom/davils/kapi/spec/asyncapi/StructureCheck;
 	public fun toString ()Ljava/lang/String;
 	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
 }
@@ -160,6 +228,14 @@ public final class com/davils/kapi/spec/asyncapi/Reading$Read : com/davils/kapi/
 	public final fun getDocument ()Lcom/davils/kapi/spec/asyncapi/Document;
 	public fun getSources ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/asyncapi/StructureCheck : java/lang/Enum {
+	public static final field Reader Lcom/davils/kapi/spec/asyncapi/StructureCheck;
+	public static final field ReaderAndOfficialSchema Lcom/davils/kapi/spec/asyncapi/StructureCheck;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/asyncapi/StructureCheck;
+	public static fun values ()[Lcom/davils/kapi/spec/asyncapi/StructureCheck;
 }
 
 public final class com/davils/kapi/spec/asyncapi/Version {

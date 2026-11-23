@@ -66,7 +66,7 @@ internal object KeyRules {
 
     private fun keys(scope: RuleScope, subject: String, map: Map<String, Referable<*>>, isIdentifier: Boolean) {
         val allowed = IDENTIFIER.takeIf { isIdentifier } ?: COMPONENT
-        val invalid = map.filterKeys { key -> !isValid(key, isIdentifier) }
+        val invalid = map.entries.filter { (key, _) -> !isValid(key, isIdentifier) }
         invalid.forEach { (key, referable) ->
             val message = "The key ${shown(key)} of a $subject may only hold $allowed"
             scope.report(DiagnosticCodes.KEY_INVALID, message, referable)

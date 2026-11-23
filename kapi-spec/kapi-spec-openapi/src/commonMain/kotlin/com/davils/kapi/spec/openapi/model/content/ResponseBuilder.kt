@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Response], filled by the readers of kapi.
@@ -54,11 +58,11 @@ public class ResponseBuilder internal constructor() : ElementBuilder<Response>()
             field = value
         }
 
-    internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
+    internal val headers: MutableMap<String, Referable<Header>> = KeyedMap()
 
-    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = KeyedMap()
 
-    internal val links: MutableMap<String, Referable<Link>> = linkedMapOf()
+    internal val links: MutableMap<String, Referable<Link>> = KeyedMap()
 
     override fun assemble(): Response = Response(this)
 }

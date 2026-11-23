@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.info
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The info of a document: its title, its version and what else describes the application.
@@ -73,7 +77,7 @@ public class Info internal constructor(builder: InfoBuilder) : Element(builder) 
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.

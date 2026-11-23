@@ -32,8 +32,8 @@ internal object ServerRules {
             val message = "The address of the server names the variable $name, which the server does not declare"
             scope.report(DiagnosticCodes.SERVER_VARIABLE_UNDECLARED, message, server)
         }
-        val limited = server.variables.filterValues { declared -> declared.enumeration.isNotEmpty() }
-        val outside = limited.filterValues { declared -> declared.default !in declared.enumeration }
+        val limited = server.variables.entries.filter { (_, declared) -> declared.enumeration.isNotEmpty() }
+        val outside = limited.filter { (_, declared) -> declared.default !in declared.enumeration }
         outside.forEach { (name, declared) ->
             val message = "The default of the server variable $name is none of the values the variable allows"
             scope.report(DiagnosticCodes.SERVER_VARIABLE_DEFAULT, message, declared)

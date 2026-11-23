@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.read.shape
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.read.Cursor
 import com.davils.kapi.spec.asyncapi.read.Entry
 import com.davils.kapi.spec.asyncapi.read.Values
+import com.davils.kapi.spec.core.collection.associateKeyed
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.value.Extensions
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class Fields(
@@ -35,7 +40,7 @@ internal class Fields(
 
     fun value(name: String): Value? = present[name]?.let(Values::of)
 
-    fun values(): Map<String, Value> = present.mapValues { (_, field) -> Values.of(field) }
+    fun values(): Map<String, Value> = present.entries.associateKeyed { (name, field) -> name to Values.of(field) }
 
     fun items(name: String): List<Cursor> = present[name]?.items().orEmpty()
 
@@ -46,7 +51,7 @@ internal class Fields(
     fun textsByName(name: String): Map<String, String> {
         val entries = entries(name)
         val read = entries.mapNotNull { entry -> textOf(name, entry.value)?.let { text -> entry.key to text } }
-        return read.toMap()
+        return read.toKeyedMap()
     }
 
     fun report(name: String, code: ViolationCode, message: String) {

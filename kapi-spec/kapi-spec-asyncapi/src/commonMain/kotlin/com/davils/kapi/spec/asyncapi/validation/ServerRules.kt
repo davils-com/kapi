@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.diagnostic.shown
 import com.davils.kapi.spec.asyncapi.model.server.Server
 import com.davils.kapi.spec.asyncapi.model.server.ServerVariable
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 internal object ServerRules {
     fun check(scope: RuleScope) {
@@ -35,7 +39,7 @@ internal object ServerRules {
             scope.report(DiagnosticCodes.SERVER_TEMPLATE, message, server)
         }
         val named = templates.flatMap { (_, names) -> names.orEmpty() }
-        val undeclared = named.distinct().filterNot { name -> name in server.variables }
+        val undeclared = OrderedSet(named).filterNot { name -> name in server.variables }
         undeclared.forEach { name ->
             val message = "The server names the variable ${shown(name)}, which it does not declare"
             scope.report(DiagnosticCodes.SERVER_VARIABLE_UNDECLARED, message, server)

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.message
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [MessageExample]: collects its fields while a reader of kapi reads it.
@@ -31,7 +35,7 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class MessageExampleBuilder internal constructor() : ElementBuilder<MessageExample>() {
     override val subject: String get() = "asyncapi message example"
 
-    internal val headers: MutableMap<String, Value> = linkedMapOf()
+    internal val headers: MutableMap<String, Value> = KeyedMap()
 
     /**
      * The payload of the example.

@@ -20,6 +20,7 @@ package com.davils.kapi.spec.openapi.structure
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kaml.document.pointer.at
+import com.davils.kapi.spec.core.diagnostic.PointerTree
 import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.VersionFamily

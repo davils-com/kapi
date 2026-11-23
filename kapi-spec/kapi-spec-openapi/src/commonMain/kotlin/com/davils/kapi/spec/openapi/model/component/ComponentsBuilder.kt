@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.component
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.openapi.model.content.Example
@@ -30,6 +33,7 @@ import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.security.SecurityScheme
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Components], filled by the readers of kapi.
@@ -42,27 +46,27 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class ComponentsBuilder internal constructor() : ElementBuilder<Components>() {
     override val subject: String get() = "openapi components"
 
-    internal val schemas: MutableMap<String, Schema> = linkedMapOf()
+    internal val schemas: MutableMap<String, Schema> = KeyedMap()
 
-    internal val responses: MutableMap<String, Referable<Response>> = linkedMapOf()
+    internal val responses: MutableMap<String, Referable<Response>> = KeyedMap()
 
-    internal val parameters: MutableMap<String, Referable<Parameter>> = linkedMapOf()
+    internal val parameters: MutableMap<String, Referable<Parameter>> = KeyedMap()
 
-    internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
+    internal val examples: MutableMap<String, Referable<Example>> = KeyedMap()
 
-    internal val requestBodies: MutableMap<String, Referable<RequestBody>> = linkedMapOf()
+    internal val requestBodies: MutableMap<String, Referable<RequestBody>> = KeyedMap()
 
-    internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
+    internal val headers: MutableMap<String, Referable<Header>> = KeyedMap()
 
-    internal val securitySchemes: MutableMap<String, Referable<SecurityScheme>> = linkedMapOf()
+    internal val securitySchemes: MutableMap<String, Referable<SecurityScheme>> = KeyedMap()
 
-    internal val links: MutableMap<String, Referable<Link>> = linkedMapOf()
+    internal val links: MutableMap<String, Referable<Link>> = KeyedMap()
 
-    internal val callbacks: MutableMap<String, Referable<Callback>> = linkedMapOf()
+    internal val callbacks: MutableMap<String, Referable<Callback>> = KeyedMap()
 
-    internal val pathItems: MutableMap<String, PathItem> = linkedMapOf()
+    internal val pathItems: MutableMap<String, PathItem> = KeyedMap()
 
-    internal val mediaTypes: MutableMap<String, Referable<MediaType>> = linkedMapOf()
+    internal val mediaTypes: MutableMap<String, Referable<MediaType>> = KeyedMap()
 
     override fun assemble(): Components = Components(this)
 }

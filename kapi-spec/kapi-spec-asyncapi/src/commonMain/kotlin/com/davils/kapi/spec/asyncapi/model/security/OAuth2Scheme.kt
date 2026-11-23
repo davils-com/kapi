@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.security
+
+import com.davils.kapi.spec.core.collection.frozen
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A security scheme of type `oauth2`: the flows of OAuth 2.0 and the scopes it needs.
@@ -44,7 +49,7 @@ public class OAuth2Scheme internal constructor(builder: OAuth2SchemeBuilder) : S
      *
      * @since 1.0.0
      */
-    public val scopes: List<String> = builder.scopes.toList()
+    public val scopes: List<String> = builder.scopes.frozen()
 
     override val identity: List<Any?> get() = listOf(description, flows, scopes)
 }

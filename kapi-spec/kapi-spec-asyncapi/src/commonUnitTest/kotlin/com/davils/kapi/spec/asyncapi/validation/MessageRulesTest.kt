@@ -50,7 +50,8 @@ class MessageRulesTest : FunSpec({
                 """.trimMargin(),
             )
 
-            reading.codes() shouldBe List(FINDINGS) { DiagnosticCodes.RUNTIME_EXPRESSION }
+            val expressions = List(FINDINGS) { DiagnosticCodes.RUNTIME_EXPRESSION }
+            reading.codes() shouldBe expressions.take(1) + DiagnosticCodes.STRUCTURE_SCHEMA + expressions.drop(1)
         }
     }
 

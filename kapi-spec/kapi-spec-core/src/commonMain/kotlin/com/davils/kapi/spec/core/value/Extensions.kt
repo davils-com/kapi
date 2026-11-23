@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.value
+
+import com.davils.kapi.spec.core.collection.frozen
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The specification extensions of an element, the fields whose names start with `x-`, in the order they were written.
@@ -32,7 +37,7 @@ public class Extensions(entries: Map<ExtensionName, Value>) {
      *
      * @since 1.0.0
      */
-    public val entries: Map<ExtensionName, Value> = entries.toMap()
+    public val entries: Map<ExtensionName, Value> = entries.frozen()
 
     /**
      * The names of the extensions.

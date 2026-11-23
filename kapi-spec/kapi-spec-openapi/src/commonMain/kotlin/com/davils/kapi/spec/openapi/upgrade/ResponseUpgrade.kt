@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.upgrade
 
 import com.davils.kaml.core.node.YamlEntry
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 private val replaced: Set<String> = setOf(Keys.SCHEMA, Keys.HEADERS, Keys.EXAMPLES)
 
@@ -53,7 +57,7 @@ internal class ResponseUpgrade(
         val schema = response[Keys.SCHEMA]?.let(SchemaUpgrade::upgraded)
         val examples = Trees.entriesOf(response[Keys.EXAMPLES])
         if (schema == null && examples.isEmpty()) return emptyList()
-        val types = (produces + examples.mapNotNull(Trees::keyOf)).distinct()
+        val types = OrderedSet(produces + examples.mapNotNull(Trees::keyOf)).toList()
         val media = types.map { type ->
             val example = Trees.valueOf(examples, type)
             Trees.entry(type, Trees.mappingOf(Trees.entries(Keys.SCHEMA to schema, Keys.EXAMPLE to example)))

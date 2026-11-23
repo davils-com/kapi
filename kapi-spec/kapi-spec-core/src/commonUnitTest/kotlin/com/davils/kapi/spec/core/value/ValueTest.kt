@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.value
 
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.collidingKeys
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kore.core.annotation.DavilsInternal
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,6 +35,8 @@ private val here: Location = Location(
 )
 
 private const val SEVEN: Long = 7L
+
+private const val COLLIDING: Int = 4096
 
 private val seven: NumberValue = NumberValue.of(SEVEN)
 
@@ -108,6 +116,32 @@ class ValueTest : FunSpec({
             mapping.hashCode() shouldBe mapping.entries.hashCode()
             mapping shouldNotBe Value.Mapping(emptyMap())
             mapping.toString() shouldBe "{\"b\"=true}"
+        }
+
+        test("cannot be changed through a cast of its entries") {
+            val mapping = Value.Mapping(mapOf("a" to Value.Null()))
+
+            shouldThrowAny { (mapping.entries as MutableMap<String, Value>)["b"] = Value.Null() }
+            mapping.entries.keys shouldBe setOf("a")
+        }
+
+        test("withstands keys whose hash codes collide") {
+            val keys = collidingKeys(COLLIDING)
+            val entries = KeyedMap<String, Value>()
+            keys.forEach { key -> entries[key] = Value.Text(key) }
+            val mapping = Value.Mapping(entries)
+
+            mapping.entries.size shouldBe COLLIDING
+            keys.all { key -> mapping[key] == Value.Text(key) } shouldBe true
+        }
+    }
+
+    context("the items of a sequence") {
+        test("cannot be changed through a cast of its items") {
+            val sequence = Value.Sequence(listOf(Value.Null()))
+
+            shouldThrowAny { (sequence.items as MutableList<Value>).add(Value.Null()) }
+            sequence.items.size shouldBe 1
         }
     }
 })

@@ -36,6 +36,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   them. Both tasks are cacheable and relocatable, write a JSON report and a SARIF log, and fail on every error, every
   unacknowledged warning and every acknowledgement without a reason or a matching warning. `generatorClasspath` and
   `runtimes { enabled = false }` let a build bring its own generator and runtimes.
+- **The structure check of AsyncAPI**: `StructureCheck.ReaderAndOfficialSchema`, the default of `AsyncApi.reader {
+  structure = ... }`, validates the root document against the official JSON Schema of AsyncAPI 3.0.0
+  (`asyncapi/spec-json-schemas` 6.11.1, embedded unchanged and recorded in `NOTICE`) and reports
+  `asyncapi.structure.schema` only where the reader has not reported yet, leaving references, boolean schemas and
+  schemas of other formats, such as Avro, to the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
+  `operations` and `asyncapi.security.reference-placement` for a security requirement that refers outside
+  `components/securitySchemes`.
+- **The comparison of two versions of a document** in `kapi-spec-core`: `Comparison` of `Change`s, each with a stable
+  code, a message, its places in the baseline and the candidate and its `Impact` (`Breaking`, `NonBreaking` or `Info`)
+  for clients and for providers, configured by `ComparisonBuilder` within `ReadLimits`, and the `@DavilsInternal` JSON
+  Schema comparison `SchemaComparison` over `SchemaView`s, with `FixedSchemaView` for boolean schemas, that OpenAPI and AsyncAPI share: types and nullability,
+  bounds, patterns, formats, enums, constants, properties, required properties, additional properties, items and
+  alternatives, judged by the direction the data flows in, bounded in depth, reference hops, steps and changes, and
+  safe against cyclic schemas.
+- **The comparison of two OpenAPI documents**: `OpenApi.compare(baseline, candidate) { limits { } }` reports, with the
+  codes of `CompatibilityCodes` (`openapi.compatibility.<rule>`), removed and added servers, paths and operations,
+  renamed path parameters, changed operation ids, deprecations, removed, added, newly required and optional parameters
+  and their serialization, request bodies and their media types, removed and added response statuses, media types and
+  headers, security that is added, removed or needs other scopes, changed security schemes, and every change of the
+  schemas of parameters, bodies and headers, judged as requests or responses. References are followed through the
+  targets of each document within the limits of a reading.
+- **The comparison of two AsyncAPI documents**: `AsyncApi.compare(baseline, candidate) { limits { } }` reports, with
+  the codes of `CompatibilityCodes` (`asyncapi.compatibility.<rule>`), removed and added servers, channels, operations
+  and messages, changed server and channel addresses, actions, channels of operations, content types and bindings,
+  security that is added or removed, and every change of the payloads and headers of messages, with traits applied,
+  judged by whether the application sends or receives them; schemas of other formats, such as Avro, are compared as
+  written.
 
 ### Changed
 
@@ -93,3 +120,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   could not resolve, which is now reported at its ws binding.
 - **Generated servers** read a multipart body that the document does not require as optional, instead of refusing a
   request without one, and check the names of response headers with `FieldSyntax` of the core runtime.
+- **The specification core** keeps maps keyed by document input in Kore's balanced trees instead of hash maps, which
+  Wasm cannot defend against colliding keys: `Value.Mapping`, `Value.Sequence` and `Extensions` hold immutable copies
+  that a cast cannot change, `KeyedMap`, `frozen()`, `frozenSet()` and the keyed counterparts of `toMap`, `associate`,
+  `associateBy`, `groupBy`, `distinctBy` and `filter` of `com.davils.kapi.spec.core.collection` are `@DavilsInternal`
+  API for the other modules, and `ExtensionName`, `DocumentUri` and `Target` are `Comparable`.
+- **The test support of documents** adds `HostileDocuments.collidingKeys` and
+  `HostileDocuments.collidingKeysDocument`, keys that share one hash code and a document whose components, properties,
+  extensions and enum use them.
+- **The OpenAPI model and reader** keep every map keyed by document input, such as paths, operations, responses,
+  components, properties, extensions and the targets of references, in balanced trees through `KeyedMap`, group,
+  deduplicate and filter what a document names without hashing it, and hold every public map, list and set as an
+  immutable copy; `PathTemplate` and `ResponseStatus` are `Comparable`.
+- **The AsyncAPI model and reader** keep every map keyed by document input, such as servers, channels, operations,
+  messages, components, parameters, bindings, extensions and the targets of references, in balanced trees through
+  `KeyedMap`, and hold every public map and list as an immutable copy.
+- **JSON Schema** converts the mappings of a YAML instance or schema into JSON objects keyed through `KeyedMap`, so
+  keys whose hash codes collide cannot slow a validation down on Wasm.
+- **The pointer tree** that keeps the structure check of OpenAPI from reporting twice at one place moved to
+  `kapi-spec-core` as `@DavilsInternal` `PointerTree`, so the structure check of AsyncAPI shares it.

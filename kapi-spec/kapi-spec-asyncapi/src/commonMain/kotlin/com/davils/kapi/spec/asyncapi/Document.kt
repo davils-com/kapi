@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi
 
 import com.davils.kapi.spec.asyncapi.model.channel.Channel
@@ -21,9 +23,11 @@ import com.davils.kapi.spec.asyncapi.model.component.Components
 import com.davils.kapi.spec.asyncapi.model.info.Info
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.server.Server
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Target
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An AsyncAPI document: the application it describes, its servers, channels and operations, and the components they
@@ -62,7 +66,7 @@ public class Document internal constructor(builder: DocumentBuilder) : Element(b
      *
      * @since 1.0.0
      */
-    public val servers: Map<String, Referable<Server>> = builder.servers.toMap()
+    public val servers: Map<String, Referable<Server>> = builder.servers.frozen()
 
     /**
      * The content type of every message that names none, such as `application/json`.
@@ -76,14 +80,14 @@ public class Document internal constructor(builder: DocumentBuilder) : Element(b
      *
      * @since 1.0.0
      */
-    public val channels: Map<String, Referable<Channel>> = builder.channels.toMap()
+    public val channels: Map<String, Referable<Channel>> = builder.channels.frozen()
 
     /**
      * The operations of the application, by their id.
      *
      * @since 1.0.0
      */
-    public val operations: Map<String, Referable<Operation>> = builder.operations.toMap()
+    public val operations: Map<String, Referable<Operation>> = builder.operations.frozen()
 
     /**
      * The reusable objects of the document.
@@ -97,7 +101,7 @@ public class Document internal constructor(builder: DocumentBuilder) : Element(b
      *
      * @since 1.0.0
      */
-    public val targets: Map<Target, Element> = builder.targets.toMap()
+    public val targets: Map<Target, Element> = builder.targets.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

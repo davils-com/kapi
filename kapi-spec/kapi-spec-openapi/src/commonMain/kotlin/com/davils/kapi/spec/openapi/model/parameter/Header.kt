@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.parameter
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.content.Example
 import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.schema.Schema
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A header object: a header of a response or of a `multipart` part, described like a header parameter without
@@ -83,7 +87,7 @@ public class Header internal constructor(builder: HeaderBuilder) : Element(build
      *
      * @since 1.0.0
      */
-    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.frozen()
 
     /**
      * The `example` of the value; `null` when the document leaves it out. A reading reports it beside [examples].
@@ -97,7 +101,7 @@ public class Header internal constructor(builder: HeaderBuilder) : Element(build
      *
      * @since 1.0.0
      */
-    public val examples: Map<String, Referable<Example>> = builder.examples.toMap()
+    public val examples: Map<String, Referable<Example>> = builder.examples.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

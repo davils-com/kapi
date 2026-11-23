@@ -419,6 +419,29 @@ public object DiagnosticCodes {
     public val TAG_DUPLICATE: ViolationCode = code("tag.duplicate")
 
     /**
+     * The document breaks the official JSON Schema of AsyncAPI 3.0 at a place the reader has not reported; a severity
+     * policy may downgrade it.
+     *
+     * @since 1.0.0
+     */
+    public val STRUCTURE_SCHEMA: ViolationCode = code("structure.schema")
+
+    /**
+     * One operation is listed under more than one key of the root `operations`, so it has more than one id.
+     *
+     * @since 1.0.0
+     */
+    public val OPERATION_KEY_DUPLICATE: ViolationCode = code("operation.key-duplicate")
+
+    /**
+     * A security requirement of a server or an operation refers to something else than a security scheme of
+     * `components/securitySchemes`.
+     *
+     * @since 1.0.0
+     */
+    public val SECURITY_REFERENCE_PLACEMENT: ViolationCode = code("security.reference-placement")
+
+    /**
      * Every code of the catalogue, in the order of their declaration.
      *
      * @since 1.0.0
@@ -479,6 +502,9 @@ public object DiagnosticCodes {
         BINDING_WEBSOCKET_METHOD,
         BINDING_WEBSOCKET_SCHEMA,
         TAG_DUPLICATE,
+        STRUCTURE_SCHEMA,
+        OPERATION_KEY_DUPLICATE,
+        SECURITY_REFERENCE_PLACEMENT,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("asyncapi.$name")

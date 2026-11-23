@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.schema
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Discriminator], filled by the readers of kapi.
@@ -38,7 +42,7 @@ public class DiscriminatorBuilder internal constructor() :
      */
     public var propertyName: String = ""
 
-    internal val mapping: MutableMap<String, String> = linkedMapOf()
+    internal val mapping: MutableMap<String, String> = KeyedMap()
 
     /**
      * The value of `defaultMapping`, the schema of a value that maps to no other schema, written from OpenAPI 3.2

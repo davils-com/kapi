@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A request body object: the body an operation takes, in one or more media types.
@@ -43,7 +47,7 @@ public class RequestBody internal constructor(builder: RequestBodyBuilder) :
      *
      * @since 1.0.0
      */
-    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.frozen()
 
     /**
      * Whether the body is `required` in a request; `false` when the document leaves it out.

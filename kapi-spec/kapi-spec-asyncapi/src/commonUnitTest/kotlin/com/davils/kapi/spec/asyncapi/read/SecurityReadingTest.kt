@@ -92,7 +92,11 @@ class SecurityReadingTest : FunSpec({
                     |    availableScopes: {}
                 """.trimMargin()
 
-            codesOf(flows) shouldBe listOf(DiagnosticCodes.FIELD_MISSING, DiagnosticCodes.FIELD_VERSION)
+            codesOf(flows) shouldBe listOf(
+                DiagnosticCodes.STRUCTURE_SCHEMA,
+                DiagnosticCodes.FIELD_MISSING,
+                DiagnosticCodes.FIELD_VERSION,
+            )
         }
 
         test("without fields of its own takes no fields of other types") {

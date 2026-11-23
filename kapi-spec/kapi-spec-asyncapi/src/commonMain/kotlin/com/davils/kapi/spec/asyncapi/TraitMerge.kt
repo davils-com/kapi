@@ -24,6 +24,7 @@ import com.davils.kapi.spec.asyncapi.model.message.MessageTrait
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.operation.OperationBuilder
 import com.davils.kapi.spec.asyncapi.model.operation.OperationTrait
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.Extensions
 import com.davils.kore.core.annotation.DavilsInternal
@@ -73,7 +74,8 @@ internal object TraitMerge {
 
     private fun extensions(target: Element, traits: List<Element>): Extensions {
         val inherited = traits.flatMap { trait -> trait.extensions.entries.toList() }
-        val merged = inherited.toMap() + target.extensions.entries
+        val own = target.extensions.entries.toList()
+        val merged = (inherited + own).toKeyedMap()
         return Extensions(merged)
     }
 }

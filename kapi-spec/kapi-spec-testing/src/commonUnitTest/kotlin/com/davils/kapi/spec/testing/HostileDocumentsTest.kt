@@ -57,6 +57,7 @@ class HostileDocumentsTest : FunSpec({
                 HostileDocuments.deepNesting(1),
                 HostileDocuments.unknownFields(1),
                 HostileDocuments.referenceChain(1),
+                HostileDocuments.collidingKeysDocument(1),
             )
 
             documents.forEach { document ->
@@ -122,6 +123,26 @@ class HostileDocumentsTest : FunSpec({
             val chain = HostileDocuments.referenceChain(0)
 
             chain shouldEndWith "  responses:\n    R1: {description: The end}\n"
+        }
+    }
+
+    context("colliding keys") {
+        test("are distinct and share one hash code") {
+            val keys = HostileDocuments.collidingKeys(COUNT)
+
+            keys shouldBe listOf("AaAa", "AaBB", "BBAa")
+            keys.map(String::hashCode).distinct().size shouldBe 1
+        }
+
+        test("name the schemas, the properties, the extensions and the enum of a document") {
+            val root = rootOf(HostileDocuments.collidingKeysDocument(COUNT))
+            val schemas = root["components"]?.get("schemas").shouldBeInstanceOf<YamlNode.Mapping>()
+            val colliding = schemas["Colliding"].shouldBeInstanceOf<YamlNode.Mapping>()
+
+            schemas.entries.size shouldBe COUNT + 1
+            colliding["properties"].shouldBeInstanceOf<YamlNode.Mapping>().entries.size shouldBe COUNT
+            colliding["enum"].sequence().items.size shouldBe COUNT
+            colliding["x-AaAa"].string() shouldBe "AaAa"
         }
     }
 })

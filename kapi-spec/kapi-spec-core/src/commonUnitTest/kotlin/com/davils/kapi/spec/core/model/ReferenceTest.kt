@@ -47,6 +47,14 @@ class ReferenceTest : FunSpec({
             (pet == text) shouldBe false
         }
 
+        test("sorts by its document and then by its pointer") {
+            val other = Target(DocumentUri("memory:/other.yaml"), JsonPointer.ROOT)
+
+            (pet < other) shouldBe true
+            (Target(api, JsonPointer.ROOT) < pet) shouldBe true
+            pet.compareTo(Target(api, schemas)) shouldBe 0
+        }
+
         test("is written as the document and the pointer") {
             pet.toString() shouldBe "memory:/api.yaml#/components/schemas/Pet"
         }

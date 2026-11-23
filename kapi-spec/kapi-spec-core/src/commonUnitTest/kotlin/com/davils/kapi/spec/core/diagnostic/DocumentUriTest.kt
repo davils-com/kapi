@@ -33,6 +33,11 @@ class DocumentUriTest : FunSpec({
             uri.toString() shouldBe PETSTORE
         }
 
+        test("sorts by its text") {
+            (DocumentUri("memory:/a.yaml") < DocumentUri("memory:/b.yaml")) shouldBe true
+            DocumentUri(PETSTORE).compareTo(DocumentUri(PETSTORE)) shouldBe 0
+        }
+
         test("refuses what has no scheme, a fragment or white space") {
             listOf(
                 "",

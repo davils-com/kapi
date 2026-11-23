@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.server
 
 import com.davils.kapi.spec.asyncapi.model.binding.ServerBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.security.SecurityScheme
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A server a channel is available on: a message broker, a server or another kind of computer program.
@@ -87,21 +91,21 @@ public class Server internal constructor(builder: ServerBuilder) : Element(build
      *
      * @since 1.0.0
      */
-    public val variables: Map<String, Referable<ServerVariable>> = builder.variables.toMap()
+    public val variables: Map<String, Referable<ServerVariable>> = builder.variables.frozen()
 
     /**
      * The security schemes of the server, any one of which a client may use.
      *
      * @since 1.0.0
      */
-    public val security: List<Referable<SecurityScheme>> = builder.security.toList()
+    public val security: List<Referable<SecurityScheme>> = builder.security.frozen()
 
     /**
      * The tags, each written inline or as a reference.
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.

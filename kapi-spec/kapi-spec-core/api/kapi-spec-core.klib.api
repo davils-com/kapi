@@ -6,6 +6,35 @@
 // - Show declarations: true
 
 // Library unique name: <com.davils:kapi-spec-core>
+abstract enum class com.davils.kapi.spec.core.compatibility/Direction : kotlin/Enum<com.davils.kapi.spec.core.compatibility/Direction> { // com.davils.kapi.spec.core.compatibility/Direction|null[0]
+    enum entry Request // com.davils.kapi.spec.core.compatibility/Direction.Request|null[0]
+    enum entry Response // com.davils.kapi.spec.core.compatibility/Direction.Response|null[0]
+
+    abstract val narrowed // com.davils.kapi.spec.core.compatibility/Direction.narrowed|{}narrowed[0]
+        abstract fun <get-narrowed>(): kotlin/Pair<com.davils.kapi.spec.core.compatibility/Impact, com.davils.kapi.spec.core.compatibility/Impact> // com.davils.kapi.spec.core.compatibility/Direction.narrowed.<get-narrowed>|<get-narrowed>(){}[0]
+    abstract val widened // com.davils.kapi.spec.core.compatibility/Direction.widened|{}widened[0]
+        abstract fun <get-widened>(): kotlin/Pair<com.davils.kapi.spec.core.compatibility/Impact, com.davils.kapi.spec.core.compatibility/Impact> // com.davils.kapi.spec.core.compatibility/Direction.widened.<get-widened>|<get-widened>(){}[0]
+    final val entries // com.davils.kapi.spec.core.compatibility/Direction.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.core.compatibility/Direction> // com.davils.kapi.spec.core.compatibility/Direction.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val label // com.davils.kapi.spec.core.compatibility/Direction.label|{}label[0]
+        final fun <get-label>(): kotlin/String // com.davils.kapi.spec.core.compatibility/Direction.label.<get-label>|<get-label>(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.spec.core.compatibility/Direction // com.davils.kapi.spec.core.compatibility/Direction.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.spec.core.compatibility/Direction> // com.davils.kapi.spec.core.compatibility/Direction.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.spec.core.compatibility/Impact : kotlin/Enum<com.davils.kapi.spec.core.compatibility/Impact> { // com.davils.kapi.spec.core.compatibility/Impact|null[0]
+    enum entry Breaking // com.davils.kapi.spec.core.compatibility/Impact.Breaking|null[0]
+    enum entry Info // com.davils.kapi.spec.core.compatibility/Impact.Info|null[0]
+    enum entry NonBreaking // com.davils.kapi.spec.core.compatibility/Impact.NonBreaking|null[0]
+
+    final val entries // com.davils.kapi.spec.core.compatibility/Impact.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.core.compatibility/Impact> // com.davils.kapi.spec.core.compatibility/Impact.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.spec.core.compatibility/Impact // com.davils.kapi.spec.core.compatibility/Impact.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.spec.core.compatibility/Impact> // com.davils.kapi.spec.core.compatibility/Impact.values|values#static(){}[0]
+}
+
 final enum class com.davils.kapi.spec.core.source/Refusal : kotlin/Enum<com.davils.kapi.spec.core.source/Refusal> { // com.davils.kapi.spec.core.source/Refusal|null[0]
     enum entry Confinement // com.davils.kapi.spec.core.source/Refusal.Confinement|null[0]
     enum entry Size // com.davils.kapi.spec.core.source/Refusal.Size|null[0]
@@ -301,6 +330,79 @@ abstract class <#A: com.davils.kore.core.validation/Validatable> com.davils.kapi
     final fun extension(com.davils.kapi.spec.core.value/ExtensionName, com.davils.kapi.spec.core.value/Value) // com.davils.kapi.spec.core.model/ElementBuilder.extension|extension(com.davils.kapi.spec.core.value.ExtensionName;com.davils.kapi.spec.core.value.Value){}[0]
 }
 
+abstract class com.davils.kapi.spec.core.compatibility/SchemaView { // com.davils.kapi.spec.core.compatibility/SchemaView|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.compatibility/SchemaView.<init>|<init>(){}[0]
+
+    abstract val additionalProperties // com.davils.kapi.spec.core.compatibility/SchemaView.additionalProperties|{}additionalProperties[0]
+        abstract fun <get-additionalProperties>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/SchemaView.additionalProperties.<get-additionalProperties>|<get-additionalProperties>(){}[0]
+    abstract val allOf // com.davils.kapi.spec.core.compatibility/SchemaView.allOf|{}allOf[0]
+        abstract fun <get-allOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/SchemaView.allOf.<get-allOf>|<get-allOf>(){}[0]
+    abstract val anyOf // com.davils.kapi.spec.core.compatibility/SchemaView.anyOf|{}anyOf[0]
+        abstract fun <get-anyOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/SchemaView.anyOf.<get-anyOf>|<get-anyOf>(){}[0]
+    abstract val constant // com.davils.kapi.spec.core.compatibility/SchemaView.constant|{}constant[0]
+        abstract fun <get-constant>(): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.compatibility/SchemaView.constant.<get-constant>|<get-constant>(){}[0]
+    abstract val discriminator // com.davils.kapi.spec.core.compatibility/SchemaView.discriminator|{}discriminator[0]
+        abstract fun <get-discriminator>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/SchemaView.discriminator.<get-discriminator>|<get-discriminator>(){}[0]
+    abstract val enumeration // com.davils.kapi.spec.core.compatibility/SchemaView.enumeration|{}enumeration[0]
+        abstract fun <get-enumeration>(): kotlin.collections/List<com.davils.kapi.spec.core.value/Value>? // com.davils.kapi.spec.core.compatibility/SchemaView.enumeration.<get-enumeration>|<get-enumeration>(){}[0]
+    abstract val format // com.davils.kapi.spec.core.compatibility/SchemaView.format|{}format[0]
+        abstract fun <get-format>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/SchemaView.format.<get-format>|<get-format>(){}[0]
+    abstract val hasUniqueItems // com.davils.kapi.spec.core.compatibility/SchemaView.hasUniqueItems|{}hasUniqueItems[0]
+        abstract fun <get-hasUniqueItems>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.hasUniqueItems.<get-hasUniqueItems>|<get-hasUniqueItems>(){}[0]
+    abstract val isAccepting // com.davils.kapi.spec.core.compatibility/SchemaView.isAccepting|{}isAccepting[0]
+        abstract fun <get-isAccepting>(): kotlin/Boolean? // com.davils.kapi.spec.core.compatibility/SchemaView.isAccepting.<get-isAccepting>|<get-isAccepting>(){}[0]
+    abstract val isDeprecated // com.davils.kapi.spec.core.compatibility/SchemaView.isDeprecated|{}isDeprecated[0]
+        abstract fun <get-isDeprecated>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isDeprecated.<get-isDeprecated>|<get-isDeprecated>(){}[0]
+    abstract val isMaximumExclusive // com.davils.kapi.spec.core.compatibility/SchemaView.isMaximumExclusive|{}isMaximumExclusive[0]
+        abstract fun <get-isMaximumExclusive>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isMaximumExclusive.<get-isMaximumExclusive>|<get-isMaximumExclusive>(){}[0]
+    abstract val isMinimumExclusive // com.davils.kapi.spec.core.compatibility/SchemaView.isMinimumExclusive|{}isMinimumExclusive[0]
+        abstract fun <get-isMinimumExclusive>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isMinimumExclusive.<get-isMinimumExclusive>|<get-isMinimumExclusive>(){}[0]
+    abstract val isReadOnly // com.davils.kapi.spec.core.compatibility/SchemaView.isReadOnly|{}isReadOnly[0]
+        abstract fun <get-isReadOnly>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isReadOnly.<get-isReadOnly>|<get-isReadOnly>(){}[0]
+    abstract val isUnresolved // com.davils.kapi.spec.core.compatibility/SchemaView.isUnresolved|{}isUnresolved[0]
+        abstract fun <get-isUnresolved>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isUnresolved.<get-isUnresolved>|<get-isUnresolved>(){}[0]
+    abstract val isWriteOnly // com.davils.kapi.spec.core.compatibility/SchemaView.isWriteOnly|{}isWriteOnly[0]
+        abstract fun <get-isWriteOnly>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/SchemaView.isWriteOnly.<get-isWriteOnly>|<get-isWriteOnly>(){}[0]
+    abstract val items // com.davils.kapi.spec.core.compatibility/SchemaView.items|{}items[0]
+        abstract fun <get-items>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/SchemaView.items.<get-items>|<get-items>(){}[0]
+    abstract val location // com.davils.kapi.spec.core.compatibility/SchemaView.location|{}location[0]
+        abstract fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.compatibility/SchemaView.location.<get-location>|<get-location>(){}[0]
+    abstract val maxItems // com.davils.kapi.spec.core.compatibility/SchemaView.maxItems|{}maxItems[0]
+        abstract fun <get-maxItems>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.maxItems.<get-maxItems>|<get-maxItems>(){}[0]
+    abstract val maxLength // com.davils.kapi.spec.core.compatibility/SchemaView.maxLength|{}maxLength[0]
+        abstract fun <get-maxLength>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.maxLength.<get-maxLength>|<get-maxLength>(){}[0]
+    abstract val maxProperties // com.davils.kapi.spec.core.compatibility/SchemaView.maxProperties|{}maxProperties[0]
+        abstract fun <get-maxProperties>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.maxProperties.<get-maxProperties>|<get-maxProperties>(){}[0]
+    abstract val maximum // com.davils.kapi.spec.core.compatibility/SchemaView.maximum|{}maximum[0]
+        abstract fun <get-maximum>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.maximum.<get-maximum>|<get-maximum>(){}[0]
+    abstract val minItems // com.davils.kapi.spec.core.compatibility/SchemaView.minItems|{}minItems[0]
+        abstract fun <get-minItems>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.minItems.<get-minItems>|<get-minItems>(){}[0]
+    abstract val minLength // com.davils.kapi.spec.core.compatibility/SchemaView.minLength|{}minLength[0]
+        abstract fun <get-minLength>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.minLength.<get-minLength>|<get-minLength>(){}[0]
+    abstract val minProperties // com.davils.kapi.spec.core.compatibility/SchemaView.minProperties|{}minProperties[0]
+        abstract fun <get-minProperties>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.minProperties.<get-minProperties>|<get-minProperties>(){}[0]
+    abstract val minimum // com.davils.kapi.spec.core.compatibility/SchemaView.minimum|{}minimum[0]
+        abstract fun <get-minimum>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.minimum.<get-minimum>|<get-minimum>(){}[0]
+    abstract val multipleOf // com.davils.kapi.spec.core.compatibility/SchemaView.multipleOf|{}multipleOf[0]
+        abstract fun <get-multipleOf>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/SchemaView.multipleOf.<get-multipleOf>|<get-multipleOf>(){}[0]
+    abstract val oneOf // com.davils.kapi.spec.core.compatibility/SchemaView.oneOf|{}oneOf[0]
+        abstract fun <get-oneOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/SchemaView.oneOf.<get-oneOf>|<get-oneOf>(){}[0]
+    abstract val opaque // com.davils.kapi.spec.core.compatibility/SchemaView.opaque|{}opaque[0]
+        abstract fun <get-opaque>(): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.compatibility/SchemaView.opaque.<get-opaque>|<get-opaque>(){}[0]
+    abstract val pattern // com.davils.kapi.spec.core.compatibility/SchemaView.pattern|{}pattern[0]
+        abstract fun <get-pattern>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/SchemaView.pattern.<get-pattern>|<get-pattern>(){}[0]
+    abstract val properties // com.davils.kapi.spec.core.compatibility/SchemaView.properties|{}properties[0]
+        abstract fun <get-properties>(): kotlin.collections/Map<kotlin/String, com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/SchemaView.properties.<get-properties>|<get-properties>(){}[0]
+    abstract val required // com.davils.kapi.spec.core.compatibility/SchemaView.required|{}required[0]
+        abstract fun <get-required>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.spec.core.compatibility/SchemaView.required.<get-required>|<get-required>(){}[0]
+    abstract val target // com.davils.kapi.spec.core.compatibility/SchemaView.target|{}target[0]
+        abstract fun <get-target>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/SchemaView.target.<get-target>|<get-target>(){}[0]
+    abstract val types // com.davils.kapi.spec.core.compatibility/SchemaView.types|{}types[0]
+        abstract fun <get-types>(): kotlin.collections/Set<kotlin/String>? // com.davils.kapi.spec.core.compatibility/SchemaView.types.<get-types>|<get-types>(){}[0]
+
+    final fun dereferenced(kotlin/Int): com.davils.kapi.spec.core.compatibility/SchemaView // com.davils.kapi.spec.core.compatibility/SchemaView.dereferenced|dereferenced(kotlin.Int){}[0]
+}
+
 abstract class com.davils.kapi.spec.core.model/Element : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.model/Element|null[0]
     constructor <init>(com.davils.kapi.spec.core.model/ElementBuilder<*>) // com.davils.kapi.spec.core.model/Element.<init>|<init>(com.davils.kapi.spec.core.model.ElementBuilder<*>){}[0]
 
@@ -316,6 +418,177 @@ abstract class com.davils.kapi.spec.core.model/Element : com.davils.kore.core.va
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Element.toString|toString(){}[0]
     final fun walk(): kotlin.sequences/Sequence<com.davils.kapi.spec.core.model/Element> // com.davils.kapi.spec.core.model/Element.walk|walk(){}[0]
     open fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.model/Element.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+}
+
+final class <#A: kotlin/Comparable<#A>, #B: kotlin/Any> com.davils.kapi.spec.core.collection/KeyedMap : kotlin.collections/AbstractMutableMap<#A, #B> { // com.davils.kapi.spec.core.collection/KeyedMap|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.collection/KeyedMap.<init>|<init>(){}[0]
+
+    final val entries // com.davils.kapi.spec.core.collection/KeyedMap.entries|{}entries[0]
+        final fun <get-entries>(): kotlin.collections/MutableSet<kotlin.collections/MutableMap.MutableEntry<#A, #B>> // com.davils.kapi.spec.core.collection/KeyedMap.entries.<get-entries>|<get-entries>(){}[0]
+    final val size // com.davils.kapi.spec.core.collection/KeyedMap.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.davils.kapi.spec.core.collection/KeyedMap.size.<get-size>|<get-size>(){}[0]
+
+    final fun clear() // com.davils.kapi.spec.core.collection/KeyedMap.clear|clear(){}[0]
+    final fun containsKey(#A): kotlin/Boolean // com.davils.kapi.spec.core.collection/KeyedMap.containsKey|containsKey(1:0){}[0]
+    final fun get(#A): #B? // com.davils.kapi.spec.core.collection/KeyedMap.get|get(1:0){}[0]
+    final fun put(#A, #B): #B? // com.davils.kapi.spec.core.collection/KeyedMap.put|put(1:0;1:1){}[0]
+    final fun remove(#A): #B? // com.davils.kapi.spec.core.collection/KeyedMap.remove|remove(1:0){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/Change { // com.davils.kapi.spec.core.compatibility/Change|null[0]
+    constructor <init>(com.davils.kore.core.validation.violation/ViolationCode, com.davils.kapi.spec.core.compatibility/Impact, com.davils.kapi.spec.core.compatibility/Impact, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ..., com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.compatibility/Change.<init>|<init>(com.davils.kore.core.validation.violation.ViolationCode;com.davils.kapi.spec.core.compatibility.Impact;com.davils.kapi.spec.core.compatibility.Impact;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+    final val baseline // com.davils.kapi.spec.core.compatibility/Change.baseline|{}baseline[0]
+        final fun <get-baseline>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.compatibility/Change.baseline.<get-baseline>|<get-baseline>(){}[0]
+    final val candidate // com.davils.kapi.spec.core.compatibility/Change.candidate|{}candidate[0]
+        final fun <get-candidate>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.compatibility/Change.candidate.<get-candidate>|<get-candidate>(){}[0]
+    final val client // com.davils.kapi.spec.core.compatibility/Change.client|{}client[0]
+        final fun <get-client>(): com.davils.kapi.spec.core.compatibility/Impact // com.davils.kapi.spec.core.compatibility/Change.client.<get-client>|<get-client>(){}[0]
+    final val code // com.davils.kapi.spec.core.compatibility/Change.code|{}code[0]
+        final fun <get-code>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.compatibility/Change.code.<get-code>|<get-code>(){}[0]
+    final val isBreaking // com.davils.kapi.spec.core.compatibility/Change.isBreaking|{}isBreaking[0]
+        final fun <get-isBreaking>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/Change.isBreaking.<get-isBreaking>|<get-isBreaking>(){}[0]
+    final val message // com.davils.kapi.spec.core.compatibility/Change.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.davils.kapi.spec.core.compatibility/Change.message.<get-message>|<get-message>(){}[0]
+    final val provider // com.davils.kapi.spec.core.compatibility/Change.provider|{}provider[0]
+        final fun <get-provider>(): com.davils.kapi.spec.core.compatibility/Impact // com.davils.kapi.spec.core.compatibility/Change.provider.<get-provider>|<get-provider>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/Change.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.compatibility/Change.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.compatibility/Change.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/ChangeLog { // com.davils.kapi.spec.core.compatibility/ChangeLog|null[0]
+    constructor <init>(kotlin/String, com.davils.kapi.spec.core.compatibility/ComparisonSettings) // com.davils.kapi.spec.core.compatibility/ChangeLog.<init>|<init>(kotlin.String;com.davils.kapi.spec.core.compatibility.ComparisonSettings){}[0]
+
+    final val limits // com.davils.kapi.spec.core.compatibility/ChangeLog.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kapi.spec.core.policy/ReadLimits // com.davils.kapi.spec.core.compatibility/ChangeLog.limits.<get-limits>|<get-limits>(){}[0]
+
+    final fun code(kotlin/String): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.compatibility/ChangeLog.code|code(kotlin.String){}[0]
+    final fun comparison(): com.davils.kapi.spec.core.compatibility/Comparison // com.davils.kapi.spec.core.compatibility/ChangeLog.comparison|comparison(){}[0]
+    final fun incomplete(kotlin/String, com.davils.kapi.spec.core.diagnostic/Location?, com.davils.kapi.spec.core.diagnostic/Location?) // com.davils.kapi.spec.core.compatibility/ChangeLog.incomplete|incomplete(kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+    final fun report(kotlin/String, kotlin/Pair<com.davils.kapi.spec.core.compatibility/Impact, com.davils.kapi.spec.core.compatibility/Impact>, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location?, com.davils.kapi.spec.core.diagnostic/Location?) // com.davils.kapi.spec.core.compatibility/ChangeLog.report|report(kotlin.String;kotlin.Pair<com.davils.kapi.spec.core.compatibility.Impact,com.davils.kapi.spec.core.compatibility.Impact>;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+    final fun step(com.davils.kapi.spec.core.diagnostic/Location?, com.davils.kapi.spec.core.diagnostic/Location?): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/ChangeLog.step|step(com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+    final fun steps(kotlin/Long, com.davils.kapi.spec.core.diagnostic/Location?, com.davils.kapi.spec.core.diagnostic/Location?): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/ChangeLog.steps|steps(kotlin.Long;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/Comparison { // com.davils.kapi.spec.core.compatibility/Comparison|null[0]
+    constructor <init>(kotlin.collections/List<com.davils.kapi.spec.core.compatibility/Change>) // com.davils.kapi.spec.core.compatibility/Comparison.<init>|<init>(kotlin.collections.List<com.davils.kapi.spec.core.compatibility.Change>){}[0]
+
+    final val breakingForClients // com.davils.kapi.spec.core.compatibility/Comparison.breakingForClients|{}breakingForClients[0]
+        final fun <get-breakingForClients>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/Change> // com.davils.kapi.spec.core.compatibility/Comparison.breakingForClients.<get-breakingForClients>|<get-breakingForClients>(){}[0]
+    final val breakingForProviders // com.davils.kapi.spec.core.compatibility/Comparison.breakingForProviders|{}breakingForProviders[0]
+        final fun <get-breakingForProviders>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/Change> // com.davils.kapi.spec.core.compatibility/Comparison.breakingForProviders.<get-breakingForProviders>|<get-breakingForProviders>(){}[0]
+    final val changes // com.davils.kapi.spec.core.compatibility/Comparison.changes|{}changes[0]
+        final fun <get-changes>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/Change> // com.davils.kapi.spec.core.compatibility/Comparison.changes.<get-changes>|<get-changes>(){}[0]
+    final val isBreakingForClients // com.davils.kapi.spec.core.compatibility/Comparison.isBreakingForClients|{}isBreakingForClients[0]
+        final fun <get-isBreakingForClients>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/Comparison.isBreakingForClients.<get-isBreakingForClients>|<get-isBreakingForClients>(){}[0]
+    final val isBreakingForProviders // com.davils.kapi.spec.core.compatibility/Comparison.isBreakingForProviders|{}isBreakingForProviders[0]
+        final fun <get-isBreakingForProviders>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/Comparison.isBreakingForProviders.<get-isBreakingForProviders>|<get-isBreakingForProviders>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/Comparison.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.compatibility/Comparison.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.compatibility/Comparison.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/ComparisonBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.spec.core.compatibility/ComparisonSettings> { // com.davils.kapi.spec.core.compatibility/ComparisonBuilder|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.compatibility/ComparisonBuilder.<init>|<init>(){}[0]
+
+    final var limits // com.davils.kapi.spec.core.compatibility/ComparisonBuilder.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kapi.spec.core.policy/ReadLimits // com.davils.kapi.spec.core.compatibility/ComparisonBuilder.limits.<get-limits>|<get-limits>(){}[0]
+        final fun <set-limits>(com.davils.kapi.spec.core.policy/ReadLimits) // com.davils.kapi.spec.core.compatibility/ComparisonBuilder.limits.<set-limits>|<set-limits>(com.davils.kapi.spec.core.policy.ReadLimits){}[0]
+
+    final fun limits(kotlin/Function1<com.davils.kapi.spec.core.policy/ReadLimitsBuilder, kotlin/Unit>) // com.davils.kapi.spec.core.compatibility/ComparisonBuilder.limits|limits(kotlin.Function1<com.davils.kapi.spec.core.policy.ReadLimitsBuilder,kotlin.Unit>){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/ComparisonSettings : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.compatibility/ComparisonSettings|null[0]
+    final val limits // com.davils.kapi.spec.core.compatibility/ComparisonSettings.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kapi.spec.core.policy/ReadLimits // com.davils.kapi.spec.core.compatibility/ComparisonSettings.limits.<get-limits>|<get-limits>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.compatibility/ComparisonSettings.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.compatibility/ComparisonSettings.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.compatibility/ComparisonSettings.Companion|null[0]
+        final val Default // com.davils.kapi.spec.core.compatibility/ComparisonSettings.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.spec.core.compatibility/ComparisonSettings // com.davils.kapi.spec.core.compatibility/ComparisonSettings.Companion.Default.<get-Default>|<get-Default>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.compatibility/FixedSchemaView : com.davils.kapi.spec.core.compatibility/SchemaView { // com.davils.kapi.spec.core.compatibility/FixedSchemaView|null[0]
+    constructor <init>(com.davils.kapi.spec.core.diagnostic/Location?, kotlin/Boolean) // com.davils.kapi.spec.core.compatibility/FixedSchemaView.<init>|<init>(com.davils.kapi.spec.core.diagnostic.Location?;kotlin.Boolean){}[0]
+
+    final val additionalProperties // com.davils.kapi.spec.core.compatibility/FixedSchemaView.additionalProperties|{}additionalProperties[0]
+        final fun <get-additionalProperties>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.additionalProperties.<get-additionalProperties>|<get-additionalProperties>(){}[0]
+    final val allOf // com.davils.kapi.spec.core.compatibility/FixedSchemaView.allOf|{}allOf[0]
+        final fun <get-allOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/FixedSchemaView.allOf.<get-allOf>|<get-allOf>(){}[0]
+    final val anyOf // com.davils.kapi.spec.core.compatibility/FixedSchemaView.anyOf|{}anyOf[0]
+        final fun <get-anyOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/FixedSchemaView.anyOf.<get-anyOf>|<get-anyOf>(){}[0]
+    final val constant // com.davils.kapi.spec.core.compatibility/FixedSchemaView.constant|{}constant[0]
+        final fun <get-constant>(): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.constant.<get-constant>|<get-constant>(){}[0]
+    final val discriminator // com.davils.kapi.spec.core.compatibility/FixedSchemaView.discriminator|{}discriminator[0]
+        final fun <get-discriminator>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.discriminator.<get-discriminator>|<get-discriminator>(){}[0]
+    final val enumeration // com.davils.kapi.spec.core.compatibility/FixedSchemaView.enumeration|{}enumeration[0]
+        final fun <get-enumeration>(): kotlin.collections/List<com.davils.kapi.spec.core.value/Value>? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.enumeration.<get-enumeration>|<get-enumeration>(){}[0]
+    final val format // com.davils.kapi.spec.core.compatibility/FixedSchemaView.format|{}format[0]
+        final fun <get-format>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.format.<get-format>|<get-format>(){}[0]
+    final val hasUniqueItems // com.davils.kapi.spec.core.compatibility/FixedSchemaView.hasUniqueItems|{}hasUniqueItems[0]
+        final fun <get-hasUniqueItems>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.hasUniqueItems.<get-hasUniqueItems>|<get-hasUniqueItems>(){}[0]
+    final val isAccepting // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isAccepting|{}isAccepting[0]
+        final fun <get-isAccepting>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isAccepting.<get-isAccepting>|<get-isAccepting>(){}[0]
+    final val isDeprecated // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isDeprecated|{}isDeprecated[0]
+        final fun <get-isDeprecated>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isDeprecated.<get-isDeprecated>|<get-isDeprecated>(){}[0]
+    final val isMaximumExclusive // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isMaximumExclusive|{}isMaximumExclusive[0]
+        final fun <get-isMaximumExclusive>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isMaximumExclusive.<get-isMaximumExclusive>|<get-isMaximumExclusive>(){}[0]
+    final val isMinimumExclusive // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isMinimumExclusive|{}isMinimumExclusive[0]
+        final fun <get-isMinimumExclusive>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isMinimumExclusive.<get-isMinimumExclusive>|<get-isMinimumExclusive>(){}[0]
+    final val isReadOnly // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isReadOnly|{}isReadOnly[0]
+        final fun <get-isReadOnly>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isReadOnly.<get-isReadOnly>|<get-isReadOnly>(){}[0]
+    final val isUnresolved // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isUnresolved|{}isUnresolved[0]
+        final fun <get-isUnresolved>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isUnresolved.<get-isUnresolved>|<get-isUnresolved>(){}[0]
+    final val isWriteOnly // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isWriteOnly|{}isWriteOnly[0]
+        final fun <get-isWriteOnly>(): kotlin/Boolean // com.davils.kapi.spec.core.compatibility/FixedSchemaView.isWriteOnly.<get-isWriteOnly>|<get-isWriteOnly>(){}[0]
+    final val items // com.davils.kapi.spec.core.compatibility/FixedSchemaView.items|{}items[0]
+        final fun <get-items>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.items.<get-items>|<get-items>(){}[0]
+    final val location // com.davils.kapi.spec.core.compatibility/FixedSchemaView.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.location.<get-location>|<get-location>(){}[0]
+    final val maxItems // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxItems|{}maxItems[0]
+        final fun <get-maxItems>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxItems.<get-maxItems>|<get-maxItems>(){}[0]
+    final val maxLength // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxLength|{}maxLength[0]
+        final fun <get-maxLength>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxLength.<get-maxLength>|<get-maxLength>(){}[0]
+    final val maxProperties // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxProperties|{}maxProperties[0]
+        final fun <get-maxProperties>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maxProperties.<get-maxProperties>|<get-maxProperties>(){}[0]
+    final val maximum // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maximum|{}maximum[0]
+        final fun <get-maximum>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.maximum.<get-maximum>|<get-maximum>(){}[0]
+    final val minItems // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minItems|{}minItems[0]
+        final fun <get-minItems>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minItems.<get-minItems>|<get-minItems>(){}[0]
+    final val minLength // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minLength|{}minLength[0]
+        final fun <get-minLength>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minLength.<get-minLength>|<get-minLength>(){}[0]
+    final val minProperties // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minProperties|{}minProperties[0]
+        final fun <get-minProperties>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minProperties.<get-minProperties>|<get-minProperties>(){}[0]
+    final val minimum // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minimum|{}minimum[0]
+        final fun <get-minimum>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.minimum.<get-minimum>|<get-minimum>(){}[0]
+    final val multipleOf // com.davils.kapi.spec.core.compatibility/FixedSchemaView.multipleOf|{}multipleOf[0]
+        final fun <get-multipleOf>(): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.multipleOf.<get-multipleOf>|<get-multipleOf>(){}[0]
+    final val oneOf // com.davils.kapi.spec.core.compatibility/FixedSchemaView.oneOf|{}oneOf[0]
+        final fun <get-oneOf>(): kotlin.collections/List<com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/FixedSchemaView.oneOf.<get-oneOf>|<get-oneOf>(){}[0]
+    final val opaque // com.davils.kapi.spec.core.compatibility/FixedSchemaView.opaque|{}opaque[0]
+        final fun <get-opaque>(): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.opaque.<get-opaque>|<get-opaque>(){}[0]
+    final val pattern // com.davils.kapi.spec.core.compatibility/FixedSchemaView.pattern|{}pattern[0]
+        final fun <get-pattern>(): kotlin/String? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.pattern.<get-pattern>|<get-pattern>(){}[0]
+    final val properties // com.davils.kapi.spec.core.compatibility/FixedSchemaView.properties|{}properties[0]
+        final fun <get-properties>(): kotlin.collections/Map<kotlin/String, com.davils.kapi.spec.core.compatibility/SchemaView> // com.davils.kapi.spec.core.compatibility/FixedSchemaView.properties.<get-properties>|<get-properties>(){}[0]
+    final val required // com.davils.kapi.spec.core.compatibility/FixedSchemaView.required|{}required[0]
+        final fun <get-required>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.spec.core.compatibility/FixedSchemaView.required.<get-required>|<get-required>(){}[0]
+    final val target // com.davils.kapi.spec.core.compatibility/FixedSchemaView.target|{}target[0]
+        final fun <get-target>(): com.davils.kapi.spec.core.compatibility/SchemaView? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.target.<get-target>|<get-target>(){}[0]
+    final val types // com.davils.kapi.spec.core.compatibility/FixedSchemaView.types|{}types[0]
+        final fun <get-types>(): kotlin.collections/Set<kotlin/String>? // com.davils.kapi.spec.core.compatibility/FixedSchemaView.types.<get-types>|<get-types>(){}[0]
+}
+
+final class com.davils.kapi.spec.core.compatibility/SchemaComparison { // com.davils.kapi.spec.core.compatibility/SchemaComparison|null[0]
+    constructor <init>(com.davils.kapi.spec.core.compatibility/ChangeLog) // com.davils.kapi.spec.core.compatibility/SchemaComparison.<init>|<init>(com.davils.kapi.spec.core.compatibility.ChangeLog){}[0]
+
+    final fun compare(com.davils.kapi.spec.core.compatibility/SchemaView, com.davils.kapi.spec.core.compatibility/SchemaView, com.davils.kapi.spec.core.compatibility/Direction) // com.davils.kapi.spec.core.compatibility/SchemaComparison.compare|compare(com.davils.kapi.spec.core.compatibility.SchemaView;com.davils.kapi.spec.core.compatibility.SchemaView;com.davils.kapi.spec.core.compatibility.Direction){}[0]
 }
 
 final class com.davils.kapi.spec.core.diagnostic/Diagnostic { // com.davils.kapi.spec.core.diagnostic/Diagnostic|null[0]
@@ -354,6 +627,13 @@ final class com.davils.kapi.spec.core.diagnostic/Location { // com.davils.kapi.s
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/Location.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/Location.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/Location.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.diagnostic/PointerTree { // com.davils.kapi.spec.core.diagnostic/PointerTree|null[0]
+    constructor <init>(kotlin.collections/Iterable<com.davils.kaml.document.pointer/JsonPointer>) // com.davils.kapi.spec.core.diagnostic/PointerTree.<init>|<init>(kotlin.collections.Iterable<com.davils.kaml.document.pointer.JsonPointer>){}[0]
+
+    final fun hasBelow(com.davils.kaml.document.pointer/JsonPointer): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/PointerTree.hasBelow|hasBelow(com.davils.kaml.document.pointer.JsonPointer){}[0]
+    final fun isRelated(com.davils.kaml.document.pointer/JsonPointer): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/PointerTree.isRelated|isRelated(com.davils.kaml.document.pointer.JsonPointer){}[0]
 }
 
 final class com.davils.kapi.spec.core.load/DocumentLoader { // com.davils.kapi.spec.core.load/DocumentLoader|null[0]
@@ -425,7 +705,7 @@ final class com.davils.kapi.spec.core.model/Reference { // com.davils.kapi.spec.
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Reference.toString|toString(){}[0]
 }
 
-final class com.davils.kapi.spec.core.model/Target { // com.davils.kapi.spec.core.model/Target|null[0]
+final class com.davils.kapi.spec.core.model/Target : kotlin/Comparable<com.davils.kapi.spec.core.model/Target> { // com.davils.kapi.spec.core.model/Target|null[0]
     constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kaml.document.pointer/JsonPointer) // com.davils.kapi.spec.core.model/Target.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kaml.document.pointer.JsonPointer){}[0]
 
     final val document // com.davils.kapi.spec.core.model/Target.document|{}document[0]
@@ -433,6 +713,7 @@ final class com.davils.kapi.spec.core.model/Target { // com.davils.kapi.spec.cor
     final val pointer // com.davils.kapi.spec.core.model/Target.pointer|{}pointer[0]
         final fun <get-pointer>(): com.davils.kaml.document.pointer/JsonPointer // com.davils.kapi.spec.core.model/Target.pointer.<get-pointer>|<get-pointer>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.model/Target): kotlin/Int // com.davils.kapi.spec.core.model/Target.compareTo|compareTo(com.davils.kapi.spec.core.model.Target){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Target.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Target.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Target.toString|toString(){}[0]
@@ -653,7 +934,7 @@ final class com.davils.kapi.spec.core.value/NumberValue : kotlin/Comparable<com.
     }
 }
 
-final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davils.kapi.spec.core.diagnostic/DocumentUri|null[0]
+final value class com.davils.kapi.spec.core.diagnostic/DocumentUri : kotlin/Comparable<com.davils.kapi.spec.core.diagnostic/DocumentUri> { // com.davils.kapi.spec.core.diagnostic/DocumentUri|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.core.diagnostic/DocumentUri.<init>|<init>(kotlin.String){}[0]
 
     final val scheme // com.davils.kapi.spec.core.diagnostic/DocumentUri.scheme|{}scheme[0]
@@ -661,6 +942,7 @@ final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davi
     final val value // com.davils.kapi.spec.core.diagnostic/DocumentUri.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.diagnostic/DocumentUri): kotlin/Int // com.davils.kapi.spec.core.diagnostic/DocumentUri.compareTo|compareTo(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/DocumentUri.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/DocumentUri.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.toString|toString(){}[0]
@@ -673,12 +955,13 @@ final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davi
     }
 }
 
-final value class com.davils.kapi.spec.core.value/ExtensionName { // com.davils.kapi.spec.core.value/ExtensionName|null[0]
+final value class com.davils.kapi.spec.core.value/ExtensionName : kotlin/Comparable<com.davils.kapi.spec.core.value/ExtensionName> { // com.davils.kapi.spec.core.value/ExtensionName|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.core.value/ExtensionName.<init>|<init>(kotlin.String){}[0]
 
     final val value // com.davils.kapi.spec.core.value/ExtensionName.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.value/ExtensionName): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionName.compareTo|compareTo(com.davils.kapi.spec.core.value.ExtensionName){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionName.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionName.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.toString|toString(){}[0]
@@ -717,3 +1000,12 @@ final val com.davils.kapi.spec.core.diagnostic/hasErrors // com.davils.kapi.spec
 
 final fun (com.davils.kapi.spec.core.diagnostic/Diagnostic).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@com.davils.kapi.spec.core.diagnostic.Diagnostic(){}[0]
 final fun (kotlin.collections/Iterable<com.davils.kapi.spec.core.diagnostic/Diagnostic>).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@kotlin.collections.Iterable<com.davils.kapi.spec.core.diagnostic.Diagnostic>(){}[0]
+final fun <#A: kotlin/Any, #B: kotlin/Comparable<#B>> (kotlin.collections/Iterable<#A>).com.davils.kapi.spec.core.collection/associateByKeyed(kotlin/Function1<#A, #B>): kotlin.collections/Map<#B, #A> // com.davils.kapi.spec.core.collection/associateByKeyed|associateByKeyed@kotlin.collections.Iterable<0:0>(kotlin.Function1<0:0,0:1>){0§<kotlin.Any>;1§<kotlin.Comparable<0:1>>}[0]
+final fun <#A: kotlin/Any, #B: kotlin/Comparable<#B>> (kotlin.collections/Iterable<#A>).com.davils.kapi.spec.core.collection/distinctByKeyed(kotlin/Function1<#A, #B>): kotlin.collections/List<#A> // com.davils.kapi.spec.core.collection/distinctByKeyed|distinctByKeyed@kotlin.collections.Iterable<0:0>(kotlin.Function1<0:0,0:1>){0§<kotlin.Any>;1§<kotlin.Comparable<0:1>>}[0]
+final fun <#A: kotlin/Any, #B: kotlin/Comparable<#B>> (kotlin.collections/Iterable<#A>).com.davils.kapi.spec.core.collection/groupByKeyed(kotlin/Function1<#A, #B>): kotlin.collections/Map<#B, kotlin.collections/List<#A>> // com.davils.kapi.spec.core.collection/groupByKeyed|groupByKeyed@kotlin.collections.Iterable<0:0>(kotlin.Function1<0:0,0:1>){0§<kotlin.Any>;1§<kotlin.Comparable<0:1>>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Comparable<#B>, #C: kotlin/Any> (kotlin.collections/Iterable<#A>).com.davils.kapi.spec.core.collection/associateKeyed(kotlin/Function1<#A, kotlin/Pair<#B, #C>>): kotlin.collections/Map<#B, #C> // com.davils.kapi.spec.core.collection/associateKeyed|associateKeyed@kotlin.collections.Iterable<0:0>(kotlin.Function1<0:0,kotlin.Pair<0:1,0:2>>){0§<kotlin.Any?>;1§<kotlin.Comparable<0:1>>;2§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any?> (kotlin.collections/Collection<#A>).com.davils.kapi.spec.core.collection/frozen(): kotlin.collections/List<#A> // com.davils.kapi.spec.core.collection/frozen|frozen@kotlin.collections.Collection<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Comparable<#A>, #B: kotlin/Any> (kotlin.collections/Iterable<kotlin/Pair<#A, #B>>).com.davils.kapi.spec.core.collection/toKeyedMap(): kotlin.collections/Map<#A, #B> // com.davils.kapi.spec.core.collection/toKeyedMap|toKeyedMap@kotlin.collections.Iterable<kotlin.Pair<0:0,0:1>>(){0§<kotlin.Comparable<0:0>>;1§<kotlin.Any>}[0]
+final fun <#A: kotlin/Comparable<#A>, #B: kotlin/Any> (kotlin.collections/Map<#A, #B>).com.davils.kapi.spec.core.collection/filterKeyed(kotlin/Function2<#A, #B, kotlin/Boolean>): kotlin.collections/Map<#A, #B> // com.davils.kapi.spec.core.collection/filterKeyed|filterKeyed@kotlin.collections.Map<0:0,0:1>(kotlin.Function2<0:0,0:1,kotlin.Boolean>){0§<kotlin.Comparable<0:0>>;1§<kotlin.Any>}[0]
+final fun <#A: kotlin/Comparable<#A>, #B: kotlin/Any> (kotlin.collections/Map<#A, #B>).com.davils.kapi.spec.core.collection/frozen(): kotlin.collections/Map<#A, #B> // com.davils.kapi.spec.core.collection/frozen|frozen@kotlin.collections.Map<0:0,0:1>(){0§<kotlin.Comparable<0:0>>;1§<kotlin.Any>}[0]
+final fun <#A: kotlin/Comparable<#A>> (kotlin.collections/Iterable<#A>).com.davils.kapi.spec.core.collection/frozenSet(): kotlin.collections/Set<#A> // com.davils.kapi.spec.core.collection/frozenSet|frozenSet@kotlin.collections.Iterable<0:0>(){0§<kotlin.Comparable<0:0>>}[0]

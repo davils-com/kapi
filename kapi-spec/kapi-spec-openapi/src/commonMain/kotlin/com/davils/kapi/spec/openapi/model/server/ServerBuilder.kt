@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.server
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of a [Server], filled by the readers of kapi.
@@ -64,7 +68,7 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
             field = value
         }
 
-    internal val variables: MutableMap<String, ServerVariable> = linkedMapOf()
+    internal val variables: MutableMap<String, ServerVariable> = KeyedMap()
 
     override fun assemble(): Server = Server(this)
 }

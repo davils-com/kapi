@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.server
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A server variable object: a value that replaces a variable in the address of a [Server].
@@ -41,7 +45,7 @@ public class ServerVariable internal constructor(builder: ServerVariableBuilder)
      *
      * @since 1.0.0
      */
-    public val enumeration: List<String> = builder.enumeration.toList()
+    public val enumeration: List<String> = builder.enumeration.frozen()
 
     /**
      * The `description` of the variable, which may use CommonMark; `null` when the document leaves it out.

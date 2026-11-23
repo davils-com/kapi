@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.security
+
+import com.davils.kapi.spec.core.collection.frozen
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A security scheme of type `openIdConnect`: OpenID Connect discovered from its configuration.
@@ -45,7 +50,7 @@ public class OpenIdConnectScheme internal constructor(builder: OpenIdConnectSche
      *
      * @since 1.0.0
      */
-    public val scopes: List<String> = builder.scopes.toList()
+    public val scopes: List<String> = builder.scopes.frozen()
 
     override val identity: List<Any?> get() = listOf(description, openIdConnectUrl, scopes)
 }

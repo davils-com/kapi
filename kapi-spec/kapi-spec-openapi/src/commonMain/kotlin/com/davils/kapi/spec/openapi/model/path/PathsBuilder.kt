@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Paths], filled by the readers of kapi.
@@ -30,7 +34,7 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class PathsBuilder internal constructor() : ElementBuilder<Paths>() {
     override val subject: String get() = "openapi paths"
 
-    internal val items: MutableMap<PathTemplate, PathItem> = linkedMapOf()
+    internal val items: MutableMap<PathTemplate, PathItem> = KeyedMap()
 
     override fun assemble(): Paths = Paths(this)
 }

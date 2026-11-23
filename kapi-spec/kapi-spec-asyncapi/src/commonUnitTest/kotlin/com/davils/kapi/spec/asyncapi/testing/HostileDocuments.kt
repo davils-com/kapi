@@ -20,6 +20,10 @@ private const val LINE_END: String = "\n"
 
 private const val WIDTH: Int = 9
 
+private val blocks: List<String> = listOf("Aa", "BB")
+
+private val messagesHead: List<String> = listOf("components:", "  messages:")
+
 private val head: List<String> = listOf("asyncapi: 3.0.0", "info:", "  title: Hostile", "  version: 1.0.0")
 
 internal object HostileDocuments {
@@ -45,7 +49,7 @@ internal object HostileDocuments {
     fun messageChain(length: Int): String {
         val links = (1..length).map { index -> "    M$index: {\$ref: '#/components/messages/M${index + 1}'}" }
         val end = "    M${length + 1}: {name: end}"
-        return document(listOf("components:", "  messages:") + links + end)
+        return document(messagesHead + links + end)
     }
 
     fun manyChannels(count: Int): String {
@@ -56,6 +60,20 @@ internal object HostileDocuments {
             listOf("  o$index:", "    action: send", "    channel: {\$ref: '#/channels/c$index'}")
         }
         return document(listOf("channels:") + channels + "operations:" + operations)
+    }
+
+    fun collidingKeys(count: Int): List<String> {
+        var keys = listOf("")
+        while (keys.size < count) keys = keys.flatMap { key -> blocks.map { block -> key + block } }
+        return keys.take(count)
+    }
+
+    fun collidingChannels(count: Int): String {
+        val keys = collidingKeys(count)
+        val channels = keys.map { key -> "  $key: {address: $key}" }
+        val messages = keys.map { key -> "    $key: {name: $key}" }
+        val extensions = keys.map { key -> "x-$key: $key" }
+        return document(extensions + listOf("channels:") + channels + messagesHead + messages)
     }
 
     fun longKey(length: Int): String = document(listOf("? x" + "y".repeat(length), ": 1"))

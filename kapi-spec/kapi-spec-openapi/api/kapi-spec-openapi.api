@@ -1,3 +1,78 @@
+public final class com/davils/kapi/spec/openapi/CompatibilityCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/openapi/CompatibilityCodes;
+	public final fun getACCEPTS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getADDITIONAL_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getALL_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getANY_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getAll ()Ljava/util/List;
+	public final fun getCONST-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDEPRECATED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDISCRIMINATOR-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM_VALUE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getENUM_VALUE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getFORMAT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getINCOMPLETE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAXIMUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_ITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_LENGTH-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMAX_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMINIMUM-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_ITEMS-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_LENGTH-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMIN_PROPERTIES-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMULTIPLE_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNULLABLE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNULLABLE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getONE_OF-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPAQUE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_DEPRECATED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_ID_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getOPERATION_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_DEPRECATED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_OPTIONAL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_REQUIRED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_REQUIRED_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPARAMETER_SERIALIZATION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATH_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATH_PARAMETER_RENAMED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATH_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATTERN-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_OPTIONAL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPROPERTY_REQUIRED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_BODY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_BODY_OPTIONAL-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_BODY_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_BODY_REQUIRED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_MEDIA_TYPE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUEST_MEDIA_TYPE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREQUIRED_PROPERTY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESPONSE_HEADER_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESPONSE_MEDIA_TYPE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESPONSE_MEDIA_TYPE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESPONSE_STATUS_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESPONSE_STATUS_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_REQUIREMENT_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_REQUIREMENT_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_SCHEME_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_SCOPE_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSECURITY_SCOPE_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_ADDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSERVER_REMOVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_CHANGED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_NARROWED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTYPE_WIDENED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getUNIQUE_ITEMS-J_S2PC0 ()Ljava/lang/String;
+}
+
 public final class com/davils/kapi/spec/openapi/DiagnosticCodes {
 	public static final field INSTANCE Lcom/davils/kapi/spec/openapi/DiagnosticCodes;
 	public final fun getAll ()Ljava/util/List;
@@ -128,6 +203,8 @@ public final class com/davils/kapi/spec/openapi/DocumentsKt {
 
 public final class com/davils/kapi/spec/openapi/OpenApi {
 	public static final field INSTANCE Lcom/davils/kapi/spec/openapi/OpenApi;
+	public final fun compare (Lcom/davils/kapi/spec/openapi/Document;Lcom/davils/kapi/spec/openapi/Document;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/core/compatibility/Comparison;
+	public static synthetic fun compare$default (Lcom/davils/kapi/spec/openapi/OpenApi;Lcom/davils/kapi/spec/openapi/Document;Lcom/davils/kapi/spec/openapi/Document;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/core/compatibility/Comparison;
 	public final fun reader (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/openapi/Reader;
 	public static synthetic fun reader$default (Lcom/davils/kapi/spec/openapi/OpenApi;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/openapi/Reader;
 	public final fun write (Lcom/davils/kapi/spec/openapi/Document;)Ljava/lang/String;
@@ -387,9 +464,12 @@ public final class com/davils/kapi/spec/openapi/model/content/ResponseBuilder : 
 	public final fun setSummary (Ljava/lang/String;)V
 }
 
-public final class com/davils/kapi/spec/openapi/model/content/ResponseStatus {
+public final class com/davils/kapi/spec/openapi/model/content/ResponseStatus : java/lang/Comparable {
 	public static final field Companion Lcom/davils/kapi/spec/openapi/model/content/ResponseStatus$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/openapi/model/content/ResponseStatus;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-w-z46cw (Ljava/lang/String;)I
+	public static fun compareTo-w-z46cw (Ljava/lang/String;Ljava/lang/String;)I
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
@@ -711,9 +791,12 @@ public final class com/davils/kapi/spec/openapi/model/path/PathItemBuilder : com
 	public final fun setSummary (Ljava/lang/String;)V
 }
 
-public final class com/davils/kapi/spec/openapi/model/path/PathTemplate {
+public final class com/davils/kapi/spec/openapi/model/path/PathTemplate : java/lang/Comparable {
 	public static final field Companion Lcom/davils/kapi/spec/openapi/model/path/PathTemplate$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/openapi/model/path/PathTemplate;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-bQx8JYw (Ljava/lang/String;)I
+	public static fun compareTo-bQx8JYw (Ljava/lang/String;Ljava/lang/String;)I
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z

@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.security
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * One flow of OAuth 2.0: its addresses and the scopes it offers.
@@ -53,7 +57,7 @@ public class OAuthFlow internal constructor(builder: OAuthFlowBuilder) : Element
      *
      * @since 1.0.0
      */
-    public val availableScopes: Map<String, String> = builder.availableScopes.toMap()
+    public val availableScopes: Map<String, String> = builder.availableScopes.frozen()
 
     override val identity: List<Any?> get() = listOf(authorizationUrl, tokenUrl, refreshUrl, availableScopes)
 }

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.content
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The `responses` object of an operation: its expected responses by status.
@@ -35,7 +39,7 @@ public class Responses internal constructor(builder: ResponsesBuilder) :
      * @since 1.0.0
      */
     public val entries: Map<ResponseStatus, Referable<Response>> =
-        builder.entries.toMap()
+        builder.entries.frozen()
 
     override val identity: List<Any?> get() = listOf(entries)
 }

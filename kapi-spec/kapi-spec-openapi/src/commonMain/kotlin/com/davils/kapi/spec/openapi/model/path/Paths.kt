@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.model.path
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The `paths` object of a document: the endpoints of the API and the operations they offer.
@@ -33,7 +37,7 @@ public class Paths internal constructor(builder: PathsBuilder) : Element(builder
      *
      * @since 1.0.0
      */
-    public val items: Map<PathTemplate, PathItem> = builder.items.toMap()
+    public val items: Map<PathTemplate, PathItem> = builder.items.frozen()
 
     override val identity: List<Any?> get() = listOf(items)
 }

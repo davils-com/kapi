@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.asyncapi
 
 import com.davils.kapi.spec.asyncapi.read.ReadSession
+import com.davils.kapi.spec.asyncapi.structure.OfficialSchema
 import com.davils.kapi.spec.core.source.Source
 
 /**
@@ -24,13 +25,17 @@ import com.davils.kapi.spec.core.source.Source
  *
  * A reading loads the root document and every document a reference names through the resolver, checks every field
  * against the specification, resolves the references, checks the rules of AsyncAPI and reports every finding with
- * its place. A reader holds no state of its own and is safe to share between threads; each reading runs in the
- * coroutine of its caller.
+ * its place. A reader is safe to share between threads; each reading runs in the coroutine of its caller. The only
+ * state a reader keeps between readings is the official JSON Schema of AsyncAPI 3.0 that
+ * [StructureCheck.ReaderAndOfficialSchema] validates against: it is compiled once, on the first reading that needs it,
+ * within the limits of the configuration, and shared by every later reading.
  *
  * @property configuration the configuration of the reader.
  * @since 1.0.0
  */
 public class Reader internal constructor(public val configuration: ReaderConfiguration) {
+    private val schema: OfficialSchema = OfficialSchema(configuration.limits)
+
     /**
      * Reads the document of [source].
      *
@@ -38,7 +43,10 @@ public class Reader internal constructor(public val configuration: ReaderConfigu
      * @return the reading; a document that cannot be read is a [Reading.Malformed], never an exception.
      * @since 1.0.0
      */
-    public suspend fun read(source: Source): Reading = ReadSession(configuration, source).run()
+    public suspend fun read(source: Source): Reading {
+        val session = ReadSession(configuration = configuration, schema = schema, source = source)
+        return session.run()
+    }
 
     override fun toString(): String = "Reader($configuration)"
 }

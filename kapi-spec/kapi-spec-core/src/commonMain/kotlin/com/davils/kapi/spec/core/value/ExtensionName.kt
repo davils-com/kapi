@@ -33,12 +33,21 @@ private const val PREFIX: String = "x-"
  * @since 1.0.0
  */
 @JvmInline
-public value class ExtensionName(public val value: String) {
+public value class ExtensionName(public val value: String) : Comparable<ExtensionName> {
     init {
         require(isExtension(value)) { "${SafeText.quoted(value)} is no extension name such as x-kapi-name" }
     }
 
     override fun toString(): String = SafeText.text(value)
+
+    /**
+     * Compares the names by their text, so that extension names can key an ordered map.
+     *
+     * @param other the other name.
+     * @return a negative number, zero or a positive number as this name sorts before, with or after [other].
+     * @since 1.0.0
+     */
+    override fun compareTo(other: ExtensionName): Int = value.compareTo(other.value)
 
     /**
      * Reads extension names.

@@ -20,6 +20,8 @@ package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.diagnostic.Findings
+import com.davils.kapi.spec.core.collection.associateByKeyed
+import com.davils.kapi.spec.core.collection.distinctByKeyed
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.load.LoadedDocument
@@ -28,18 +30,21 @@ import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 
+private const val UNLOCATED: Char = '\u0000'
+
 internal class RuleScope(
     val document: Document,
     private val findings: Findings,
     documents: List<LoadedDocument>,
 ) {
-    private val loaded: Map<DocumentUri, LoadedDocument> = documents.associateBy(LoadedDocument::uri)
+    private val loaded: Map<DocumentUri, LoadedDocument> = documents.associateByKeyed(LoadedDocument::uri)
 
     val root: DocumentUri = documents.first().uri
 
     val elements: List<Element> by lazy {
         val walked = document.walk().toList()
-        walked.distinctBy { element -> element.location ?: element }
+        val distinct = walked.withIndex().distinctByKeyed { (index, element) -> placeOf(index, element) }
+        distinct.map(IndexedValue<Element>::value)
     }
 
     inline fun <reified T : Element> all(): List<T> = elements.filterIsInstance<T>()
@@ -65,5 +70,10 @@ internal class RuleScope(
     fun report(code: ViolationCode, message: String, location: Location?) {
         val snippet = location?.let { place -> loaded[place.document]?.snippet(place) }
         findings.report(code = code, message = message, location = location, snippet = snippet)
+    }
+
+    private fun placeOf(index: Int, element: Element): String {
+        val location = element.location ?: return "$UNLOCATED$index"
+        return "${location.document.value}#${location.pointer.text}"
     }
 }

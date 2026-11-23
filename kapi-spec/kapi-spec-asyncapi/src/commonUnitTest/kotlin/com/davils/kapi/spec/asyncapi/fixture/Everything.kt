@@ -362,6 +362,8 @@ internal val everything: String =
         |    plain:
         |      amqp:
         |        is: queue
+        |        queue:
+        |          name: rooms
         |  operationBindings:
         |    audit:
         |      kafka:

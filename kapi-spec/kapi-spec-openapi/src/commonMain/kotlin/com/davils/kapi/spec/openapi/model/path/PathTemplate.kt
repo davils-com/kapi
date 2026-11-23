@@ -32,7 +32,7 @@ private const val ROOT: String = "/"
  * @since 1.0.0
  */
 @JvmInline
-public value class PathTemplate(public val value: String) {
+public value class PathTemplate(public val value: String) : Comparable<PathTemplate> {
     init {
         require(value.startsWith(ROOT)) { "'$value' is no path template such as /pets/{petId}" }
     }
@@ -47,6 +47,15 @@ public value class PathTemplate(public val value: String) {
         get() = Placeholders.names(text = value, stops = Placeholders.PATH_STOPS)
 
     override fun toString(): String = value
+
+    /**
+     * Compares the templates by their text, so that they can key an ordered map.
+     *
+     * @param other the other one.
+     * @return a negative number, zero or a positive number as this one sorts before, with or after [other].
+     * @since 1.0.0
+     */
+    override fun compareTo(other: PathTemplate): Int = value.compareTo(other.value)
 
     /**
      * Creates path templates from text.
