@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.core.read
+package com.davils.kapi.spec.core.diagnostic
 
 import com.davils.kaml.document.pointer.JsonPointer
-import com.davils.kapi.spec.core.diagnostic.Diagnostic
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.TextSnippet

@@ -59,8 +59,8 @@ public final class com/davils/kapi/spec/openapi/DiagnosticCodes {
 	public final fun getRESPONSE_STATUS-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_CONSTRAINT-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_DISCRIMINATOR_MAPPING-J_S2PC0 ()Ljava/lang/String;
-	public final fun getSCHEMA_PATTERN_BACKTRACKING-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_PATTERN_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSCHEMA_PATTERN_UNSUPPORTED-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_TYPE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_UNKNOWN_KEYWORD-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_VERSION_FORM-J_S2PC0 ()Ljava/lang/String;

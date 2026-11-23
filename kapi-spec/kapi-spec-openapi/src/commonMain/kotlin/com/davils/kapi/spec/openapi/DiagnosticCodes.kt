@@ -493,20 +493,21 @@ public object DiagnosticCodes {
     public val SCHEMA_VERSION_FORM: ViolationCode = code("schema.version-form")
 
     /**
-     * A regular expression of a schema is invalid.
+     * A regular expression of a schema is no regular expression of ECMA-262, or it nests its groups deeper than the
+     * pattern engine of kapi reads.
      *
      * @since 1.0.0
      */
     public val SCHEMA_PATTERN_INVALID: ViolationCode = code("schema.pattern-invalid")
 
     /**
-     * A regular expression of a schema may backtrack catastrophically.
+     * A regular expression of a schema is valid ECMA-262 but needs what kapi cannot match in linear time, such as a
+     * back reference, a lookaround or more states than the pattern engine allows, so kapi cannot check a value against
+     * it.
      *
      * @since 1.0.0
      */
-    public val SCHEMA_PATTERN_BACKTRACKING: ViolationCode = ViolationCode(
-        "openapi.schema.pattern-backtracking",
-    )
+    public val SCHEMA_PATTERN_UNSUPPORTED: ViolationCode = code("schema.pattern-unsupported")
 
     /**
      * A schema has a keyword its dialect does not define.
@@ -720,7 +721,7 @@ public object DiagnosticCodes {
         SCHEMA_TYPE,
         SCHEMA_VERSION_FORM,
         SCHEMA_PATTERN_INVALID,
-        SCHEMA_PATTERN_BACKTRACKING,
+        SCHEMA_PATTERN_UNSUPPORTED,
         SCHEMA_UNKNOWN_KEYWORD,
         STRUCTURE_SCHEMA,
         EXTENSION_NAME,

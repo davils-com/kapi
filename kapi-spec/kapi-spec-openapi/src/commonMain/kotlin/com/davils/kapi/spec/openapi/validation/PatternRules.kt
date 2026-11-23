@@ -18,41 +18,39 @@ package com.davils.kapi.spec.openapi.validation
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
+import com.davils.kapi.spec.schema.pattern.Pattern
+import com.davils.kapi.spec.schema.pattern.PatternCompilation
+import com.davils.kapi.spec.schema.pattern.PatternLimits
+import com.davils.kapi.spec.schema.pattern.patternLimits
 
 internal object PatternRules {
-    private val nestedQuantifier: Regex = Regex("""\((?:[^()\\]|\\.)*[+*](?:[^()\\]|\\.)*\)(?:[+*]|\{\d*,\d*})""")
+    private const val INVALID: String = "A pattern is no regular expression of ECMA-262"
+
+    private const val UNSUPPORTED: String =
+        "A pattern needs what kapi cannot match in linear time, so no value is checked against it"
 
     fun check(scope: RuleScope) {
+        val limits = patternLimits { maximumSourceLength = scope.limits.maximumPatternLength }
         scope.all<SchemaDefinition>().forEach { schema ->
             val patterns = listOfNotNull(schema.pattern) + schema.patternProperties.keys
-            patterns.forEach { pattern -> pattern(scope, schema, pattern) }
+            patterns.forEach { pattern -> pattern(scope = scope, schema = schema, pattern = pattern, limits = limits) }
         }
     }
 
-    private fun pattern(scope: RuleScope, schema: SchemaDefinition, pattern: String) {
-        val limit = scope.limits.maximumPatternLength
+    private fun pattern(scope: RuleScope, schema: SchemaDefinition, pattern: String, limits: PatternLimits) {
+        val limit = limits.maximumSourceLength
         if (pattern.length > limit) {
             val message = "A pattern of ${pattern.length} characters is longer than the $limit a reading accepts"
             return scope.report(DiagnosticCodes.LIMIT_PATTERN_LENGTH, message, schema)
         }
-        compiled(scope, schema, pattern)
+        compiled(scope = scope, schema = schema, pattern = pattern, limits = limits)
     }
 
-    private fun compiled(scope: RuleScope, schema: SchemaDefinition, pattern: String) {
-        val problem = problemOf(pattern)
-        if (problem != null) {
-            val message = "The pattern '$pattern' is no regular expression Kotlin can compile: $problem"
-            return scope.report(DiagnosticCodes.SCHEMA_PATTERN_INVALID, message, schema)
-        }
-        if (!nestedQuantifier.containsMatchIn(pattern)) return
-        val message = "The pattern '$pattern' repeats a repeated group, which can take very long on crafted input"
-        scope.report(DiagnosticCodes.SCHEMA_PATTERN_BACKTRACKING, message, schema)
-    }
-
-    private fun problemOf(pattern: String): String? = try {
-        Regex(pattern)
-        null
-    } catch (failure: IllegalArgumentException) {
-        failure.message.orEmpty()
+    private fun compiled(scope: RuleScope, schema: SchemaDefinition, pattern: String, limits: PatternLimits) {
+        val refused = Pattern.compile(pattern, limits) as? PatternCompilation.Refused ?: return
+        val isInvalid = !refused.reason.isValidSyntax
+        val invalid = DiagnosticCodes.SCHEMA_PATTERN_INVALID.takeIf { isInvalid }
+        val reason = INVALID.takeIf { isInvalid } ?: UNSUPPORTED
+        scope.report(invalid ?: DiagnosticCodes.SCHEMA_PATTERN_UNSUPPORTED, "$reason: ${refused.message}", schema)
     }
 }

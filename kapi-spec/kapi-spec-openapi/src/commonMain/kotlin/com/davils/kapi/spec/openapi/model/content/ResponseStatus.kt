@@ -22,7 +22,15 @@ private const val DEFAULT: String = "default"
 
 private const val RANGE: String = "XX"
 
-private val statusPattern: Regex = Regex("default|[1-5]([0-9]{2}|XX)")
+private const val LENGTH: Int = 3
+
+private fun isStatus(text: String): Boolean {
+    if (text == DEFAULT) return true
+    val rest = text.drop(1)
+    val isClass = text.length == LENGTH && text.first() in '1'..'5'
+    val isCode = rest.all { character -> character in '0'..'9' }
+    return isClass && (isCode || rest == RANGE)
+}
 
 /**
  * A key of the `responses` object: an HTTP status code from `100` to `599`, a range of them such as `4XX`, or
@@ -35,7 +43,7 @@ private val statusPattern: Regex = Regex("default|[1-5]([0-9]{2}|XX)")
 @JvmInline
 public value class ResponseStatus(public val value: String) {
     init {
-        require(statusPattern.matches(value)) { "'$value' is no response status such as 200, 4XX or default" }
+        require(isStatus(value)) { "'$value' is no response status such as 200, 4XX or default" }
     }
 
     /**
@@ -83,7 +91,7 @@ public value class ResponseStatus(public val value: String) {
          * @since 1.0.0
          */
         public fun parseOrNull(text: String): ResponseStatus? {
-            if (!statusPattern.matches(text)) return null
+            if (!isStatus(text)) return null
             return ResponseStatus(text)
         }
     }

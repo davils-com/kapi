@@ -28,7 +28,7 @@ internal object CodeRules {
         DiagnosticCodes.OPERATION_RESPONSES_EMPTY,
         DiagnosticCodes.PARAMETER_PATH_OPTIONAL,
         DiagnosticCodes.SCHEMA_VERSION_FORM,
-        DiagnosticCodes.SCHEMA_PATTERN_BACKTRACKING,
+        DiagnosticCodes.SCHEMA_PATTERN_UNSUPPORTED,
         DiagnosticCodes.SCHEMA_UNKNOWN_KEYWORD,
         DiagnosticCodes.SCHEMA_XML_DEPRECATED,
     )
@@ -44,6 +44,7 @@ internal object CodeRules {
         DiagnosticCodes.SERVER_VARIABLE_DEFAULT,
         DiagnosticCodes.SECURITY_SCOPES,
         DiagnosticCodes.SCHEMA_CONSTRAINT,
+        DiagnosticCodes.SCHEMA_PATTERN_UNSUPPORTED,
         DiagnosticCodes.EXTENSION_NAME,
         DiagnosticCodes.TAG_DUPLICATE,
         DiagnosticCodes.LINK_TARGET,

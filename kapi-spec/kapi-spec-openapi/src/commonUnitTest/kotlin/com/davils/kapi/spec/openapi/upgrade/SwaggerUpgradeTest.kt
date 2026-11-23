@@ -24,11 +24,6 @@ import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.fixture.codes
 import com.davils.kapi.spec.openapi.fixture.document
 import com.davils.kapi.spec.openapi.fixture.reading
-import com.davils.kapi.spec.openapi.upgrade.fixture.SWAGGER
-import com.davils.kapi.spec.openapi.upgrade.fixture.nodeOf
-import com.davils.kapi.spec.openapi.upgrade.fixture.nodeOfLines
-import com.davils.kapi.spec.openapi.upgrade.fixture.upgraded
-import com.davils.kapi.spec.openapi.upgrade.fixture.upgradedOf
 import com.davils.kore.core.validation.violation.Severity
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull

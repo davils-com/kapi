@@ -29,11 +29,18 @@ internal object OverlayKeys {
     const val REMOVE: String = "remove"
     const val EXTENSION_PREFIX: String = "x-"
 
-    val versionPattern: Regex = Regex("""1\.0\.(0|[1-9][0-9]*)""")
+    const val VERSION_PREFIX: String = "1.0."
 
     val rootFields: Set<String> = setOf(OVERLAY, INFO, EXTENDS, ACTIONS)
 
     val infoFields: Set<String> = setOf(TITLE, VERSION)
 
     val actionFields: Set<String> = setOf(TARGET, DESCRIPTION, UPDATE, REMOVE)
+
+    fun isVersion(text: String): Boolean {
+        val patch = text.removePrefix(VERSION_PREFIX)
+        val isNumber = patch.isNotEmpty() && patch.all { character -> character in '0'..'9' }
+        val isCanonical = patch == "0" || !patch.startsWith('0')
+        return text.startsWith(VERSION_PREFIX) && isNumber && isCanonical
+    }
 }

@@ -53,7 +53,7 @@ internal class OverlayReader(
     private fun version(mapping: YamlNode.Mapping) {
         val place = root.child(OverlayKeys.OVERLAY, mapping[OverlayKeys.OVERLAY])
         val written = textOf(place.node).orEmpty()
-        if (OverlayKeys.versionPattern.matches(written)) return
+        if (OverlayKeys.isVersion(written)) return
         val message = "The overlay names the version '$written', the reader knows Overlay 1.0"
         place.report(findings, DiagnosticCodes.OVERLAY_VERSION, message)
     }

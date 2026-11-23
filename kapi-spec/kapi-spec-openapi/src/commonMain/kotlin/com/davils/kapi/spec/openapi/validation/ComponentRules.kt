@@ -20,11 +20,11 @@ import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.component.Components
 
 internal object ComponentRules {
-    private val name: Regex = Regex("[a-zA-Z0-9._-]+")
+    private const val SYMBOLS: String = "._-"
 
     fun check(scope: RuleScope) {
         scope.all<Components>().forEach { components ->
-            val named = namesOf(components).filterNot { key -> name.matches(key) }
+            val named = namesOf(components).filterNot(::isName)
             named.forEach { key ->
                 val message = "The component name '$key' may only hold letters, digits, dots, hyphens and underscores"
                 scope.report(DiagnosticCodes.COMPONENT_NAME, message, components)
@@ -47,5 +47,12 @@ internal object ComponentRules {
             components.mediaTypes,
         )
         return sections.flatMap { section -> section.keys }
+    }
+
+    fun isName(key: String): Boolean = key.isNotEmpty() && key.all(::isNameCharacter)
+
+    private fun isNameCharacter(character: Char): Boolean {
+        val isLetter = character in 'a'..'z' || character in 'A'..'Z'
+        return isLetter || character in '0'..'9' || character in SYMBOLS
     }
 }

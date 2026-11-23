@@ -24,8 +24,8 @@ import com.davils.kaml.core.diagnostic.YamlDiagnostic
 import com.davils.kaml.core.diagnostic.YamlDiagnosticCode
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.diagnostic.Findings
 import com.davils.kapi.spec.core.diagnostic.Location
-import com.davils.kapi.spec.core.read.Findings
 import com.davils.kapi.spec.core.source.Refusal
 import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Source

@@ -51,7 +51,8 @@ internal class PathWriter(
         val additional = item.additionalOperations.takeIf { isCurrent }.orEmpty()
         out.map(Keys.ADDITIONAL_OPERATIONS, additional, ::operation)
         out.list(Keys.SERVERS, item.servers, info::server)
-        out.list(Keys.PARAMETERS, item.parameters, ReferenceWriter.referables(content::parameter))
+        val parameters = content.parameters(item.parameters)
+        out.list(Keys.PARAMETERS, parameters, ReferenceWriter.referables(content::parameter))
         return out.build(item)
     }
 
@@ -68,7 +69,8 @@ internal class PathWriter(
         out[Keys.DESCRIPTION] = operation.description
         out.node(Keys.EXTERNAL_DOCS, operation.externalDocs?.let(info::externalDocs))
         out[Keys.OPERATION_ID] = operation.operationId
-        out.list(Keys.PARAMETERS, operation.parameters, ReferenceWriter.referables(content::parameter))
+        val parameters = content.parameters(operation.parameters)
+        out.list(Keys.PARAMETERS, parameters, ReferenceWriter.referables(content::parameter))
         exchange(out, operation)
         out.flag(Keys.DEPRECATED, operation.isDeprecated)
         val requirements = operation.security?.map(security::requirement)

@@ -29,8 +29,6 @@ import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.path.Operation
 
 internal object ContentRules {
-    private val mediaType: Regex = Regex("""[A-Za-z0-9!#$&^_.+*-]+/[A-Za-z0-9!#$&^_.+*-]+(\s*;.*)?""")
-
     fun check(scope: RuleScope) {
         val tags = scope.document.tags
         val named = tags.groupBy(Tag::name)
@@ -94,7 +92,7 @@ internal object ContentRules {
     }
 
     private fun content(scope: RuleScope, owner: Element, types: Set<String>) {
-        val invalid = types.filterNot { type -> mediaType.matches(type) }
+        val invalid = types.filterNot(MediaTypeSyntax::isValid)
         invalid.forEach { type ->
             val message = "'$type' is no media type such as text/plain"
             scope.report(DiagnosticCodes.MEDIA_TYPE_INVALID, message, owner)

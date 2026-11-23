@@ -20,10 +20,6 @@ import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.openapi.upgrade.fixture.Upgraded
-import com.davils.kapi.spec.openapi.upgrade.fixture.nodeOf
-import com.davils.kapi.spec.openapi.upgrade.fixture.upgraded
-import com.davils.kapi.spec.openapi.upgrade.fixture.upgradedOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull

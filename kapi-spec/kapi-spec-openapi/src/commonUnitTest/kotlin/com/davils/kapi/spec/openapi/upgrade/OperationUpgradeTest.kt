@@ -19,8 +19,6 @@ package com.davils.kapi.spec.openapi.upgrade
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kaml.core.node.string
-import com.davils.kapi.spec.openapi.upgrade.fixture.Upgraded
-import com.davils.kapi.spec.openapi.upgrade.fixture.upgraded
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe

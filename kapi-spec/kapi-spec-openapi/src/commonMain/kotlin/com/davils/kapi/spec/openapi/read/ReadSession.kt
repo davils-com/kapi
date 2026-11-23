@@ -25,6 +25,7 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.ReaderConfiguration
 import com.davils.kapi.spec.openapi.Reading
+import com.davils.kapi.spec.openapi.StructureCheck
 import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.load.loaderOf
@@ -32,12 +33,15 @@ import com.davils.kapi.spec.openapi.overlay.OverlayAction
 import com.davils.kapi.spec.openapi.overlay.OverlayApplication
 import com.davils.kapi.spec.openapi.overlay.OverlayReader
 import com.davils.kapi.spec.openapi.read.reference.TargetResolver
+import com.davils.kapi.spec.openapi.structure.OfficialSchemas
+import com.davils.kapi.spec.openapi.structure.StructureValidation
 import com.davils.kapi.spec.openapi.validation.DocumentRules
 import com.davils.kapi.spec.openapi.validation.RuleScope
 import com.davils.kore.core.annotation.DavilsInternal
 
 internal class ReadSession(
     private val configuration: ReaderConfiguration,
+    private val schemas: OfficialSchemas,
     source: Source,
     private val overlays: List<Source>,
 ) {
@@ -79,6 +83,9 @@ internal class ReadSession(
             documents = loader.documents,
         )
         DocumentRules.check(rules)
+        if (configuration.structure == StructureCheck.ReaderAndOfficialSchema) {
+            StructureValidation(findings = findings, document = root, family = version.family).check(schemas)
+        }
         return document
     }
 

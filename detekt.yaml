@@ -156,11 +156,13 @@ potential-bugs:
 
 style:
   # The corpus of kapi-spec-testing embeds whole API documents as raw strings at column zero, so that every line and
-  # column of a document is the one a reader reports; Wasm has no class-path resources to load them from.
+  # column of a document is the one a reader reports, and kapi-spec-openapi embeds the official schemas of OpenAPI
+  # unchanged; Wasm has no class-path resources to load them from.
   TrimMultilineRawString:
     active: true
     excludes:
       - '**/spec/testing/*Texts.kt'
+      - '**/spec/openapi/structure/*Texts.kt'
   ForbiddenComment:
     active: true
     comments:

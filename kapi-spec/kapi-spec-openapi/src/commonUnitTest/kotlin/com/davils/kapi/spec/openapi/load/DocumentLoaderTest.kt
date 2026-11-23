@@ -28,7 +28,6 @@ import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kapi.spec.openapi.load.fixture.Loading
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.TextPosition
 import com.davils.kore.core.validation.violation.ViolationCode

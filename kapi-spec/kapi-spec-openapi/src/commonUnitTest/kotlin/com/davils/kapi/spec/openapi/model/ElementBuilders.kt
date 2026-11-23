@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.model.fixture
+package com.davils.kapi.spec.openapi.model
 
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.openapi.DocumentBuilder

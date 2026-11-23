@@ -30,6 +30,8 @@ import io.kotest.matchers.string.shouldContain
 
 private const val SHORT: Int = 8
 
+private const val ACCEPTED: String = "The values are checked by the service."
+
 private val schemas: List<String> = listOf("components:", "  schemas:")
 
 private val constraint = DiagnosticCodes.SCHEMA_CONSTRAINT
@@ -117,18 +119,54 @@ class SchemaAndPatternRulesTest : FunSpec({
     }
 
     context("a pattern") {
-        test("is a regular expression that compiles") {
+        test("is a regular expression of ECMA-262") {
             val reading = reading31(schemas + "    A: {type: string, pattern: '[a-'}")
 
             reading.codes() shouldBe listOf(DiagnosticCodes.SCHEMA_PATTERN_INVALID)
             reading.diagnostics.single().message shouldContain "is no regular expression"
         }
 
-        test("warns when it repeats a repeated group") {
-            val reading = reading31(schemas + "    A: {patternProperties: {'(a+)+': {}}}")
+        test("is invalid when only another dialect of regular expressions knows it") {
+            listOf("(?<name>a)\\\\k<other>", "\\\\a", "a{2,1}", "(?i)a", "[\\\\w-z]").forEach { pattern ->
+                val reading = reading31(schemas + "    A: {type: string, pattern: \"$pattern\"}")
 
-            reading.codes() shouldBe listOf(DiagnosticCodes.SCHEMA_PATTERN_BACKTRACKING)
+                reading.codes() shouldBe listOf(DiagnosticCodes.SCHEMA_PATTERN_INVALID)
+            }
+        }
+
+        test("may repeat a repeated group, because kapi never backtracks") {
+            val reading = reading31(schemas + "    A: {patternProperties: {'(a+)+$': {}, '^(a|aa)*b': {}}}")
+
+            reading.diagnostics.shouldBeEmpty()
+        }
+
+        test("warns when it is valid but kapi cannot match it in linear time") {
+            val unsupported = listOf("(a)\\\\1", "a(?=b)", "(?<!a)b", "\\\\p{Emoji}", "a{100000}")
+            unsupported.forEach { pattern ->
+                val reading = reading31(schemas + "    A: {type: string, pattern: \"$pattern\"}")
+                val finding = reading.diagnostics.single()
+
+                finding.code shouldBe DiagnosticCodes.SCHEMA_PATTERN_UNSUPPORTED
+                finding.isError shouldBe false
+                finding.message shouldContain "linear time"
+                reading.document()
+            }
+        }
+
+        test("can be accepted when kapi cannot match it") {
+            val lines = head31 + schemas + "    A: {type: string, pattern: '(a)\\1'}"
+            val reading = reading(lines) {
+                severities { downgrade(DiagnosticCodes.SCHEMA_PATTERN_UNSUPPORTED, ACCEPTED) }
+            }
+
             reading.document()
+        }
+
+        test("is checked at the length a reading accepts") {
+            val lines = head31 + schemas + "    A: {type: string, pattern: '^[a-z]+$'}"
+            val reading = reading(lines) { limits { maximumPatternLength = SHORT } }
+
+            reading.diagnostics.shouldBeEmpty()
         }
 
         test("is refused beyond the length a reading accepts") {
