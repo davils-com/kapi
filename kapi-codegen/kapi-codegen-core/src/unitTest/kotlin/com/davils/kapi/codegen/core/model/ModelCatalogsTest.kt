@@ -30,7 +30,7 @@ import com.davils.kapi.codegen.core.fixture.readAt
 import com.davils.kapi.codegen.core.fixture.readWith
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.textOf
-import com.davils.kapi.codegen.core.openApiGenerator
+import com.davils.kapi.codegen.core.Codegen
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -56,7 +56,7 @@ private fun model(type: String, kind: ModelKind, hasWriteShape: Boolean): Catalo
     CatalogModel(type, kind, hasWriteShape)
 
 private suspend fun catalog(): ModelCatalog {
-    val sharedGenerator = openApiGenerator {
+    val sharedGenerator = Codegen.openApi {
         packageName = "com.example.shared"
         apiName = "Shared"
     }

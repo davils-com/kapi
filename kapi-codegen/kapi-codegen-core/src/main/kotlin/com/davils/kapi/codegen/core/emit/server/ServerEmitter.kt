@@ -19,6 +19,7 @@ package com.davils.kapi.codegen.core.emit.server
 
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
+import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
@@ -186,6 +187,7 @@ internal class ServerEmitter(
             path = packageName.replace('.', '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,
             content = file.build().toString(),
+            platform = GeneratedPlatform.Jvm,
         )
     }
 }

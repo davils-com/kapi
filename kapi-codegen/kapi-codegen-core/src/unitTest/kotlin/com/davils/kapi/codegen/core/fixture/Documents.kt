@@ -27,7 +27,7 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.codegen.core.fixture.MemoryResolver
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.Generator
-import com.davils.kapi.codegen.core.openApiGenerator
+import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.options.GeneratorBuilder
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -62,7 +62,7 @@ internal fun schema(vararg lines: String): List<String> {
 }
 
 internal fun generator(configure: GeneratorBuilder.() -> Unit = {}): Generator =
-    openApiGenerator {
+    Codegen.openApi {
         packageName = PACKAGE
         apiName = API
         configure()

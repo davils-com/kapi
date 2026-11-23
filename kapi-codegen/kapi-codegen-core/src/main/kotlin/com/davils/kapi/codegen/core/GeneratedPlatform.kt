@@ -17,10 +17,23 @@
 
 package com.davils.kapi.codegen.core
 
-import com.davils.kapi.codegen.core.options.GeneratorBuilder
+/**
+ * The platforms a generated file compiles for.
+ *
+ * @since 1.0.0
+ */
+public enum class GeneratedPlatform {
+    /**
+     * Every platform of Kotlin Multiplatform that kapi's client runtime supports: the JVM and WebAssembly.
+     *
+     * @since 1.0.0
+     */
+    Common,
 
-public fun openApiGenerator(configure: GeneratorBuilder.() -> Unit): Generator {
-    val builder = GeneratorBuilder()
-    builder.configure()
-    return Generator(builder.build())
+    /**
+     * The JVM only, because the file builds on the server runtime on Ktor.
+     *
+     * @since 1.0.0
+     */
+    Jvm,
 }

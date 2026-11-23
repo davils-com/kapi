@@ -17,8 +17,26 @@
 
 package com.davils.kapi.codegen.core
 
-public data class GeneratedFile(
+/**
+ * A file the generator produced.
+ *
+ * @property path the path of the file relative to the root of its kind, with `/` as separator, such as
+ * `com/example/petstore/model/Pet.kt`.
+ * @property kind whether the file is Kotlin or a resource.
+ * @property content the text of the file.
+ * @property platform the platform the file needs: models and clients run everywhere, servers and mocks on the JVM.
+ * @since 1.0.0
+ */
+public class GeneratedFile(
     public val path: String,
     public val kind: GeneratedFileKind,
     public val content: String,
-)
+    public val platform: GeneratedPlatform = GeneratedPlatform.Common,
+) {
+    override fun equals(other: Any?): Boolean = other is GeneratedFile && path == other.path && kind == other.kind &&
+        content == other.content && platform == other.platform
+
+    override fun hashCode(): Int = listOf(path, kind, content, platform).hashCode()
+
+    override fun toString(): String = "GeneratedFile($path, $kind, $platform, ${content.length} characters)"
+}

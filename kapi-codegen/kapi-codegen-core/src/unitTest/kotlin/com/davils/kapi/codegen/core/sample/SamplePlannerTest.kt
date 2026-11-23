@@ -31,7 +31,7 @@ import com.davils.kapi.codegen.core.fixture.readWith
 import com.davils.kapi.codegen.core.fixture.samplesOf
 import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.textOf
-import com.davils.kapi.codegen.core.openApiGenerator
+import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.options.Artifact
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -73,7 +73,7 @@ private val broken: List<String> = model(BROKEN, "code: $UNMATCHED", required = 
 private val loop: List<String> = model("Loop", "next: {${REF}Loop'}", required = "next")
 
 private suspend fun foreignSamples(): String {
-    val sharedGenerator = openApiGenerator {
+    val sharedGenerator = Codegen.openApi {
         packageName = "com.example.shared"
         apiName = "Shared"
     }
