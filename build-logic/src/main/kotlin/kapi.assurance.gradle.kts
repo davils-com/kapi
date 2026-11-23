@@ -88,6 +88,8 @@ kreate {
             enabled = isRoot
             members = setOf(
                 ":",
+                ":kapi-spec:kapi-spec-core",
+                ":kapi-spec:kapi-spec-openapi",
             )
         }
 

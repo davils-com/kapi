@@ -23,9 +23,15 @@ gradle:
 check:
   tasks: [check]
   reproducible:
-    clean-tasks: []
-    tasks: []
-    artifacts: []
+    clean-tasks:
+      - ":kapi-spec:kapi-spec-core:clean"
+      - ":kapi-spec:kapi-spec-openapi:clean"
+    tasks:
+      - ":kapi-spec:kapi-spec-core:jvmJar"
+      - ":kapi-spec:kapi-spec-openapi:jvmJar"
+    artifacts:
+      - "kapi-spec/kapi-spec-core/build/libs/*.jar"
+      - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
 
 policy:
   # Line breaks, paths and timers differ on Windows, and kapi reads documents from files and serves real sockets in
@@ -53,7 +59,9 @@ security:
 
 publish:
   build-tasks: [assemble]
-  tasks: []
+  tasks:
+    - ":kapi-spec:kapi-spec-core:publishAllPublicationsToDavilsRepository"
+    - ":kapi-spec:kapi-spec-openapi:publishAllPublicationsToDavilsRepository"
 
 snapshot:
   # kapi's own build makes every build without a release tag a snapshot.
@@ -64,9 +72,30 @@ release:
     discovery: explicit
     # In upload order: the publication of every target before the multiplatform publication that names them.
     list:
-      []
+      - path: com/davils/kapi-spec-core-jvm
+        artifact: kapi-spec-core-jvm
+        task: ":kapi-spec:kapi-spec-core:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-core-wasm-js
+        artifact: kapi-spec-core-wasm-js
+        task: ":kapi-spec:kapi-spec-core:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-core
+        artifact: kapi-spec-core
+        task: ":kapi-spec:kapi-spec-core:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-openapi-jvm
+        artifact: kapi-spec-openapi-jvm
+        task: ":kapi-spec:kapi-spec-openapi:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-openapi-wasm-js
+        artifact: kapi-spec-openapi-wasm-js
+        task: ":kapi-spec:kapi-spec-openapi:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-spec-openapi
+        artifact: kapi-spec-openapi
+        task: ":kapi-spec:kapi-spec-openapi:publishKotlinMultiplatformPublicationToDavilsRepository"
   attest:
-    subjects: []
+    subjects:
+      - "kapi-spec/kapi-spec-core/build/libs/*.jar"
+      - "kapi-spec/kapi-spec-core/build/libs/*.klib"
+      - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
+      - "kapi-spec/kapi-spec-openapi/build/libs/*.klib"
   github-release:
     enabled: false
 

@@ -27,7 +27,7 @@ kreate {
             reviewEvery = Duration.ofDays(365)
 
             inventory {
-                includes.set(setOf("*.md", "kapi-*/src/**"))
+                includes.set(setOf("*.md", "kapi-*/kapi-*/src/**"))
             }
 
             github("OAI/OpenAPI-Specification") {

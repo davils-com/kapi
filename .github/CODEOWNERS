@@ -4,6 +4,10 @@
 # The build's own logic and the published API surface change what consumers get.
 /build-logic/                           @davils-com/maintainers
 /gradle/                                @davils-com/maintainers
+/kapi-spec/kapi-spec-core/api/              @davils-com/maintainers
+/kapi-spec/kapi-spec-core/src/jvmMain/java/ @davils-com/maintainers
+/kapi-spec/kapi-spec-openapi/api/           @davils-com/maintainers
+/kapi-spec/kapi-spec-openapi/src/jvmMain/java/@davils-com/maintainers
 
 # Anything that decides what CI trusts or what leaves the build.
 /.github/workflows/                     @davils-com/maintainers

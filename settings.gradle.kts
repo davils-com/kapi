@@ -124,3 +124,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kapi"
+
+include(":kapi-spec:kapi-spec-core")
+include(":kapi-spec:kapi-spec-openapi")
