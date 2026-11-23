@@ -17,6 +17,7 @@
 package com.davils.kapi.runtime.server.internal
 
 import com.davils.kapi.runtime.core.codec.multipart.MultipartFailure
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.problem.ServerCodes
 
 internal object MultipartRefusals {
@@ -27,16 +28,16 @@ internal object MultipartRefusals {
         MultipartFailure.PartTooLarge,
         MultipartFailure.BodyTooLarge,
         MultipartFailure.PreambleTooLong,
-        -> Statuses.TOO_LARGE
+        -> HttpStatus.CONTENT_TOO_LARGE
 
         MultipartFailure.MalformedHeader,
         MultipartFailure.MalformedDelimiter,
         MultipartFailure.Truncated,
-        -> Statuses.BAD_REQUEST
+        -> HttpStatus.BAD_REQUEST
     }
 
     fun codeOf(failure: MultipartFailure): String {
-        if (statusOf(failure) == Statuses.TOO_LARGE) return ServerCodes.TOO_LARGE
+        if (statusOf(failure) == HttpStatus.CONTENT_TOO_LARGE) return ServerCodes.TOO_LARGE
         return ServerCodes.MALFORMED
     }
 }

@@ -21,6 +21,7 @@ import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.problem.Problem
 import com.davils.kapi.runtime.core.problem.ProblemSerializer
 import com.davils.kapi.runtime.core.problem.ProblemViolation
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.problem.ProblemSettings
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.reply.Reply
@@ -47,16 +48,16 @@ internal class ProblemReplies(private val codecs: Codecs, private val settings: 
     }
 
     fun invalid(violations: List<ProblemViolation>): Reply =
-        problem(status = Statuses.BAD_REQUEST, code = ServerCodes.INVALID, violations = violations)
+        problem(status = HttpStatus.BAD_REQUEST, code = ServerCodes.INVALID, violations = violations)
 
     fun refused(admission: Admission.Refused): Reply {
-        val status = Statuses.FORBIDDEN.takeIf { admission.isForbidden } ?: Statuses.UNAUTHORIZED
+        val status = HttpStatus.FORBIDDEN.takeIf { admission.isForbidden } ?: HttpStatus.UNAUTHORIZED
         val code = ServerCodes.FORBIDDEN.takeIf { admission.isForbidden } ?: ServerCodes.UNAUTHENTICATED
         val headers = admission.challenges.map { challenge -> WWW_AUTHENTICATE to challenge }
         return problem(status = status, code = code, headers = headers)
     }
 
-    fun internal(): Reply = problem(status = Statuses.INTERNAL, code = ServerCodes.INTERNAL)
+    fun internal(): Reply = problem(status = HttpStatus.INTERNAL_SERVER_ERROR, code = ServerCodes.INTERNAL)
 
     private fun titleOf(status: Int): String = titles[status] ?: "The server could not answer"
 
@@ -64,17 +65,17 @@ internal class ProblemReplies(private val codecs: Codecs, private val settings: 
         const val WWW_AUTHENTICATE: String = "WWW-Authenticate"
 
         val titles: Map<Int, String> = mapOf(
-            Statuses.BAD_REQUEST to "The request is invalid",
-            Statuses.UNAUTHORIZED to "The request carries no valid credentials",
-            Statuses.FORBIDDEN to "The caller may not do this",
-            Statuses.NOT_ACCEPTABLE to "No media type the client accepts can be sent",
-            Statuses.PRECONDITION_FAILED to "A precondition of the request failed",
-            Statuses.TOO_LARGE to "The request is too large",
-            Statuses.URI_TOO_LONG to "The URI of the request is too long",
-            Statuses.UNSUPPORTED_MEDIA_TYPE to "The content of the request is not supported",
-            Statuses.RANGE_NOT_SATISFIABLE to "No range of the request can be sent",
-            Statuses.UPGRADE_REQUIRED to "The request must upgrade its protocol",
-            Statuses.HEADERS_TOO_LARGE to "The header fields of the request are too large",
+            HttpStatus.BAD_REQUEST to "The request is invalid",
+            HttpStatus.UNAUTHORIZED to "The request carries no valid credentials",
+            HttpStatus.FORBIDDEN to "The caller may not do this",
+            HttpStatus.NOT_ACCEPTABLE to "No media type the client accepts can be sent",
+            HttpStatus.PRECONDITION_FAILED to "A precondition of the request failed",
+            HttpStatus.CONTENT_TOO_LARGE to "The request is too large",
+            HttpStatus.URI_TOO_LONG to "The URI of the request is too long",
+            HttpStatus.UNSUPPORTED_MEDIA_TYPE to "The content of the request is not supported",
+            HttpStatus.RANGE_NOT_SATISFIABLE to "No range of the request can be sent",
+            HttpStatus.UPGRADE_REQUIRED to "The request must upgrade its protocol",
+            HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE to "The header fields of the request are too large",
         )
     }
 }

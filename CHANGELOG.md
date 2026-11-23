@@ -36,3 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The core runtime** shares what the other runtimes duplicated: `FieldSyntax` (tokens and field values) and the
   `bounded` limit check as `@DavilsInternal` API, `HttpStatus` with the status codes and their classes,
   `Headers.joined` for the combined value of every line of a field and `Codecs.decode` for a parsed `MediaType`.
+- **The server runtime** reads the shared grammar, limit check and status codes of the core runtime instead of copies,
+  and adds `ReplyBuilder.events(serializer, items)` for typed server-sent events, `Input.part`, `Input.partItems` and
+  `Input.field` that decode parts and form fields through the codecs of the server, an `admission` hook on
+  `ChannelEndpoint` that refuses an invalid handshake before the upgrade, `ChannelSession.request` with a
+  `Correlation` and `ChannelLimits.maxHeldMessages`, `Request.of { }` to build a request without Ktor and
+  `ReplyBody.Value.encoded`.

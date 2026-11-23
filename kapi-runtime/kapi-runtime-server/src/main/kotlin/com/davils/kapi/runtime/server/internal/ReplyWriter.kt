@@ -18,6 +18,7 @@ package com.davils.kapi.runtime.server.internal
 
 import com.davils.kapi.runtime.core.codec.Codecs
 import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.reply.Reply
 import com.davils.kapi.runtime.server.reply.ReplyBody
 import io.ktor.http.ContentType
@@ -37,7 +38,7 @@ internal class ReplyWriter(private val codecs: Codecs) {
     suspend fun write(call: ApplicationCall, reply: Reply) {
         reply.headers.forEach { (name, value) -> call.response.headers.append(name, value, safeOnly = false) }
         val status = HttpStatusCode.fromValue(reply.status)
-        val isEmpty = reply.status == Statuses.NO_CONTENT || reply.status == Statuses.NOT_MODIFIED
+        val isEmpty = reply.status == HttpStatus.NO_CONTENT || reply.status == HttpStatus.NOT_MODIFIED
         when (val body = reply.body.takeUnless { isEmpty } ?: ReplyBody.Empty) {
             ReplyBody.Empty -> call.respond(Empty(status))
 

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server
 
 import com.davils.kapi.runtime.core.FieldLimits
+import com.davils.kapi.runtime.core.bounded
 import com.davils.kapi.runtime.core.codec.multipart.MultipartLimits
-import com.davils.kapi.runtime.server.internal.bounded
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 

@@ -66,6 +66,17 @@ public sealed interface ReplyBody {
         public val mediaType: MediaType,
         internal val encode: (Codecs) -> ByteString,
     ) : ReplyBody {
+        /**
+         * Writes the value as the server would when it sends the reply, such as in a test of a handler.
+         *
+         * @param codecs the codecs to write with, which are the ones of the server when it sends the reply.
+         * @return the written content.
+         * @throws IllegalStateException if no codec of [codecs] writes [mediaType].
+         * @throws kotlinx.serialization.SerializationException if the serializer of the value fails.
+         * @since 1.0.0
+         */
+        public fun encoded(codecs: Codecs): ByteString = encode(codecs)
+
         override fun toString(): String = "Value($mediaType)"
     }
 

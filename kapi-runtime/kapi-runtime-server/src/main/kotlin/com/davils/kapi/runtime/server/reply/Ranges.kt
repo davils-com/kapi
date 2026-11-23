@@ -24,7 +24,7 @@ import com.davils.kapi.runtime.core.range.MultipartByteRanges
 import com.davils.kapi.runtime.core.range.RangeRequest
 import com.davils.kapi.runtime.core.range.RangeResolution
 import com.davils.kapi.runtime.core.range.ResolvedRange
-import com.davils.kapi.runtime.server.internal.Statuses
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.request.Request
 import kotlinx.io.bytestring.ByteString
@@ -65,7 +65,7 @@ public fun Request.ranged(
     state: RepresentationState = RepresentationState(),
 ): Reply {
     val headers = listOf(ACCEPT_RANGES to BYTES) + validatorsOf(state)
-    val full = Reply(status = Statuses.OK, headers = headers, body = ReplyBody.Bytes(mediaType, content))
+    val full = Reply(status = HttpStatus.OK, headers = headers, body = ReplyBody.Bytes(mediaType, content))
     val resolution = resolutionOf(this, content.size.toLong(), state)
     return when (resolution) {
         null, RangeResolution.Full -> full
@@ -78,7 +78,7 @@ public fun Request.ranged(
         )
 
         is RangeResolution.Unsatisfiable -> context.problems.problem(
-            status = Statuses.RANGE_NOT_SATISFIABLE,
+            status = HttpStatus.RANGE_NOT_SATISFIABLE,
             code = ServerCodes.RANGE_NOT_SATISFIABLE,
             headers = listOf(CONTENT_RANGE to resolution.contentRange.toString()),
         )
@@ -103,7 +103,7 @@ private fun partial(
     val single = resolution.contentRange
     if (single != null) {
         val body = ReplyBody.Bytes(mediaType, slice(content, resolution.ranges.single()))
-        return Reply(Statuses.PARTIAL_CONTENT, headers + (CONTENT_RANGE to single.toString()), body)
+        return Reply(HttpStatus.PARTIAL_CONTENT, headers + (CONTENT_RANGE to single.toString()), body)
     }
     val boundary = Boundary.random()
     val encoded = MultipartByteRanges.encode(
@@ -113,7 +113,7 @@ private fun partial(
         parts = resolution.ranges.map { range -> range to slice(content, range) },
     )
     val body = ReplyBody.Bytes(MultipartByteRanges.contentType(boundary), encoded)
-    return Reply(Statuses.PARTIAL_CONTENT, headers, body)
+    return Reply(HttpStatus.PARTIAL_CONTENT, headers, body)
 }
 
 private fun slice(content: ByteString, range: ResolvedRange): ByteString =

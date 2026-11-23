@@ -60,6 +60,13 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
      */
     public var timeout: Duration = DEFAULT_TIMEOUT_SECONDS.seconds
 
+    /**
+     * See [ChannelLimits.maxHeldMessages].
+     *
+     * @since 1.0.0
+     */
+    public var maxHeldMessages: Int = DEFAULT_HELD_MESSAGES
+
     override fun assemble(): ChannelLimits = ChannelLimits(this)
 
     private companion object {
@@ -67,6 +74,7 @@ public class ChannelLimitsBuilder internal constructor() : ValidatingBuilder<Cha
         const val DEFAULT_MESSAGE_BYTES: Int = 1_024 * 1_024
         const val DEFAULT_PING_SECONDS: Int = 30
         const val DEFAULT_TIMEOUT_SECONDS: Int = 15
+        const val DEFAULT_HELD_MESSAGES: Int = 64
     }
 }
 

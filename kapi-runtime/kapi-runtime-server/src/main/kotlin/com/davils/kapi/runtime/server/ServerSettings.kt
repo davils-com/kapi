@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server
 
 import com.davils.kapi.runtime.core.codec.Codecs
-import com.davils.kapi.runtime.server.internal.PathTemplates
+import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.runtime.server.problem.ProblemSettings
 import com.davils.kapi.runtime.server.security.Authorizer
 import com.davils.kapi.runtime.server.telemetry.TelemetrySettings
@@ -108,7 +110,7 @@ public class ServerSettings internal constructor(builder: ServerSettingsBuilder)
         if (!isRealm) {
             fail(::realm, "must be printable ASCII without quotes", ServerViolationCodes.REALM_INVALID)
         }
-        if (!authorizers.keys.all(PathTemplates::isToken)) {
+        if (!authorizers.keys.all(FieldSyntax::isToken)) {
             fail(::authorizers, "must be keyed by the names of schemes", ServerViolationCodes.SCHEME_INVALID)
         }
     }

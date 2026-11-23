@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server.internal
 
 import com.davils.kapi.runtime.core.codec.Codecs
 import com.davils.kapi.runtime.core.codec.multipart.MultipartFailure
+import com.davils.kapi.runtime.core.header.FieldSyntax
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.core.structured.BareItem
 import com.davils.kapi.runtime.core.structured.InnerList
 import com.davils.kapi.runtime.core.structured.Item
@@ -28,6 +32,7 @@ import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.SchemeUse
 import com.davils.kapi.runtime.server.reply.reply
 import com.davils.kapi.runtime.server.security.Authorization
+import com.davils.kore.core.annotation.DavilsInternal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.get
@@ -52,7 +57,7 @@ class InternalsTest : FunSpec({
             PathTemplates.isMethod("QUERY") shouldBe true
             PathTemplates.isMethod("Query") shouldBe false
             PathTemplates.isMethod("") shouldBe false
-            PathTemplates.isToken("a b") shouldBe false
+            FieldSyntax.isToken("a b") shouldBe false
             PathTemplates.isTemplate("/a/{b}-{c}.json") shouldBe true
             PathTemplates.isTemplate("/" + "a".repeat(LONG)) shouldBe false
             PathTemplates.isTemplate("/a#b") shouldBe false
@@ -69,7 +74,7 @@ class InternalsTest : FunSpec({
             PathTemplates.isTemplate("/a/{b?}") shouldBe false
             PathTemplates.isTemplate("/a?") shouldBe false
             PathTemplates.isTemplate("/a/{é}") shouldBe false
-            PathTemplates.isToken("a~|`^") shouldBe true
+            FieldSyntax.isToken("a~|`^") shouldBe true
         }
     }
 
@@ -88,15 +93,15 @@ class InternalsTest : FunSpec({
     context("the refusal of a multipart body") {
         test("is 413 for every broken limit and 400 for every broken grammar") {
             MultipartFailure.entries.associateWith(MultipartRefusals::statusOf) shouldBe mapOf(
-                MultipartFailure.TooManyParts to Statuses.TOO_LARGE,
-                MultipartFailure.HeadersTooLong to Statuses.TOO_LARGE,
-                MultipartFailure.TooManyHeaders to Statuses.TOO_LARGE,
-                MultipartFailure.MalformedHeader to Statuses.BAD_REQUEST,
-                MultipartFailure.PartTooLarge to Statuses.TOO_LARGE,
-                MultipartFailure.BodyTooLarge to Statuses.TOO_LARGE,
-                MultipartFailure.PreambleTooLong to Statuses.TOO_LARGE,
-                MultipartFailure.MalformedDelimiter to Statuses.BAD_REQUEST,
-                MultipartFailure.Truncated to Statuses.BAD_REQUEST,
+                MultipartFailure.TooManyParts to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.HeadersTooLong to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.TooManyHeaders to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.MalformedHeader to HttpStatus.BAD_REQUEST,
+                MultipartFailure.PartTooLarge to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.BodyTooLarge to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.PreambleTooLong to HttpStatus.CONTENT_TOO_LARGE,
+                MultipartFailure.MalformedDelimiter to HttpStatus.BAD_REQUEST,
+                MultipartFailure.Truncated to HttpStatus.BAD_REQUEST,
             )
         }
     }

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server.internal
 
-private const val TOKEN_SYMBOLS: String = "!#$%&'*+-.^_`|~"
+import com.davils.kapi.runtime.core.header.FieldSyntax
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val NAME_SYMBOLS: String = "_-."
 
 private const val MOST_TEMPLATE_LENGTH: Int = 2_048
 
 internal object PathTemplates {
-    fun isMethod(text: String): Boolean = isToken(text) && text.none(Char::isLowerCase)
-
-    fun isToken(text: String): Boolean = text.isNotEmpty() && text.all(::isTokenChar)
+    fun isMethod(text: String): Boolean = FieldSyntax.isToken(text) && text.none(Char::isLowerCase)
 
     fun isTemplate(text: String): Boolean {
         val isShaped = text.startsWith('/') && text.length <= MOST_TEMPLATE_LENGTH && '?' !in text && '#' !in text
@@ -63,8 +64,6 @@ internal object PathTemplates {
         char == '*' || char == '?' || char.isWhitespace() || char.code < ' '.code
 
     private fun isNameChar(char: Char): Boolean = isAsciiLetterOrDigit(char) || char in NAME_SYMBOLS
-
-    private fun isTokenChar(char: Char): Boolean = isAsciiLetterOrDigit(char) || char in TOKEN_SYMBOLS
 
     private fun isAsciiLetterOrDigit(char: Char): Boolean = char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9'
 }

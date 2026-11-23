@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.server.internal
 
-private const val TAB: Char = '\t'
-
-private const val DELETE: Char = '\u007F'
+import com.davils.kapi.runtime.core.header.FieldSyntax
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val MOST_VALUE_LENGTH: Int = 65_536
 
@@ -34,14 +35,12 @@ private val reserved: Set<String> = setOf(
 
 internal object HeaderChecks {
     fun requireField(name: String, value: String) {
-        require(PathTemplates.isToken(name)) { "The name of a header field is a token" }
+        require(FieldSyntax.isToken(name)) { "The name of a header field is a token" }
         require(name.lowercase() !in reserved) { "The header field ${name.lowercase()} is written by the server" }
         require(isValue(value)) { "The value of a header field holds no control character and no line break" }
     }
 
-    fun isValue(value: String): Boolean = value.length <= MOST_VALUE_LENGTH && value.none(::isControl)
+    fun isValue(value: String): Boolean = value.length <= MOST_VALUE_LENGTH && FieldSyntax.isFieldValue(value)
 
     fun isLine(value: String): Boolean = value.none { char -> char == '\r' || char == '\n' || char == '\u0000' }
-
-    private fun isControl(char: Char): Boolean = (char < ' ' && char != TAB) || char == DELETE
 }

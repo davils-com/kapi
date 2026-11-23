@@ -29,18 +29,17 @@ import com.davils.kapi.runtime.core.parameter.ParameterReading
 import com.davils.kapi.runtime.core.parameter.ParameterShape
 import com.davils.kapi.runtime.core.parameter.ParameterValue
 import com.davils.kapi.runtime.core.parameter.QueryString
-import com.davils.kapi.runtime.core.problem.ProblemViolation
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.internal.BodyRead
 import com.davils.kapi.runtime.server.internal.BodyRefusal
+import com.davils.kapi.runtime.server.internal.InputFindings
 import com.davils.kapi.runtime.server.internal.MultipartRefusals
 import com.davils.kapi.runtime.server.internal.ParameterReader
-import com.davils.kapi.runtime.server.internal.Statuses
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.reply.Reply
 import com.davils.kore.core.failure.contained
 import com.davils.kore.core.outcome.Outcome
 import com.davils.kore.core.validation.Validatable
-import com.davils.kore.core.validation.validate
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 import kotlinx.serialization.DeserializationStrategy
@@ -51,10 +50,6 @@ private const val BODY: String = "body"
 
 private const val QUERY: String = "query"
 
-private const val MALFORMED: String = "is not what the document declares"
-
-private const val REQUIRED: String = "is required"
-
 private const val ACCEPT: String = "accept"
 
 private const val ACCEPT_ENCODING: String = "Accept-Encoding"
@@ -64,6 +59,8 @@ private const val SUPPORTED_CODINGS: String = "gzip, deflate"
 private const val STRUCTURED_STARTS: String = "[{"
 
 private fun pathOf(place: Place, format: ParameterFormat): String = "${place.label}.${format.name}"
+
+private fun pathOf(name: String): String = "$BODY.$name"
 
 /**
  * Reads a request as a whole: its parameters in every style of OpenAPI 3.2 §4.12, its body by its `Content-Type`
@@ -90,16 +87,14 @@ public class Input internal constructor(private val request: Request) {
 
     private val reader = ParameterReader(request)
 
-    private val violations: MutableList<ProblemViolation> = mutableListOf()
-
-    private var refusal: Refusal? = null
+    private val findings: InputFindings = InputFindings()
 
     /**
      * Whether every reader so far found what it was asked for.
      *
      * @since 1.0.0
      */
-    public val isValid: Boolean get() = violations.isEmpty() && refusal == null
+    public val isValid: Boolean get() = findings.isValid
 
     /**
      * Reads a parameter whose schema is a single value.
@@ -116,7 +111,7 @@ public class Input internal constructor(private val request: Request) {
         val path = pathOf(place, format)
         val reading = reader.read(place = place, format = format, shape = ParameterShape.Text)
         val text = present(reading, path, isRequired) as? ParameterValue.Text ?: return null
-        return decoded(type, text.value) ?: violated(path = path, code = ServerCodes.MALFORMED, message = MALFORMED)
+        return decoded(type, text.value) ?: findings.violated(path)
     }
 
     /**
@@ -140,11 +135,7 @@ public class Input internal constructor(private val request: Request) {
         val reading = reader.read(place = place, format = format, shape = ParameterShape.Items)
         val items = present(reading, path, isRequired) as? ParameterValue.Items ?: return null
         val values = items.values.mapNotNull { text -> decoded(type, text) }
-        return values.takeIf { values.size == items.values.size } ?: violated(
-            path = path,
-            code = ServerCodes.MALFORMED,
-            message = MALFORMED,
-        )
+        return values.takeIf { values.size == items.values.size } ?: findings.violated(path)
     }
 
     /**
@@ -174,7 +165,7 @@ public class Input internal constructor(private val request: Request) {
         val found = present(reading, path, isRequired) as? ParameterValue.Fields ?: return null
         val element = JsonObject(found.values.mapValues { (_, text) -> JsonPrimitive(text) })
         val value = contained { context.codecs.json.decodeFromJsonElement(deserializer, element) }.getOrNull()
-        return value ?: violated(path = path, code = ServerCodes.MALFORMED, message = MALFORMED)
+        return value ?: findings.violated(path)
     }
 
     /**
@@ -195,12 +186,8 @@ public class Input internal constructor(private val request: Request) {
         val reading = QueryString.read(request.rawQuery?.takeIf(String::isNotEmpty), mediaType)
         val text = present(reading, QUERY, isRequired) as? ParameterValue.Text ?: return null
         val content = text.value.encodeToByteString()
-        val decoding = context.codecs.decode(deserializer, content, mediaType.toString())
-        return (decoding as? Decoding.Decoded)?.value ?: violated(
-            path = QUERY,
-            code = ServerCodes.MALFORMED,
-            message = MALFORMED,
-        )
+        val decoding = context.codecs.decode(deserializer, content, mediaType)
+        return (decoding as? Decoding.Decoded)?.value ?: findings.violated(QUERY)
     }
 
     /**
@@ -222,11 +209,11 @@ public class Input internal constructor(private val request: Request) {
     ): T? {
         val type = typed(isRequired, mediaTypes)?.takeIf(::isDecodable)
         val content = type?.let { content(isRequired, context.limits.maxRequestBytes) }
-        val decoding = content?.let { bytes -> context.codecs.decode(deserializer, bytes, type.toString()) }
+        val decoding = content?.let { bytes -> context.codecs.decode(deserializer, bytes, type) }
         return when (decoding) {
             null -> null
             is Decoding.Failed -> malformedBody()
-            is Decoding.Decoded -> checked(decoding.value)
+            is Decoding.Decoded -> findings.checked(decoding.value, BODY)
         }
     }
 
@@ -261,6 +248,91 @@ public class Input internal constructor(private val request: Request) {
             is Outcome.Success -> decoded.value
             is Outcome.Failure -> multipartRefused(MultipartRefusals.statusOf(decoded.failure))
         }
+    }
+
+    /**
+     * Reads the first part named [name] of [parts] as a value, decoded by the codec of the server that covers the
+     * `Content-Type` of the part, or [mediaType] when the part names none, and validates it when it is [Validatable].
+     *
+     * A part without a type is `text/plain` by RFC 7578 §4.4; the encoding object of OpenAPI 3.2 §4.15 declares
+     * `application/json` for an object instead, which the caller passes as [mediaType]. A missing required part or
+     * one the codec cannot read is a violation under `body.<name>`; a part of a type no codec of the server reads is
+     * malformed as well, since the body as a whole was accepted.
+     *
+     * @param T the type of the value.
+     * @param parts the parts [Input.parts] read, or `null` if the body is missing or was refused.
+     * @param name the name of the part in its `Content-Disposition`.
+     * @param deserializer the deserializer of the value.
+     * @param isRequired whether the part is required.
+     * @param mediaType the media type of a part that names none; `text/plain` by default.
+     * @return the value, or `null` if the part is missing or malformed.
+     * @since 1.0.0
+     */
+    public fun <T : Any> part(
+        parts: List<MultipartPart>?,
+        name: String,
+        deserializer: DeserializationStrategy<T>,
+        isRequired: Boolean,
+        mediaType: MediaType = MediaType.TextPlain,
+    ): T? {
+        val found = parts?.firstOrNull { part -> part.name == name }
+        val path = pathOf(name)
+        if (found == null) return findings.absent(path, isRequired && parts != null)
+        return decodedPart(part = found, path = path, deserializer = deserializer, mediaType = mediaType)
+    }
+
+    /**
+     * Reads every part named [name] of [parts] as a value, in order, as [part] reads one.
+     *
+     * @param T the type of an item.
+     * @param parts the parts [Input.parts] read, or `null` if the body is missing or was refused.
+     * @param name the name of the parts in their `Content-Disposition`.
+     * @param deserializer the deserializer of an item.
+     * @param mediaType the media type of a part that names none; `text/plain` by default.
+     * @return the items, empty if there is no such part, or `null` if [parts] is `null` or a part is malformed.
+     * @since 1.0.0
+     */
+    public fun <T : Any> partItems(
+        parts: List<MultipartPart>?,
+        name: String,
+        deserializer: DeserializationStrategy<T>,
+        mediaType: MediaType = MediaType.TextPlain,
+    ): List<T>? {
+        val named = parts?.filter { part -> part.name == name } ?: return null
+        val path = pathOf(name)
+        val values = named.mapNotNull { part ->
+            decodedPart(part = part, path = path, deserializer = deserializer, mediaType = mediaType)
+        }
+        return values.takeIf { values.size == named.size }
+    }
+
+    /**
+     * Reads [text], such as a field of a form or a text part, as a value of [mediaType] through the codec of the
+     * server that covers it, and validates it when it is [Validatable].
+     *
+     * A form of `application/x-www-form-urlencoded` carries every field as text; a field whose schema is no string,
+     * such as a number or an object, is read as JSON by default, as the encoding object of OpenAPI 3.2 §4.15 declares.
+     * A missing required field or a text the codec cannot read is a violation under `body.<name>`.
+     *
+     * @param T the type of the value.
+     * @param name the name of the field, which names the violation.
+     * @param text the text of the field, or `null` if it is missing.
+     * @param deserializer the deserializer of the value.
+     * @param isRequired whether the field is required.
+     * @param mediaType the media type of the text; `application/json` by default.
+     * @return the value, or `null` if the field is missing or malformed.
+     * @since 1.0.0
+     */
+    public fun <T : Any> field(
+        name: String,
+        text: String?,
+        deserializer: DeserializationStrategy<T>,
+        isRequired: Boolean,
+        mediaType: MediaType = MediaType.Json,
+    ): T? {
+        val path = pathOf(name)
+        val content = text?.encodeToByteString() ?: return findings.absent(path, isRequired)
+        return findings.decoded(path, context.codecs.decode(deserializer, content, mediaType))
     }
 
     /**
@@ -319,7 +391,7 @@ public class Input internal constructor(private val request: Request) {
             )
         }
         val chosen = Negotiation.chooseMediaType(accepted, offered)
-        return chosen ?: refuse(Statuses.NOT_ACCEPTABLE, ServerCodes.NOT_ACCEPTABLE)
+        return chosen ?: findings.refuse(HttpStatus.NOT_ACCEPTABLE, ServerCodes.NOT_ACCEPTABLE)
     }
 
     /**
@@ -330,26 +402,26 @@ public class Input internal constructor(private val request: Request) {
      * @since 1.0.0
      */
     public fun refused(): Reply {
-        val found = refusal ?: return context.problems.invalid(violations.toList())
+        val found = findings.refusal ?: return context.problems.invalid(findings.violations)
         return context.problems.problem(
             status = found.status,
             code = found.code,
-            violations = violations.toList(),
+            violations = findings.violations,
             headers = found.headers,
         )
     }
 
-    override fun toString(): String = "Input(${request.operation}, violations=${violations.size})"
+    override fun toString(): String = "Input(${request.operation}, violations=${findings.violations.size})"
 
     private fun typed(isRequired: Boolean, mediaTypes: List<MediaRange>): MediaType? {
-        if (!request.hasBody) return absent(BODY, isRequired)
+        if (!request.hasBody) return findings.absent(BODY, isRequired)
         val type = request.contentType?.takeIf { found -> mediaTypes.any { range -> range.matches(found) } }
-        return type ?: refuse(Statuses.UNSUPPORTED_MEDIA_TYPE, UNSUPPORTED)
+        return type ?: findings.refuse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, UNSUPPORTED)
     }
 
     private fun isDecodable(type: MediaType): Boolean {
         val isCovered = context.codecs.codecFor(type) != null
-        if (!isCovered) refuse<Unit>(Statuses.UNSUPPORTED_MEDIA_TYPE, UNSUPPORTED)
+        if (!isCovered) findings.refuse<Unit>(HttpStatus.UNSUPPORTED_MEDIA_TYPE, UNSUPPORTED)
         return isCovered
     }
 
@@ -358,27 +430,28 @@ public class Input internal constructor(private val request: Request) {
         return MultipartFormData.boundaryOf(type) ?: malformedBody()
     }
 
-    private fun <T> malformedBody(): T? = violated(path = BODY, code = ServerCodes.MALFORMED, message = MALFORMED)
+    private fun <T> malformedBody(): T? = findings.violated(BODY)
 
     private suspend fun content(isRequired: Boolean, limit: Long): ByteString? =
         when (val read = request.body.bytes(minOf(a = limit, b = context.codecs.maxContentBytes.toLong()))) {
             is BodyRead.Refused -> refused(read.refusal)
-            is BodyRead.Read -> read.value.takeIf { bytes -> bytes.size > 0 } ?: absent(BODY, isRequired)
+            is BodyRead.Read -> read.value.takeIf { bytes -> bytes.size > 0 } ?: findings.absent(BODY, isRequired)
         }
 
-    private fun <T : Any> checked(value: T): T {
-        val validatable = value as? Validatable ?: return value
-        val report = validatable.validate(BODY)
-        violations += report.errors.map { violation ->
-            ProblemViolation(path = "$BODY.${violation.path}", code = violation.code.value, message = violation.message)
-        }
-        return value
+    private fun <T : Any> decodedPart(
+        part: MultipartPart,
+        path: String,
+        deserializer: DeserializationStrategy<T>,
+        mediaType: MediaType,
+    ): T? {
+        val type = part.contentType ?: mediaType
+        return findings.decoded(path, context.codecs.decode(deserializer, part.content, type))
     }
 
     private fun present(reading: ParameterReading, path: String, isRequired: Boolean): ParameterValue? =
         when (reading) {
-            ParameterReading.Absent -> absent(path, isRequired)
-            ParameterReading.Malformed -> violated(path = path, code = ServerCodes.MALFORMED, message = MALFORMED)
+            ParameterReading.Absent -> findings.absent(path, isRequired)
+            ParameterReading.Malformed -> findings.violated(path)
             is ParameterReading.Present -> reading.value
         }
 
@@ -392,32 +465,15 @@ public class Input internal constructor(private val request: Request) {
         return value?.takeUnless { isStructured }
     }
 
-    private fun <T> absent(path: String, isRequired: Boolean): T? {
-        if (isRequired) violations += ProblemViolation(path = path, code = ServerCodes.REQUIRED, message = REQUIRED)
-        return null
-    }
-
-    private fun <T> violated(path: String, code: String, message: String): T? {
-        violations += ProblemViolation(path = path, code = code, message = message)
-        return null
-    }
-
     private fun <T> refused(found: BodyRefusal): T? {
         val headers = listOf(ACCEPT_ENCODING to SUPPORTED_CODINGS).takeIf { found == BodyRefusal.UnsupportedEncoding }
-        return refuse(found.status, found.code, headers.orEmpty())
+        return findings.refuse(found.status, found.code, headers.orEmpty())
     }
 
     private fun <T> multipartRefused(status: Int): T? {
-        if (status == Statuses.TOO_LARGE) return refuse(status, ServerCodes.TOO_LARGE)
-        return violated(path = BODY, code = ServerCodes.MALFORMED, message = MALFORMED)
+        if (status == HttpStatus.CONTENT_TOO_LARGE) return findings.refuse(status, ServerCodes.TOO_LARGE)
+        return findings.violated(BODY)
     }
-
-    private fun <T> refuse(status: Int, code: String, headers: List<Pair<String, String>> = emptyList()): T? {
-        refusal = refusal ?: Refusal(status, code, headers)
-        return null
-    }
-
-    private data class Refusal(val status: Int, val code: String, val headers: List<Pair<String, String>>)
 
     private companion object {
         const val UNSUPPORTED: String = ServerCodes.UNSUPPORTED_MEDIA_TYPE

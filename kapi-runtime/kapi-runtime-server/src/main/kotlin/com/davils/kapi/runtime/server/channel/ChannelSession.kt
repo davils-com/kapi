@@ -18,6 +18,7 @@ package com.davils.kapi.runtime.server.channel
 
 import com.davils.kapi.runtime.server.request.Request
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 
 /**
  * A typed WebSocket session of RFC 6455 of a channel of AsyncAPI 3: the messages a server receives and sends.
@@ -69,6 +70,22 @@ public interface ChannelSession<Receive : Any, Send : Any> {
      * @since 1.0.0
      */
     public suspend fun send(message: Send)
+
+    /**
+     * Sends [message] as a request and waits for the first message of the client with the same correlation id, by
+     * the [ChannelEndpoint.correlation] of the endpoint.
+     *
+     * The session reads the messages of the client while it waits, so a request must not run at the same time as
+     * [receive] or a collection of [incoming]. A message that is no reply is held, in order, for the next [receive];
+     * once more than [ChannelLimits.maxHeldMessages] are held, the session closes the channel with 1008 (Policy
+     * Violation) rather than buffer without bound. Messages that arrive after the timeout are read as any other.
+     *
+     * @param message the request.
+     * @param timeout how long to wait for the reply.
+     * @return the reply, or why there is none.
+     * @since 1.0.0
+     */
+    public suspend fun request(message: Send, timeout: Duration): ChannelReply<Receive>
 
     /**
      * Closes the channel with [code] and [reason].

@@ -19,7 +19,7 @@ package com.davils.kapi.runtime.server.reply
 import com.davils.kapi.runtime.core.conditional.PreconditionDecision
 import com.davils.kapi.runtime.core.conditional.Preconditions
 import com.davils.kapi.runtime.core.conditional.RepresentationState
-import com.davils.kapi.runtime.server.internal.Statuses
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.request.Request
 
@@ -67,11 +67,11 @@ public suspend fun Request.conditional(state: RepresentationState, produce: susp
         }
 
         PreconditionDecision.NotModified -> {
-            Reply(status = Statuses.NOT_MODIFIED, headers = validatorsOf(state))
+            Reply(status = HttpStatus.NOT_MODIFIED, headers = validatorsOf(state))
         }
 
         PreconditionDecision.PreconditionFailed -> {
-            context.problems.problem(status = Statuses.PRECONDITION_FAILED, code = ServerCodes.PRECONDITION_FAILED)
+            context.problems.problem(status = HttpStatus.PRECONDITION_FAILED, code = ServerCodes.PRECONDITION_FAILED)
         }
     }
 

@@ -21,6 +21,7 @@ import com.davils.kapi.runtime.core.codec.form.FormUrlEncoding
 import com.davils.kapi.runtime.core.codec.form.formLimits
 import com.davils.kapi.runtime.core.destination.IpAddress
 import com.davils.kapi.runtime.core.problem.ProblemViolation
+import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.core.response.headersOf
 import com.davils.kapi.runtime.server.PeerAttributes
 import com.davils.kapi.runtime.server.ServerLimits
@@ -89,12 +90,14 @@ internal class RequestReader(private val context: ServerContext, private val sen
         val count = entries.sumOf { (_, values) -> values.size }
         val bytes = entries.sumOf { (name, values) -> values.sumOf { value -> name.length + value.length } }
         val isTooLarge = count > limits.maxHeaders || bytes > limits.maxHeaderBytes
-        return context.problems.problem(Statuses.HEADERS_TOO_LARGE, ServerCodes.HEADERS_TOO_LARGE).takeIf { isTooLarge }
+        val status = HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE
+        val problem = context.problems.problem(status, ServerCodes.HEADERS_TOO_LARGE)
+        return problem.takeIf { isTooLarge }
     }
 
     private fun lengthRefusal(rawQuery: String?): Reply? {
         val isTooLong = rawQuery.orEmpty().length > limits.maxQueryLength
-        return context.problems.problem(Statuses.URI_TOO_LONG, ServerCodes.URI_TOO_LONG).takeIf { isTooLong }
+        return context.problems.problem(HttpStatus.URI_TOO_LONG, ServerCodes.URI_TOO_LONG).takeIf { isTooLong }
     }
 
     private fun violationOf(failure: FormFailure): ProblemViolation {

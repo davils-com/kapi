@@ -16,6 +16,8 @@
 
 package com.davils.kapi.runtime.server.reply
 
+import com.davils.kapi.runtime.core.codec.Codecs
+import com.davils.kapi.runtime.core.codec.codecs
 import com.davils.kapi.runtime.core.framing.ServerSentEvent
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.server.fixture.Note
@@ -31,6 +33,7 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.io.bytestring.encodeToByteString
+import kotlinx.serialization.json.Json
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -39,6 +42,8 @@ private const val OK: Int = 200
 private const val PAUSE: Long = 120L
 
 private val beat: Duration = 20.milliseconds
+
+private val pretty: Codecs = codecs { json = Json { prettyPrint = true } }
 
 private fun records(vararg lines: String): String = lines.joinToString("") { line -> line + "\n" }
 
@@ -113,6 +118,25 @@ class StreamTest : FunSpec({
                 body shouldContain ":\n"
                 body shouldContain "data: late\n\n"
             }
+        }
+
+        test("of typed items writes each item as the JSON of the codecs of the server") {
+            val items = flowOf(Note("a"), Note("b\nc"))
+
+            serveOne(handler = { reply(OK) { events(Note.serializer(), items) } }) {
+                val response = client.post(PROBE)
+
+                response.headers["Cache-Control"] shouldBe "no-cache"
+                response.bodyAsText() shouldBe
+                    records("""data: {"text":"a"}""", "", """data: {"text":"b\nc"}""", "")
+            }
+            serveOne(
+                handler = { reply(OK) { events(Note.serializer(), items) } },
+                settings = { codecs = pretty },
+            ) {
+                client.post(PROBE).bodyAsText() shouldContain """data:     "text": "a""""
+            }
+            shouldThrow<IllegalArgumentException> { reply(OK) { events(Note.serializer(), items, Duration.ZERO) } }
         }
 
         test("refuses a heartbeat that never comes and a comment that would break a line") {
