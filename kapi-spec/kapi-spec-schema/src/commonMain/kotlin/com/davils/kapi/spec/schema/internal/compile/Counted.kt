@@ -18,4 +18,4 @@ package com.davils.kapi.spec.schema.internal.compile
 
 import com.davils.kapi.spec.schema.internal.keyword.Measure
 
-internal class Counted(val name: String, val measure: Measure, val isMaximum: Boolean)
+internal data class Counted(val name: String, val measure: Measure, val isMaximum: Boolean)

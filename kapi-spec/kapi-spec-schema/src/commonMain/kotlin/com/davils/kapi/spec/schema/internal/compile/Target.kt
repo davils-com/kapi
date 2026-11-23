@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.compile
 
-internal class Target(val document: Int, val pointer: List<String>)
+internal data class Target(val document: Int, val pointer: List<String>)

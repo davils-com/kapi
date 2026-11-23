@@ -31,6 +31,10 @@ public sealed interface Compilation {
      * @since 1.0.0
      */
     public class Compiled internal constructor(public val schema: CompiledSchema) : Compilation {
+        override fun equals(other: Any?): Boolean = other is Compiled && schema === other.schema
+
+        override fun hashCode(): Int = schema.hashCode()
+
         override fun toString(): String = "Compiled($schema)"
     }
 
@@ -43,6 +47,10 @@ public sealed interface Compilation {
      * @since 1.0.0
      */
     public class Invalid internal constructor(public val diagnostics: List<Diagnostic>) : Compilation {
+        override fun equals(other: Any?): Boolean = other is Invalid && diagnostics == other.diagnostics
+
+        override fun hashCode(): Int = diagnostics.hashCode()
+
         override fun toString(): String = "Invalid(${diagnostics.joinToString("; ")})"
     }
 }

@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.compile
 
-internal class Reference(val node: Int, val absolute: String, val target: Target)
+internal data class Reference(val node: Int, val absolute: String, val target: Target)

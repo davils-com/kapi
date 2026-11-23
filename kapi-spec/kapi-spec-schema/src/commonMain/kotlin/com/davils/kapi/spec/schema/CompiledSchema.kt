@@ -23,6 +23,7 @@ import com.davils.kapi.spec.schema.internal.evaluate.Failure
 import com.davils.kapi.spec.schema.internal.evaluate.Graph
 import com.davils.kapi.spec.schema.internal.evaluate.Run
 import com.davils.kapi.spec.schema.internal.evaluate.Visit
+import com.davils.kapi.spec.schema.internal.value.Instance
 import com.davils.kapi.spec.schema.internal.value.InstanceReader
 import com.davils.kapi.spec.schema.internal.value.YamlReader
 import kotlinx.serialization.json.JsonElement
@@ -82,7 +83,7 @@ public class CompiledSchema internal constructor(
     }
 
     private fun validated(
-        instance: com.davils.kapi.spec.schema.internal.value.Instance,
+        instance: Instance,
         output: OutputFormat,
     ): Validation {
         val sink = ArrayList<Failure>().takeIf { output == OutputFormat.Basic }

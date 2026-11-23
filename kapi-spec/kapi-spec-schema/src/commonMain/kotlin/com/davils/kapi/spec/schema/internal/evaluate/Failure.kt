@@ -18,4 +18,4 @@ package com.davils.kapi.spec.schema.internal.evaluate
 
 import com.davils.kapi.spec.schema.internal.Trail
 
-internal class Failure(val keyword: Trail?, val absolute: String, val instance: Trail?, val message: String)
+internal data class Failure(val keyword: Trail?, val absolute: String, val instance: Trail?, val message: String)

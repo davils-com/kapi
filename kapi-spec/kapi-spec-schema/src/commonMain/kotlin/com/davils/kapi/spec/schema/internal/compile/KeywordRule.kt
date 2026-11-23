@@ -21,7 +21,7 @@ import com.davils.kapi.spec.schema.internal.dialect.Vocabulary
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 import kotlinx.serialization.json.JsonElement
 
-internal class KeywordRule(
+internal data class KeywordRule(
     val name: String,
     val drafts: Set<Draft>,
     val vocabulary: Vocabulary?,

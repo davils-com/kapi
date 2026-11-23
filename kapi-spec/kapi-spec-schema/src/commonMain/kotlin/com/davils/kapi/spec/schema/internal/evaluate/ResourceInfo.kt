@@ -21,4 +21,4 @@ package com.davils.kapi.spec.schema.internal.evaluate
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.collection.OrderedMap
 
-internal class ResourceInfo(val uri: String, val dynamicAnchors: OrderedMap<String, Int>, val recursiveRoot: Int?)
+internal data class ResourceInfo(val uri: String, val dynamicAnchors: OrderedMap<String, Int>, val recursiveRoot: Int?)

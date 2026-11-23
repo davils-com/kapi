@@ -32,7 +32,7 @@ internal class Trail(val parent: Trail?, val token: String) {
 
     companion object {
         fun pointerOf(trail: Trail?): JsonPointer {
-            val tokens = trail?.tokens() ?: emptyList()
+            val tokens = trail?.tokens().orEmpty()
             return JsonPointer.of(tokens)
         }
     }

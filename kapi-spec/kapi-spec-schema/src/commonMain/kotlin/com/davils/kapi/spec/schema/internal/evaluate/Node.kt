@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.evaluate
 
-internal class Node(val resource: Int, val absolute: String, val keywords: List<Keyword>)
+internal data class Node(val resource: Int, val absolute: String, val keywords: List<Keyword>)

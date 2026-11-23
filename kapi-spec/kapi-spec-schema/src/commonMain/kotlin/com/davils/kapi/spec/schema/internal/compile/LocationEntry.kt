@@ -18,4 +18,4 @@ package com.davils.kapi.spec.schema.internal.compile
 
 import com.davils.kapi.spec.schema.internal.dialect.Profile
 
-internal class LocationEntry(val target: Target, val resource: Int, val profile: Profile)
+internal data class LocationEntry(val target: Target, val resource: Int, val profile: Profile)

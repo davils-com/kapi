@@ -19,4 +19,4 @@ package com.davils.kapi.spec.schema.internal.compile
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import kotlinx.serialization.json.JsonElement
 
-internal class Document(val index: Int, val uri: String, val root: JsonElement, val location: DocumentUri)
+internal data class Document(val index: Int, val uri: String, val root: JsonElement, val location: DocumentUri)

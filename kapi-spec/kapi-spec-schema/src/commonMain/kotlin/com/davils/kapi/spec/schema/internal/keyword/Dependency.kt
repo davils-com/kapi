@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
-internal class Dependency(val property: String, val required: List<String>?, val schema: Int?)
+internal data class Dependency(val property: String, val required: List<String>?, val schema: Int?)

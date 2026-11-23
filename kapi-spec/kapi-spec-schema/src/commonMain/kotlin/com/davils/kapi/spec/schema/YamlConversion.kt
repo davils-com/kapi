@@ -23,6 +23,8 @@ import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
 import kotlinx.serialization.json.JsonElement
 
+private const val HASH_FACTOR: Int = 31
+
 /**
  * The result of converting a YAML node into JSON with [JsonSchema.json].
  *
@@ -36,6 +38,10 @@ public sealed interface YamlConversion {
      * @since 1.0.0
      */
     public class Converted internal constructor(public val json: JsonElement) : YamlConversion {
+        override fun equals(other: Any?): Boolean = other is Converted && json == other.json
+
+        override fun hashCode(): Int = json.hashCode()
+
         override fun toString(): String = "Converted"
     }
 
@@ -48,6 +54,10 @@ public sealed interface YamlConversion {
      */
     public class Refused internal constructor(public val pointer: JsonPointer, public val reason: String) :
         YamlConversion {
+        override fun equals(other: Any?): Boolean = other is Refused && pointer == other.pointer && reason == other.reason
+
+        override fun hashCode(): Int = pointer.hashCode() * HASH_FACTOR + reason.hashCode()
+
         override fun toString(): String = "Refused(${SafeText.text(pointer.text)}: $reason)"
     }
 }

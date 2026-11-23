@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
-internal class PatternEntry(val source: String, val matcher: (CharSequence) -> Boolean, val schema: Int)
+internal data class PatternEntry(val source: String, val matcher: (CharSequence) -> Boolean, val schema: Int)
