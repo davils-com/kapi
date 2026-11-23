@@ -21,8 +21,7 @@ import com.davils.kapi.runtime.core.internal.FieldGrammar
 private const val SPACE: Char = ' '
 
 internal class StructuredCursor(private val text: String) {
-    var position: Int = 0
-        private set
+    private var position: Int = 0
 
     var isFailed: Boolean = false
         private set

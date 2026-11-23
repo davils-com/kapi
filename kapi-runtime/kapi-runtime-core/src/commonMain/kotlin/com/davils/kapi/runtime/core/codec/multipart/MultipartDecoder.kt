@@ -137,7 +137,7 @@ public class MultipartDecoder(boundary: Boundary, private val limits: MultipartL
             stage = Stage.Epilogue
             window.drop(window.size)
         }
-        return stage != Stage.Epilogue && afterPadding()
+        return stage == Stage.Epilogue || afterPadding()
     }
 
     private fun afterPadding(): Boolean {

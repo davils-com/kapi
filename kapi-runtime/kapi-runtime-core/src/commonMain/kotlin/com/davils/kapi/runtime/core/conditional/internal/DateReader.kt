@@ -145,7 +145,7 @@ internal class DateReader(private val text: String, private val nowYear: Int?) {
     }
 
     private fun number(text: String): Int? {
-        val isNumber = text.isNotEmpty() && text.length <= FULL_YEAR_DIGITS && text.all(FieldGrammar::isDigit)
+        val isNumber = text.all(FieldGrammar::isDigit)
         return text.takeIf { isNumber }?.toInt()
     }
 }

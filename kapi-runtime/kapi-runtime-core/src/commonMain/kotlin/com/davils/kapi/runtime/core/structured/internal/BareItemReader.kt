@@ -56,8 +56,8 @@ internal class BareItemReader(private val cursor: StructuredCursor) {
     }
 
     fun read(): BareItem {
-        val reader = cursor.peek()?.let(readers::get)
-        return reader?.invoke() ?: failed()
+        val reader = cursor.peek()?.let(readers::get) ?: return failed()
+        return reader()
     }
 
     private fun number(): BareItem {

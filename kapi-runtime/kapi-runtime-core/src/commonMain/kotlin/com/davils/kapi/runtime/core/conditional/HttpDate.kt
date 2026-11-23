@@ -100,7 +100,7 @@ public value class HttpDate(public val epochSeconds: Long) : Comparable<HttpDate
          */
         public fun parseOrNull(text: String, now: HttpDate? = null): HttpDate? {
             val seconds = DateReader(text, now?.year).read()
-            return seconds?.takeIf { value -> value in FIRST_SECOND..LAST_SECOND }?.let(::HttpDate)
+            return seconds?.takeIf { value -> value <= LAST_SECOND }?.let(::HttpDate)
         }
 
         /**
