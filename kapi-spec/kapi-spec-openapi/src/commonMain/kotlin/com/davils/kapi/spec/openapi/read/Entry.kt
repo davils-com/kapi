@@ -19,8 +19,8 @@
 package com.davils.kapi.spec.openapi.read
 
 import com.davils.kaml.core.node.YamlNode
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class Entry(
     val key: String,

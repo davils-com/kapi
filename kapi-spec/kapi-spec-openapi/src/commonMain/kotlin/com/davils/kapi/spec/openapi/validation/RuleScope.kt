@@ -19,14 +19,14 @@
 package com.davils.kapi.spec.openapi.validation
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.core.load.LoadedDocument
-import com.davils.kapi.spec.core.policy.ReadLimits
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class RuleScope(
     val document: Document,

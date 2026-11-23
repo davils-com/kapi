@@ -36,7 +36,10 @@ class TagRulesTest : FunSpec({
 
         test("is an error when it names no tag") {
             val reading = reading32(TAGS, "  - {name: cats, parent: pets}")
-            val location = reading.diagnostics.single().location.shouldNotBeNull()
+            val location = reading.diagnostics
+                .single()
+                .location
+                .shouldNotBeNull()
 
             reading.codes() shouldBe listOf(DiagnosticCodes.TAG_PARENT_UNKNOWN)
             location.pointer.toString() shouldBe "/tags/0"

@@ -46,7 +46,10 @@ private const val DESCRIBED: String = "  /pets: {get: {responses: {'200': {summa
 
 private fun Document.ok(): Response {
     val operation = operation("/pets", Method.Get)
-    return resolve(operation.responses.entries.values.single()).shouldNotBeNull()
+    return resolve(
+        operation.responses.entries.values
+        .single()
+    ).shouldNotBeNull()
 }
 
 class ResponseReadingTest : FunSpec({

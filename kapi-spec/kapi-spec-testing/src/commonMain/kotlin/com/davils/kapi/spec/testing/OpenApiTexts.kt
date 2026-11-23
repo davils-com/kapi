@@ -1070,7 +1070,7 @@ components:
         nextPageToken: { type: string }
 """
 
-private val mailRoutes: String = """# The path-tree shapes, which between them cover every case the resource generator has to
+private const val mailRoutes: String = """# The path-tree shapes, which between them cover every case the resource generator has to
 # get right: a collection with query parameters, an item under a placeholder, an action
 # under that item, and a sub-collection that is a sibling of the placeholder rather than a
 # child of it.
@@ -2941,7 +2941,7 @@ components:
         code: { type: integer, format: int64 }
 """
 
-private val securityAndOr: String = """# What a document says a caller must bring.
+private const val securityAndOr: String = """# What a document says a caller must bring.
 #
 # `security` is an **or of ands**: the array holds alternatives, and each element holds schemes that
 # all apply. The generator used to collapse that to four values - none, required, prohibited,
@@ -3044,7 +3044,7 @@ components:
             write:things: change them
 """
 
-private val security: String = """# What a document says a caller must bring.
+private const val security: String = """# What a document says a caller must bring.
 #
 # `security` is an **or of ands**: the array holds alternatives, and each element holds schemes that
 # all apply. The generator used to collapse that to four values - none, required, prohibited,

@@ -29,6 +29,7 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.fixture.yamlOf
 import com.davils.kapi.spec.openapi.load.fixture.Loading
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.TextPosition
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.core.spec.style.FunSpec
@@ -37,7 +38,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.io.bytestring.ByteString
-import com.davils.kore.core.annotation.DavilsInternal
 
 private const val INVALID_BYTE: Int = 0xFF
 

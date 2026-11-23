@@ -50,7 +50,8 @@ internal object ContentReader {
 
     fun content(fields: Fields): Map<String, Referable<MediaType>> {
         val entries = fields.entries(Keys.CONTENT)
-        val isReferable = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        val isReferable = fields.cursor.scope.family
+            .isAtLeast(VersionFamily.V32)
         if (isReferable) return entries.referables(ReferenceKind.MediaType, ::mediaType)
         return entries.mapped { cursor -> Referable.Inline(mediaType(cursor)) }
     }

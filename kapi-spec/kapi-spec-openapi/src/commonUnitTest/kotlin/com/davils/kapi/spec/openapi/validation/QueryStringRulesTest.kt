@@ -70,7 +70,10 @@ class QueryStringRulesTest : FunSpec({
         test("is one per operation, counting those of the path item") {
             val own = reading32(PATHS, operationWith(WHOLE, OTHER))
             val shared = reading32(PATHS, "  /pets: {parameters: [$OTHER], get: {parameters: [$WHOLE], $FINE}}")
-            val location = own.diagnostics.single().location.shouldNotBeNull()
+            val location = own.diagnostics
+                .single()
+                .location
+                .shouldNotBeNull()
 
             own.codes() shouldBe listOf(DiagnosticCodes.PARAMETER_QUERYSTRING_REPEATED)
             shared.codes() shouldBe listOf(DiagnosticCodes.PARAMETER_QUERYSTRING_REPEATED)

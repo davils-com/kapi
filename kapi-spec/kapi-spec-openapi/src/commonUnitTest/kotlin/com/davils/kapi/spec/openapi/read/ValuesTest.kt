@@ -22,6 +22,7 @@ import com.davils.kaml.core.model.YamlTag
 import com.davils.kaml.core.node.yamlTagged
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.DiagnosticCodes
@@ -29,11 +30,10 @@ import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.configuration
 import com.davils.kapi.spec.openapi.fixture.petstoreUri
-import com.davils.kapi.spec.core.load.LoadedDocument
+import com.davils.kore.core.annotation.DavilsInternal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.io.bytestring.ByteString
-import com.davils.kore.core.annotation.DavilsInternal
 
 private const val PHOTO: String = "aGVsbG8="
 

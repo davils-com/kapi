@@ -19,15 +19,15 @@
 package com.davils.kapi.spec.openapi.read
 
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.load.DocumentLoader
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.ReaderConfiguration
 import com.davils.kapi.spec.openapi.Reading
 import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.openapi.load.loaderOf
-import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.overlay.OverlayAction
 import com.davils.kapi.spec.openapi.overlay.OverlayApplication
 import com.davils.kapi.spec.openapi.overlay.OverlayReader

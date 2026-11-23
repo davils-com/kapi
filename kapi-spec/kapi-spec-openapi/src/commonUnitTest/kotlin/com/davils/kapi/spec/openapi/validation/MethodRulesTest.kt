@@ -54,7 +54,10 @@ class MethodRulesTest : FunSpec({
         test("is an error when it names a method with a field of its own, in any case") {
             listOf("GET", "get", "Post", "QUERY", "trace").forEach { method ->
                 val reading = reading32(PATHS, additional(method))
-                val location = reading.diagnostics.single().location.shouldNotBeNull()
+                val location = reading.diagnostics
+                    .single()
+                    .location
+                    .shouldNotBeNull()
 
                 reading.codes() shouldBe listOf(DiagnosticCodes.PATH_METHOD_FIXED)
                 location.pointer.toString() shouldBe "/paths/~1pets/additionalOperations/$method"

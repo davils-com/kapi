@@ -53,8 +53,10 @@ public sealed interface Reading {
         override val diagnostics: List<Diagnostic>,
         override val sources: List<SourceDocument>,
     ) : Reading {
-        override fun equals(other: Any?): Boolean = other is Read && document == other.document &&
-            diagnostics == other.diagnostics && sources == other.sources
+        override fun equals(other: Any?): Boolean = other is Read &&
+            document == other.document &&
+            diagnostics == other.diagnostics &&
+            sources == other.sources
 
         override fun hashCode(): Int = listOf(document, diagnostics, sources).hashCode()
 
@@ -75,8 +77,10 @@ public sealed interface Reading {
         override val diagnostics: List<Diagnostic>,
         override val sources: List<SourceDocument>,
     ) : Reading {
-        override fun equals(other: Any?): Boolean = other is Invalid && partial == other.partial &&
-            diagnostics == other.diagnostics && sources == other.sources
+        override fun equals(other: Any?): Boolean = other is Invalid &&
+            partial == other.partial &&
+            diagnostics == other.diagnostics &&
+            sources == other.sources
 
         override fun hashCode(): Int = listOf(partial, diagnostics, sources).hashCode()
 

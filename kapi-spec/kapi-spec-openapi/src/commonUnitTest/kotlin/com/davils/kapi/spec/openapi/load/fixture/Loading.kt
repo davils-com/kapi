@@ -20,16 +20,16 @@ package com.davils.kapi.spec.openapi.load.fixture
 
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.ReaderBuilder
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.configuration
-import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.openapi.load.loaderOf
 import com.davils.kapi.spec.testing.MemoryResolver
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.validation.violation.ViolationCode
 
 internal class Loading(
     source: Source,

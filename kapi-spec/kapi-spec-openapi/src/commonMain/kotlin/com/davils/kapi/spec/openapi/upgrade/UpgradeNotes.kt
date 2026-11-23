@@ -21,12 +21,12 @@ package com.davils.kapi.spec.openapi.upgrade
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.get
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.read.shape.Keys
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.validation.violation.ViolationCode
 
 private const val UPGRADED: String =
     "The document is Swagger ${SwaggerKeys.VERSION} and is read as OpenAPI ${SwaggerKeys.UPGRADED_VERSION}"

@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.read.parameter
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
+import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.fixture.codes
 import com.davils.kapi.spec.openapi.fixture.document
@@ -24,7 +25,6 @@ import com.davils.kapi.spec.openapi.fixture.operation
 import com.davils.kapi.spec.openapi.fixture.reading31
 import com.davils.kapi.spec.openapi.fixture.reading32
 import com.davils.kapi.spec.openapi.fixture.rewritten
-import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle

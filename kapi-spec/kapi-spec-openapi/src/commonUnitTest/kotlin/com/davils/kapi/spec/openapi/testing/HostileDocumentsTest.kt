@@ -17,18 +17,18 @@
 package com.davils.kapi.spec.openapi.testing
 
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.Reading
-import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
+import com.davils.kapi.spec.testing.Corpus
+import com.davils.kapi.spec.testing.HostileDocuments
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import com.davils.kapi.spec.testing.HostileDocuments
-import com.davils.kapi.spec.testing.Corpus
 
 private const val BOMB_LEVELS: Int = 12
 

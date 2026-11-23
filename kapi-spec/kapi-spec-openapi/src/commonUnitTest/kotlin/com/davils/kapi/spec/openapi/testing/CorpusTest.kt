@@ -19,12 +19,12 @@ package com.davils.kapi.spec.openapi.testing
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.openapi.OpenApi
+import com.davils.kapi.spec.testing.Corpus
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import com.davils.kapi.spec.testing.Corpus
 
 private const val UNDECLARED_LINK: String = "response-links"
 

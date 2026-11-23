@@ -18,18 +18,18 @@
 
 package com.davils.kapi.spec.openapi.upgrade.fixture
 
+import com.davils.kaml.core.Yaml
 import com.davils.kaml.core.YamlParseResult
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.fixture.petstoreUri
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kaml.core.Yaml
 import com.davils.kapi.spec.openapi.load.fixture.Loading
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.types.shouldBeInstanceOf
-import com.davils.kore.core.annotation.DavilsInternal
 
 internal const val SWAGGER: String = "swagger: '2.0'"
 

@@ -68,7 +68,8 @@ internal object ParameterReader {
 
     fun styleOf(fields: Fields): ParameterStyle? {
         val text = fields.text(Keys.STYLE) ?: return null
-        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        val isCurrent = fields.cursor.scope.family
+            .isAtLeast(VersionFamily.V32)
         val style = ParameterStyle.fromKeyword(text)?.takeIf { known -> known != ParameterStyle.Cookie || isCurrent }
         if (style == null) {
             fields.report(Keys.STYLE, DiagnosticCodes.PARAMETER_STYLE, "'$text' is no style of a parameter")
@@ -78,7 +79,8 @@ internal object ParameterReader {
 
     private fun placementOf(fields: Fields): ParameterPlacement? {
         val text = fields.text(Keys.IN) ?: return null
-        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        val isCurrent = fields.cursor.scope.family
+            .isAtLeast(VersionFamily.V32)
         val placement = ParameterPlacement.fromKeyword(text)
         val known = placement?.takeIf { found -> found != ParameterPlacement.QueryString || isCurrent }
         if (known == null) {

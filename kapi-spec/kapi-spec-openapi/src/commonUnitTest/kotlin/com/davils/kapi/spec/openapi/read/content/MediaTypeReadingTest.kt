@@ -87,7 +87,9 @@ class MediaTypeReadingTest : FunSpec({
             val item = mixed.itemEncoding.shouldNotBeNull()
 
             reading.diagnostics.shouldBeEmpty()
-            events.itemSchema.defined().properties.keys shouldBe setOf("data")
+            events.itemSchema
+                .defined()
+                .properties.keys shouldBe setOf("data")
             mixed.prefixEncoding.single().contentType shouldBe "application/json"
             item.contentType shouldBe "multipart/form-data"
             item.nestedEncoding.getValue("file").contentType shouldBe "image/png"
@@ -107,13 +109,19 @@ class MediaTypeReadingTest : FunSpec({
             val reading = reading32(shared)
             val document = reading.document()
             val body = document.operation("/pets", Method.Post).requestBody.shouldNotBeNull()
-            val content = document.resolve(body)?.content?.get("application/json").shouldNotBeNull()
+            val content = document
+                .resolve(body)
+                ?.content
+                ?.get("application/json")
+                .shouldNotBeNull()
             val pet = document.resolve(content).shouldNotBeNull()
             val same = document.parts().mediaTypes.getValue("Same")
 
             reading.diagnostics.shouldBeEmpty()
             content.shouldBeInstanceOf<Referable.Referenced>()
-            pet.schema.defined().types.size shouldBe 1
+            pet.schema
+                .defined()
+                .types.size shouldBe 1
             document.resolve(same) shouldBe pet
             document.rewritten() shouldBe document
         }

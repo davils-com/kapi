@@ -17,8 +17,8 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
-import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kaml.core.node.yamlScalar
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.security.ApiKeyScheme
 import com.davils.kapi.spec.openapi.model.security.HttpScheme
 import com.davils.kapi.spec.openapi.model.security.MutualTlsScheme

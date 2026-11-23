@@ -40,7 +40,11 @@ class ServerReadingTest : FunSpec({
             val reading = reading32(SERVERS, NAMED)
 
             reading.diagnostics.shouldBeEmpty()
-            reading.document().servers.single().name shouldBe "production"
+            reading
+                .document()
+                .servers
+                .single()
+                .name shouldBe "production"
         }
 
         test("is written with its name and reads back") {
@@ -56,7 +60,12 @@ class ServerReadingTest : FunSpec({
             val reading = reading31(SERVERS, NAMED)
 
             reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_VERSION)
-            reading.readable().servers.single().name.shouldBeNull()
+            reading
+                .readable()
+                .servers
+                .single()
+                .name
+                .shouldBeNull()
         }
     }
 })

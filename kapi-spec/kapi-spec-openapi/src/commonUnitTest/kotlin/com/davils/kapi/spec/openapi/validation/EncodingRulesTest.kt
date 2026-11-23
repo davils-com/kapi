@@ -43,7 +43,10 @@ class EncodingRulesTest : FunSpec({
 
         test("are an error when given both by name and by position") {
             val reading = reading32(mediaTypes("$NAMED, $PREFIX", "$NAMED, $ITEM"))
-            val location = reading.diagnostics.first().location.shouldNotBeNull()
+            val location = reading.diagnostics
+                .first()
+                .location
+                .shouldNotBeNull()
 
             reading.codes() shouldBe List(2) { DiagnosticCodes.MEDIA_TYPE_ENCODING }
             location.pointer.toString() shouldBe "/components/mediaTypes/M0"
@@ -53,7 +56,10 @@ class EncodingRulesTest : FunSpec({
     context("the encodings of a nested part") {
         test("are an error when given both by name and by position") {
             val reading = reading32(mediaTypes(ITEM, "itemEncoding: {$NAMED, $PREFIX}"))
-            val location = reading.diagnostics.single().location.shouldNotBeNull()
+            val location = reading.diagnostics
+                .single()
+                .location
+                .shouldNotBeNull()
 
             reading.codes() shouldBe listOf(DiagnosticCodes.MEDIA_TYPE_ENCODING)
             location.pointer.toString() shouldBe "/components/mediaTypes/M1/itemEncoding"

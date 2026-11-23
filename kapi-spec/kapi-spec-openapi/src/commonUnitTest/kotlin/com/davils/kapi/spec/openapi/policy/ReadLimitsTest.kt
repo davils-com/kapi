@@ -18,13 +18,13 @@ package com.davils.kapi.spec.openapi.policy
 
 import com.davils.kaml.core.limit.YamlLimits
 import com.davils.kapi.spec.core.policy.PolicyCodes
+import com.davils.kapi.spec.core.policy.ReadLimits
+import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
 import com.davils.kapi.spec.openapi.fixture.findings
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
-import com.davils.kapi.spec.core.policy.ReadLimits
 
 class ReadLimitsTest : FunSpec({
     context("the default limits") {

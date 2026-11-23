@@ -29,7 +29,13 @@ class VersionTest : FunSpec({
         }
 
         test("returns null for every other version") {
-            listOf("", "2.0", "3", "3.3.0", "4.0.0", "3.1.x", "v3.1.0", "3.10.0", "3.1.", "3.1.0-", "3.1.0-r c", "3.1.0" + "-".repeat(64)).forEach { text ->
+            listOf(
+                "", "2.0", "3", "3.3.0", "4.0.0", "3.1.x", "v3.1.0", "3.10.0", "3.1.", "3.1.0-", "3.1.0-r c",
+                "3.1.0" +
+                    "-".repeat(
+                        64,
+                    ),
+                        ).forEach { text ->
                 Version.parseOrNull(text) shouldBe null
             }
         }

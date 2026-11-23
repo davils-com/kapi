@@ -34,10 +34,14 @@ internal object UriResolution {
     fun parse(text: String): UriReference? = UriReference.parseOrNull(text)
 
     fun documentOf(base: DocumentUri, reference: UriReference): DocumentUri? {
-        val isSameDocument = reference.scheme == null && reference.authority == null && reference.path.isEmpty() &&
+        val isSameDocument = reference.scheme == null &&
+            reference.authority == null &&
+            reference.path.isEmpty() &&
             reference.query == null
         if (isSameDocument) return base
-        val hierarchical = parse(base.value)?.takeIf { parsed -> parsed.authority != null || parsed.path.startsWith('/') }
+        val hierarchical = parse(
+            base.value,
+        )?.takeIf { parsed -> parsed.authority != null || parsed.path.startsWith('/') }
         val normalized = hierarchical?.resolve(reference)?.normalize()
         return normalized?.let { resolved -> DocumentUri.parseOrNull(resolved.toString().substringBefore('#')) }
     }

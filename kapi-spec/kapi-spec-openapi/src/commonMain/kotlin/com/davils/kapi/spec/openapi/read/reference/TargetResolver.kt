@@ -20,11 +20,11 @@ package com.davils.kapi.spec.openapi.read.reference
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kaml.document.pointer.at
+import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Target
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.ReadScope
 import com.davils.kore.core.annotation.DavilsInternal

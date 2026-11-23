@@ -72,7 +72,11 @@ class XmlAndDiscriminatorReadingTest : FunSpec({
                 val reading = reading32(xml("nodeType: ${type.keyword}"))
 
                 reading.diagnostics.shouldBeEmpty()
-                reading.document().schema("Pet").xml?.nodeType shouldBe type
+                reading
+                    .document()
+                    .schema("Pet")
+                    .xml
+                    ?.nodeType shouldBe type
             }
             XmlNodeType.fromKeyword("Element").shouldBeNull()
         }
@@ -85,7 +89,11 @@ class XmlAndDiscriminatorReadingTest : FunSpec({
 
         test("warns about attribute and wrapped beside a node type") {
             val reading = reading32(xml("nodeType: attribute, attribute: true, wrapped: false"))
-            val xml = reading.document().schema("Pet").xml.shouldNotBeNull()
+            val xml = reading
+                .document()
+                .schema("Pet")
+                .xml
+                .shouldNotBeNull()
 
             reading.codes() shouldBe List(2) { DiagnosticCodes.SCHEMA_XML_DEPRECATED }
             reading.diagnostics.map { finding -> finding.severity }.toSet() shouldBe setOf(Severity.Warning)

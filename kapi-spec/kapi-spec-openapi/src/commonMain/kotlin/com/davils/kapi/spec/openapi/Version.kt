@@ -94,8 +94,10 @@ public class Version private constructor(
             return text.startsWith('.') && digits.isNotEmpty() && digits.all { character -> character in '0'..'9' }
         }
 
-        private fun isPreReleaseCharacter(character: Char): Boolean =
-            character in '0'..'9' || character in 'a'..'z' || character in 'A'..'Z' || character == '.' ||
-                character == '-'
+        private fun isPreReleaseCharacter(character: Char): Boolean = character in '0'..'9' ||
+            character in 'a'..'z' ||
+            character in 'A'..'Z' ||
+            character == '.' ||
+            character == '-'
     }
 }
