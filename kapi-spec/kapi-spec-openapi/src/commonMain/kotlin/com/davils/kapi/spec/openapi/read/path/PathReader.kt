@@ -28,6 +28,7 @@ import com.davils.kapi.spec.openapi.model.path.PathsBuilder
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.Entry
 import com.davils.kapi.spec.openapi.read.keyed
+import com.davils.kapi.spec.openapi.read.mapped
 import com.davils.kapi.spec.openapi.read.parameter.ParameterReader
 import com.davils.kapi.spec.openapi.read.read
 import com.davils.kapi.spec.openapi.read.reference.Referables
@@ -46,6 +47,7 @@ internal object PathReader {
         summary = fields.text(Keys.SUMMARY)
         description = fields.text(Keys.DESCRIPTION)
         operations.putAll(operationsOf(fields))
+        additionalOperations.putAll(fields.entries(Keys.ADDITIONAL_OPERATIONS).mapped(OperationReader::operation))
         servers.addAll(fields.items(Keys.SERVERS).map(ServerReader::server))
         parameters.addAll(parametersOf(fields))
     }

@@ -25,6 +25,14 @@ public enum class Method(public val keyword: String) {
     Head("head"),
     Patch("patch"),
     Trace("trace"),
+
+    /**
+     * The `QUERY` method, a safe and idempotent request that carries its query in the body; a path item declares it
+     * from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    Query("query"),
     ;
 
     public companion object {

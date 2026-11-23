@@ -181,6 +181,22 @@ public object DiagnosticCodes {
 
     public val COMPONENT_NAME: ViolationCode = code("component.name")
 
+    /**
+     * A key of additionalOperations of a path item is no HTTP method token as RFC 9110 defines it, which is one or more
+     * letters, digits and the special characters a token allows, such as `-` and `.`.
+     *
+     * @since 1.0.0
+     */
+    public val PATH_METHOD_TOKEN: ViolationCode = code("path.method-token")
+
+    /**
+     * A key of additionalOperations of a path item names a method that has a field of its own, such as GET or get,
+     * which the path item declares by that field.
+     *
+     * @since 1.0.0
+     */
+    public val PATH_METHOD_FIXED: ViolationCode = code("path.method-fixed")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -257,6 +273,8 @@ public object DiagnosticCodes {
         EXAMPLE_SHAPE,
         MEDIA_TYPE_INVALID,
         COMPONENT_NAME,
+        PATH_METHOD_TOKEN,
+        PATH_METHOD_FIXED,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

@@ -30,6 +30,7 @@ internal object DocumentRules {
         ::content,
         OperationRules::check,
         PathRules::check,
+        MethodRules::check,
         ParameterRules::check,
         SecurityRules::check,
         SchemaRules::check,

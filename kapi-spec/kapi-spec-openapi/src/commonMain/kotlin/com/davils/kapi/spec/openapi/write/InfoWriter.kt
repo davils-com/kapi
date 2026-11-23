@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.info.Contact
 import com.davils.kapi.spec.openapi.model.info.ExternalDocs
 import com.davils.kapi.spec.openapi.model.info.Info
@@ -26,7 +27,9 @@ import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kapi.spec.openapi.model.server.ServerVariable
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal object InfoWriter {
+internal class InfoWriter(family: VersionFamily) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun info(info: Info): YamlNode {
         val out = Out()
         out.text(Keys.TITLE, info.title)

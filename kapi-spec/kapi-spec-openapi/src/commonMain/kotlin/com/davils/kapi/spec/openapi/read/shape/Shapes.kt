@@ -115,6 +115,8 @@ internal object Shapes {
             FieldRule(Keys.HEAD, FieldKind.Mapping),
             FieldRule(Keys.PATCH, FieldKind.Mapping),
             FieldRule(Keys.TRACE, FieldKind.Mapping),
+            FieldRule(Keys.QUERY, FieldKind.Mapping, since = VersionFamily.V32),
+            FieldRule(Keys.ADDITIONAL_OPERATIONS, FieldKind.Mapping, since = VersionFamily.V32),
             FieldRule(Keys.SERVERS, FieldKind.Sequence),
             FieldRule(Keys.PARAMETERS, FieldKind.Sequence),
         ),

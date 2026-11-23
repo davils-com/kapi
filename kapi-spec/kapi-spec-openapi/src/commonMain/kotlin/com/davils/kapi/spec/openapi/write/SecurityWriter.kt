@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kaml.core.node.yamlScalar
 import com.davils.kapi.spec.openapi.model.security.ApiKeyScheme
 import com.davils.kapi.spec.openapi.model.security.HttpScheme
@@ -29,7 +30,9 @@ import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.security.SecurityScheme
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal object SecurityWriter {
+internal class SecurityWriter(family: VersionFamily) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun requirement(requirement: SecurityRequirement): YamlNode = Nodes.mapping(requirement.schemes, Nodes::texts)
 
     fun scheme(scheme: SecurityScheme): YamlNode {

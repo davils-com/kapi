@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.content.Encoding
 import com.davils.kapi.spec.openapi.model.content.Example
 import com.davils.kapi.spec.openapi.model.content.MediaType
@@ -25,7 +26,9 @@ import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal class ContentWriter(private val schemas: SchemaWriter) {
+internal class ContentWriter(private val schemas: SchemaWriter, family: VersionFamily) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun parameter(parameter: Parameter): YamlNode {
         val out = Out()
         out.text(Keys.NAME, parameter.name)

@@ -23,26 +23,38 @@ import com.davils.kapi.spec.openapi.model.component.Components
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
 internal class DocumentWriter(family: VersionFamily) {
-    private val schemas: SchemaWriter = SchemaWriter(family)
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
 
-    private val content: ContentWriter = ContentWriter(schemas)
+    private val info: InfoWriter = InfoWriter(family)
 
-    private val responses: ResponseWriter = ResponseWriter(content)
+    private val security: SecurityWriter = SecurityWriter(family)
 
-    private val paths: PathWriter = PathWriter(content, responses)
+    private val schemas: SchemaWriter = SchemaWriter(family, info)
+
+    private val content: ContentWriter = ContentWriter(schemas, family)
+
+    private val responses: ResponseWriter = ResponseWriter(content, info, family)
+
+    private val paths: PathWriter = PathWriter(
+        content = content,
+        responses = responses,
+        info = info,
+        security = security,
+        family = family,
+    )
 
     fun document(document: Document): YamlNode {
         val out = Out()
         out.text(Keys.OPENAPI, document.version.literal)
-        out.node(Keys.INFO, InfoWriter.info(document.info))
+        out.node(Keys.INFO, info.info(document.info))
         out.text(Keys.JSON_SCHEMA_DIALECT, document.jsonSchemaDialect)
-        out.list(Keys.SERVERS, document.servers, InfoWriter::server)
+        out.list(Keys.SERVERS, document.servers, info::server)
         out.node(Keys.PATHS, document.paths?.let(paths::paths))
         out.map(Keys.WEBHOOKS, document.webhooks, paths::pathItem)
         out.node(Keys.COMPONENTS, document.components?.let(::components))
-        out.list(Keys.SECURITY, document.security, SecurityWriter::requirement)
-        out.list(Keys.TAGS, document.tags, InfoWriter::tag)
-        out.node(Keys.EXTERNAL_DOCS, document.externalDocs?.let(InfoWriter::externalDocs))
+        out.list(Keys.SECURITY, document.security, security::requirement)
+        out.list(Keys.TAGS, document.tags, info::tag)
+        out.node(Keys.EXTERNAL_DOCS, document.externalDocs?.let(info::externalDocs))
         return out.build(document)
     }
 
@@ -54,7 +66,7 @@ internal class DocumentWriter(family: VersionFamily) {
         out.map(Keys.EXAMPLES, components.examples, ReferenceWriter.referables(content::example))
         out.map(Keys.REQUEST_BODIES, components.requestBodies, ReferenceWriter.referables(content::requestBody))
         out.map(Keys.HEADERS, components.headers, ReferenceWriter.referables(content::header))
-        out.map(Keys.SECURITY_SCHEMES, components.securitySchemes, ReferenceWriter.referables(SecurityWriter::scheme))
+        out.map(Keys.SECURITY_SCHEMES, components.securitySchemes, ReferenceWriter.referables(security::scheme))
         out.map(Keys.LINKS, components.links, ReferenceWriter.referables(responses::link))
         out.map(Keys.CALLBACKS, components.callbacks, ReferenceWriter.referables(paths::callback))
         out.map(Keys.PATH_ITEMS, components.pathItems, paths::pathItem)

@@ -123,7 +123,7 @@ class EverythingTest : FunSpec({
             item.summary shouldBe "A pet"
             item.description shouldBe "One pet of the store"
             item.servers.single().url shouldBe "https://pets.example.com"
-            item.operations.keys shouldBe Method.entries.toSet()
+            item.operations.keys shouldBe Method.entries.toSet() - Method.Query
             shared.name shouldBe "petId"
             shared.placement shouldBe ParameterPlacement.Path
             shared.isRequired shouldBe true

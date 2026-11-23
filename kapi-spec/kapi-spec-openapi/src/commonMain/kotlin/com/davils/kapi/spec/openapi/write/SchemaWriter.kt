@@ -26,7 +26,9 @@ import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.spec.openapi.model.schema.Xml
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal class SchemaWriter(family: VersionFamily) {
+internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     private val keywords: SchemaKeywordWriter = SchemaKeywordWriter(family)
 
     fun schema(schema: Schema): YamlNode = when (schema) {
@@ -92,7 +94,7 @@ internal class SchemaWriter(family: VersionFamily) {
         out.text(Keys.CONTENT_MEDIA_TYPE, schema.contentMediaType)
         out.node(Keys.DISCRIMINATOR, schema.discriminator?.let(::discriminator))
         out.node(Keys.XML, schema.xml?.let(::xml))
-        out.node(Keys.EXTERNAL_DOCS, schema.externalDocs?.let(InfoWriter::externalDocs))
+        out.node(Keys.EXTERNAL_DOCS, schema.externalDocs?.let(info::externalDocs))
     }
 
     private fun discriminator(discriminator: Discriminator): YamlNode {

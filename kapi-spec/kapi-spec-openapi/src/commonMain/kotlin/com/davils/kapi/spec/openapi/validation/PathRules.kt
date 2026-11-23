@@ -53,7 +53,8 @@ internal object PathRules {
             return scope.report(DiagnosticCodes.PATH_TEMPLATE, message, item)
         }
         val shared = declared(scope, item.parameters)
-        item.operations.values.forEach { operation ->
+        val operations = item.operations.values + item.additionalOperations.values
+        operations.forEach { operation ->
             operation(scope = scope, template = template, operation = operation, shared = shared)
         }
     }
