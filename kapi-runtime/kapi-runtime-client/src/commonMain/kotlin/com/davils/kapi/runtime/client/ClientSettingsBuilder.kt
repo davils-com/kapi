@@ -61,6 +61,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var name: String = DEFAULT_NAME
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The URL every path of a call is appended to, such as `https://api.example.com/v1`; empty for a client that only
@@ -69,6 +73,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var baseUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The codecs that write the content of a call and read the content of an answer.
@@ -76,6 +84,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var codecs: Codecs = Codecs.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The credentials of the security schemes the client meets.
@@ -83,6 +95,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var credentials: Credentials = Credentials.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The policy every URL the client calls or follows must pass; `https` to public hosts by default.
@@ -90,6 +106,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var destinations: DestinationPolicy = DestinationPolicy.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The largest answer the client reads into memory, in bytes; 16 MiB by default and at most
@@ -98,6 +118,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var maxResponseBytes: Long = DEFAULT_RESPONSE_BYTES
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The limits of the lines, records and events of a stream.
@@ -105,6 +129,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var framing: FramingLimits = FramingLimits.Default
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Header fields to mask when an answer is shown, next to `Authorization`, `Cookie` and the others the runtime
@@ -113,6 +141,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var sensitiveHeaders: Set<String> = emptySet()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The time a call may take unless it sets its own; nothing by default, which leaves it to the engine.
@@ -120,6 +152,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var timeout: Timeout = Timeout()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The resilience policy of kontinuity a retryable call runs under, such as a retry built with
@@ -128,6 +164,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var resilience: Policy? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The redirects the client follows itself; `null` by default, which hands a redirect to the caller as an answer.
@@ -135,6 +175,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var redirects: RedirectPolicy? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The registry of kollect the client counts and times its calls in, or `null`.
@@ -142,6 +186,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var meters: MeterRegistry? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The tracer of kollect that opens a client span for every call.
@@ -149,6 +197,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var tracer: Tracer = Tracer.None
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The event bus of konfetti the client reports retries, redirects, refreshes and resumed streams on, or `null`.
@@ -156,6 +208,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var events: EventBus? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The time source of the durations the client measures.
@@ -163,6 +219,10 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public var timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Adds [interceptor] to [phase] under [name], after the interceptors already added to it.
@@ -173,6 +233,7 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public fun intercept(phase: CallPhase, name: String, interceptor: Interceptor) {
+        checkOpen()
         added += Interception(phase, name, interceptor)
     }
 
@@ -185,6 +246,7 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
      * @since 1.0.0
      */
     public fun dpop(scheme: String, proofs: DpopProofs) {
+        checkOpen()
         bound += scheme to proofs
     }
 

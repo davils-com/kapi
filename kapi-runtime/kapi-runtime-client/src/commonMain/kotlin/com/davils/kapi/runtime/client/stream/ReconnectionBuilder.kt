@@ -40,6 +40,10 @@ public class ReconnectionBuilder internal constructor() : ValidatingBuilder<Reco
      * @since 1.0.0
      */
     public var maxReconnects: Int = DEFAULT_RECONNECTS
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The wait before a reconnection while the server named no `retry`.
@@ -47,6 +51,10 @@ public class ReconnectionBuilder internal constructor() : ValidatingBuilder<Reco
      * @since 1.0.0
      */
     public var delay: Duration = 3.seconds
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The longest wait, whatever the server asks for in `retry`.
@@ -54,6 +62,10 @@ public class ReconnectionBuilder internal constructor() : ValidatingBuilder<Reco
      * @since 1.0.0
      */
     public var maximumDelay: Duration = 1.minutes
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Reconnection = Reconnection(this)
 
