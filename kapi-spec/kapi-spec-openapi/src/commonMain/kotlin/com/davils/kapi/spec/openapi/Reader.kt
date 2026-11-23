@@ -19,9 +19,35 @@ package com.davils.kapi.spec.openapi
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.read.ReadSession
 
+/**
+ * Reads OpenAPI documents with one [configuration]; built by [OpenApi.reader].
+ *
+ * A reader holds no state between readings and is safe to share between threads; each reading loads its documents
+ * through the resolver of the configuration, from the coroutine of the caller.
+ *
+ * @property configuration the configuration of every reading.
+ * @since 1.0.0
+ */
 public class Reader internal constructor(public val configuration: ReaderConfiguration) {
+    /**
+     * Reads [source].
+     *
+     * @param source the document.
+     * @return the outcome; a reading never throws for a problem of the document.
+     * @since 1.0.0
+     */
     public suspend fun read(source: Source): Reading = read(source, emptyList())
 
+    /**
+     * Reads [source] after applying [overlays] in order.
+     *
+     * @param source the document.
+     * @param overlays the OpenAPI Overlays to apply.
+     * @return the outcome; a reading never throws for a problem of the document.
+     * @since 1.0.0
+     */
     public suspend fun read(source: Source, overlays: List<Source>): Reading =
         ReadSession(configuration, source, overlays).run()
+
+    override fun toString(): String = "Reader($configuration)"
 }

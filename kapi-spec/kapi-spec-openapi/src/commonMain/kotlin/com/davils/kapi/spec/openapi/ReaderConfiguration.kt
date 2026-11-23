@@ -20,22 +20,60 @@ import com.davils.kapi.spec.core.source.Resolver
 import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.core.policy.ReferencePolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicy
-import com.davils.kapi.spec.openapi.policy.StructureCheck
+import com.davils.kapi.spec.openapi.StructureCheck
 import com.davils.kapi.spec.openapi.diagnostic.CodeRules
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 
+/**
+ * The configuration of a [Reader]: immutable and safe to share between threads.
+ *
+ * Building it fails when a severity policy downgrades a code that guards the reader itself, such as a limit.
+ *
+ * @param builder the builder whose values the configuration takes over.
+ * @since 1.0.0
+ */
 public class ReaderConfiguration internal constructor(builder: ReaderBuilder) : Validatable {
+    /**
+     * Loads the documents of a reading.
+     *
+     * @since 1.0.0
+     */
     public val resolver: Resolver = builder.resolver
 
+    /**
+     * How thoroughly the structure is checked.
+     *
+     * @since 1.0.0
+     */
     public val structure: StructureCheck = builder.structure
 
+    /**
+     * Whether the YAML 1.1 merge key `<<` is honoured.
+     *
+     * @since 1.0.0
+     */
     public val hasMergeKeys: Boolean = builder.hasMergeKeys
 
+    /**
+     * The limits of a reading.
+     *
+     * @since 1.0.0
+     */
     public val limits: ReadLimits = builder.limits
 
+    /**
+     * Which documents references may lead to.
+     *
+     * @since 1.0.0
+     */
     public val references: ReferencePolicy = builder.references
 
+    /**
+     * How severe the findings are.
+     *
+     * @since 1.0.0
+     */
     public val severities: SeverityPolicy = builder.severities
 
     override fun ValidationScope.validate() {

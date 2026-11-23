@@ -14,9 +14,26 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.policy
+package com.davils.kapi.spec.openapi
 
+/**
+ * How thoroughly a reader checks the structure of a document.
+ *
+ * @since 1.0.0
+ */
 public enum class StructureCheck {
+    /**
+     * The reader checks every field it reads and every rule of the specification.
+     *
+     * @since 1.0.0
+     */
     Reader,
+
+    /**
+     * The reader also validates the document against the official JSON Schema of its version of OpenAPI, which
+     * catches what the reader does not model.
+     *
+     * @since 1.0.0
+     */
     ReaderAndOfficialSchema,
 }

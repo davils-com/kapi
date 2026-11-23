@@ -30,10 +30,22 @@ import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * Builds a [Document]; the readers of kapi use it, and code may use it to build a document by hand.
+ *
+ * A builder is not safe to share between threads.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class DocumentBuilder internal constructor() : ElementBuilder<Document>() {
     override val subject: String get() = "openapi document"
 
+    /**
+     * The version of the document; [Version.Latest] by default.
+     *
+     * @since 1.0.0
+     */
     public var version: Version = Version.Latest
 
     /**
@@ -43,22 +55,47 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      */
     public var self: String? = null
 
+    /**
+     * The `info` of the document.
+     *
+     * @since 1.0.0
+     */
     public var info: Info = InfoBuilder().build()
 
+    /**
+     * The `jsonSchemaDialect` of the document, from OpenAPI 3.1 on.
+     *
+     * @since 1.0.0
+     */
     public var jsonSchemaDialect: String? = null
 
     internal val servers: MutableList<Server> = mutableListOf()
 
+    /**
+     * The `paths` of the document.
+     *
+     * @since 1.0.0
+     */
     public var paths: Paths? = null
 
     internal val webhooks: MutableMap<String, PathItem> = linkedMapOf()
 
+    /**
+     * The `components` of the document.
+     *
+     * @since 1.0.0
+     */
     public var components: Components? = null
 
     internal val security: MutableList<SecurityRequirement> = mutableListOf()
 
     internal val tags: MutableList<Tag> = mutableListOf()
 
+    /**
+     * The `externalDocs` of the document.
+     *
+     * @since 1.0.0
+     */
     public var externalDocs: ExternalDocs? = null
 
     internal val targets: MutableMap<Target, Element> = linkedMapOf()

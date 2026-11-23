@@ -20,8 +20,23 @@ import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
 
+/**
+ * Returns the element [reference] leads to.
+ *
+ * @param reference a reference of this document.
+ * @return the element, or `null` if the reading could not resolve the reference.
+ * @since 1.0.0
+ */
 public fun Document.resolve(reference: Reference): Element? = targets[reference.target]
 
+/**
+ * Returns the element [referable] holds inline or leads to.
+ *
+ * @param T the type of the element.
+ * @param referable a place of this document.
+ * @return the element, or `null` if the reference could not be resolved or leads to an element of another type.
+ * @since 1.0.0
+ */
 public inline fun <reified T : Element> Document.resolve(referable: Referable<T>): T? = when (referable) {
     is Referable.Inline -> referable.value
     is Referable.Referenced -> resolve(referable.reference) as? T

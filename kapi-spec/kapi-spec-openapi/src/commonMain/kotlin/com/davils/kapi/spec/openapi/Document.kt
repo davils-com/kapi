@@ -27,8 +27,21 @@ import com.davils.kapi.spec.openapi.model.path.Paths
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.server.Server
 
+/**
+ * An OpenAPI document as it was read, with every element a reference leads to.
+ *
+ * A document is immutable and safe to share between threads. Use [resolve] to follow a reference.
+ *
+ * @param builder the builder whose state the document takes over.
+ * @since 1.0.0
+ */
 public class Document internal constructor(builder: DocumentBuilder) :
     Element(builder) {
+    /**
+     * The version the document declares in its field `openapi`.
+     *
+     * @since 1.0.0
+     */
     public val version: Version = builder.version
 
     /**
@@ -43,24 +56,74 @@ public class Document internal constructor(builder: DocumentBuilder) :
      */
     public val self: String? = builder.self
 
+    /**
+     * The `info` of the document: its title, version and contact.
+     *
+     * @since 1.0.0
+     */
     public val info: Info = builder.info
 
+    /**
+     * The `jsonSchemaDialect` of the document, the default `$schema` of its schemas, from OpenAPI 3.1 on; `null` when absent.
+     *
+     * @since 1.0.0
+     */
     public val jsonSchemaDialect: String? = builder.jsonSchemaDialect
 
+    /**
+     * The `servers` of the document, in their order.
+     *
+     * @since 1.0.0
+     */
     public val servers: List<Server> = builder.servers.toList()
 
+    /**
+     * The `paths` of the document; `null` when absent, which OpenAPI 3.1 allows.
+     *
+     * @since 1.0.0
+     */
     public val paths: Paths? = builder.paths
 
+    /**
+     * The `webhooks` of the document by name, from OpenAPI 3.1 on.
+     *
+     * @since 1.0.0
+     */
     public val webhooks: Map<String, PathItem> = builder.webhooks.toMap()
 
+    /**
+     * The `components` of the document; `null` when absent.
+     *
+     * @since 1.0.0
+     */
     public val components: Components? = builder.components
 
+    /**
+     * The `security` requirements of every operation that declares none of its own; one of them must be met.
+     *
+     * @since 1.0.0
+     */
     public val security: List<SecurityRequirement> = builder.security.toList()
 
+    /**
+     * The `tags` of the document, in their order.
+     *
+     * @since 1.0.0
+     */
     public val tags: List<Tag> = builder.tags.toList()
 
+    /**
+     * The `externalDocs` of the document; `null` when absent.
+     *
+     * @since 1.0.0
+     */
     public val externalDocs: ExternalDocs? = builder.externalDocs
 
+    /**
+     * Every element a reference of the document or of a document it references leads to, by its place.
+     *
+     * @since 1.0.0
+     */
     public val targets: Map<Target, Element> = builder.targets.toMap()
 
     override val identity: List<Any?>
