@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.runtime.core.internal
+package com.davils.kapi.runtime.core
 
-import com.davils.kapi.runtime.core.LimitViolationCodes
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.reflect.KProperty0
 
-internal fun ValidationScope.bounded(property: KProperty0<Number>, ceiling: Long) {
+/**
+ * Checks that the limit [property] lies between 1 and [ceiling]: a value below 1 fails with
+ * [LimitViolationCodes.NOT_POSITIVE] and one above [ceiling] with [LimitViolationCodes.ABOVE_HARD_LIMIT], both
+ * reported on [property].
+ *
+ * Internal to kapi: the limits of the runtime modules validate themselves with it.
+ *
+ * @param property the limit, read once as a whole number.
+ * @param ceiling the hard ceiling of the limit.
+ * @since 1.0.0
+ */
+@DavilsInternal
+public fun ValidationScope.bounded(property: KProperty0<Number>, ceiling: Long) {
     val value = property.get().toLong()
     if (value < 1) {
         fail(property, "must be at least 1, but was $value", LimitViolationCodes.NOT_POSITIVE)

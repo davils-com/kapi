@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.runtime.core.codec
 
+import com.davils.kapi.runtime.core.bounded
 import com.davils.kapi.runtime.core.codec.form.FormLimits
 import com.davils.kapi.runtime.core.codec.internal.CborCodec
 import com.davils.kapi.runtime.core.codec.internal.FormCodec
 import com.davils.kapi.runtime.core.codec.internal.JsonCodec
 import com.davils.kapi.runtime.core.codec.internal.OctetStreamCodec
 import com.davils.kapi.runtime.core.codec.internal.TextCodec
-import com.davils.kapi.runtime.core.internal.bounded
 import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlinx.io.bytestring.ByteString
@@ -125,11 +128,31 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
         content: ByteString,
         mediaType: String?,
     ): Decoding<T> {
-        val type = mediaType?.let(MediaType::parseOrNull)
-        val codec = type?.let(::codecFor)
+        val type = mediaType?.let(MediaType::parseOrNull) ?: return Decoding.Failed(refusalOf(content, type = null))
+        return decode(deserializer, content, type)
+    }
+
+    /**
+     * Reads [content] that was sent as the parsed [mediaType] with the codec that covers it, such as the type of a
+     * part of a multipart body or the type a server negotiated.
+     *
+     * @param T the type of the value.
+     * @param deserializer the deserializer of the expected value.
+     * @param content the content, which may come from an attacker.
+     * @param mediaType the media type of [content]; its parameters, such as `charset`, reach the codec.
+     * @return the value, or why the content holds none: it is larger than [maxContentBytes], no codec covers its type,
+     * or the codec refused it.
+     * @since 1.0.0
+     */
+    public fun <T> decode(
+        deserializer: DeserializationStrategy<T>,
+        content: ByteString,
+        mediaType: MediaType,
+    ): Decoding<T> {
+        val codec = codecFor(mediaType)
         val isTooLarge = content.size > maxContentBytes
-        if (isTooLarge || type == null || codec == null) return Decoding.Failed(refusalOf(content, type))
-        return codec.decode(deserializer, content, type)
+        if (isTooLarge || codec == null) return Decoding.Failed(refusalOf(content, mediaType))
+        return codec.decode(deserializer, content, mediaType)
     }
 
     override fun ValidationScope.validate() {

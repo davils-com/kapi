@@ -51,6 +51,8 @@ private const val OCTETS: String = "application/octet-stream"
 
 private const val INVALID_BYTE: Int = 0xFF
 
+private const val LATIN_E_ACUTE: Int = 0xE9
+
 private const val DEEP: Int = 100
 
 private const val ANSWER: Int = 42
@@ -154,6 +156,19 @@ class CodecsTest : FunSpec({
                 .decode(Int.serializer(), "1".encodeToByteString(), "image/png")
                 .shouldBeInstanceOf<Decoding.Failed>()
                 .reason shouldContain "No codec"
+        }
+
+        test("reads content of a parsed media type with its parameters") {
+            val latin = MediaType.parse("text/plain; charset=ISO-8859-1")
+            val content = ByteString(LATIN_E_ACUTE.toByte())
+
+            val small = codecs { maxContentBytes = 1 }
+            val tooLarge = small.decode(String.serializer(), "ab".encodeToByteString(), latin)
+            val unknown = Codecs.Default.decode(String.serializer(), content, MediaType.parse("image/png"))
+
+            Codecs.Default.decode(String.serializer(), content, latin) shouldBe Decoding.Decoded("é")
+            tooLarge.shouldBeInstanceOf<Decoding.Failed>()
+            unknown.shouldBeInstanceOf<Decoding.Failed>()
         }
 
         test("keep the limits at the hard ceiling and refuse one past it") {

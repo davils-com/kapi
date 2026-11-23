@@ -33,6 +33,10 @@ public final class com/davils/kapi/runtime/core/FieldLimitsBuilderKt {
 	public static synthetic fun fieldLimits$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/core/FieldLimits;
 }
 
+public final class com/davils/kapi/runtime/core/LimitChecksKt {
+	public static final fun bounded (Lcom/davils/kore/core/validation/ValidationScope;Lkotlin/reflect/KProperty0;J)V
+}
+
 public final class com/davils/kapi/runtime/core/LimitViolationCodes {
 	public static final field INSTANCE Lcom/davils/kapi/runtime/core/LimitViolationCodes;
 	public final fun getABOVE_HARD_LIMIT-J_S2PC0 ()Ljava/lang/String;
@@ -152,6 +156,7 @@ public final class com/davils/kapi/runtime/core/codec/Codecs : com/davils/kore/c
 	public static final field HARD_DEPTH I
 	public final fun codecFor (Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Lcom/davils/kapi/runtime/core/codec/Codec;
 	public final fun codecFor (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/codec/Codec;
+	public final fun decode (Lkotlinx/serialization/DeserializationStrategy;Lkotlinx/io/bytestring/ByteString;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Lcom/davils/kapi/runtime/core/codec/Decoding;
 	public final fun decode (Lkotlinx/serialization/DeserializationStrategy;Lkotlinx/io/bytestring/ByteString;Ljava/lang/String;)Lcom/davils/kapi/runtime/core/codec/Decoding;
 	public final fun getFormLimits ()Lcom/davils/kapi/runtime/core/codec/form/FormLimits;
 	public final fun getJson ()Lkotlinx/serialization/json/Json;
@@ -817,6 +822,14 @@ public final class com/davils/kapi/runtime/core/header/ContentDisposition$Compan
 	public final fun parseOrNull (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/header/ContentDisposition;
 }
 
+public final class com/davils/kapi/runtime/core/header/FieldSyntax {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/core/header/FieldSyntax;
+	public final fun isControl (C)Z
+	public final fun isFieldValue (Ljava/lang/String;)Z
+	public final fun isToken (Ljava/lang/String;)Z
+	public final fun isTokenChar (C)Z
+}
+
 public final class com/davils/kapi/runtime/core/header/IdempotencyKey {
 	public static final field Companion Lcom/davils/kapi/runtime/core/header/IdempotencyKey$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/header/IdempotencyKey;
@@ -1473,6 +1486,7 @@ public final class com/davils/kapi/runtime/core/response/Headers {
 	public final fun get (Ljava/lang/String;)Ljava/lang/String;
 	public final fun getNames ()Ljava/util/Set;
 	public fun hashCode ()I
+	public final fun joined (Ljava/lang/String;)Ljava/lang/String;
 	public final fun masked ()Ljava/util/Map;
 	public final fun toMap ()Ljava/util/Map;
 	public fun toString ()Ljava/lang/String;
@@ -1481,6 +1495,51 @@ public final class com/davils/kapi/runtime/core/response/Headers {
 public final class com/davils/kapi/runtime/core/response/Headers$Companion {
 	public final fun getEmpty ()Lcom/davils/kapi/runtime/core/response/Headers;
 	public final fun getSENSITIVE ()Ljava/util/Set;
+}
+
+public final class com/davils/kapi/runtime/core/response/HttpStatus {
+	public static final field ACCEPTED I
+	public static final field BAD_GATEWAY I
+	public static final field BAD_REQUEST I
+	public static final field CONFLICT I
+	public static final field CONTENT_TOO_LARGE I
+	public static final field CREATED I
+	public static final field FORBIDDEN I
+	public static final field FOUND I
+	public static final field GATEWAY_TIMEOUT I
+	public static final field GONE I
+	public static final field INSTANCE Lcom/davils/kapi/runtime/core/response/HttpStatus;
+	public static final field INTERNAL_SERVER_ERROR I
+	public static final field METHOD_NOT_ALLOWED I
+	public static final field MOVED_PERMANENTLY I
+	public static final field NOT_ACCEPTABLE I
+	public static final field NOT_FOUND I
+	public static final field NOT_IMPLEMENTED I
+	public static final field NOT_MODIFIED I
+	public static final field NO_CONTENT I
+	public static final field OK I
+	public static final field PARTIAL_CONTENT I
+	public static final field PERMANENT_REDIRECT I
+	public static final field PRECONDITION_FAILED I
+	public static final field PRECONDITION_REQUIRED I
+	public static final field RANGE_NOT_SATISFIABLE I
+	public static final field REQUEST_HEADER_FIELDS_TOO_LARGE I
+	public static final field SEE_OTHER I
+	public static final field SERVICE_UNAVAILABLE I
+	public static final field SWITCHING_PROTOCOLS I
+	public static final field TEMPORARY_REDIRECT I
+	public static final field TOO_MANY_REQUESTS I
+	public static final field UNAUTHORIZED I
+	public static final field UNPROCESSABLE_CONTENT I
+	public static final field UNSUPPORTED_MEDIA_TYPE I
+	public static final field UPGRADE_REQUIRED I
+	public static final field URI_TOO_LONG I
+	public final fun isClientError (I)Z
+	public final fun isInformational (I)Z
+	public final fun isRedirection (I)Z
+	public final fun isServerError (I)Z
+	public final fun isSuccess (I)Z
+	public final fun isValid (I)Z
 }
 
 public abstract interface class com/davils/kapi/runtime/core/response/Response {

@@ -48,6 +48,12 @@ private const val LAST_SUCCESS: Int = 299
 
 private const val REDIRECT: Int = 300
 
+private const val BELOW_STATUS: Int = 99
+
+private const val STATUS_CLASSES: Int = 5
+
+private const val BEYOND_STATUS: Int = 600
+
 private const val LIMIT: Int = 42
 
 private const val TOTAL: Long = 9_000_000_000
@@ -80,6 +86,34 @@ class HeadersTest : FunSpec({
             headers.all(MISSING) shouldBe emptyList()
             headers.names shouldBe setOf(AUTHORIZATION, TRACE_LOWER, SESSION)
             headers.toMap()[AUTHORIZATION] shouldBe listOf(TOKEN)
+        }
+
+        test("joins every line of a field into one value") {
+            headers.joined(TRACE) shouldBe "a, b"
+            headers.joined(AUTHORIZATION) shouldBe TOKEN
+            headers.joined(MISSING).shouldBeNull()
+        }
+    }
+
+    context("the status codes") {
+        test("fall into their classes") {
+            listOf(INFORMATION, OK, REDIRECT, HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR).map { status ->
+                listOf(
+                    HttpStatus.isInformational(status),
+                    HttpStatus.isSuccess(status),
+                    HttpStatus.isRedirection(status),
+                    HttpStatus.isClientError(status),
+                    HttpStatus.isServerError(status),
+                ).indexOf(true)
+            } shouldBe List(size = STATUS_CLASSES) { index -> index }
+        }
+
+        test("are valid from 100 to 599 only") {
+            HttpStatus.isValid(HttpStatus.SWITCHING_PROTOCOLS) shouldBe true
+            HttpStatus.isValid(HttpStatus.GATEWAY_TIMEOUT) shouldBe true
+            HttpStatus.isValid(BELOW_STATUS) shouldBe false
+            HttpStatus.isValid(BEYOND_STATUS) shouldBe false
+            HttpStatus.isServerError(BEYOND_STATUS) shouldBe false
         }
     }
 

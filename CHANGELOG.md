@@ -33,3 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `com.davils.kapi.runtime.core.pattern`, so generated models validate `pattern` with it: `Pattern.compileOrThrow`
   compiles a known-good pattern once and `Constraints.matches` checks a text against it, reporting
   `kapi.runtime.constraint.pattern`.
+- **The core runtime** shares what the other runtimes duplicated: `FieldSyntax` (tokens and field values) and the
+  `bounded` limit check as `@DavilsInternal` API, `HttpStatus` with the status codes and their classes,
+  `Headers.joined` for the combined value of every line of a field and `Codecs.decode` for a parsed `MediaType`.
