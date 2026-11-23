@@ -61,3 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to read the reply.
 - **Every builder** of the DSLs closes after its first `build()` or `validate()`: a setter or a function that changes
   it afterwards throws an `IllegalStateException` instead of losing the change silently.
+- **Generated models** are regular classes instead of data classes: they write `equals`, `hashCode` and `toString`
+  by hand, mask every property marked `x-kapi-sensitive` in `toString` and offer `copy` with named parameters, but no
+  `componentN`.
+- **Generated patterns** run in the linear engine of `kapi-runtime-core`: a model compiles each pattern once into a
+  private `Pattern` of its file and checks it with `Constraints.matches`, never a `Regex` of the platform, and a
+  pattern the engine refuses is refused at generation with a located `codegen.schema.unsupported`; the samples of
+  mocks match patterns with the engine as well.

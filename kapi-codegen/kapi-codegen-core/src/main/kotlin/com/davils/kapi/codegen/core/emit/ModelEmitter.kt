@@ -23,7 +23,6 @@ import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.options.Visibility
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.TypeSpec
 
 private val modifiers: Map<Visibility, KModifier> = mapOf(
     Visibility.Public to KModifier.PUBLIC,
@@ -46,15 +45,16 @@ internal class ModelEmitter(options: GeneratorOptions) {
         return types.map { (name, type) -> file(name, type) }
     }
 
-    private fun types(plan: ModelPlan): Map<String, TypeSpec> = when (plan) {
+    private fun types(plan: ModelPlan): Map<String, ModelFile> = when (plan) {
         is ModelPlan.ObjectPlan -> mapOf(plan.name to objects.type(plan))
-        is ModelPlan.EnumPlan -> mapOf(plan.name to enums.type(plan))
-        is ModelPlan.UnionPlan -> unions.types(plan)
+        is ModelPlan.EnumPlan -> mapOf(plan.name to ModelFile(enums.type(plan)))
+        is ModelPlan.UnionPlan -> unions.types(plan).mapValues { (_, type) -> ModelFile(type) }
     }
 
-    private fun file(name: String, type: TypeSpec): GeneratedFile {
+    private fun file(name: String, model: ModelFile): GeneratedFile {
         val file = FileSpec.builder(packageName = modelPackage, fileName = name)
-        file.addType(type)
+        model.properties.forEach(file::addProperty)
+        file.addType(model.type)
         return GeneratedFile(
             path = modelPackage.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,

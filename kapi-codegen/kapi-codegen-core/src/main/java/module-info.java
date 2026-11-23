@@ -26,6 +26,7 @@ module com.davils.kapi.codegen.core {
     requires transitive com.davils.kapi.spec.core;
     requires transitive com.davils.kapi.spec.openapi;
     requires transitive com.davils.kapi.spec.asyncapi;
+    requires com.davils.kapi.runtime.core;
     requires kotlinx.coroutines.core;
     requires kotlinx.io.bytestring;
     requires kotlinx.serialization.json;

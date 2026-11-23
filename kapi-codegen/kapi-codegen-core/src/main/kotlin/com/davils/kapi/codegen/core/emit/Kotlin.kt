@@ -55,7 +55,7 @@ internal object Kotlin {
 
     val jvmInline: ClassName = ClassName("kotlin.jvm", "JvmInline")
 
-    val regex: ClassName = ClassName("kotlin.text", "Regex")
+    val pattern: ClassName = ClassName("com.davils.kapi.runtime.core.pattern", "Pattern")
 
     val generated: ClassName = ClassName("com.davils.kore.core.annotation", "DavilsGenerated")
 

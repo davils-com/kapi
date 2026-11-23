@@ -6,6 +6,9 @@ import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -16,7 +19,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "server.yaml#/components/schemas/Pet",
 )
-public data class PetstorePet(
+public class PetstorePet(
     @SerialName("id")
     public val id: Long? = null,
     @SerialName("name")
@@ -30,6 +33,21 @@ public data class PetstorePet(
             if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        id: Long? = this.id,
+        name: String = this.name,
+        status: PetstoreStatus? = this.status,
+    ): PetstorePet = PetstorePet(id = id, name = name, status = status)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePet && listOf(this.id, this.name, this.status) == listOf(other.id, other.name, other.status)
+
+    override fun hashCode(): Int = listOf(this.id, this.name, this.status).hashCode()
+
+    override fun toString(): String = "PetstorePet(" + "id=" + this.id + ", name=" + this.name + ", status=" + this.status + ")"
 }
 ===== com/example/petstore/model/PetstorePetPatch.kt
 package com.example.petstore.model
@@ -40,6 +58,9 @@ import com.davils.kapi.runtime.core.wire.Patch
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.OptIn
 import kotlin.String
 import kotlinx.serialization.EncodeDefault
@@ -53,7 +74,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "server.yaml#/components/schemas/Pet",
 )
-public data class PetstorePetPatch(
+public class PetstorePetPatch(
     @SerialName("name")
     @EncodeDefault(EncodeDefault.Mode.NEVER)
     public val name: Patch<String> = Patch.Absent,
@@ -70,6 +91,17 @@ public data class PetstorePetPatch(
             if (!status.value.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: Patch<String> = this.name, status: Patch<PetstoreStatus> = this.status): PetstorePetPatch = PetstorePetPatch(name = name, status = status)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePetPatch && listOf(this.name, this.status) == listOf(other.name, other.status)
+
+    override fun hashCode(): Int = listOf(this.name, this.status).hashCode()
+
+    override fun toString(): String = "PetstorePetPatch(" + "name=" + this.name + ", status=" + this.status + ")"
 }
 ===== com/example/petstore/model/PetstorePetWrite.kt
 package com.example.petstore.model
@@ -79,6 +111,9 @@ import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -88,7 +123,7 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "server.yaml#/components/schemas/Pet",
 )
-public data class PetstorePetWrite(
+public class PetstorePetWrite(
     @SerialName("name")
     public val name: String,
     @SerialName("status")
@@ -100,6 +135,17 @@ public data class PetstorePetWrite(
             if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         }
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(name: String = this.name, status: PetstoreStatus? = this.status): PetstorePetWrite = PetstorePetWrite(name = name, status = status)
+
+    override fun equals(other: Any?): Boolean = other is PetstorePetWrite && listOf(this.name, this.status) == listOf(other.name, other.status)
+
+    override fun hashCode(): Int = listOf(this.name, this.status).hashCode()
+
+    override fun toString(): String = "PetstorePetWrite(" + "name=" + this.name + ", status=" + this.status + ")"
 }
 ===== com/example/petstore/model/PetstoreProblem.kt
 package com.example.petstore.model
@@ -107,6 +153,9 @@ package com.example.petstore.model
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -116,12 +165,23 @@ import kotlinx.serialization.Serializable
     by = "kapi",
     from = "server.yaml#/components/schemas/Problem",
 )
-public data class PetstoreProblem(
+public class PetstoreProblem(
     @SerialName("title")
     public val title: String? = null,
 ) : Validatable {
     override fun ValidationScope.validate() {
     }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(title: String? = this.title): PetstoreProblem = PetstoreProblem(title = title)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreProblem && listOf(this.title) == listOf(other.title)
+
+    override fun hashCode(): Int = listOf(this.title).hashCode()
+
+    override fun toString(): String = "PetstoreProblem(" + "title=" + this.title + ")"
 }
 ===== com/example/petstore/model/PetstoreStatus.kt
 package com.example.petstore.model

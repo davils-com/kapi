@@ -25,6 +25,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import java.nio.file.Files
+import java.nio.file.Path
 
 private const val LINE: String = "\n"
 
@@ -36,7 +38,12 @@ class GoldenTest : FunSpec({
     context("the Kotlin of a document") {
         documents.forEach { name ->
             test("$name are written as the recorded Kotlin, byte for byte") {
-                Golden.rendered(Golden.generated(name).files) shouldBe Golden.text("$name.txt")
+                val actual = Golden.rendered(Golden.generated(name).files)
+                val target = Path.of("build", "golden", "$name.txt")
+                Files.createDirectories(target.parent)
+                Files.writeString(target, actual)
+
+                actual shouldBe Golden.text("$name.txt")
             }
 
             test("$name compile without a warning under the explicit API") {

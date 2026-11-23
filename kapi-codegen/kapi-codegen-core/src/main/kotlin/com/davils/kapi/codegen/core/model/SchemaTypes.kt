@@ -16,10 +16,14 @@
 
 package com.davils.kapi.codegen.core.model
 
+import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
+import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
+import com.davils.kapi.runtime.core.pattern.Pattern
+import com.davils.kapi.runtime.core.pattern.PatternCompilation
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.schema.FixedSchema
 import com.davils.kapi.spec.openapi.model.schema.Schema
@@ -119,8 +123,15 @@ internal class SchemaTypes(private val scope: PlanScope, private val planner: Mo
     private fun scalar(definition: SchemaDefinition, scalars: Map<String, ScalarKind>): TypeUse {
         val kind = scalars[definition.format.orEmpty()] ?: scalars.getValue("")
         val rules = SchemaRules.scalar(definition, kind) + constants.rules(definition, kind)
+        rules.filterIsInstance<RulePlan.Pattern>().forEach { rule -> audit(definition, rule.pattern) }
         val hints = definition.examples + listOfNotNull(definition.default)
         return TypeUse(TypeShape.Scalar(kind), rules = rules, hints = hints)
+    }
+
+    private fun audit(definition: SchemaDefinition, pattern: String) {
+        val refused = Pattern.compile(pattern) as? PatternCompilation.Refused ?: return
+        val reason = "; the generated validate() matches patterns only with the linear engine of kapi-runtime-core"
+        scope.findings.error(CodegenCodes.SCHEMA_UNSUPPORTED, refused.message + reason, definition.location)
     }
 
     private fun structured(definition: SchemaDefinition, context: String, type: SchemaType?): TypeUse {
