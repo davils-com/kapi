@@ -36,4 +36,12 @@ public class LoadSettings(
     public val limits: ReadLimits,
     public val references: ReferencePolicy,
     public val hasMergeKeys: Boolean,
-)
+) {
+    private val identity: List<Any> get() = listOf(resolver, limits, references, hasMergeKeys)
+
+    override fun equals(other: Any?): Boolean = other is LoadSettings && identity == other.identity
+
+    override fun hashCode(): Int = identity.hashCode()
+
+    override fun toString(): String = "LoadSettings(limits=$limits, references=$references, hasMergeKeys=$hasMergeKeys)"
+}
