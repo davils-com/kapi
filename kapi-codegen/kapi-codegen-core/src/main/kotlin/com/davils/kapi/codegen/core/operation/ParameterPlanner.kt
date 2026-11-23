@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
@@ -43,10 +44,6 @@ private val places: Map<ParameterPlacement, ParameterPlace> = mapOf(
 )
 
 private const val FORM: String = "application/x-www-form-urlencoded"
-
-private const val JSON: String = "application/json"
-
-private const val JSON_SUFFIX: String = "+json"
 
 private val owned: Set<String> = setOf("accept", "content-type", "authorization")
 
@@ -74,10 +71,8 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
     private fun queryString(context: String, parameter: Parameter): ParameterPlan? {
         val content = scope.contentOf(parameter.content).entries.singleOrNull()
         val declared = content?.run { key.trim() }
-        val bare = declared?.substringBefore(';')
-        val essence = bare?.run { trimEnd().lowercase() }
-        val isForm = essence == FORM
-        val isJson = essence != null && (essence == JSON || essence.endsWith(JSON_SUFFIX))
+        val isForm = declared?.let(MediaTypes::essenceOf) == FORM
+        val isJson = declared?.let(MediaTypes::isJson) == true
         val schema = content?.value?.schema?.takeIf { isForm || isJson }
         val name = nameOf(parameter)
         val use = schema?.let { found -> models.typeOf(found, context + Identifiers.type(name)) }

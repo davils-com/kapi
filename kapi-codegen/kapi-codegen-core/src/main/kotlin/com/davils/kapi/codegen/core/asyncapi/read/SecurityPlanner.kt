@@ -17,9 +17,9 @@
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeKind
 import com.davils.kapi.codegen.core.asyncapi.plan.SchemeUsePlan
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
@@ -39,7 +39,7 @@ import com.davils.kapi.spec.core.model.Referable
 
 private val httpKinds: Map<String, SchemeKind> = mapOf("bearer" to SchemeKind.Bearer, "basic" to SchemeKind.Basic)
 
-internal class SecurityPlanner(private val document: Document, private val report: Report) {
+internal class SecurityPlanner(private val document: Document, private val report: Findings) {
     fun plan(
         channel: String,
         location: Location?,

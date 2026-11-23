@@ -18,7 +18,6 @@ package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.DirectionPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
@@ -27,6 +26,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.plan.RequestPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
@@ -48,7 +48,11 @@ private const val REQUEST: String = "request"
 
 private val webSockets: Set<String> = setOf("ws", "wss")
 
-internal class ChannelPlanner(private val document: Document, private val report: Report, private val prefix: String) {
+internal class ChannelPlanner(
+    private val document: Document,
+    private val report: Findings,
+    private val prefix: String,
+) {
     private val targets: Targets = Targets(document)
 
     private val messages: MessagePlanner = MessagePlanner(document, report)

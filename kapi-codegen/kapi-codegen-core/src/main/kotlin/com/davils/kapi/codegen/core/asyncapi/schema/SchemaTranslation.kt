@@ -17,7 +17,7 @@
 package com.davils.kapi.codegen.core.asyncapi.schema
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
 import com.davils.kapi.spec.core.value.Value
 
@@ -73,7 +73,7 @@ private val exclusives: List<Pair<String, String>> = listOf(
 )
 
 internal class SchemaTranslation(
-    private val report: Report,
+    private val report: Findings,
     private val format: SchemaFormat,
     private val reference: (Value.Text) -> String?,
 ) {

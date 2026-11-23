@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core.asyncapi
 
 import com.davils.kapi.codegen.core.asyncapi.schema.JsonText
 import com.davils.kapi.codegen.core.asyncapi.schema.SchemaTranslation
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
@@ -51,7 +52,7 @@ private fun mapping(vararg entries: Pair<String, Value>): Value.Mapping = Value.
 
 private fun sequence(vararg items: Value): Value.Sequence = Value.Sequence(items.toList())
 
-private fun translated(format: SchemaFormat, value: Value, report: Report = Report()): Value {
+private fun translated(format: SchemaFormat, value: Value, report: Findings = Findings()): Value {
     val translation = SchemaTranslation(report, format) { reference -> "#/components/schemas/" + reference.value }
     return translation.schema(value)
 }
@@ -116,7 +117,7 @@ class TranslationTest : FunSpec({
         }
 
         test("refuses items as a list and additional items") {
-            val report = Report()
+            val report = Findings()
             val schema = mapping("items" to sequence(mapping()), "additionalItems" to Value.Flag(false))
             translated(SchemaFormat.JsonSchema, schema, report)
 
@@ -162,7 +163,7 @@ class TranslationTest : FunSpec({
         }
 
         test("ignores the keywords beside a reference with a warning, but not its annotations") {
-            val report = Report()
+            val report = Findings()
             val schema = mapping(REF to text("A"), "description" to text("d"), TYPE to text(STRING))
 
             translated(SchemaFormat.AsyncApi, schema, report) shouldBe mapping(REF to text("#/components/schemas/A"))

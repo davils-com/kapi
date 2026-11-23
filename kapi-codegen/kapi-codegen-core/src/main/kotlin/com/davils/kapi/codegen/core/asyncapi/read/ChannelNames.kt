@@ -17,13 +17,13 @@
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.ChannelPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.DirectionPlan
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.diagnostic.Location
 
-internal class ChannelNames(private val report: Report) {
+internal class ChannelNames(private val report: Findings) {
     fun audit(plans: List<ChannelPlan>) {
         unique(plans.map { plan -> plan.base to plan.location }, "channels")
         plans.forEach(::auditChannel)

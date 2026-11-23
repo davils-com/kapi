@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.ModelKind
 import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.PlanScope
@@ -33,10 +34,6 @@ import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.RequestBody
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.resolve
-
-private const val JSON: String = "application/json"
-
-private const val JSON_SUFFIX: String = "+json"
 
 private const val BYTES: String = "application/octet-stream"
 
@@ -130,8 +127,8 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
     }
 
     private fun kindOf(type: String): BodyKind {
-        val base = baseOf(type).lowercase()
-        if (base == JSON || base.endsWith(JSON_SUFFIX)) return BodyKind.Json
+        if (MediaTypes.isJson(type)) return BodyKind.Json
+        val base = MediaTypes.essenceOf(type)
         val known = structured.filterKeys { prefix -> base.startsWith(prefix) }
         return known.values.firstOrNull() ?: BodyKind.Binary
     }

@@ -54,5 +54,9 @@ internal class Findings {
         )
     }
 
+    fun add(diagnostic: Diagnostic) {
+        collected += diagnostic
+    }
+
     fun sorted(): List<Diagnostic> = collected.distinct().sortedWith(order)
 }

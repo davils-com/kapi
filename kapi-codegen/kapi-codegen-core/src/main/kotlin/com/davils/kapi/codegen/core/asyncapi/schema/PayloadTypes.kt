@@ -18,9 +18,9 @@ package com.davils.kapi.codegen.core.asyncapi.schema
 
 import com.davils.kapi.codegen.core.ModelCatalog
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.Value
 import com.squareup.kotlinpoet.BOOLEAN
@@ -56,7 +56,7 @@ internal class PayloadTypes(
     private val hoist: SchemaHoist,
     hoisted: List<Hoisted>,
     private val catalog: ModelCatalog,
-    private val report: Report,
+    private val report: Findings,
 ) {
     private val byKey: Map<String, Hoisted> = hoisted.associateBy(Hoisted::key)
 

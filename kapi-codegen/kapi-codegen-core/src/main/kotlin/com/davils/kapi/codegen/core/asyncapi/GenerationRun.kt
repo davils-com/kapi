@@ -32,12 +32,13 @@ import com.davils.kapi.codegen.core.asyncapi.schema.ModelRun
 import com.davils.kapi.codegen.core.asyncapi.schema.PayloadTypes
 import com.davils.kapi.codegen.core.asyncapi.schema.SchemaHoist
 import com.davils.kapi.codegen.core.options.Artifact
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.source.SourceDocument
 
 internal class GenerationRun(private val options: GeneratorOptions) {
     suspend fun run(document: Document, sources: List<SourceDocument>): Generation {
-        val report = Report()
+        val report = Findings()
         val emitted = emitted(document, report)
         if (emitted == null || report.hasErrors) return Generation.Refused(report.sorted())
         val (files, catalog) = emitted
@@ -50,7 +51,7 @@ internal class GenerationRun(private val options: GeneratorOptions) {
         )
     }
 
-    private suspend fun emitted(document: Document, report: Report): Pair<List<GeneratedFile>, ModelCatalog>? {
+    private suspend fun emitted(document: Document, report: Findings): Pair<List<GeneratedFile>, ModelCatalog>? {
         val plans = ChannelPlanner(document, report, options.typePrefix + options.apiName).plan()
         val messages = plans.flatMap { plan -> plan.upstream.messages + plan.downstream.messages }
         val hoist = SchemaHoist(document, report)

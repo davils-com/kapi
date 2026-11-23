@@ -18,10 +18,10 @@ package com.davils.kapi.codegen.core.asyncapi.schema
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
 import com.davils.kapi.codegen.core.asyncapi.read.Targets
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
@@ -40,7 +40,7 @@ private val structural: Set<String> = setOf(COMPONENTS, SCHEMAS, "channels", "me
 
 private val modelled: Set<SchemaFormat> = setOf(SchemaFormat.AsyncApi, SchemaFormat.JsonSchema, SchemaFormat.OpenApi)
 
-internal class SchemaHoist(private val document: Document, private val report: Report) {
+internal class SchemaHoist(private val document: Document, private val report: Findings) {
     private val targets: Targets = Targets(document)
 
     private val keys: MutableMap<Target, String> = linkedMapOf()

@@ -16,11 +16,12 @@
 
 package com.davils.kapi.codegen.core.asyncapi.read
 
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
@@ -35,7 +36,7 @@ private const val COMPANION: String = "Companion"
 
 private val modelled: Set<SchemaFormat> = setOf(SchemaFormat.AsyncApi, SchemaFormat.JsonSchema, SchemaFormat.OpenApi)
 
-internal class MessagePlanner(private val document: Document, private val report: Report) {
+internal class MessagePlanner(private val document: Document, private val report: Findings) {
     private val targets: Targets = Targets(document)
 
     fun plan(key: String, referable: Referable<Message>): MessagePlan? {
@@ -63,7 +64,7 @@ internal class MessagePlanner(private val document: Document, private val report
             val text = "The message ${shown(key)} names no content type; it is read and written as application/json"
             report.warn(GenerationCodes.CONTENT_TYPE_ASSUMED, text, message.location)
         }
-        if (type != null && !ContentTypes.isJson(type)) {
+        if (type != null && !MediaTypes.isJson(type)) {
             val text = "The message ${shown(key)} has the content type ${shown(type)}; the generator writes JSON only"
             report.error(GenerationCodes.CONTENT_TYPE_UNSUPPORTED, text, message.location)
         }

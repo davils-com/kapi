@@ -17,10 +17,10 @@
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.DirectionPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.diagnostic.Location
@@ -36,7 +36,7 @@ private const val ENUM: String = "enum"
 
 private const val DISCRIMINATOR: String = "discriminator"
 
-internal class Discriminators(document: Document, private val report: Report) {
+internal class Discriminators(document: Document, private val report: Findings) {
     private val targets: Targets = Targets(document)
 
     fun distinguished(channel: String, location: Location?, direction: DirectionPlan): DirectionPlan {

@@ -17,6 +17,7 @@
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.Keywords
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.model.plan.Chunks
@@ -32,10 +33,6 @@ import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.content.ResponseStatus
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.resolve
-
-private const val JSON: String = "application/json"
-
-private const val JSON_SUFFIX: String = "+json"
 
 private const val OTHER: String = "Other"
 
@@ -117,9 +114,9 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     }
 
     private fun streamOf(context: String, response: Response): StreamPlan? {
-        val kinds = scope.contentOf(response.content).mapKeys { (type, _) -> type.substringBefore(';').trim() }
+        val kinds = scope.contentOf(response.content).mapKeys { (type, _) -> MediaTypes.essenceOf(type) }
         val streamed = kinds.entries.firstNotNullOfOrNull { (type, media) ->
-            streams[type.lowercase()]?.let { kind -> Triple(kind, media, type.lowercase() == SEQUENCE) }
+            streams[type]?.let { kind -> Triple(kind, media, type == SEQUENCE) }
         }
         return streamed?.let { (kind, media, isSequence) ->
             StreamPlan(kind = kind, item = itemOf(media, context + ITEM), isSequence = isSequence)
@@ -132,9 +129,7 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     }
 
     private fun jsonOf(content: Map<String, MediaType>): Map.Entry<String, MediaType>? =
-        content.entries.firstOrNull { (type, _) -> isJson(type.substringBefore(';').trim()) }
-
-    private fun isJson(type: String): Boolean = type == JSON || type.endsWith(JSON_SUFFIX)
+        content.entries.firstOrNull { (type, _) -> MediaTypes.isJson(type) }
 
     private fun itemOf(media: MediaType, context: String): TypeUse {
         val schema = media.itemSchema ?: return typeOf(media, context)

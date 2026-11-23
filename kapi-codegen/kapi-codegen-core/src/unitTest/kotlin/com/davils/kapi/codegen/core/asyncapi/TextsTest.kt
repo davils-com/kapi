@@ -16,9 +16,9 @@
 
 package com.davils.kapi.codegen.core.asyncapi
 
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.read.Addresses
-import com.davils.kapi.codegen.core.asyncapi.read.ContentTypes
 import com.davils.kapi.codegen.core.asyncapi.read.Correlations
 import com.davils.kapi.codegen.core.emit.Texts
 import io.kotest.core.spec.style.FunSpec
@@ -137,7 +137,7 @@ class TextsTest : FunSpec({
     context("a content type") {
         types.forEach { (type, isJson) ->
             test("is JSON or not: $type") {
-                ContentTypes.isJson(type) shouldBe isJson
+                MediaTypes.isJson(type) shouldBe isJson
             }
         }
     }

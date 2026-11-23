@@ -19,11 +19,11 @@
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.Handshake
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakeField
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakePlace
 import com.davils.kapi.codegen.core.asyncapi.plan.ScalarType
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.spec.asyncapi.Document
@@ -62,7 +62,7 @@ private val reservedHeaders: Set<String> = setOf(
     "upgrade",
 )
 
-internal class HandshakePlanner(private val document: Document, private val report: Report) {
+internal class HandshakePlanner(private val document: Document, private val report: Findings) {
     private val targets: Targets = Targets(document)
 
     private val HandshakePlace.label: String

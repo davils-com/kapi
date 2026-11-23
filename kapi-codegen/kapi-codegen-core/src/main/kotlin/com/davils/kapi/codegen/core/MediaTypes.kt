@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.codegen.core.asyncapi.read
+package com.davils.kapi.codegen.core
 
 private const val JSON: String = "application/json"
 
-private const val APPLICATION: String = "application/"
-
 private const val JSON_SUFFIX: String = "+json"
 
-internal object ContentTypes {
-    fun isJson(text: String): Boolean {
-        val type = text.substringBefore(';').trim()
-        val essence = type.lowercase()
-        val isSuffixed = essence.startsWith(APPLICATION) && essence.endsWith(JSON_SUFFIX)
-        return essence == JSON || isSuffixed
+internal object MediaTypes {
+    fun essenceOf(type: String): String {
+        val bare = type.substringBefore(';')
+        return bare.trim().lowercase()
+    }
+
+    fun isJson(type: String): Boolean {
+        val essence = essenceOf(type)
+        return essence == JSON || essence.endsWith(JSON_SUFFIX)
     }
 }

@@ -22,8 +22,8 @@ import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.asyncapi.GeneratorOptions
-import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.options.Artifact
+import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
@@ -40,7 +40,7 @@ private const val QUOTE: String = "\""
 
 private val componentPath: List<String> = listOf("components", "schemas")
 
-internal class ModelRun(private val options: GeneratorOptions, private val report: Report) {
+internal class ModelRun(private val options: GeneratorOptions, private val report: Findings) {
     suspend fun run(document: Document, hoisted: List<Hoisted>): Models? {
         val root = document.location
         val uri = root?.document ?: DocumentUri.MEMORY
