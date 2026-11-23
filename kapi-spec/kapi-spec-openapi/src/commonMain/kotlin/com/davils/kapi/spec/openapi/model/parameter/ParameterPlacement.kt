@@ -21,6 +21,14 @@ public enum class ParameterPlacement(public val keyword: String) {
     Query("query"),
     Header("header"),
     Cookie("cookie"),
+
+    /**
+     * The whole query string of a request as one parameter, described by the one media type of its content; a
+     * parameter is placed there from OpenAPI 3.2 on and has no style.
+     *
+     * @since 1.0.0
+     */
+    QueryString("querystring"),
     ;
 
     public companion object {

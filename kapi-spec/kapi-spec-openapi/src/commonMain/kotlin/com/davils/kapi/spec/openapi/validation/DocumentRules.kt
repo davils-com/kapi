@@ -32,6 +32,7 @@ internal object DocumentRules {
         PathRules::check,
         MethodRules::check,
         ParameterRules::check,
+        QueryStringRules::check,
         SecurityRules::check,
         SchemaRules::check,
         PatternRules::check,

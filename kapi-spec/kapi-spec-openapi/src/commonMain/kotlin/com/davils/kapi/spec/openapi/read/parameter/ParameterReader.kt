@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.read.parameter
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.HeaderBuilder
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
@@ -33,6 +34,11 @@ import com.davils.kapi.spec.openapi.read.shape.Keys
 import com.davils.kapi.spec.openapi.read.shape.Shapes
 
 internal object ParameterReader {
+    private val places: Map<Boolean, String> = mapOf(
+        false to "path, query, header or cookie",
+        true to "path, query, querystring, header or cookie",
+    )
+
     fun parameter(cursor: Cursor): Parameter = cursor.read(Shapes.parameter, ParameterBuilder()) { fields ->
         name = fields.text(Keys.NAME).orEmpty()
         placement = placementOf(fields) ?: placement
@@ -63,7 +69,8 @@ internal object ParameterReader {
 
     fun styleOf(fields: Fields): ParameterStyle? {
         val text = fields.text(Keys.STYLE) ?: return null
-        val style = ParameterStyle.fromKeyword(text)
+        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        val style = ParameterStyle.fromKeyword(text)?.takeIf { known -> known != ParameterStyle.Cookie || isCurrent }
         if (style == null) {
             fields.report(Keys.STYLE, DiagnosticCodes.PARAMETER_STYLE, "'$text' is no style of a parameter")
         }
@@ -72,11 +79,14 @@ internal object ParameterReader {
 
     private fun placementOf(fields: Fields): ParameterPlacement? {
         val text = fields.text(Keys.IN) ?: return null
+        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
         val placement = ParameterPlacement.fromKeyword(text)
-        if (placement == null) {
-            val message = "'$text' is no place of a parameter, which is path, query, header or cookie"
+        val known = placement?.takeIf { found -> found != ParameterPlacement.QueryString || isCurrent }
+        if (known == null) {
+            val listed = places.getValue(isCurrent)
+            val message = "'$text' is no place of a parameter, which is $listed"
             fields.report(Keys.IN, DiagnosticCodes.PARAMETER_LOCATION, message)
         }
-        return placement
+        return known
     }
 }

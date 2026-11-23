@@ -197,6 +197,29 @@ public object DiagnosticCodes {
      */
     public val PATH_METHOD_FIXED: ViolationCode = code("path.method-fixed")
 
+    /**
+     * A parameter in querystring has a schema, a style, explode or allowReserved, or a content without exactly one
+     * media type; the whole query string is described by the one media type of its content.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING: ViolationCode = code("parameter.querystring")
+
+    /**
+     * An operation has more than one parameter in querystring, counting those of its path item.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING_REPEATED: ViolationCode = code("parameter.querystring-repeated")
+
+    /**
+     * An operation has a parameter in querystring and a parameter in query, counting those of its path item; the query
+     * string is described either whole or by its parameters.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING_WITH_QUERY: ViolationCode = code("parameter.querystring-with-query")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -275,6 +298,9 @@ public object DiagnosticCodes {
         COMPONENT_NAME,
         PATH_METHOD_TOKEN,
         PATH_METHOD_FIXED,
+        PARAMETER_QUERYSTRING,
+        PARAMETER_QUERYSTRING_REPEATED,
+        PARAMETER_QUERYSTRING_WITH_QUERY,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")
