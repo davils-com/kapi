@@ -28,7 +28,7 @@ internal class DestinationCheck(private val policy: DestinationPolicy) {
     suspend fun decide(destination: Destination): DestinationDecision {
         val early = screen(destination)
         if (early != null) return early
-        val name = (Hosts.read(destination.host) as? Host.Name)?.name.orEmpty()
+        val name = Hosts.normalized(destination.host)
         return when (val resolution = resolve(name)) {
             HostResolution.Skipped -> DestinationDecision.Allowed()
             is HostResolution.Failed -> refused(DestinationRefusal.Unresolved)
