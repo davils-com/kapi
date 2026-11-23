@@ -61,7 +61,7 @@ class ReferenceTest : FunSpec({
             reference.summary shouldBe SUMMARY
             reference.description shouldBe "A pet of the store"
             reference.location shouldBe here
-            reference.toString() shouldBe "Reference($TEXT -> $pet)"
+            reference.toString() shouldBe "Reference(\"$TEXT\" -> $pet)"
         }
 
         test("equals a reference to the same target wherever it was written") {
