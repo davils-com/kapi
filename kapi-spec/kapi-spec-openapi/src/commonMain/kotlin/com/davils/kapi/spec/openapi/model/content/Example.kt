@@ -28,5 +28,25 @@ public class Example internal constructor(builder: ExampleBuilder) : Element(bui
 
     public val externalValue: String? = builder.externalValue
 
-    override val identity: List<Any?> get() = listOf(summary, description, value, externalValue)
+    /**
+     * The example as data that the schema validates, before it is serialized; `null` before OpenAPI 3.2.
+     *
+     * A reading reports it beside [value].
+     *
+     * @since 1.0.0
+     */
+    public val dataValue: Value? = builder.dataValue
+
+    /**
+     * The example as it is serialized on the wire, such as a query string or a line of JSON; `null` before
+     * OpenAPI 3.2.
+     *
+     * A reading reports it beside [value] or [externalValue].
+     *
+     * @since 1.0.0
+     */
+    public val serializedValue: String? = builder.serializedValue
+
+    override val identity: List<Any?>
+        get() = listOf(summary, description, value, externalValue, dataValue, serializedValue)
 }

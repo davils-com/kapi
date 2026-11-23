@@ -33,5 +33,12 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
 
     public var isWrapped: Boolean = false
 
+    /**
+     * The kind of node the schema maps to, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var nodeType: XmlNodeType? = null
+
     override fun assemble(): Xml = Xml(this)
 }

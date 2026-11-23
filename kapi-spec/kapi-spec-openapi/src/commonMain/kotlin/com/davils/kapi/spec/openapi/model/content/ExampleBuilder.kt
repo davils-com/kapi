@@ -32,5 +32,19 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
 
     public var externalValue: String? = null
 
+    /**
+     * The example as data that the schema validates, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var dataValue: Value? = null
+
+    /**
+     * The example as it is serialized on the wire, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var serializedValue: String? = null
+
     override fun assemble(): Example = Example(this)
 }

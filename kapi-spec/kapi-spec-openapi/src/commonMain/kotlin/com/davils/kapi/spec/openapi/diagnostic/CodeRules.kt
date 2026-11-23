@@ -30,6 +30,7 @@ internal object CodeRules {
         DiagnosticCodes.SCHEMA_VERSION_FORM,
         DiagnosticCodes.SCHEMA_PATTERN_BACKTRACKING,
         DiagnosticCodes.SCHEMA_UNKNOWN_KEYWORD,
+        DiagnosticCodes.SCHEMA_XML_DEPRECATED,
     )
 
     val adjustable: Set<ViolationCode> = setOf(

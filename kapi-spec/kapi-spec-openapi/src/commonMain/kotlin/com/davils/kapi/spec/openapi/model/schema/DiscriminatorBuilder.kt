@@ -28,5 +28,12 @@ public class DiscriminatorBuilder internal constructor() :
 
     internal val mapping: MutableMap<String, String> = linkedMapOf()
 
+    /**
+     * The schema of a value that maps to no other schema, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var defaultMapping: String? = null
+
     override fun assemble(): Discriminator = Discriminator(this)
 }

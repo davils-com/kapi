@@ -234,6 +234,8 @@ internal object Shapes {
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
             FieldRule(Keys.VALUE, FieldKind.Value),
             FieldRule(Keys.EXTERNAL_VALUE, FieldKind.Text),
+            FieldRule(Keys.DATA_VALUE, FieldKind.Value, since = VersionFamily.V32),
+            FieldRule(Keys.SERIALIZED_VALUE, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 
@@ -318,6 +320,7 @@ internal object Shapes {
         fields = listOf(
             FieldRule(Keys.PROPERTY_NAME, FieldKind.Text, isRequired = true),
             FieldRule(Keys.MAPPING, FieldKind.Mapping),
+            FieldRule(Keys.DEFAULT_MAPPING, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 
@@ -329,6 +332,7 @@ internal object Shapes {
             FieldRule(Keys.PREFIX, FieldKind.Text),
             FieldRule(Keys.ATTRIBUTE, FieldKind.Flag),
             FieldRule(Keys.WRAPPED, FieldKind.Flag),
+            FieldRule(Keys.NODE_TYPE, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 

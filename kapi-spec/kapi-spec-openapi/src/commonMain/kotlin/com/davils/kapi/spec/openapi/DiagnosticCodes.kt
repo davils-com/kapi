@@ -242,6 +242,21 @@ public object DiagnosticCodes {
      */
     public val MEDIA_TYPE_ENCODING: ViolationCode = code("media-type.encoding")
 
+    /**
+     * The nodeType of the XML object of a schema is none of element, attribute, text, cdata and none.
+     *
+     * @since 1.0.0
+     */
+    public val SCHEMA_XML_NODE_TYPE: ViolationCode = code("schema.xml-node-type")
+
+    /**
+     * The XML object of a schema has attribute or wrapped beside nodeType; OpenAPI 3.2 deprecates both in favour of
+     * nodeType and forbids them beside it. A warning by default.
+     *
+     * @since 1.0.0
+     */
+    public val SCHEMA_XML_DEPRECATED: ViolationCode = code("schema.xml-deprecated")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -326,6 +341,8 @@ public object DiagnosticCodes {
         TAG_PARENT_UNKNOWN,
         TAG_PARENT_CYCLE,
         MEDIA_TYPE_ENCODING,
+        SCHEMA_XML_NODE_TYPE,
+        SCHEMA_XML_DEPRECATED,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

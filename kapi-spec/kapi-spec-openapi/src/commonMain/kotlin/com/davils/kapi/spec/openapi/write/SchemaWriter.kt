@@ -101,6 +101,7 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
         val out = Out()
         out.text(Keys.PROPERTY_NAME, discriminator.propertyName)
         out.map(Keys.MAPPING, discriminator.mapping) { target -> yamlScalar(target) }
+        out.text(Keys.DEFAULT_MAPPING, discriminator.defaultMapping?.takeIf { isCurrent })
         return out.build(discriminator)
     }
 
@@ -111,6 +112,7 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
         out.text(Keys.PREFIX, xml.prefix)
         out.flag(Keys.ATTRIBUTE, xml.isAttribute)
         out.flag(Keys.WRAPPED, xml.isWrapped)
+        out.text(Keys.NODE_TYPE, xml.nodeType?.takeIf { isCurrent }?.keyword)
         return out.build(xml)
     }
 }

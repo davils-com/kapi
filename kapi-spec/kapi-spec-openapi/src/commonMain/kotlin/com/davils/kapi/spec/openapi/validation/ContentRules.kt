@@ -58,9 +58,7 @@ internal object ContentRules {
     }
 
     private fun examples(scope: RuleScope) {
-        val doubled = scope.all<Example>().filter { example ->
-            example.value != null && example.externalValue != null
-        }
+        val doubled = scope.all<Example>().filter(::isDoubled)
         val parameters = scope.all<Parameter>().filter { parameter ->
             parameter.example != null && parameter.examples.isNotEmpty()
         }
@@ -74,6 +72,18 @@ internal object ContentRules {
             val message = "An example is given once: as a value or elsewhere, and as example or as examples"
             scope.report(DiagnosticCodes.EXAMPLE_SHAPE, message, element)
         }
+    }
+
+    private fun isDoubled(example: Example): Boolean {
+        val hasValue = example.value != null
+        val hasExternal = example.externalValue != null
+        val hasSerialized = example.serializedValue != null
+        val conflicts = listOf(
+            hasValue && hasExternal,
+            hasValue && example.dataValue != null,
+            hasSerialized && (hasValue || hasExternal),
+        )
+        return true in conflicts
     }
 
     private fun contents(scope: RuleScope) {

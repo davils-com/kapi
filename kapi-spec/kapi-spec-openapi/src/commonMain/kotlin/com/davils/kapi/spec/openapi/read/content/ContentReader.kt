@@ -66,6 +66,8 @@ internal object ContentReader {
         description = fields.text(Keys.DESCRIPTION)
         value = fields.value(Keys.VALUE)
         externalValue = fields.text(Keys.EXTERNAL_VALUE)
+        dataValue = fields.value(Keys.DATA_VALUE)
+        serializedValue = fields.text(Keys.SERIALIZED_VALUE)
     }
 
     fun examples(fields: Fields): Map<String, Referable<Example>> =

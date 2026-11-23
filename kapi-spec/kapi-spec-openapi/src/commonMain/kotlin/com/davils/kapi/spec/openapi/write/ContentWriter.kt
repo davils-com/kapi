@@ -86,6 +86,8 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.text(Keys.DESCRIPTION, example.description)
         out.node(Keys.VALUE, example.value?.let(Nodes::of))
         out.text(Keys.EXTERNAL_VALUE, example.externalValue)
+        out.node(Keys.DATA_VALUE, example.dataValue?.takeIf { isCurrent }?.let(Nodes::of))
+        out.text(Keys.SERIALIZED_VALUE, example.serializedValue?.takeIf { isCurrent })
         return out.build(example)
     }
 
