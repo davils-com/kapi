@@ -21,7 +21,7 @@ package com.davils.kapi.spec.asyncapi.diagnostic
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kore.core.annotation.DavilsInternal
-import com.davils.kapi.spec.core.read.Findings as SharedFindings
+import com.davils.kapi.spec.core.diagnostic.Findings as SharedFindings
 
 internal class Findings(policy: SeverityPolicy, maximum: Int) :
     SharedFindings(policy, maximum, DiagnosticCodes.LIMIT_DIAGNOSTICS, CodeRules::severityOf)
