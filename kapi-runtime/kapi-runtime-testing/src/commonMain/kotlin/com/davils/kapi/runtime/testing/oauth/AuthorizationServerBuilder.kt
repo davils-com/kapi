@@ -43,6 +43,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var issuer: String = "https://login.example.com"
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The client the server knows; a request of any other client is answered with `invalid_client`.
@@ -50,6 +54,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var clientId: String = "client"
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The secret of the client, which it must present with HTTP Basic or in the form; `client-secret` by default, or
@@ -58,6 +66,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var clientSecret: String? = "client-secret"
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `token_type` of every token; `Bearer` by default, `DPoP` for a client that binds its tokens.
@@ -65,6 +77,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var tokenType: String = "Bearer"
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The lifetime of every access token, sent as `expires_in` in whole seconds, or `null` to send none; one hour by
@@ -73,6 +89,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var lifetime: Duration? = 1.hours
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Whether every grant also issues a refresh token; `true` by default.
@@ -80,6 +100,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var isRefreshTokenIssued: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The refresh tokens the server accepts besides those it issued, such as the one of a
@@ -88,6 +112,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var refreshTokens: Set<String> = emptySet()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `interval` of a device authorization in whole seconds; zero by default, so that a test does not wait.
@@ -95,6 +123,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var interval: Duration = Duration.ZERO
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `expires_in` of a device authorization in whole seconds; ten minutes by default.
@@ -102,6 +134,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var deviceLifetime: Duration = 10.minutes
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The answers to the polls of the device authorization grant before the token is granted, in order; none by
@@ -110,6 +146,10 @@ public class AuthorizationServerBuilder internal constructor() : ValidatingBuild
      * @since 1.0.0
      */
     public var devicePolls: List<DevicePoll> = emptyList()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Refuses the next request of [grant] with [error] and status `400`; each call refuses one more request of the
