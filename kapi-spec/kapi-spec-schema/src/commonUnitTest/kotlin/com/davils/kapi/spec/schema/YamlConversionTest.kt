@@ -21,6 +21,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+
+private const val COLLIDING: Int = 4096
+
+private val BLOCKS: List<String> = listOf("Aa", "BB")
 
 private val SCALARS: List<String> = listOf("a: ~", "b: true", "c: 12", "d: 1.5e3", "e: text", "f: [1, '2']")
 
@@ -52,6 +58,17 @@ class YamlConversionTest : FunSpec({
     test("keys with the same text are refused") {
         val refused = JsonSchema.json(yamlOf("1: a\n'1': b\n")).shouldBeInstanceOf<YamlConversion.Refused>()
         refused.reason shouldContain "twice"
+    }
+
+    test("keys whose hash codes collide convert and validate") {
+        var keys = listOf("")
+        while (keys.size < COLLIDING) keys = keys.flatMap { key -> BLOCKS.map { block -> key + block } }
+        val text = keys.joinToString(separator = "\n", postfix = "\n") { key -> "$key: 1" }
+
+        val converted = JsonSchema.json(yamlOf(text)).shouldBeInstanceOf<YamlConversion.Converted>()
+        val members = converted.json.shouldBeInstanceOf<JsonObject>()
+        members.size shouldBe COLLIDING
+        keys.all { key -> members[key] == JsonPrimitive(1) } shouldBe true
     }
 
     test("depth and nodes are bounded") {

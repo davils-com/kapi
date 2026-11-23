@@ -76,3 +76,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The AsyncAPI model and reader** keep every map keyed by document input, such as servers, channels, operations,
   messages, components, parameters, bindings, extensions and the targets of references, in balanced trees through
   `KeyedMap`, and hold every public map and list as an immutable copy.
+- **JSON Schema** converts the mappings of a YAML instance or schema into JSON objects keyed through `KeyedMap`, so
+  keys whose hash codes collide cannot slow a validation down on Wasm.

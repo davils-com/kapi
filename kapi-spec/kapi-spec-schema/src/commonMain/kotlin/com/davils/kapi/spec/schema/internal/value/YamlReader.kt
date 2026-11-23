@@ -21,6 +21,8 @@ package com.davils.kapi.spec.schema.internal.value
 import com.davils.kaml.core.model.YamlTag
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.boolean
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.schema.RefusalReason
 import com.davils.kapi.spec.schema.internal.Refusal
 import com.davils.kapi.spec.schema.internal.Trail
@@ -75,7 +77,7 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
     }
 
     private fun mapping(node: YamlNode.Mapping, trail: Trail?, depth: Int): JsonElement {
-        val members = LinkedHashMap<String, JsonElement>()
+        val members = KeyedMap<String, JsonElement>()
         node.entries.forEach { entry ->
             val scalar = entry.key as? YamlNode.Scalar
                 ?: refuse(RefusalReason.UnsupportedValue, "A key of the YAML mapping is no scalar", trail)
@@ -90,7 +92,7 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
             }
             members[key] = read(entry.value, Trail(trail, key), depth + 1)
         }
-        return JsonObject(members)
+        return JsonObject(members.frozen())
     }
 
     private fun scalar(node: YamlNode.Scalar, trail: Trail?): JsonElement {
