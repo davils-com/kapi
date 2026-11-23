@@ -12,6 +12,10 @@
 /kapi-spec/kapi-spec-openapi/src/jvmMain/java/@davils-com/maintainers
 /kapi-runtime/kapi-runtime-core/api/        @davils-com/maintainers
 /kapi-runtime/kapi-runtime-core/src/jvmMain/java/@davils-com/maintainers
+/kapi-runtime/kapi-runtime-client/api/      @davils-com/maintainers
+/kapi-runtime/kapi-runtime-client/src/jvmMain/java/@davils-com/maintainers
+/kapi-runtime/kapi-runtime-server/api/      @davils-com/maintainers
+/kapi-runtime/kapi-runtime-server/src/main/java/@davils-com/maintainers
 /kapi-codegen/kapi-codegen-core/api/        @davils-com/maintainers
 /kapi-codegen/kapi-codegen-core/src/main/java/@davils-com/maintainers
 /kapi-codegen/kapi-codegen-gradle/api/      @davils-com/maintainers
