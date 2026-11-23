@@ -18,6 +18,8 @@
 package com.davils.kapi.codegen.core
 
 import com.davils.kapi.codegen.core.options.GeneratorBuilder
+import com.davils.kapi.codegen.core.asyncapi.Generator as ChannelGenerator
+import com.davils.kapi.codegen.core.asyncapi.GeneratorBuilder as ChannelGeneratorBuilder
 
 /**
  * The entry point of the code generator of kapi.
@@ -48,5 +50,29 @@ public object Codegen {
         val builder = GeneratorBuilder()
         builder.configure()
         return Generator(builder.build())
+    }
+
+    /**
+     * Returns a generator of Kotlin from the WebSocket channels of AsyncAPI 3 documents, configured by [configure].
+     *
+     * ```kotlin
+     * val generator = Codegen.asyncApi {
+     *     packageName = "com.example.chat"
+     *     apiName = "Chat"
+     *     artifacts = setOf(Artifact.Models, Artifact.Client, Artifact.Server)
+     * }
+     * val generation = generator.generate(reading.document, reading.sources)
+     * ```
+     *
+     * @param configure sets the package, the name of the API, the artifacts and the visibility of the generated code.
+     * @return the generator.
+     * @throws com.davils.kore.core.validation.report.ValidationException if the options are invalid, such as a package
+     * name that is no Kotlin package or an artifact AsyncAPI does not describe.
+     * @since 1.0.0
+     */
+    public fun asyncApi(configure: ChannelGeneratorBuilder.() -> Unit): ChannelGenerator {
+        val builder = ChannelGeneratorBuilder()
+        builder.configure()
+        return ChannelGenerator(builder.build())
     }
 }
