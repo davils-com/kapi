@@ -34,9 +34,8 @@ internal object ExtValue {
     fun decode(text: String): String? {
         val parts = text.split(QUOTE, limit = PARTS)
         val charset = parts.first().lowercase()
-        val value = parts.getOrNull(2)
-        val isValid = parts.size == PARTS && value != null && value.all { char -> isAttrChar(char) || char == '%' }
-        val bytes = value?.takeIf { isValid }?.let(PercentCoding::decodeBytes) ?: return null
+        val value = parts.getOrNull(2)?.takeIf { found -> found.all { char -> isAttrChar(char) || char == '%' } }
+        val bytes = value?.let(PercentCoding::decodeBytes) ?: return null
         return Utf8.decodeOrNull(bytes).takeIf { charset == UTF_8 } ?: Utf8.latin1(bytes).takeIf { charset == LATIN_1 }
     }
 }
