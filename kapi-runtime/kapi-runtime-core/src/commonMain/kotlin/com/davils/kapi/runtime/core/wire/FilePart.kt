@@ -81,8 +81,8 @@ public class FilePart(
     override fun hashCode(): Int = identity.hashCode()
 
     override fun toString(): String {
-        val name = filename?.let(SafeText::text) ?: NO_NAME
-        val type = contentType?.let(SafeText::text) ?: NO_NAME
+        val name = SafeText.text(filename ?: NO_NAME)
+        val type = SafeText.text(contentType ?: NO_NAME)
         return "FilePart(${content.size} bytes, filename=$name, contentType=$type)"
     }
 }

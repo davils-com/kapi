@@ -40,7 +40,7 @@ internal object MediaTypeReader {
     fun read(scanner: FieldScanner, maxParameters: Int): MediaTypeParts? {
         val type = scanner.token()
         val hasSlash = type != null && scanner.consume(SLASH)
-        val subtype = scanner.token()?.takeIf { hasSlash }
+        val subtype = scanner.token().takeIf { hasSlash }
         val parameters = subtype?.let { parameters(scanner, maxParameters) }
         if (type == null || subtype == null || parameters == null) return null
         return MediaTypeParts(type = type.lowercase(), subtype = subtype.lowercase(), parameters = parameters)
@@ -77,15 +77,11 @@ internal object MediaTypeReader {
     }
 
     private fun assigned(scanner: FieldScanner): Pair<String, String>? {
-        val name = scanner.token()?.lowercase()
-        val hasValue = name != null && scanner.consume(ASSIGN)
-        val value = scanner.tokenOrQuoted()?.takeIf { text ->
-            hasValue &&
-                FieldGrammar.isSafeValue(
-                    text,
-                )
-        } ?: return null
+        val token = scanner.token()
+        val name = token?.takeIf { scanner.consume(ASSIGN) }?.lowercase()
+        val value = name?.let { scanner.tokenOrQuoted() }?.takeIf(FieldGrammar::isSafeValue)
+        if (name == null || value == null) return null
         val normalized = value.lowercase().takeIf { name == CHARSET } ?: value
-        return name.orEmpty() to normalized
+        return name to normalized
     }
 }

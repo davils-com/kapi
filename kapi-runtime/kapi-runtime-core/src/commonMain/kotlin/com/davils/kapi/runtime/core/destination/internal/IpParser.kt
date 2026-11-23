@@ -54,12 +54,9 @@ internal object IpParser {
     }
 
     fun ipv4(text: String): ByteArray? {
-        val parts = text.split(DOT)
-        if (parts.size != IPV4_PARTS) return null
-        val octets = parts.map(::octet)
-        return octets
-            .takeIf { found -> found.all { octet -> octet != null } }
-            ?.let { found -> ByteArray(IPV4_BYTES) { index -> (found[index] ?: 0).toByte() } }
+        val octets = text.split(DOT).map(::octet)
+        val values = octets.filterNotNull().takeIf { found -> found.size == octets.size && found.size == IPV4_PARTS }
+        return values?.let { found -> ByteArray(IPV4_BYTES) { index -> found[index].toByte() } }
     }
 
     private fun octet(part: String): Int? {

@@ -129,7 +129,8 @@ public class RangeRequest(specs: List<ByteRangeSpec>) {
         public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): RangeRequest? {
             val unit = text.substringBefore('=', "")
             val isBytes = unit.equals(UNIT, ignoreCase = true) && text.length <= limits.maxFieldLength
-            val set = text.takeIf { isBytes }?.substring(unit.length + 1) ?: return null
+            if (!isBytes) return null
+            val set = text.substring(unit.length + 1)
             val specs = FieldLists.read(FieldScanner(set), limits.maxRanges, ::spec)
             return specs?.takeIf(List<ByteRangeSpec>::isNotEmpty)?.let(::RangeRequest)
         }

@@ -49,11 +49,6 @@ internal object FieldGrammar {
 
     fun isVisibleOrSpace(char: Char): Boolean = char == SPACE || isVisible(char)
 
-    fun isQuotedText(char: Char): Boolean {
-        val isPrintable = isWhitespace(char) || isVisible(char) || isObsolete(char)
-        return isPrintable && char != QUOTE && char != BACKSLASH
-    }
-
     fun isQuotable(char: Char): Boolean = isWhitespace(char) || isVisible(char) || isObsolete(char)
 
     fun isObsolete(char: Char): Boolean = char in FIRST_OBSOLETE..LAST_OBSOLETE

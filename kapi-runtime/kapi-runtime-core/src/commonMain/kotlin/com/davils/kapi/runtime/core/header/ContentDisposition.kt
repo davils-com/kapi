@@ -234,21 +234,20 @@ public class ContentDisposition(type: String, parameters: List<Pair<String, Stri
         }
 
         private fun parameter(): Pair<String, String>? {
-            val name = scanner.token()?.lowercase()
-            val hasValue = name != null && scanner.consume(ASSIGN)
+            val name = scanner.token()?.lowercase() ?: return null
+            val hasValue = scanner.consume(ASSIGN)
             val value = valueOf(name, hasValue)?.let { text -> decodedOf(name, text) }
-            if (name == null || value == null) return null
-            return name to value
+            return value?.let { found -> name to found }
         }
 
-        private fun valueOf(name: String?, hasValue: Boolean): String? {
+        private fun valueOf(name: String, hasValue: Boolean): String? {
             if (!hasValue) return null
             scanner.skipWhitespace()
-            return scanner.tokenOrQuoted(isUnicode = name?.endsWith('*') != true)
+            return scanner.tokenOrQuoted(isUnicode = !name.endsWith('*'))
         }
 
-        private fun decodedOf(name: String?, text: String): String? {
-            if (name?.endsWith('*') != true) return text
+        private fun decodedOf(name: String, text: String): String? {
+            if (!name.endsWith('*')) return text
             return ExtValue.decode(text)
         }
     }

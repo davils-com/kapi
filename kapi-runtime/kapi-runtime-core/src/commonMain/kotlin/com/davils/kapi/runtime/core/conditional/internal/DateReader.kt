@@ -42,8 +42,6 @@ private const val HALF_CENTURY: Int = 50
 
 private const val FIRST_YEAR: Int = 1
 
-private const val LAST_YEAR: Int = 9_999
-
 private const val IMF_TOKENS: Int = 6
 
 private const val RFC850_TOKENS: Int = 4
@@ -124,7 +122,7 @@ internal class DateReader(private val text: String, private val nowYear: Int?) {
     private fun instant(parts: DateParts): Long? {
         val day = parts.day?.let(::number)
         val month = Calendar.MONTH_NAMES.indexOf(parts.month) + 1
-        val year = parts.year?.takeIf { found -> found in FIRST_YEAR..LAST_YEAR }
+        val year = parts.year?.takeIf { found -> found >= FIRST_YEAR }
         val seconds = timeOf(parts.time)
         if (day == null || year == null || seconds == null) return null
         val days = Calendar.daysFromCivil(year, month, day)
@@ -145,7 +143,7 @@ internal class DateReader(private val text: String, private val nowYear: Int?) {
     }
 
     private fun number(text: String): Int? {
-        val isNumber = text.isNotEmpty() && text.length <= FULL_YEAR_DIGITS && text.all(FieldGrammar::isDigit)
+        val isNumber = text.all(FieldGrammar::isDigit)
         return text.takeIf { isNumber }?.toInt()
     }
 }

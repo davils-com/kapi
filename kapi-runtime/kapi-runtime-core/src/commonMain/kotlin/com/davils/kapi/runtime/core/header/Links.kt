@@ -111,12 +111,13 @@ public object Links {
 
     private fun link(scanner: FieldScanner, limits: FieldLimits): LinkValue? {
         val isOpen = scanner.consume(OPEN)
-        val target = scanner.span { char -> char != CLOSE && FieldGrammar.isVisible(char) }
+        val span = scanner.span { char -> char != CLOSE && FieldGrammar.isVisible(char) }
+        val target = span?.takeIf { found -> UriReference.parseOrNull(found) != null }
         val isClosed = isOpen && target != null && scanner.consume(CLOSE)
-        val parameters = parameters(scanner, limits).takeIf { isClosed }
-        val isTarget = target?.let(UriReference::parseOrNull) != null
-        if (parameters == null || target == null || !isTarget) return null
-        return LinkValue(target, parameters)
+        val parameters = parameters(scanner, limits)
+        val closedTarget = target?.takeIf { isClosed }
+        if (closedTarget == null || parameters == null) return null
+        return LinkValue(closedTarget, parameters)
     }
 
     private fun parameters(scanner: FieldScanner, limits: FieldLimits): List<Pair<String, String>>? {

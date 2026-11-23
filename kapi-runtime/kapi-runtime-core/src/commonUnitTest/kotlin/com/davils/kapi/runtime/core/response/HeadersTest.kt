@@ -92,6 +92,11 @@ class HeadersTest : FunSpec({
             masked[TRACE_LOWER] shouldBe listOf("a", "b")
         }
 
+        test("names the fields that always carry credentials in lower case") {
+            Headers.SENSITIVE.all { name -> name == name.lowercase() } shouldBe true
+            (AUTHORIZATION.lowercase() in Headers.SENSITIVE) shouldBe true
+        }
+
         test("never renders a hidden value and escapes every other") {
             val rendered = headersOf(mapOf("X-Note" to listOf("a\r\nb"), "Cookie" to listOf("id=1"))).toString()
 

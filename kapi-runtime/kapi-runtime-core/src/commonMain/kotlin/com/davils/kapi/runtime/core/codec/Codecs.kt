@@ -127,8 +127,8 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
     ): Decoding<T> {
         val type = mediaType?.let(MediaType::parseOrNull)
         val codec = type?.let(::codecFor)
-        val refusal = refusalOf(content, type, codec)
-        if (refusal != null || type == null || codec == null) return Decoding.Failed(refusal ?: UNSUPPORTED)
+        val isTooLarge = content.size > maxContentBytes
+        if (isTooLarge || type == null || codec == null) return Decoding.Failed(refusalOf(content, type))
         return codec.decode(deserializer, content, type)
     }
 
@@ -139,9 +139,9 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
 
     override fun toString(): String = "Codecs(${all.flatMap(Codec::mediaTypes)})"
 
-    private fun refusalOf(content: ByteString, type: MediaType?, codec: Codec?): String? {
+    private fun refusalOf(content: ByteString, type: MediaType?): String {
         if (content.size > maxContentBytes) return "The content is larger than $maxContentBytes bytes"
-        return MISSING.takeIf { type == null } ?: UNSUPPORTED.takeIf { codec == null }
+        return MISSING.takeIf { type == null } ?: UNSUPPORTED
     }
 
     /**

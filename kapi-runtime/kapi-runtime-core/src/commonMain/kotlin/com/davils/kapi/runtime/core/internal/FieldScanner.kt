@@ -56,8 +56,12 @@ internal class FieldScanner(private val text: String) {
         return text.substring(startIndex = start, endIndex = position).takeIf(String::isNotEmpty)
     }
 
-    fun quotedString(isUnicode: Boolean = false): String? {
-        if (!consume(QUOTE)) return null
+    fun tokenOrQuoted(isUnicode: Boolean = false): String? {
+        if (!consume(QUOTE)) return token()
+        return quotedString(isUnicode)
+    }
+
+    private fun quotedString(isUnicode: Boolean): String? {
         val out = StringBuilder()
         var isOpen = true
         var isValid = true
@@ -70,17 +74,6 @@ internal class FieldScanner(private val text: String) {
         return out.toString().takeIf { isValid }
     }
 
-    fun tokenOrQuoted(isUnicode: Boolean = false): String? {
-        if (peek() == QUOTE) return quotedString(isUnicode)
-        return token()
-    }
-
-    fun rest(): String {
-        val remaining = text.substring(minOf(a = position, b = text.length))
-        position = text.length
-        return remaining
-    }
-
     private fun appended(out: StringBuilder, char: Char, isUnicode: Boolean): Boolean {
         if (char == QUOTE) return true
         val shown = escaped(char)?.takeIf { found -> isUnicode || !FieldGrammar.isBeyondLatin(found) }
@@ -88,7 +81,7 @@ internal class FieldScanner(private val text: String) {
         return shown != null
     }
 
-    private fun isQuotedChar(char: Char): Boolean = FieldGrammar.isQuotedText(char) || FieldGrammar.isBeyondLatin(char)
+    private fun isQuotedChar(char: Char): Boolean = FieldGrammar.isQuotable(char) || FieldGrammar.isBeyondLatin(char)
 
     private fun escaped(char: Char): Char? {
         if (char != BACKSLASH) return char.takeIf(::isQuotedChar)

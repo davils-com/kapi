@@ -35,8 +35,6 @@ internal object FieldLists {
         return items.takeIf { isValid }
     }
 
-    fun joined(values: List<String>): String = values.joinToString(", ")
-
     private fun hasNext(scanner: FieldScanner): Boolean {
         scanner.skipWhitespace()
         while (scanner.consume(COMMA)) scanner.skipWhitespace()

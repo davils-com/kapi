@@ -55,9 +55,11 @@ private val privateNames: List<String> = listOf(
 internal object Hosts {
     fun read(text: String): Host {
         if (text.length > MAXIMUM_LENGTH + 2) return Host.Invalid
-        val host = text.lowercase().removeSuffix(DOT.toString())
+        val host = normalized(text)
         return literalOf(host)?.let(::address) ?: name(host)
     }
+
+    fun normalized(text: String): String = text.lowercase().removeSuffix(DOT.toString())
 
     fun textOf(host: Host): String? = when (host) {
         Host.Invalid -> null
