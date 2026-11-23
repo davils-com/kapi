@@ -86,6 +86,7 @@ publish:
     - ":kapi-runtime:kapi-runtime-server:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-gradle:publishAllPublicationsToDavilsRepository"
+    - ":kapi-bom:publishAllPublicationsToDavilsRepository"
 
 snapshot:
   # kapi's own build makes every build without a release tag a snapshot.
@@ -153,6 +154,9 @@ release:
       - path: com/davils/kapi/com.davils.kapi.gradle.plugin
         artifact: com.davils.kapi.gradle.plugin
         task: ":kapi-codegen:kapi-codegen-gradle:publishKapiPluginMarkerMavenPublicationToDavilsRepository"
+      - path: com/davils/kapi-bom
+        artifact: kapi-bom
+        task: ":kapi-bom:publishMavenPublicationToDavilsRepository"
   attest:
     subjects:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
