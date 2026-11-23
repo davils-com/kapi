@@ -57,6 +57,15 @@ class OverlayReaderTest : FunSpec({
                 ?.pointer shouldBe JsonPointer.of("overlay")
         }
 
+        test("names its version as text") {
+            overlayOf("overlay: 1.0", INFO, ACTIONS).codes shouldBe listOf(DiagnosticCodes.OVERLAY_VERSION)
+            overlayOf(INFO, ACTIONS).codes shouldBe listOf(DiagnosticCodes.OVERLAY_VERSION)
+        }
+
+        test("refuses a field whose name is no text") {
+            overlayOf(VERSION, INFO, ACTIONS, "[a]: b").codes shouldBe shape
+        }
+
         test("needs info with a title and a version") {
             overlayOf(VERSION, "info: none", ACTIONS).codes shouldBe shape
             overlayOf(
@@ -91,6 +100,12 @@ class OverlayReaderTest : FunSpec({
             actionsOf(
                 "  - {target: 'paths[', update: {}}",
             ).codes shouldBe listOf(DiagnosticCodes.OVERLAY_TARGET)
+        }
+
+        test("is an object") {
+            val codes = actionsOf("  - fix").codes
+
+            codes.toSet() shouldBe setOf(DiagnosticCodes.OVERLAY_SHAPE, DiagnosticCodes.OVERLAY_ACTION)
         }
 
         test("either updates or removes its target") {
