@@ -17,17 +17,16 @@
 package com.davils.kapi.spec.openapi.validation
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
+import com.davils.kapi.spec.openapi.model.path.Placeholders
 import com.davils.kapi.spec.openapi.model.server.Server
 
 internal object ServerRules {
-    private val variable: Regex = Regex("""\{([^{}]+)}""")
-
     fun check(scope: RuleScope) {
         scope.all<Server>().forEach { server -> server(scope, server) }
     }
 
     private fun server(scope: RuleScope, server: Server) {
-        val named = variable.findAll(server.url).map { match -> match.groupValues[1] }
+        val named = Placeholders.names(text = server.url, stops = Placeholders.SERVER_STOPS)
         val undeclared = named.filterNot { name -> name in server.variables }
         undeclared.forEach { name ->
             val message = "The address of the server names the variable $name, which the server does not declare"

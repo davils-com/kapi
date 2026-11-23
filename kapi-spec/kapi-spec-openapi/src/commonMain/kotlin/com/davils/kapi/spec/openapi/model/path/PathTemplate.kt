@@ -20,8 +20,6 @@ import kotlin.jvm.JvmInline
 
 private const val ROOT: String = "/"
 
-private val parameterPattern: Regex = Regex("""\{([^{}/]+)}""")
-
 /**
  * A key of the `paths` object: the path of an endpoint relative to the address of the server, such as
  * `/pets/{petId}`, in which every name between braces is a path parameter.
@@ -46,10 +44,7 @@ public value class PathTemplate(public val value: String) {
      * @since 1.0.0
      */
     public val parameters: List<String>
-        get() {
-            val matches = parameterPattern.findAll(value)
-            return matches.map { match -> match.groupValues[1] }.toList()
-        }
+        get() = Placeholders.names(text = value, stops = Placeholders.PATH_STOPS)
 
     override fun toString(): String = value
 

@@ -28,7 +28,7 @@ import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
 
 internal object Nodes {
-    private val integer: Regex = Regex("-?[0-9]+")
+    private const val MINUS: String = "-"
 
     fun of(value: Value): YamlNode = when (value) {
         is Value.Null -> yamlNull()
@@ -40,8 +40,13 @@ internal object Nodes {
     }
 
     fun of(number: NumberValue): YamlNode {
-        val tag = YamlTag.INTEGER.takeIf { integer.matches(number.literal) } ?: YamlTag.FLOAT
+        val tag = YamlTag.INTEGER.takeIf { isInteger(number.literal) } ?: YamlTag.FLOAT
         return yamlTagged(number.literal, tag)
+    }
+
+    fun isInteger(literal: String): Boolean {
+        val digits = literal.removePrefix(MINUS)
+        return digits.isNotEmpty() && digits.all { character -> character in '0'..'9' }
     }
 
     fun texts(values: List<String>): YamlNode = yamlSequence(values.map { value -> yamlScalar(value) })

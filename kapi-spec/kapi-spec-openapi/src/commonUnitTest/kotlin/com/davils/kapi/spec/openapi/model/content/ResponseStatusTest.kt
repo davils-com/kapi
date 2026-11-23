@@ -39,11 +39,22 @@ class ResponseStatusTest : FunSpec({
         }
 
         test("refuses everything else") {
-            listOf("", "20", "600", "2xx", "099", "Default", "2XXX").forEach { text ->
+            val others = listOf(
+                "", "20", "600", "2xx", "099", "Default", "2XXX", "2X0", "20X", "2XY", "x00", "1000", " 200",
+                "200 ", "default ", "+20", "-20", "2١٢", "٢٠٠", "0XX", "6XX",
+            )
+            others.forEach { text ->
                 val failure = shouldThrow<IllegalArgumentException> { ResponseStatus(text) }
 
                 failure.message shouldContain "is no response status"
             }
+        }
+
+        test("accepts every code and range from 1 to 5") {
+            val codes = (100..599).map(Int::toString)
+            val ranges = (1..5).map { family -> "${family}XX" }
+
+            (codes + ranges).forEach { text -> ResponseStatus.parseOrNull(text)?.value shouldBe text }
         }
     }
 

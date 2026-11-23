@@ -23,25 +23,19 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.PathTemplate
+import com.davils.kapi.spec.openapi.model.path.Placeholders
 import com.davils.kapi.spec.openapi.resolve
 
 private const val PLACEHOLDER: String = "{}"
 
 internal object PathRules {
-    private val parameter: Regex = Regex("""\{[^{}/]+}""")
-
-    private val brace: Regex = Regex("[{}]")
+    private val braces: CharArray = charArrayOf('{', '}')
 
     fun check(scope: RuleScope) {
         val paths = scope.document.paths
         val items = paths?.items.orEmpty()
         items.forEach { (template, item) -> path(scope, template, item) }
-        val alike = items.entries.groupBy { (template, _) ->
-            parameter.replace(
-                input = template.value,
-                replacement = PLACEHOLDER,
-            )
-        }
+        val alike = items.entries.groupBy { (template, _) -> replaced(template, PLACEHOLDER) }
         val ambiguous = alike.values.flatMap { same -> same.drop(1) }
         ambiguous.forEach { (template, item) ->
             val message = "The path $template differs from another path only by the names of its parameters"
@@ -51,8 +45,8 @@ internal object PathRules {
 
     private fun path(scope: RuleScope, template: PathTemplate, item: PathItem) {
         val names = template.parameters
-        val rest = parameter.replace(input = template.value, replacement = "")
-        val isBroken = brace.containsMatchIn(rest) || names.distinct().size < names.size
+        val rest = replaced(template, "")
+        val isBroken = rest.indexOfAny(braces) >= 0 || names.distinct().size < names.size
         if (isBroken) {
             val message = "The path $template must name every parameter once between a pair of braces"
             return scope.report(DiagnosticCodes.PATH_TEMPLATE, message, item)
@@ -83,4 +77,7 @@ internal object PathRules {
         val inPath = resolved.filter { parameter -> parameter.placement == ParameterPlacement.Path }
         return inPath.map(Parameter::name).toSet()
     }
+
+    private fun replaced(template: PathTemplate, replacement: String): String =
+        Placeholders.replaced(text = template.value, stops = Placeholders.PATH_STOPS, replacement = replacement)
 }
