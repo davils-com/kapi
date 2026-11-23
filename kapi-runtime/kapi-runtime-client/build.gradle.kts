@@ -32,9 +32,17 @@ dependencies {
     commonMainApi(libs.kontinuity.policy)
     commonMainApi(libs.kollect.core)
     commonMainApi(libs.konfetti.core)
-    commonMainImplementation(libs.krypt.jose)
+    commonMainApi(libs.krypt.jose)
 }
 
-configurations.matching { configuration -> configuration.name == "commonUnitTestImplementation" }.configureEach {
+val testConfigurations: Set<String> = setOf("commonUnitTestImplementation", "wasmJsTestImplementation")
+
+configurations.matching { configuration -> configuration.name in testConfigurations }.configureEach {
     dependencies.add(project.dependencies.create(libs.ktor.client.mock.get()))
+}
+
+configurations.matching { configuration -> configuration.name == "jvmUnitTestImplementation" }.configureEach {
+    dependencies.add(project.dependencies.create(libs.ktor.server.cio.get()))
+    dependencies.add(project.dependencies.create(libs.ktor.server.websockets.get()))
+    dependencies.add(project.dependencies.create(libs.ktor.client.cio.get()))
 }

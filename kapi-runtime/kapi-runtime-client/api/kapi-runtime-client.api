@@ -1,0 +1,1194 @@
+public final class com/davils/kapi/runtime/client/ApiClient {
+	public final fun acceptable (Ljava/util/List;)Ljava/util/List;
+	public final fun decode (Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/call/Exchange$Answered;)Lcom/davils/kapi/runtime/core/codec/Decoding;
+	public final fun encode (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Lcom/davils/kapi/runtime/client/call/Body;
+	public static synthetic fun encode$default (Lcom/davils/kapi/runtime/client/ApiClient;Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;Lcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/call/Body;
+	public final fun execute (Lcom/davils/kapi/runtime/client/call/Call;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fields (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)Lcom/davils/kapi/runtime/core/parameter/ParameterValue$Fields;
+	public final fun getSettings ()Lcom/davils/kapi/runtime/client/ClientSettings;
+	public final fun json (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ApiClientsKt {
+	public static final fun apiClient (Lio/ktor/client/HttpClient;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/ApiClient;
+	public static synthetic fun apiClient$default (Lio/ktor/client/HttpClient;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/ApiClient;
+}
+
+public final class com/davils/kapi/runtime/client/ClientContract {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/ClientContract;
+	public static final field VERSION I
+}
+
+public abstract interface class com/davils/kapi/runtime/client/ClientEvent : com/davils/konfetti/core/Event {
+	public static final field Companion Lcom/davils/kapi/runtime/client/ClientEvent$Companion;
+	public abstract fun getApi ()Ljava/lang/String;
+	public abstract fun getOperation ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ClientEvent$Companion {
+	public final fun getTOPIC ()Lcom/davils/konfetti/core/TopicKey;
+}
+
+public final class com/davils/kapi/runtime/client/ClientEvent$Reconnecting : com/davils/kapi/runtime/client/ClientEvent {
+	public fun getApi ()Ljava/lang/String;
+	public final fun getAttempt ()I
+	public final fun getDelay-UwyO8pc ()J
+	public fun getOperation ()Ljava/lang/String;
+	public final fun isResumed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ClientEvent$Redirected : com/davils/kapi/runtime/client/ClientEvent {
+	public fun getApi ()Ljava/lang/String;
+	public final fun getHop ()I
+	public fun getOperation ()Ljava/lang/String;
+	public final fun getStatus ()I
+	public final fun isCrossOrigin ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ClientEvent$Refreshed : com/davils/kapi/runtime/client/ClientEvent {
+	public fun getApi ()Ljava/lang/String;
+	public fun getOperation ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public final fun isRefreshed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ClientEvent$Retrying : com/davils/kapi/runtime/client/ClientEvent {
+	public fun getApi ()Ljava/lang/String;
+	public final fun getAttempt ()I
+	public fun getOperation ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/ClientSettings : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/client/ClientSettings$Companion;
+	public static final field HARD_RESPONSE_BYTES J
+	public final fun getBaseUrl ()Ljava/lang/String;
+	public final fun getCodecs ()Lcom/davils/kapi/runtime/core/codec/Codecs;
+	public final fun getCredentials ()Lcom/davils/kapi/runtime/core/security/Credentials;
+	public final fun getDestinations ()Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;
+	public final fun getDpop ()Ljava/util/Map;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getFraming ()Lcom/davils/kapi/runtime/core/framing/FramingLimits;
+	public final fun getInterceptions ()Ljava/util/List;
+	public final fun getMaxResponseBytes ()J
+	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRedirects ()Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
+	public final fun getResilience ()Lcom/davils/kontinuity/policy/Policy;
+	public final fun getSensitiveHeaders ()Ljava/util/Set;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTimeout ()Lcom/davils/kapi/runtime/client/call/Timeout;
+	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/client/ClientSettings$Companion {
+}
+
+public final class com/davils/kapi/runtime/client/ClientSettingsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/runtime/client/ClientSettingsBuilder$Companion;
+	public static final field DEFAULT_NAME Ljava/lang/String;
+	public static final field DEFAULT_RESPONSE_BYTES J
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun dpop (Ljava/lang/String;Lcom/davils/kapi/runtime/client/dpop/DpopProofs;)V
+	public final fun getBaseUrl ()Ljava/lang/String;
+	public final fun getCodecs ()Lcom/davils/kapi/runtime/core/codec/Codecs;
+	public final fun getCredentials ()Lcom/davils/kapi/runtime/core/security/Credentials;
+	public final fun getDestinations ()Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getFraming ()Lcom/davils/kapi/runtime/core/framing/FramingLimits;
+	public final fun getMaxResponseBytes ()J
+	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRedirects ()Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
+	public final fun getResilience ()Lcom/davils/kontinuity/policy/Policy;
+	public final fun getSensitiveHeaders ()Ljava/util/Set;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTimeout ()Lcom/davils/kapi/runtime/client/call/Timeout;
+	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
+	public final fun intercept (Lcom/davils/kapi/runtime/client/pipeline/CallPhase;Ljava/lang/String;Lcom/davils/kapi/runtime/client/pipeline/Interceptor;)V
+	public final fun setBaseUrl (Ljava/lang/String;)V
+	public final fun setCodecs (Lcom/davils/kapi/runtime/core/codec/Codecs;)V
+	public final fun setCredentials (Lcom/davils/kapi/runtime/core/security/Credentials;)V
+	public final fun setDestinations (Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;)V
+	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
+	public final fun setFraming (Lcom/davils/kapi/runtime/core/framing/FramingLimits;)V
+	public final fun setMaxResponseBytes (J)V
+	public final fun setMeters (Lcom/davils/kollect/core/MeterRegistry;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setRedirects (Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;)V
+	public final fun setResilience (Lcom/davils/kontinuity/policy/Policy;)V
+	public final fun setSensitiveHeaders (Ljava/util/Set;)V
+	public final fun setTimeSource (Lkotlin/time/TimeSource$WithComparableMarks;)V
+	public final fun setTimeout (Lcom/davils/kapi/runtime/client/call/Timeout;)V
+	public final fun setTracer (Lcom/davils/kollect/core/trace/Tracer;)V
+}
+
+public final class com/davils/kapi/runtime/client/ClientSettingsBuilder$Companion {
+}
+
+public final class com/davils/kapi/runtime/client/ClientViolationCodes {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/ClientViolationCodes;
+	public final fun getBASE_URL_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDPOP_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getINTERCEPTOR_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLIMIT_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNAME_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREDIRECTS_FOLLOWED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTIMEOUT_INVALID-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Body {
+	public fun <init> (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/io/bytestring/ByteString;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Lkotlinx/io/bytestring/ByteString;
+	public final fun getContentType ()Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Call {
+	public final fun change (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/call/Call;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccept ()Ljava/util/List;
+	public final fun getBody ()Lcom/davils/kapi/runtime/client/call/Body;
+	public final fun getCookies ()Ljava/util/List;
+	public final fun getDestination ()Ljava/lang/String;
+	public final fun getHeaders ()Ljava/util/List;
+	public final fun getIdempotencyKey-EgogdGU ()Ljava/lang/String;
+	public final fun getMethod ()Ljava/lang/String;
+	public final fun getOperation ()Ljava/lang/String;
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getQuery ()Ljava/util/List;
+	public final fun getRefusal ()Lcom/davils/kapi/runtime/client/call/CallFailure;
+	public final fun getSecurity ()Ljava/util/List;
+	public final fun getTimeout ()Lcom/davils/kapi/runtime/client/call/Timeout;
+	public final fun getUpgrade ()Lcom/davils/kapi/runtime/client/call/Upgrade;
+	public final fun getUpload ()Lcom/davils/kapi/runtime/client/call/Upload;
+	public fun hashCode ()I
+	public final fun isIdempotent ()Z
+	public final fun isReplayable ()Z
+	public final fun isRetryable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallBuilder {
+	public final fun accept (Lcom/davils/kapi/runtime/core/negotiation/MediaRange;)V
+	public final fun body (Lcom/davils/kapi/runtime/client/call/Body;)V
+	public final fun body (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/io/bytestring/ByteString;)V
+	public final fun cookie (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
+	public final fun destination (Ljava/lang/String;)V
+	public final fun form (Lkotlin/jvm/functions/Function1;)V
+	public final fun header (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
+	public final fun header (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun idempotencyKey-iL36o_k (Ljava/lang/String;)V
+	public static synthetic fun idempotencyKey-iL36o_k$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Ljava/lang/String;ILjava/lang/Object;)V
+	public final fun idempotent ()V
+	public final fun multipart-gKcpyG4 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun multipart-gKcpyG4$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public final fun path (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
+	public final fun path (Ljava/lang/String;)V
+	public final fun query (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
+	public final fun query (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun security (Ljava/util/List;)V
+	public final fun timeout-NIICwX4 (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;)V
+	public static synthetic fun timeout-NIICwX4$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ILjava/lang/Object;)V
+	public final fun upgrade (Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;)V
+	public static synthetic fun upgrade$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;ILjava/lang/Object;)V
+	public final fun upload (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lio/ktor/utils/io/ByteReadChannel;Ljava/lang/Long;)V
+	public final fun upload (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/coroutines/flow/Flow;Ljava/lang/Long;)V
+	public static synthetic fun upload$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lio/ktor/utils/io/ByteReadChannel;Ljava/lang/Long;ILjava/lang/Object;)V
+	public static synthetic fun upload$default (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/coroutines/flow/Flow;Ljava/lang/Long;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/davils/kapi/runtime/client/call/CallFailure {
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$Aborted : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInterceptor ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$BaseUrlMissing : com/davils/kapi/runtime/client/call/CallFailure {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$BaseUrlMissing;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$ChannelsNotInstalled : com/davils/kapi/runtime/client/call/CallFailure {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$ChannelsNotInstalled;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$CredentialMalformed : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$CredentialMissing : com/davils/kapi/runtime/client/call/CallFailure {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$CredentialMissing;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$CrossOrigin : com/davils/kapi/runtime/client/call/CallFailure {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$CrossOrigin;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$DestinationRefused : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Lcom/davils/kapi/runtime/core/destination/DestinationRefusal;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRefusal ()Lcom/davils/kapi/runtime/core/destination/DestinationRefusal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$Framing : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Lcom/davils/kapi/runtime/core/framing/FramingFailure;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFailure ()Lcom/davils/kapi/runtime/core/framing/FramingFailure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$HandshakeRefused : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getStatus ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$ParameterRefused : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getParameter ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$PathRefused : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getParameter ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$Rejected : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$TimedOut : com/davils/kapi/runtime/client/call/CallFailure {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$TimedOut;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$TooLarge : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (J)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLimit ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$TooManyRedirects : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLimit ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallFailure$Unreachable : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CallsKt {
+	public static final fun apiCall (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/call/Call;
+	public static synthetic fun apiCall$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/call/Call;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/call/CredentialPlacement {
+}
+
+public final class com/davils/kapi/runtime/client/call/CredentialPlacement$Basic : com/davils/kapi/runtime/client/call/CredentialPlacement {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CredentialPlacement$Basic;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CredentialPlacement$Bearer : com/davils/kapi/runtime/client/call/CredentialPlacement {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CredentialPlacement$Bearer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CredentialPlacement$Cookie : com/davils/kapi/runtime/client/call/CredentialPlacement {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CredentialPlacement$Header : com/davils/kapi/runtime/client/call/CredentialPlacement {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/CredentialPlacement$Query : com/davils/kapi/runtime/client/call/CredentialPlacement {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/call/Exchange {
+}
+
+public final class com/davils/kapi/runtime/client/call/Exchange$Answered : com/davils/kapi/runtime/client/call/Exchange, com/davils/kapi/runtime/core/response/Response {
+	public fun <init> (ILcom/davils/kapi/runtime/core/response/Headers;Lkotlinx/io/bytestring/ByteString;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Lkotlinx/io/bytestring/ByteString;
+	public final fun getContentType ()Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public fun getHeaders ()Lcom/davils/kapi/runtime/core/response/Headers;
+	public fun getStatus ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Exchange$Failed : com/davils/kapi/runtime/client/call/Exchange {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/CallFailure;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFailure ()Lcom/davils/kapi/runtime/client/call/CallFailure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/FormBuilder {
+	public final fun field (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun fields (Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class com/davils/kapi/runtime/client/call/MultipartBuilder {
+	public final fun file (Ljava/lang/String;Lcom/davils/kapi/runtime/core/wire/FilePart;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)V
+	public static synthetic fun file$default (Lcom/davils/kapi/runtime/client/call/MultipartBuilder;Ljava/lang/String;Lcom/davils/kapi/runtime/core/wire/FilePart;Lcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)V
+	public final fun files (Ljava/lang/String;Ljava/util/List;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)V
+	public static synthetic fun files$default (Lcom/davils/kapi/runtime/client/call/MultipartBuilder;Ljava/lang/String;Ljava/util/List;Lcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)V
+	public final fun part (Ljava/lang/String;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/io/bytestring/ByteString;)V
+	public final fun text (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun texts (Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class com/davils/kapi/runtime/client/call/RequestAttributes {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/RequestAttributes;
+	public final fun getUpgrade ()Lio/ktor/util/AttributeKey;
+}
+
+public final class com/davils/kapi/runtime/client/call/SecurityUse {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kapi/runtime/client/call/CredentialPlacement;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPlacement ()Lcom/davils/kapi/runtime/client/call/CredentialPlacement;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Timeout {
+	public fun <init> ()V
+	public synthetic fun <init> (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConnect-FghU774 ()Lkotlin/time/Duration;
+	public final fun getRequest-FghU774 ()Lkotlin/time/Duration;
+	public final fun getSocket-FghU774 ()Lkotlin/time/Duration;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Upgrade {
+	public fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;)V
+	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getInput ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getProtocol ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/call/Upload {
+	public fun <init> (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/coroutines/flow/Flow;Ljava/lang/Long;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/coroutines/flow/Flow;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getChunks ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getContentType ()Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public final fun getLength ()Ljava/lang/Long;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelClose {
+	public fun <init> (ILjava/lang/String;Z)V
+	public synthetic fun <init> (ILjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCode ()I
+	public final fun getKind ()Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isLocal ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/channel/ChannelOutcome {
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelOutcome$Completed : com/davils/kapi/runtime/client/channel/ChannelOutcome {
+	public fun <init> (Ljava/lang/Object;Lcom/davils/kapi/runtime/client/channel/ChannelClose;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClose ()Lcom/davils/kapi/runtime/client/channel/ChannelClose;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelOutcome$Failed : com/davils/kapi/runtime/client/channel/ChannelOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/CallFailure;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFailure ()Lcom/davils/kapi/runtime/client/call/CallFailure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/channel/ChannelReply {
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelReply$Closed : com/davils/kapi/runtime/client/channel/ChannelReply {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/channel/ChannelReply$Closed;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelReply$Received : com/davils/kapi/runtime/client/channel/ChannelReply {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelReply$Refused : com/davils/kapi/runtime/client/channel/ChannelReply {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/channel/ChannelReply$Refused;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelReply$TimedOut : com/davils/kapi/runtime/client/channel/ChannelReply {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/channel/ChannelReply$TimedOut;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSession {
+	public final fun close (ILjava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun close$default (Lcom/davils/kapi/runtime/client/channel/ChannelSession;ILjava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun getIncoming ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getSubprotocol ()Ljava/lang/String;
+	public final fun request-8Mi8wO0 (Ljava/lang/Object;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun send (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSettings : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/client/channel/ChannelSettings$Companion;
+	public static final field HARD_COUNT I
+	public static final field HARD_FRAME_BYTES J
+	public static final field HARD_MESSAGE_BYTES J
+	public final fun getCloseTimeout-UwyO8pc ()J
+	public final fun getIncomingCapacity ()I
+	public final fun getMaxFrameBytes ()J
+	public final fun getMaxMessageBytes ()J
+	public final fun getMaxPendingRequests ()I
+	public final fun getMediaType ()Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public final fun getPingInterval-UwyO8pc ()J
+	public final fun getPongTimeout-UwyO8pc ()J
+	public final fun getSubprotocols ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSettings$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/runtime/client/channel/ChannelSettings;
+	public final fun getHARD_TIME-UwyO8pc ()J
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSettingsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getCloseTimeout-UwyO8pc ()J
+	public final fun getIncomingCapacity ()I
+	public final fun getMaxFrameBytes ()J
+	public final fun getMaxMessageBytes ()J
+	public final fun getMaxPendingRequests ()I
+	public final fun getMediaType ()Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public final fun getPingInterval-UwyO8pc ()J
+	public final fun getPongTimeout-UwyO8pc ()J
+	public final fun getSubprotocols ()Ljava/util/List;
+	public final fun setCloseTimeout-LRDsOJo (J)V
+	public final fun setIncomingCapacity (I)V
+	public final fun setMaxFrameBytes (J)V
+	public final fun setMaxMessageBytes (J)V
+	public final fun setMaxPendingRequests (I)V
+	public final fun setMediaType (Lcom/davils/kapi/runtime/core/negotiation/MediaType;)V
+	public final fun setPingInterval-LRDsOJo (J)V
+	public final fun setPongTimeout-LRDsOJo (J)V
+	public final fun setSubprotocols (Ljava/util/List;)V
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSettingsBuilderKt {
+	public static final fun channelSettings (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/channel/ChannelSettings;
+	public static synthetic fun channelSettings$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/channel/ChannelSettings;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelSpec {
+	public fun <init> (Lkotlinx/serialization/SerializationStrategy;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/channel/ChannelSettings;Lcom/davils/kapi/runtime/client/channel/Correlation;)V
+	public synthetic fun <init> (Lkotlinx/serialization/SerializationStrategy;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/channel/ChannelSettings;Lcom/davils/kapi/runtime/client/channel/Correlation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCorrelation ()Lcom/davils/kapi/runtime/client/channel/Correlation;
+	public final fun getReceiveDeserializer ()Lkotlinx/serialization/DeserializationStrategy;
+	public final fun getSendSerializer ()Lkotlinx/serialization/SerializationStrategy;
+	public final fun getSettings ()Lcom/davils/kapi/runtime/client/channel/ChannelSettings;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/channel/ChannelsKt {
+	public static final fun channel (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/channel/ChannelSpec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/client/channel/CloseKind : java/lang/Enum {
+	public static final field Abnormal Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field Companion Lcom/davils/kapi/runtime/client/channel/CloseKind$Companion;
+	public static final field GoingAway Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field InternalError Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field InvalidPayload Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field MandatoryExtension Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field NoStatus Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field Normal Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field Other Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field PolicyViolation Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field ProtocolError Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field ServiceRestart Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field TooBig Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field TryAgainLater Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static final field UnsupportedData Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public final fun getCode ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/channel/CloseKind;
+	public static fun values ()[Lcom/davils/kapi/runtime/client/channel/CloseKind;
+}
+
+public final class com/davils/kapi/runtime/client/channel/CloseKind$Companion {
+	public final fun of (I)Lcom/davils/kapi/runtime/client/channel/CloseKind;
+}
+
+public final class com/davils/kapi/runtime/client/channel/Correlation {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public final fun getReceived ()Lkotlin/jvm/functions/Function1;
+	public final fun getSent ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/conditional/ConditionalOutcome {
+}
+
+public final class com/davils/kapi/runtime/client/conditional/ConditionalOutcome$Modified : com/davils/kapi/runtime/client/conditional/ConditionalOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange$Answered;Lcom/davils/kapi/runtime/client/conditional/Validators;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnswered ()Lcom/davils/kapi/runtime/client/call/Exchange$Answered;
+	public final fun getValidators ()Lcom/davils/kapi/runtime/client/conditional/Validators;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/conditional/ConditionalOutcome$NotModified : com/davils/kapi/runtime/client/conditional/ConditionalOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/conditional/Validators;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValidators ()Lcom/davils/kapi/runtime/client/conditional/Validators;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/conditional/ConditionalOutcome$Other : com/davils/kapi/runtime/client/conditional/ConditionalOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/conditional/ConditionalOutcome$PreconditionFailed : com/davils/kapi/runtime/client/conditional/ConditionalOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange$Answered;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnswered ()Lcom/davils/kapi/runtime/client/call/Exchange$Answered;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/conditional/ConditionalsKt {
+	public static final fun conditional (Lcom/davils/kapi/runtime/client/call/Exchange;)Lcom/davils/kapi/runtime/client/conditional/ConditionalOutcome;
+	public static final fun ifMatch (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/conditional/EntityTagCondition;)V
+	public static final fun ifModifiedSince-IM_QGTQ (Lcom/davils/kapi/runtime/client/call/CallBuilder;J)V
+	public static final fun ifNoneMatch (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/conditional/EntityTagCondition;)V
+	public static final fun ifUnmodifiedSince-IM_QGTQ (Lcom/davils/kapi/runtime/client/call/CallBuilder;J)V
+	public static final fun revalidate (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/client/conditional/Validators;)V
+}
+
+public final class com/davils/kapi/runtime/client/conditional/Validators {
+	public static final field Companion Lcom/davils/kapi/runtime/client/conditional/Validators$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/conditional/EntityTag;Lcom/davils/kapi/runtime/core/conditional/HttpDate;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/conditional/EntityTag;Lcom/davils/kapi/runtime/core/conditional/HttpDate;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEntityTag ()Lcom/davils/kapi/runtime/core/conditional/EntityTag;
+	public final fun getLastModified-q-17t14 ()Lcom/davils/kapi/runtime/core/conditional/HttpDate;
+	public fun hashCode ()I
+	public final fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/conditional/Validators$Companion {
+	public final fun of (Lcom/davils/kapi/runtime/core/response/Headers;)Lcom/davils/kapi/runtime/client/conditional/Validators;
+}
+
+public final class com/davils/kapi/runtime/client/dpop/DpopProofs {
+	public final fun acceptNonce (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getAlgorithm ()Lcom/davils/krypt/jose/jws/JwsAlgorithm;
+	public final fun proof (Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/runtime/core/security/Secret;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun proof$default (Lcom/davils/kapi/runtime/client/dpop/DpopProofs;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/runtime/core/security/Secret;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/dpop/DpopsKt {
+	public static final fun dpopProofs (Lcom/davils/krypt/primitive/Crypto;Lcom/davils/krypt/jose/JoseKey$Private;Lcom/davils/krypt/primitive/key/PublicKey;Lcom/davils/krypt/jose/jws/JwsAlgorithm;)Lcom/davils/kapi/runtime/client/dpop/DpopProofs;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/oauth/AuthorizationRedirect {
+	public abstract fun authorize (Lcom/davils/kapi/runtime/client/oauth/AuthorizationRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/AuthorizationRequest {
+	public final fun getRedirectUri ()Ljava/lang/String;
+	public final fun getState ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/AuthorizationResponse {
+	public static final field Companion Lcom/davils/kapi/runtime/client/oauth/AuthorizationResponse$Companion;
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCode ()Lcom/davils/kapi/runtime/core/security/Secret;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getState ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/AuthorizationResponse$Companion {
+	public final fun fromRedirect (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/oauth/AuthorizationResponse;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ClientAuthentication$None : com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/oauth/ClientAuthentication$None;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ClientAuthentication$PrivateKeyJwt : com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+	public fun <init> (Lcom/davils/krypt/jose/JoseKey$Private;Lcom/davils/krypt/jose/jws/JwsAlgorithm;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlgorithm ()Lcom/davils/krypt/jose/jws/JwsAlgorithm;
+	public final fun getKey ()Lcom/davils/krypt/jose/JoseKey$Private;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ClientAuthentication$SecretBasic : com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSecret ()Lcom/davils/kapi/runtime/core/security/Secret;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ClientAuthentication$SecretJwt : com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;Lcom/davils/krypt/jose/jws/JwsAlgorithm;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;Lcom/davils/krypt/jose/jws/JwsAlgorithm;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlgorithm ()Lcom/davils/krypt/jose/jws/JwsAlgorithm;
+	public final fun getSecret ()Lcom/davils/kapi/runtime/core/security/Secret;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ClientAuthentication$SecretPost : com/davils/kapi/runtime/client/oauth/ClientAuthentication {
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSecret ()Lcom/davils/kapi/runtime/core/security/Secret;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/DeviceAuthorization {
+	public final fun getExpiresIn-UwyO8pc ()J
+	public final fun getUserCode ()Ljava/lang/String;
+	public final fun getVerificationUri ()Ljava/lang/String;
+	public final fun getVerificationUriComplete ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/oauth/DevicePrompt {
+	public abstract fun show (Lcom/davils/kapi/runtime/client/oauth/DeviceAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Discovery : java/lang/Enum {
+	public static final field OAuth Lcom/davils/kapi/runtime/client/oauth/Discovery;
+	public static final field OpenIdConnect Lcom/davils/kapi/runtime/client/oauth/Discovery;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/oauth/Discovery;
+	public static fun values ()[Lcom/davils/kapi/runtime/client/oauth/Discovery;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/oauth/Grant {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Grant$AuthorizationCode : com/davils/kapi/runtime/client/oauth/Grant {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kapi/runtime/client/oauth/AuthorizationRedirect;)V
+	public fun getName ()Ljava/lang/String;
+	public final fun getRedirect ()Lcom/davils/kapi/runtime/client/oauth/AuthorizationRedirect;
+	public final fun getRedirectUri ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Grant$ClientCredentials : com/davils/kapi/runtime/client/oauth/Grant {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/oauth/Grant$ClientCredentials;
+	public fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Grant$DeviceCode : com/davils/kapi/runtime/client/oauth/Grant {
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/client/oauth/DevicePrompt;JJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/client/oauth/DevicePrompt;JJLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getMaxWait-UwyO8pc ()J
+	public final fun getMinimumInterval-UwyO8pc ()J
+	public fun getName ()Ljava/lang/String;
+	public final fun getPrompt ()Lcom/davils/kapi/runtime/client/oauth/DevicePrompt;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Grant$RefreshToken : com/davils/kapi/runtime/client/oauth/Grant {
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/Secret;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public final fun getToken ()Lcom/davils/kapi/runtime/core/security/Secret;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Grant$TokenExchange : com/davils/kapi/runtime/client/oauth/Grant {
+	public fun <init> (Lcom/davils/kapi/runtime/core/security/TokenSource;Ljava/lang/String;Lcom/davils/kapi/runtime/core/security/TokenSource;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/davils/kapi/runtime/core/security/TokenSource;Ljava/lang/String;Lcom/davils/kapi/runtime/core/security/TokenSource;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getActor ()Lcom/davils/kapi/runtime/core/security/TokenSource;
+	public final fun getActorTokenType ()Ljava/lang/String;
+	public final fun getAudience ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public final fun getRequestedTokenType ()Ljava/lang/String;
+	public final fun getResource ()Ljava/lang/String;
+	public final fun getSubject ()Lcom/davils/kapi/runtime/core/security/TokenSource;
+	public final fun getSubjectTokenType ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/oauth/OAuthEvent : com/davils/konfetti/core/Event {
+	public static final field Companion Lcom/davils/kapi/runtime/client/oauth/OAuthEvent$Companion;
+	public abstract fun getClientId ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthEvent$Companion {
+	public final fun getTOPIC ()Lcom/davils/konfetti/core/TopicKey;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthEvent$Granted : com/davils/kapi/runtime/client/oauth/OAuthEvent {
+	public fun getClientId ()Ljava/lang/String;
+	public final fun getGrant ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthEvent$Refused : com/davils/kapi/runtime/client/oauth/OAuthEvent {
+	public fun getClientId ()Ljava/lang/String;
+	public final fun getGrant ()Ljava/lang/String;
+	public final fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthEvent$Revoked : com/davils/kapi/runtime/client/oauth/OAuthEvent {
+	public fun getClientId ()Ljava/lang/String;
+	public final fun getRevocation ()Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthSettings : com/davils/kore/core/validation/Validatable {
+	public final fun getAuthentication ()Lcom/davils/kapi/runtime/client/oauth/ClientAuthentication;
+	public final fun getAuthorizationUrl ()Ljava/lang/String;
+	public final fun getClientId ()Ljava/lang/String;
+	public final fun getCrypto ()Lcom/davils/krypt/primitive/Crypto;
+	public final fun getDestinations ()Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;
+	public final fun getDeviceAuthorizationUrl ()Ljava/lang/String;
+	public final fun getDiscovery ()Lcom/davils/kapi/runtime/client/oauth/Discovery;
+	public final fun getDpop ()Lcom/davils/kapi/runtime/client/dpop/DpopProofs;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getGrant ()Lcom/davils/kapi/runtime/client/oauth/Grant;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getLeeway-UwyO8pc ()J
+	public final fun getRevocationUrl ()Ljava/lang/String;
+	public final fun getScopes ()Ljava/util/Set;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTimeout-UwyO8pc ()J
+	public final fun getTokenUrl ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder$Companion;
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getAuthentication ()Lcom/davils/kapi/runtime/client/oauth/ClientAuthentication;
+	public final fun getAuthorizationUrl ()Ljava/lang/String;
+	public final fun getClientId ()Ljava/lang/String;
+	public final fun getCrypto ()Lcom/davils/krypt/primitive/Crypto;
+	public final fun getDestinations ()Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;
+	public final fun getDeviceAuthorizationUrl ()Ljava/lang/String;
+	public final fun getDiscovery ()Lcom/davils/kapi/runtime/client/oauth/Discovery;
+	public final fun getDpop ()Lcom/davils/kapi/runtime/client/dpop/DpopProofs;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getGrant ()Lcom/davils/kapi/runtime/client/oauth/Grant;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getLeeway-UwyO8pc ()J
+	public final fun getRevocationUrl ()Ljava/lang/String;
+	public final fun getScopes ()Ljava/util/Set;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTimeout-UwyO8pc ()J
+	public final fun getTokenUrl ()Ljava/lang/String;
+	public final fun setAuthentication (Lcom/davils/kapi/runtime/client/oauth/ClientAuthentication;)V
+	public final fun setAuthorizationUrl (Ljava/lang/String;)V
+	public final fun setClientId (Ljava/lang/String;)V
+	public final fun setCrypto (Lcom/davils/krypt/primitive/Crypto;)V
+	public final fun setDestinations (Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;)V
+	public final fun setDeviceAuthorizationUrl (Ljava/lang/String;)V
+	public final fun setDiscovery (Lcom/davils/kapi/runtime/client/oauth/Discovery;)V
+	public final fun setDpop (Lcom/davils/kapi/runtime/client/dpop/DpopProofs;)V
+	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
+	public final fun setGrant (Lcom/davils/kapi/runtime/client/oauth/Grant;)V
+	public final fun setIssuer (Ljava/lang/String;)V
+	public final fun setLeeway-LRDsOJo (J)V
+	public final fun setRevocationUrl (Ljava/lang/String;)V
+	public final fun setScopes (Ljava/util/Set;)V
+	public final fun setTimeSource (Lkotlin/time/TimeSource$WithComparableMarks;)V
+	public final fun setTimeout-LRDsOJo (J)V
+	public final fun setTokenUrl (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder$Companion {
+	public final fun getDEFAULT_LEEWAY-UwyO8pc ()J
+	public final fun getDEFAULT_TIMEOUT-UwyO8pc ()J
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthTokens : com/davils/kapi/runtime/core/security/RefreshingTokenSource {
+	public final fun getGrant ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun getSettings ()Lcom/davils/kapi/runtime/client/oauth/OAuthSettings;
+	public final fun metadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun refresh (Lcom/davils/kapi/runtime/core/security/Secret;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun revoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+	public fun token (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthViolationCodes {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/oauth/OAuthViolationCodes;
+	public final fun getAUTHENTICATION_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCLIENT_ID_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getGRANT_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREDIRECTS_FOLLOWED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSCOPE_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTIME_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getURL_INVALID-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/OAuthsKt {
+	public static final fun oauthTokens (Lio/ktor/client/HttpClient;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/oauth/OAuthTokens;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/Revocation : java/lang/Enum {
+	public static final field Failed Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public static final field NothingHeld Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public static final field Revoked Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public static final field Unsupported Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/oauth/Revocation;
+	public static fun values ()[Lcom/davils/kapi/runtime/client/oauth/Revocation;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/ServerMetadata {
+	public final fun getAuthorizationEndpoint ()Ljava/lang/String;
+	public final fun getCodeChallengeMethods ()Ljava/util/List;
+	public final fun getDeviceAuthorizationEndpoint ()Ljava/lang/String;
+	public final fun getIssuer ()Ljava/lang/String;
+	public final fun getRevocationEndpoint ()Ljava/lang/String;
+	public final fun getTokenEndpoint ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/oauth/TokenTypes {
+	public static final field ACCESS_TOKEN Ljava/lang/String;
+	public static final field ID_TOKEN Ljava/lang/String;
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/oauth/TokenTypes;
+	public static final field JWT Ljava/lang/String;
+	public static final field REFRESH_TOKEN Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/page/LinkPagesKt {
+	public static final fun linkPages (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;I)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun linkPages$default (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/davils/kapi/runtime/client/page/PagesKt {
+	public static final fun cursorPages (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun numberedPages (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun offsetPages (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/davils/kapi/runtime/client/pipeline/CallPhase : java/lang/Enum {
+	public static final field Authorize Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public static final field Prepare Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public static final field Receive Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public static final field Send Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public static fun values ()[Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+}
+
+public final class com/davils/kapi/runtime/client/pipeline/Interception {
+	public fun <init> (Lcom/davils/kapi/runtime/client/pipeline/CallPhase;Ljava/lang/String;Lcom/davils/kapi/runtime/client/pipeline/Interceptor;)V
+	public final fun getInterceptor ()Lcom/davils/kapi/runtime/client/pipeline/Interceptor;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPhase ()Lcom/davils/kapi/runtime/client/pipeline/CallPhase;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/pipeline/Interceptor {
+	public abstract fun intercept (Lcom/davils/kapi/runtime/client/pipeline/RoundTrip;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/client/pipeline/RoundTrip {
+	public final fun getCall ()Lcom/davils/kapi/runtime/client/call/Call;
+	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
+	public final fun getSecrets ()Ljava/util/Map;
+	public fun toString ()Ljava/lang/String;
+	public final fun withCall (Lcom/davils/kapi/runtime/client/call/Call;)Lcom/davils/kapi/runtime/client/pipeline/RoundTrip;
+	public final fun withExchange (Lcom/davils/kapi/runtime/client/call/Exchange;)Lcom/davils/kapi/runtime/client/pipeline/RoundTrip;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/range/RangeOutcome {
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Full : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange$Answered;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnswered ()Lcom/davils/kapi/runtime/client/call/Exchange$Answered;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Malformed : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange$Answered;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnswered ()Lcom/davils/kapi/runtime/client/call/Exchange$Answered;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Other : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Partial : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/core/range/ContentRange$Satisfied;Lkotlinx/io/bytestring/ByteString;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Lkotlinx/io/bytestring/ByteString;
+	public final fun getRange ()Lcom/davils/kapi/runtime/core/range/ContentRange$Satisfied;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Ranges : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange$Answered;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnswered ()Lcom/davils/kapi/runtime/client/call/Exchange$Answered;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangeOutcome$Unsatisfiable : com/davils/kapi/runtime/client/range/RangeOutcome {
+	public fun <init> (Ljava/lang/Long;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCompleteLength ()Ljava/lang/Long;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/range/RangesKt {
+	public static final fun ifRange (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/conditional/IfRange;)V
+	public static final fun range (Lcom/davils/kapi/runtime/client/call/CallBuilder;Lcom/davils/kapi/runtime/core/range/RangeRequest;)V
+	public static final fun ranged (Lcom/davils/kapi/runtime/client/call/Exchange;)Lcom/davils/kapi/runtime/client/range/RangeOutcome;
+}
+
+public final class com/davils/kapi/runtime/client/redirect/RedirectPolicy : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy$Companion;
+	public static final field HARD_HOPS I
+	public final fun getMaxHops ()I
+	public final fun isCrossOriginAllowed ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/client/redirect/RedirectPolicy$Companion {
+}
+
+public final class com/davils/kapi/runtime/client/redirect/RedirectPolicyBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getMaxHops ()I
+	public final fun isCrossOriginAllowed ()Z
+	public final fun setCrossOriginAllowed (Z)V
+	public final fun setMaxHops (I)V
+}
+
+public final class com/davils/kapi/runtime/client/redirect/RedirectPolicyBuilderKt {
+	public static final fun redirectPolicy (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
+	public static synthetic fun redirectPolicy$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
+}
+
+public final class com/davils/kapi/runtime/client/retry/Attempt {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/call/Exchange;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCall ()Lcom/davils/kapi/runtime/client/call/Call;
+	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/retry/CallRetry {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/retry/CallRetry;
+	public final fun getResults ()Lcom/davils/kontinuity/core/filter/ResultFilter;
+	public final fun getTransientStatuses ()Ljava/util/Set;
+	public final fun interval-VtjQ1oo (JLkotlin/time/Clock;)Lcom/davils/kontinuity/retry/RetryInterval;
+	public static synthetic fun interval-VtjQ1oo$default (Lcom/davils/kapi/runtime/client/retry/CallRetry;JLkotlin/time/Clock;ILjava/lang/Object;)Lcom/davils/kontinuity/retry/RetryInterval;
+	public final fun isTransient (Lcom/davils/kapi/runtime/client/retry/Attempt;)Z
+	public final fun retry-zkXUZaI (Ljava/lang/String;ILcom/davils/kontinuity/core/backoff/Backoff;JLcom/davils/kontinuity/core/Environment;)Lcom/davils/kontinuity/retry/Retry;
+	public static synthetic fun retry-zkXUZaI$default (Lcom/davils/kapi/runtime/client/retry/CallRetry;Ljava/lang/String;ILcom/davils/kontinuity/core/backoff/Backoff;JLcom/davils/kontinuity/core/Environment;ILjava/lang/Object;)Lcom/davils/kontinuity/retry/Retry;
+}
+
+public final class com/davils/kapi/runtime/client/stream/Reconnection : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/client/stream/Reconnection$Companion;
+	public static final field HARD_RECONNECTS I
+	public final fun getDelay-UwyO8pc ()J
+	public final fun getMaxReconnects ()I
+	public final fun getMaximumDelay-UwyO8pc ()J
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/client/stream/Reconnection$Companion {
+	public final fun getHARD_DELAY-UwyO8pc ()J
+}
+
+public final class com/davils/kapi/runtime/client/stream/ReconnectionBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDelay-UwyO8pc ()J
+	public final fun getMaxReconnects ()I
+	public final fun getMaximumDelay-UwyO8pc ()J
+	public final fun setDelay-LRDsOJo (J)V
+	public final fun setMaxReconnects (I)V
+	public final fun setMaximumDelay-LRDsOJo (J)V
+}
+
+public final class com/davils/kapi/runtime/client/stream/ReconnectionBuilderKt {
+	public static final fun reconnection (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/client/stream/Reconnection;
+	public static synthetic fun reconnection$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/client/stream/Reconnection;
+}
+
+public final class com/davils/kapi/runtime/client/stream/RecordFraming : java/lang/Enum {
+	public static final field JsonLines Lcom/davils/kapi/runtime/client/stream/RecordFraming;
+	public static final field JsonSequence Lcom/davils/kapi/runtime/client/stream/RecordFraming;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/client/stream/RecordFraming;
+	public static fun values ()[Lcom/davils/kapi/runtime/client/stream/RecordFraming;
+}
+
+public abstract interface class com/davils/kapi/runtime/client/stream/StreamEvent {
+}
+
+public final class com/davils/kapi/runtime/client/stream/StreamEvent$Ended : com/davils/kapi/runtime/client/stream/StreamEvent {
+	public fun <init> (Lcom/davils/kapi/runtime/client/call/Exchange;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/stream/StreamEvent$Item : com/davils/kapi/runtime/client/stream/StreamEvent {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/stream/StreamEvent$Malformed : com/davils/kapi/runtime/client/stream/StreamEvent {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/stream/StreamsKt {
+	public static final fun bytes (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun events (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/Reconnection;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun events (Lcom/davils/kapi/runtime/client/ApiClient;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/Reconnection;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun events$default (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/Reconnection;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun events$default (Lcom/davils/kapi/runtime/client/ApiClient;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/Reconnection;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun lines (Lcom/davils/kapi/runtime/client/ApiClient;Lcom/davils/kapi/runtime/client/call/Call;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun records (Lcom/davils/kapi/runtime/client/ApiClient;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/RecordFraming;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun records$default (Lcom/davils/kapi/runtime/client/ApiClient;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/client/call/Call;Lcom/davils/kapi/runtime/client/stream/RecordFraming;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+

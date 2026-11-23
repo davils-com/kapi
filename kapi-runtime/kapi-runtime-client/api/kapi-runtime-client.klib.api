@@ -1,0 +1,1527 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kapi-runtime-client>
+final enum class com.davils.kapi.runtime.client.channel/CloseKind : kotlin/Enum<com.davils.kapi.runtime.client.channel/CloseKind> { // com.davils.kapi.runtime.client.channel/CloseKind|null[0]
+    enum entry Abnormal // com.davils.kapi.runtime.client.channel/CloseKind.Abnormal|null[0]
+    enum entry GoingAway // com.davils.kapi.runtime.client.channel/CloseKind.GoingAway|null[0]
+    enum entry InternalError // com.davils.kapi.runtime.client.channel/CloseKind.InternalError|null[0]
+    enum entry InvalidPayload // com.davils.kapi.runtime.client.channel/CloseKind.InvalidPayload|null[0]
+    enum entry MandatoryExtension // com.davils.kapi.runtime.client.channel/CloseKind.MandatoryExtension|null[0]
+    enum entry NoStatus // com.davils.kapi.runtime.client.channel/CloseKind.NoStatus|null[0]
+    enum entry Normal // com.davils.kapi.runtime.client.channel/CloseKind.Normal|null[0]
+    enum entry Other // com.davils.kapi.runtime.client.channel/CloseKind.Other|null[0]
+    enum entry PolicyViolation // com.davils.kapi.runtime.client.channel/CloseKind.PolicyViolation|null[0]
+    enum entry ProtocolError // com.davils.kapi.runtime.client.channel/CloseKind.ProtocolError|null[0]
+    enum entry ServiceRestart // com.davils.kapi.runtime.client.channel/CloseKind.ServiceRestart|null[0]
+    enum entry TooBig // com.davils.kapi.runtime.client.channel/CloseKind.TooBig|null[0]
+    enum entry TryAgainLater // com.davils.kapi.runtime.client.channel/CloseKind.TryAgainLater|null[0]
+    enum entry UnsupportedData // com.davils.kapi.runtime.client.channel/CloseKind.UnsupportedData|null[0]
+
+    final val code // com.davils.kapi.runtime.client.channel/CloseKind.code|{}code[0]
+        final fun <get-code>(): kotlin/Int // com.davils.kapi.runtime.client.channel/CloseKind.code.<get-code>|<get-code>(){}[0]
+    final val entries // com.davils.kapi.runtime.client.channel/CloseKind.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.client.channel/CloseKind> // com.davils.kapi.runtime.client.channel/CloseKind.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.client.channel/CloseKind // com.davils.kapi.runtime.client.channel/CloseKind.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.client.channel/CloseKind> // com.davils.kapi.runtime.client.channel/CloseKind.values|values#static(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.channel/CloseKind.Companion|null[0]
+        final fun of(kotlin/Int): com.davils.kapi.runtime.client.channel/CloseKind // com.davils.kapi.runtime.client.channel/CloseKind.Companion.of|of(kotlin.Int){}[0]
+    }
+}
+
+final enum class com.davils.kapi.runtime.client.oauth/Discovery : kotlin/Enum<com.davils.kapi.runtime.client.oauth/Discovery> { // com.davils.kapi.runtime.client.oauth/Discovery|null[0]
+    enum entry OAuth // com.davils.kapi.runtime.client.oauth/Discovery.OAuth|null[0]
+    enum entry OpenIdConnect // com.davils.kapi.runtime.client.oauth/Discovery.OpenIdConnect|null[0]
+
+    final val entries // com.davils.kapi.runtime.client.oauth/Discovery.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.client.oauth/Discovery> // com.davils.kapi.runtime.client.oauth/Discovery.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.client.oauth/Discovery // com.davils.kapi.runtime.client.oauth/Discovery.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.client.oauth/Discovery> // com.davils.kapi.runtime.client.oauth/Discovery.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.runtime.client.oauth/Revocation : kotlin/Enum<com.davils.kapi.runtime.client.oauth/Revocation> { // com.davils.kapi.runtime.client.oauth/Revocation|null[0]
+    enum entry Failed // com.davils.kapi.runtime.client.oauth/Revocation.Failed|null[0]
+    enum entry NothingHeld // com.davils.kapi.runtime.client.oauth/Revocation.NothingHeld|null[0]
+    enum entry Revoked // com.davils.kapi.runtime.client.oauth/Revocation.Revoked|null[0]
+    enum entry Unsupported // com.davils.kapi.runtime.client.oauth/Revocation.Unsupported|null[0]
+
+    final val entries // com.davils.kapi.runtime.client.oauth/Revocation.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.client.oauth/Revocation> // com.davils.kapi.runtime.client.oauth/Revocation.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.client.oauth/Revocation // com.davils.kapi.runtime.client.oauth/Revocation.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.client.oauth/Revocation> // com.davils.kapi.runtime.client.oauth/Revocation.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.runtime.client.pipeline/CallPhase : kotlin/Enum<com.davils.kapi.runtime.client.pipeline/CallPhase> { // com.davils.kapi.runtime.client.pipeline/CallPhase|null[0]
+    enum entry Authorize // com.davils.kapi.runtime.client.pipeline/CallPhase.Authorize|null[0]
+    enum entry Prepare // com.davils.kapi.runtime.client.pipeline/CallPhase.Prepare|null[0]
+    enum entry Receive // com.davils.kapi.runtime.client.pipeline/CallPhase.Receive|null[0]
+    enum entry Send // com.davils.kapi.runtime.client.pipeline/CallPhase.Send|null[0]
+
+    final val entries // com.davils.kapi.runtime.client.pipeline/CallPhase.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.client.pipeline/CallPhase> // com.davils.kapi.runtime.client.pipeline/CallPhase.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.client.pipeline/CallPhase // com.davils.kapi.runtime.client.pipeline/CallPhase.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.client.pipeline/CallPhase> // com.davils.kapi.runtime.client.pipeline/CallPhase.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.runtime.client.stream/RecordFraming : kotlin/Enum<com.davils.kapi.runtime.client.stream/RecordFraming> { // com.davils.kapi.runtime.client.stream/RecordFraming|null[0]
+    enum entry JsonLines // com.davils.kapi.runtime.client.stream/RecordFraming.JsonLines|null[0]
+    enum entry JsonSequence // com.davils.kapi.runtime.client.stream/RecordFraming.JsonSequence|null[0]
+
+    final val entries // com.davils.kapi.runtime.client.stream/RecordFraming.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.runtime.client.stream/RecordFraming> // com.davils.kapi.runtime.client.stream/RecordFraming.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.runtime.client.stream/RecordFraming // com.davils.kapi.runtime.client.stream/RecordFraming.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.runtime.client.stream/RecordFraming> // com.davils.kapi.runtime.client.stream/RecordFraming.values|values#static(){}[0]
+}
+
+abstract fun interface com.davils.kapi.runtime.client.oauth/AuthorizationRedirect { // com.davils.kapi.runtime.client.oauth/AuthorizationRedirect|null[0]
+    abstract suspend fun authorize(com.davils.kapi.runtime.client.oauth/AuthorizationRequest): com.davils.kapi.runtime.client.oauth/AuthorizationResponse? // com.davils.kapi.runtime.client.oauth/AuthorizationRedirect.authorize|authorize(com.davils.kapi.runtime.client.oauth.AuthorizationRequest){}[0]
+}
+
+abstract fun interface com.davils.kapi.runtime.client.oauth/DevicePrompt { // com.davils.kapi.runtime.client.oauth/DevicePrompt|null[0]
+    abstract suspend fun show(com.davils.kapi.runtime.client.oauth/DeviceAuthorization) // com.davils.kapi.runtime.client.oauth/DevicePrompt.show|show(com.davils.kapi.runtime.client.oauth.DeviceAuthorization){}[0]
+}
+
+abstract fun interface com.davils.kapi.runtime.client.pipeline/Interceptor { // com.davils.kapi.runtime.client.pipeline/Interceptor|null[0]
+    abstract suspend fun intercept(com.davils.kapi.runtime.client.pipeline/RoundTrip): com.davils.kapi.runtime.client.pipeline/RoundTrip // com.davils.kapi.runtime.client.pipeline/Interceptor.intercept|intercept(com.davils.kapi.runtime.client.pipeline.RoundTrip){}[0]
+}
+
+sealed interface <#A: out kotlin/Any> com.davils.kapi.runtime.client.channel/ChannelReply { // com.davils.kapi.runtime.client.channel/ChannelReply|null[0]
+    final class <#A1: out kotlin/Any> Received : com.davils.kapi.runtime.client.channel/ChannelReply<#A1> { // com.davils.kapi.runtime.client.channel/ChannelReply.Received|null[0]
+        constructor <init>(#A1) // com.davils.kapi.runtime.client.channel/ChannelReply.Received.<init>|<init>(1:0){}[0]
+
+        final val message // com.davils.kapi.runtime.client.channel/ChannelReply.Received.message|{}message[0]
+            final fun <get-message>(): #A1 // com.davils.kapi.runtime.client.channel/ChannelReply.Received.message.<get-message>|<get-message>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelReply.Received.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelReply.Received.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelReply.Received.toString|toString(){}[0]
+    }
+
+    final object Closed : com.davils.kapi.runtime.client.channel/ChannelReply<kotlin/Nothing> { // com.davils.kapi.runtime.client.channel/ChannelReply.Closed|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelReply.Closed.toString|toString(){}[0]
+    }
+
+    final object Refused : com.davils.kapi.runtime.client.channel/ChannelReply<kotlin/Nothing> { // com.davils.kapi.runtime.client.channel/ChannelReply.Refused|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelReply.Refused.toString|toString(){}[0]
+    }
+
+    final object TimedOut : com.davils.kapi.runtime.client.channel/ChannelReply<kotlin/Nothing> { // com.davils.kapi.runtime.client.channel/ChannelReply.TimedOut|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelReply.TimedOut.toString|toString(){}[0]
+    }
+}
+
+sealed interface <#A: out kotlin/Any?> com.davils.kapi.runtime.client.channel/ChannelOutcome { // com.davils.kapi.runtime.client.channel/ChannelOutcome|null[0]
+    final class <#A1: out kotlin/Any?> Completed : com.davils.kapi.runtime.client.channel/ChannelOutcome<#A1> { // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed|null[0]
+        constructor <init>(#A1, com.davils.kapi.runtime.client.channel/ChannelClose) // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.<init>|<init>(1:0;com.davils.kapi.runtime.client.channel.ChannelClose){}[0]
+
+        final val close // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.close|{}close[0]
+            final fun <get-close>(): com.davils.kapi.runtime.client.channel/ChannelClose // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.close.<get-close>|<get-close>(){}[0]
+        final val value // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.value|{}value[0]
+            final fun <get-value>(): #A1 // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelOutcome.Completed.toString|toString(){}[0]
+    }
+
+    final class Failed : com.davils.kapi.runtime.client.channel/ChannelOutcome<kotlin/Nothing> { // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/CallFailure) // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.<init>|<init>(com.davils.kapi.runtime.client.call.CallFailure){}[0]
+
+        final val failure // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.failure|{}failure[0]
+            final fun <get-failure>(): com.davils.kapi.runtime.client.call/CallFailure // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.failure.<get-failure>|<get-failure>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelOutcome.Failed.toString|toString(){}[0]
+    }
+}
+
+sealed interface <#A: out kotlin/Any?> com.davils.kapi.runtime.client.stream/StreamEvent { // com.davils.kapi.runtime.client.stream/StreamEvent|null[0]
+    final class <#A1: out kotlin/Any?> Item : com.davils.kapi.runtime.client.stream/StreamEvent<#A1> { // com.davils.kapi.runtime.client.stream/StreamEvent.Item|null[0]
+        constructor <init>(#A1, kotlin/String? = ..., kotlin/String? = ...) // com.davils.kapi.runtime.client.stream/StreamEvent.Item.<init>|<init>(1:0;kotlin.String?;kotlin.String?){}[0]
+
+        final val id // com.davils.kapi.runtime.client.stream/StreamEvent.Item.id|{}id[0]
+            final fun <get-id>(): kotlin/String? // com.davils.kapi.runtime.client.stream/StreamEvent.Item.id.<get-id>|<get-id>(){}[0]
+        final val type // com.davils.kapi.runtime.client.stream/StreamEvent.Item.type|{}type[0]
+            final fun <get-type>(): kotlin/String? // com.davils.kapi.runtime.client.stream/StreamEvent.Item.type.<get-type>|<get-type>(){}[0]
+        final val value // com.davils.kapi.runtime.client.stream/StreamEvent.Item.value|{}value[0]
+            final fun <get-value>(): #A1 // com.davils.kapi.runtime.client.stream/StreamEvent.Item.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.stream/StreamEvent.Item.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.stream/StreamEvent.Item.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.stream/StreamEvent.Item.toString|toString(){}[0]
+    }
+
+    final class Ended : com.davils.kapi.runtime.client.stream/StreamEvent<kotlin/Nothing> { // com.davils.kapi.runtime.client.stream/StreamEvent.Ended|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange) // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange){}[0]
+
+        final val exchange // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.exchange|{}exchange[0]
+            final fun <get-exchange>(): com.davils.kapi.runtime.client.call/Exchange // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.exchange.<get-exchange>|<get-exchange>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.stream/StreamEvent.Ended.toString|toString(){}[0]
+    }
+
+    final class Malformed : com.davils.kapi.runtime.client.stream/StreamEvent<kotlin/Nothing> { // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.<init>|<init>(kotlin.String){}[0]
+
+        final val reason // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.stream/StreamEvent.Malformed.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure|null[0]
+    final class Aborted : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.Aborted|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.Aborted.<init>|<init>(kotlin.String){}[0]
+
+        final val interceptor // com.davils.kapi.runtime.client.call/CallFailure.Aborted.interceptor|{}interceptor[0]
+            final fun <get-interceptor>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Aborted.interceptor.<get-interceptor>|<get-interceptor>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.Aborted.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.Aborted.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Aborted.toString|toString(){}[0]
+    }
+
+    final class CredentialMalformed : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.<init>|<init>(kotlin.String){}[0]
+
+        final val scheme // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.scheme|{}scheme[0]
+            final fun <get-scheme>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.scheme.<get-scheme>|<get-scheme>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.toString|toString(){}[0]
+    }
+
+    final class DestinationRefused : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.destination/DestinationRefusal) // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.<init>|<init>(com.davils.kapi.runtime.core.destination.DestinationRefusal){}[0]
+
+        final val refusal // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.refusal|{}refusal[0]
+            final fun <get-refusal>(): com.davils.kapi.runtime.core.destination/DestinationRefusal // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.refusal.<get-refusal>|<get-refusal>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.DestinationRefused.toString|toString(){}[0]
+    }
+
+    final class Framing : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.Framing|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.framing/FramingFailure) // com.davils.kapi.runtime.client.call/CallFailure.Framing.<init>|<init>(com.davils.kapi.runtime.core.framing.FramingFailure){}[0]
+
+        final val failure // com.davils.kapi.runtime.client.call/CallFailure.Framing.failure|{}failure[0]
+            final fun <get-failure>(): com.davils.kapi.runtime.core.framing/FramingFailure // com.davils.kapi.runtime.client.call/CallFailure.Framing.failure.<get-failure>|<get-failure>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.Framing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.Framing.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Framing.toString|toString(){}[0]
+    }
+
+    final class HandshakeRefused : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused|null[0]
+        constructor <init>(kotlin/Int) // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.<init>|<init>(kotlin.Int){}[0]
+
+        final val status // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.status|{}status[0]
+            final fun <get-status>(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.status.<get-status>|<get-status>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.HandshakeRefused.toString|toString(){}[0]
+    }
+
+    final class ParameterRefused : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.<init>|<init>(kotlin.String){}[0]
+
+        final val parameter // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.parameter|{}parameter[0]
+            final fun <get-parameter>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.parameter.<get-parameter>|<get-parameter>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.ParameterRefused.toString|toString(){}[0]
+    }
+
+    final class PathRefused : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.PathRefused|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.<init>|<init>(kotlin.String){}[0]
+
+        final val parameter // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.parameter|{}parameter[0]
+            final fun <get-parameter>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.parameter.<get-parameter>|<get-parameter>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.PathRefused.toString|toString(){}[0]
+    }
+
+    final class Rejected : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.Rejected|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.Rejected.<init>|<init>(kotlin.String){}[0]
+
+        final val reason // com.davils.kapi.runtime.client.call/CallFailure.Rejected.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Rejected.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.Rejected.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.Rejected.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Rejected.toString|toString(){}[0]
+    }
+
+    final class TooLarge : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.TooLarge|null[0]
+        constructor <init>(kotlin/Long) // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.<init>|<init>(kotlin.Long){}[0]
+
+        final val limit // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.limit|{}limit[0]
+            final fun <get-limit>(): kotlin/Long // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.limit.<get-limit>|<get-limit>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.TooLarge.toString|toString(){}[0]
+    }
+
+    final class TooManyRedirects : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects|null[0]
+        constructor <init>(kotlin/Int) // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.<init>|<init>(kotlin.Int){}[0]
+
+        final val limit // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.limit|{}limit[0]
+            final fun <get-limit>(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.limit.<get-limit>|<get-limit>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.TooManyRedirects.toString|toString(){}[0]
+    }
+
+    final class Unreachable : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.Unreachable|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.<init>|<init>(kotlin.String){}[0]
+
+        final val cause // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.cause|{}cause[0]
+            final fun <get-cause>(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.cause.<get-cause>|<get-cause>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Unreachable.toString|toString(){}[0]
+    }
+
+    final object BaseUrlMissing : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.BaseUrlMissing|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.BaseUrlMissing.toString|toString(){}[0]
+    }
+
+    final object ChannelsNotInstalled : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.ChannelsNotInstalled|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.ChannelsNotInstalled.toString|toString(){}[0]
+    }
+
+    final object CredentialMissing : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.CredentialMissing|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.CredentialMissing.toString|toString(){}[0]
+    }
+
+    final object CrossOrigin : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.CrossOrigin|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.CrossOrigin.toString|toString(){}[0]
+    }
+
+    final object TimedOut : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.TimedOut|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.TimedOut.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement|null[0]
+    final class Cookie : com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.<init>|<init>(kotlin.String){}[0]
+
+        final val name // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Cookie.toString|toString(){}[0]
+    }
+
+    final class Header : com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement.Header|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.<init>|<init>(kotlin.String){}[0]
+
+        final val name // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Header.toString|toString(){}[0]
+    }
+
+    final class Query : com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement.Query|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.<init>|<init>(kotlin.String){}[0]
+
+        final val name // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Query.toString|toString(){}[0]
+    }
+
+    final object Basic : com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement.Basic|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Basic.toString|toString(){}[0]
+    }
+
+    final object Bearer : com.davils.kapi.runtime.client.call/CredentialPlacement { // com.davils.kapi.runtime.client.call/CredentialPlacement.Bearer|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CredentialPlacement.Bearer.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.call/Exchange { // com.davils.kapi.runtime.client.call/Exchange|null[0]
+    final class Answered : com.davils.kapi.runtime.client.call/Exchange, com.davils.kapi.runtime.core.response/Response { // com.davils.kapi.runtime.client.call/Exchange.Answered|null[0]
+        constructor <init>(kotlin/Int, com.davils.kapi.runtime.core.response/Headers, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.client.call/Exchange.Answered.<init>|<init>(kotlin.Int;com.davils.kapi.runtime.core.response.Headers;kotlinx.io.bytestring.ByteString){}[0]
+
+        final val content // com.davils.kapi.runtime.client.call/Exchange.Answered.content|{}content[0]
+            final fun <get-content>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.client.call/Exchange.Answered.content.<get-content>|<get-content>(){}[0]
+        final val contentType // com.davils.kapi.runtime.client.call/Exchange.Answered.contentType|{}contentType[0]
+            final fun <get-contentType>(): com.davils.kapi.runtime.core.negotiation/MediaType? // com.davils.kapi.runtime.client.call/Exchange.Answered.contentType.<get-contentType>|<get-contentType>(){}[0]
+        final val headers // com.davils.kapi.runtime.client.call/Exchange.Answered.headers|{}headers[0]
+            final fun <get-headers>(): com.davils.kapi.runtime.core.response/Headers // com.davils.kapi.runtime.client.call/Exchange.Answered.headers.<get-headers>|<get-headers>(){}[0]
+        final val status // com.davils.kapi.runtime.client.call/Exchange.Answered.status|{}status[0]
+            final fun <get-status>(): kotlin/Int // com.davils.kapi.runtime.client.call/Exchange.Answered.status.<get-status>|<get-status>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/Exchange.Answered.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/Exchange.Answered.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Exchange.Answered.toString|toString(){}[0]
+    }
+
+    final class Failed : com.davils.kapi.runtime.client.call/Exchange { // com.davils.kapi.runtime.client.call/Exchange.Failed|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/CallFailure) // com.davils.kapi.runtime.client.call/Exchange.Failed.<init>|<init>(com.davils.kapi.runtime.client.call.CallFailure){}[0]
+
+        final val failure // com.davils.kapi.runtime.client.call/Exchange.Failed.failure|{}failure[0]
+            final fun <get-failure>(): com.davils.kapi.runtime.client.call/CallFailure // com.davils.kapi.runtime.client.call/Exchange.Failed.failure.<get-failure>|<get-failure>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/Exchange.Failed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/Exchange.Failed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Exchange.Failed.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.conditional/ConditionalOutcome { // com.davils.kapi.runtime.client.conditional/ConditionalOutcome|null[0]
+    final class Modified : com.davils.kapi.runtime.client.conditional/ConditionalOutcome { // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange.Answered, com.davils.kapi.runtime.client.conditional/Validators) // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange.Answered;com.davils.kapi.runtime.client.conditional.Validators){}[0]
+
+        final val answered // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.answered|{}answered[0]
+            final fun <get-answered>(): com.davils.kapi.runtime.client.call/Exchange.Answered // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.answered.<get-answered>|<get-answered>(){}[0]
+        final val validators // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.validators|{}validators[0]
+            final fun <get-validators>(): com.davils.kapi.runtime.client.conditional/Validators // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.validators.<get-validators>|<get-validators>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Modified.toString|toString(){}[0]
+    }
+
+    final class NotModified : com.davils.kapi.runtime.client.conditional/ConditionalOutcome { // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.conditional/Validators) // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.<init>|<init>(com.davils.kapi.runtime.client.conditional.Validators){}[0]
+
+        final val validators // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.validators|{}validators[0]
+            final fun <get-validators>(): com.davils.kapi.runtime.client.conditional/Validators // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.validators.<get-validators>|<get-validators>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.NotModified.toString|toString(){}[0]
+    }
+
+    final class Other : com.davils.kapi.runtime.client.conditional/ConditionalOutcome { // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange) // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange){}[0]
+
+        final val exchange // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.exchange|{}exchange[0]
+            final fun <get-exchange>(): com.davils.kapi.runtime.client.call/Exchange // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.exchange.<get-exchange>|<get-exchange>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.Other.toString|toString(){}[0]
+    }
+
+    final class PreconditionFailed : com.davils.kapi.runtime.client.conditional/ConditionalOutcome { // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange.Answered) // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange.Answered){}[0]
+
+        final val answered // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.answered|{}answered[0]
+            final fun <get-answered>(): com.davils.kapi.runtime.client.call/Exchange.Answered // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.answered.<get-answered>|<get-answered>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.conditional/ConditionalOutcome.PreconditionFailed.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication|null[0]
+    final class PrivateKeyJwt : com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt|null[0]
+        constructor <init>(com.davils.krypt.jose/JoseKey.Private, com.davils.krypt.jose.jws/JwsAlgorithm) // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.<init>|<init>(com.davils.krypt.jose.JoseKey.Private;com.davils.krypt.jose.jws.JwsAlgorithm){}[0]
+
+        final val algorithm // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.algorithm|{}algorithm[0]
+            final fun <get-algorithm>(): com.davils.krypt.jose.jws/JwsAlgorithm // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.algorithm.<get-algorithm>|<get-algorithm>(){}[0]
+        final val key // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.key|{}key[0]
+            final fun <get-key>(): com.davils.krypt.jose/JoseKey.Private // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.key.<get-key>|<get-key>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ClientAuthentication.PrivateKeyJwt.toString|toString(){}[0]
+    }
+
+    final class SecretBasic : com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.security/Secret) // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.<init>|<init>(com.davils.kapi.runtime.core.security.Secret){}[0]
+
+        final val secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.secret|{}secret[0]
+            final fun <get-secret>(): com.davils.kapi.runtime.core.security/Secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.secret.<get-secret>|<get-secret>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretBasic.toString|toString(){}[0]
+    }
+
+    final class SecretJwt : com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.security/Secret, com.davils.krypt.jose.jws/JwsAlgorithm = ...) // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.<init>|<init>(com.davils.kapi.runtime.core.security.Secret;com.davils.krypt.jose.jws.JwsAlgorithm){}[0]
+
+        final val algorithm // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.algorithm|{}algorithm[0]
+            final fun <get-algorithm>(): com.davils.krypt.jose.jws/JwsAlgorithm // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.algorithm.<get-algorithm>|<get-algorithm>(){}[0]
+        final val secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.secret|{}secret[0]
+            final fun <get-secret>(): com.davils.kapi.runtime.core.security/Secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.secret.<get-secret>|<get-secret>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretJwt.toString|toString(){}[0]
+    }
+
+    final class SecretPost : com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.security/Secret) // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.<init>|<init>(com.davils.kapi.runtime.core.security.Secret){}[0]
+
+        final val secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.secret|{}secret[0]
+            final fun <get-secret>(): com.davils.kapi.runtime.core.security/Secret // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.secret.<get-secret>|<get-secret>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ClientAuthentication.SecretPost.toString|toString(){}[0]
+    }
+
+    final object None : com.davils.kapi.runtime.client.oauth/ClientAuthentication { // com.davils.kapi.runtime.client.oauth/ClientAuthentication.None|null[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ClientAuthentication.None.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant|null[0]
+    abstract val name // com.davils.kapi.runtime.client.oauth/Grant.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.name.<get-name>|<get-name>(){}[0]
+
+    final class AuthorizationCode : com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode|null[0]
+        constructor <init>(kotlin/String, com.davils.kapi.runtime.client.oauth/AuthorizationRedirect) // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.<init>|<init>(kotlin.String;com.davils.kapi.runtime.client.oauth.AuthorizationRedirect){}[0]
+
+        final val name // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.name.<get-name>|<get-name>(){}[0]
+        final val redirect // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.redirect|{}redirect[0]
+            final fun <get-redirect>(): com.davils.kapi.runtime.client.oauth/AuthorizationRedirect // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.redirect.<get-redirect>|<get-redirect>(){}[0]
+        final val redirectUri // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.redirectUri|{}redirectUri[0]
+            final fun <get-redirectUri>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.redirectUri.<get-redirectUri>|<get-redirectUri>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.AuthorizationCode.toString|toString(){}[0]
+    }
+
+    final class DeviceCode : com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.oauth/DevicePrompt, kotlin.time/Duration = ..., kotlin.time/Duration = ...) // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.<init>|<init>(com.davils.kapi.runtime.client.oauth.DevicePrompt;kotlin.time.Duration;kotlin.time.Duration){}[0]
+
+        final val maxWait // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.maxWait|{}maxWait[0]
+            final fun <get-maxWait>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.maxWait.<get-maxWait>|<get-maxWait>(){}[0]
+        final val minimumInterval // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.minimumInterval|{}minimumInterval[0]
+            final fun <get-minimumInterval>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.minimumInterval.<get-minimumInterval>|<get-minimumInterval>(){}[0]
+        final val name // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.name.<get-name>|<get-name>(){}[0]
+        final val prompt // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.prompt|{}prompt[0]
+            final fun <get-prompt>(): com.davils.kapi.runtime.client.oauth/DevicePrompt // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.prompt.<get-prompt>|<get-prompt>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.DeviceCode.toString|toString(){}[0]
+    }
+
+    final class RefreshToken : com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.security/Secret) // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.<init>|<init>(com.davils.kapi.runtime.core.security.Secret){}[0]
+
+        final val name // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.name.<get-name>|<get-name>(){}[0]
+        final val token // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.token|{}token[0]
+            final fun <get-token>(): com.davils.kapi.runtime.core.security/Secret // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.token.<get-token>|<get-token>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.RefreshToken.toString|toString(){}[0]
+    }
+
+    final class TokenExchange : com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.security/TokenSource, kotlin/String = ..., com.davils.kapi.runtime.core.security/TokenSource? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...) // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.<init>|<init>(com.davils.kapi.runtime.core.security.TokenSource;kotlin.String;com.davils.kapi.runtime.core.security.TokenSource?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+
+        final val actor // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.actor|{}actor[0]
+            final fun <get-actor>(): com.davils.kapi.runtime.core.security/TokenSource? // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.actor.<get-actor>|<get-actor>(){}[0]
+        final val actorTokenType // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.actorTokenType|{}actorTokenType[0]
+            final fun <get-actorTokenType>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.actorTokenType.<get-actorTokenType>|<get-actorTokenType>(){}[0]
+        final val audience // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.audience|{}audience[0]
+            final fun <get-audience>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.audience.<get-audience>|<get-audience>(){}[0]
+        final val name // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.name.<get-name>|<get-name>(){}[0]
+        final val requestedTokenType // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.requestedTokenType|{}requestedTokenType[0]
+            final fun <get-requestedTokenType>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.requestedTokenType.<get-requestedTokenType>|<get-requestedTokenType>(){}[0]
+        final val resource // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.resource|{}resource[0]
+            final fun <get-resource>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.resource.<get-resource>|<get-resource>(){}[0]
+        final val subject // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.subject|{}subject[0]
+            final fun <get-subject>(): com.davils.kapi.runtime.core.security/TokenSource // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.subject.<get-subject>|<get-subject>(){}[0]
+        final val subjectTokenType // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.subjectTokenType|{}subjectTokenType[0]
+            final fun <get-subjectTokenType>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.subjectTokenType.<get-subjectTokenType>|<get-subjectTokenType>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.TokenExchange.toString|toString(){}[0]
+    }
+
+    final object ClientCredentials : com.davils.kapi.runtime.client.oauth/Grant { // com.davils.kapi.runtime.client.oauth/Grant.ClientCredentials|null[0]
+        final val name // com.davils.kapi.runtime.client.oauth/Grant.ClientCredentials.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.ClientCredentials.name.<get-name>|<get-name>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/Grant.ClientCredentials.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.oauth/OAuthEvent : com.davils.konfetti.core/Event { // com.davils.kapi.runtime.client.oauth/OAuthEvent|null[0]
+    abstract val clientId // com.davils.kapi.runtime.client.oauth/OAuthEvent.clientId|{}clientId[0]
+        abstract fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.clientId.<get-clientId>|<get-clientId>(){}[0]
+
+    final class Granted : com.davils.kapi.runtime.client.oauth/OAuthEvent { // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted|null[0]
+        final val clientId // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted.clientId|{}clientId[0]
+            final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final val grant // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted.grant|{}grant[0]
+            final fun <get-grant>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted.grant.<get-grant>|<get-grant>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Granted.toString|toString(){}[0]
+    }
+
+    final class Refused : com.davils.kapi.runtime.client.oauth/OAuthEvent { // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused|null[0]
+        final val clientId // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.clientId|{}clientId[0]
+            final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final val grant // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.grant|{}grant[0]
+            final fun <get-grant>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.grant.<get-grant>|<get-grant>(){}[0]
+        final val reason // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Refused.toString|toString(){}[0]
+    }
+
+    final class Revoked : com.davils.kapi.runtime.client.oauth/OAuthEvent { // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked|null[0]
+        final val clientId // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked.clientId|{}clientId[0]
+            final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final val revocation // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked.revocation|{}revocation[0]
+            final fun <get-revocation>(): com.davils.kapi.runtime.client.oauth/Revocation // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked.revocation.<get-revocation>|<get-revocation>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthEvent.Revoked.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.davils.kapi.runtime.client.oauth/OAuthEvent.Companion|null[0]
+        final val TOPIC // com.davils.kapi.runtime.client.oauth/OAuthEvent.Companion.TOPIC|{}TOPIC[0]
+            final fun <get-TOPIC>(): com.davils.konfetti.core/TopicKey<com.davils.kapi.runtime.client.oauth/OAuthEvent> // com.davils.kapi.runtime.client.oauth/OAuthEvent.Companion.TOPIC.<get-TOPIC>|<get-TOPIC>(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome|null[0]
+    final class Full : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Full|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange.Answered) // com.davils.kapi.runtime.client.range/RangeOutcome.Full.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange.Answered){}[0]
+
+        final val answered // com.davils.kapi.runtime.client.range/RangeOutcome.Full.answered|{}answered[0]
+            final fun <get-answered>(): com.davils.kapi.runtime.client.call/Exchange.Answered // com.davils.kapi.runtime.client.range/RangeOutcome.Full.answered.<get-answered>|<get-answered>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Full.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Full.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Full.toString|toString(){}[0]
+    }
+
+    final class Malformed : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange.Answered) // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange.Answered){}[0]
+
+        final val answered // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.answered|{}answered[0]
+            final fun <get-answered>(): com.davils.kapi.runtime.client.call/Exchange.Answered // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.answered.<get-answered>|<get-answered>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Malformed.toString|toString(){}[0]
+    }
+
+    final class Other : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Other|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange) // com.davils.kapi.runtime.client.range/RangeOutcome.Other.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange){}[0]
+
+        final val exchange // com.davils.kapi.runtime.client.range/RangeOutcome.Other.exchange|{}exchange[0]
+            final fun <get-exchange>(): com.davils.kapi.runtime.client.call/Exchange // com.davils.kapi.runtime.client.range/RangeOutcome.Other.exchange.<get-exchange>|<get-exchange>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Other.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Other.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Other.toString|toString(){}[0]
+    }
+
+    final class Partial : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Partial|null[0]
+        constructor <init>(com.davils.kapi.runtime.core.range/ContentRange.Satisfied, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.<init>|<init>(com.davils.kapi.runtime.core.range.ContentRange.Satisfied;kotlinx.io.bytestring.ByteString){}[0]
+
+        final val content // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.content|{}content[0]
+            final fun <get-content>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.content.<get-content>|<get-content>(){}[0]
+        final val range // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.range|{}range[0]
+            final fun <get-range>(): com.davils.kapi.runtime.core.range/ContentRange.Satisfied // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.range.<get-range>|<get-range>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Partial.toString|toString(){}[0]
+    }
+
+    final class Ranges : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges|null[0]
+        constructor <init>(com.davils.kapi.runtime.client.call/Exchange.Answered) // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.<init>|<init>(com.davils.kapi.runtime.client.call.Exchange.Answered){}[0]
+
+        final val answered // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.answered|{}answered[0]
+            final fun <get-answered>(): com.davils.kapi.runtime.client.call/Exchange.Answered // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.answered.<get-answered>|<get-answered>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Ranges.toString|toString(){}[0]
+    }
+
+    final class Unsatisfiable : com.davils.kapi.runtime.client.range/RangeOutcome { // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable|null[0]
+        constructor <init>(kotlin/Long?) // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.<init>|<init>(kotlin.Long?){}[0]
+
+        final val completeLength // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.completeLength|{}completeLength[0]
+            final fun <get-completeLength>(): kotlin/Long? // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.completeLength.<get-completeLength>|<get-completeLength>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.range/RangeOutcome.Unsatisfiable.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.runtime.client/ClientEvent : com.davils.konfetti.core/Event { // com.davils.kapi.runtime.client/ClientEvent|null[0]
+    abstract val api // com.davils.kapi.runtime.client/ClientEvent.api|{}api[0]
+        abstract fun <get-api>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.api.<get-api>|<get-api>(){}[0]
+    abstract val operation // com.davils.kapi.runtime.client/ClientEvent.operation|{}operation[0]
+        abstract fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.operation.<get-operation>|<get-operation>(){}[0]
+
+    final class Reconnecting : com.davils.kapi.runtime.client/ClientEvent { // com.davils.kapi.runtime.client/ClientEvent.Reconnecting|null[0]
+        final val api // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.api|{}api[0]
+            final fun <get-api>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.api.<get-api>|<get-api>(){}[0]
+        final val attempt // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.attempt|{}attempt[0]
+            final fun <get-attempt>(): kotlin/Int // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.attempt.<get-attempt>|<get-attempt>(){}[0]
+        final val delay // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.delay|{}delay[0]
+            final fun <get-delay>(): kotlin.time/Duration // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.delay.<get-delay>|<get-delay>(){}[0]
+        final val isResumed // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.isResumed|{}isResumed[0]
+            final fun <get-isResumed>(): kotlin/Boolean // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.isResumed.<get-isResumed>|<get-isResumed>(){}[0]
+        final val operation // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.operation|{}operation[0]
+            final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.operation.<get-operation>|<get-operation>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Reconnecting.toString|toString(){}[0]
+    }
+
+    final class Redirected : com.davils.kapi.runtime.client/ClientEvent { // com.davils.kapi.runtime.client/ClientEvent.Redirected|null[0]
+        final val api // com.davils.kapi.runtime.client/ClientEvent.Redirected.api|{}api[0]
+            final fun <get-api>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Redirected.api.<get-api>|<get-api>(){}[0]
+        final val hop // com.davils.kapi.runtime.client/ClientEvent.Redirected.hop|{}hop[0]
+            final fun <get-hop>(): kotlin/Int // com.davils.kapi.runtime.client/ClientEvent.Redirected.hop.<get-hop>|<get-hop>(){}[0]
+        final val isCrossOrigin // com.davils.kapi.runtime.client/ClientEvent.Redirected.isCrossOrigin|{}isCrossOrigin[0]
+            final fun <get-isCrossOrigin>(): kotlin/Boolean // com.davils.kapi.runtime.client/ClientEvent.Redirected.isCrossOrigin.<get-isCrossOrigin>|<get-isCrossOrigin>(){}[0]
+        final val operation // com.davils.kapi.runtime.client/ClientEvent.Redirected.operation|{}operation[0]
+            final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Redirected.operation.<get-operation>|<get-operation>(){}[0]
+        final val status // com.davils.kapi.runtime.client/ClientEvent.Redirected.status|{}status[0]
+            final fun <get-status>(): kotlin/Int // com.davils.kapi.runtime.client/ClientEvent.Redirected.status.<get-status>|<get-status>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Redirected.toString|toString(){}[0]
+    }
+
+    final class Refreshed : com.davils.kapi.runtime.client/ClientEvent { // com.davils.kapi.runtime.client/ClientEvent.Refreshed|null[0]
+        final val api // com.davils.kapi.runtime.client/ClientEvent.Refreshed.api|{}api[0]
+            final fun <get-api>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Refreshed.api.<get-api>|<get-api>(){}[0]
+        final val isRefreshed // com.davils.kapi.runtime.client/ClientEvent.Refreshed.isRefreshed|{}isRefreshed[0]
+            final fun <get-isRefreshed>(): kotlin/Boolean // com.davils.kapi.runtime.client/ClientEvent.Refreshed.isRefreshed.<get-isRefreshed>|<get-isRefreshed>(){}[0]
+        final val operation // com.davils.kapi.runtime.client/ClientEvent.Refreshed.operation|{}operation[0]
+            final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Refreshed.operation.<get-operation>|<get-operation>(){}[0]
+        final val scheme // com.davils.kapi.runtime.client/ClientEvent.Refreshed.scheme|{}scheme[0]
+            final fun <get-scheme>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Refreshed.scheme.<get-scheme>|<get-scheme>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Refreshed.toString|toString(){}[0]
+    }
+
+    final class Retrying : com.davils.kapi.runtime.client/ClientEvent { // com.davils.kapi.runtime.client/ClientEvent.Retrying|null[0]
+        final val api // com.davils.kapi.runtime.client/ClientEvent.Retrying.api|{}api[0]
+            final fun <get-api>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Retrying.api.<get-api>|<get-api>(){}[0]
+        final val attempt // com.davils.kapi.runtime.client/ClientEvent.Retrying.attempt|{}attempt[0]
+            final fun <get-attempt>(): kotlin/Int // com.davils.kapi.runtime.client/ClientEvent.Retrying.attempt.<get-attempt>|<get-attempt>(){}[0]
+        final val operation // com.davils.kapi.runtime.client/ClientEvent.Retrying.operation|{}operation[0]
+            final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Retrying.operation.<get-operation>|<get-operation>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ClientEvent.Retrying.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.davils.kapi.runtime.client/ClientEvent.Companion|null[0]
+        final val TOPIC // com.davils.kapi.runtime.client/ClientEvent.Companion.TOPIC|{}TOPIC[0]
+            final fun <get-TOPIC>(): com.davils.konfetti.core/TopicKey<com.davils.kapi.runtime.client/ClientEvent> // com.davils.kapi.runtime.client/ClientEvent.Companion.TOPIC.<get-TOPIC>|<get-TOPIC>(){}[0]
+    }
+}
+
+final class <#A: in kotlin/Any?, #B: in kotlin/Any?> com.davils.kapi.runtime.client.channel/Correlation { // com.davils.kapi.runtime.client.channel/Correlation|null[0]
+    constructor <init>(kotlin/Function1<#A, kotlin/String?>, kotlin/Function1<#B, kotlin/String?>) // com.davils.kapi.runtime.client.channel/Correlation.<init>|<init>(kotlin.Function1<1:0,kotlin.String?>;kotlin.Function1<1:1,kotlin.String?>){}[0]
+
+    final val received // com.davils.kapi.runtime.client.channel/Correlation.received|{}received[0]
+        final fun <get-received>(): kotlin/Function1<#B, kotlin/String?> // com.davils.kapi.runtime.client.channel/Correlation.received.<get-received>|<get-received>(){}[0]
+    final val sent // com.davils.kapi.runtime.client.channel/Correlation.sent|{}sent[0]
+        final fun <get-sent>(): kotlin/Function1<#A, kotlin/String?> // com.davils.kapi.runtime.client.channel/Correlation.sent.<get-sent>|<get-sent>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/Correlation.toString|toString(){}[0]
+}
+
+final class <#A: kotlin/Any?, #B: kotlin/Any> com.davils.kapi.runtime.client.channel/ChannelSession { // com.davils.kapi.runtime.client.channel/ChannelSession|null[0]
+    final val incoming // com.davils.kapi.runtime.client.channel/ChannelSession.incoming|{}incoming[0]
+        final fun <get-incoming>(): kotlinx.coroutines.flow/Flow<#B> // com.davils.kapi.runtime.client.channel/ChannelSession.incoming.<get-incoming>|<get-incoming>(){}[0]
+    final val subprotocol // com.davils.kapi.runtime.client.channel/ChannelSession.subprotocol|{}subprotocol[0]
+        final fun <get-subprotocol>(): kotlin/String? // com.davils.kapi.runtime.client.channel/ChannelSession.subprotocol.<get-subprotocol>|<get-subprotocol>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelSession.toString|toString(){}[0]
+    final suspend fun close(kotlin/Int = ..., kotlin/String = ...) // com.davils.kapi.runtime.client.channel/ChannelSession.close|close(kotlin.Int;kotlin.String){}[0]
+    final suspend fun request(#A, kotlin.time/Duration): com.davils.kapi.runtime.client.channel/ChannelReply<#B> // com.davils.kapi.runtime.client.channel/ChannelSession.request|request(1:0;kotlin.time.Duration){}[0]
+    final suspend fun send(#A): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelSession.send|send(1:0){}[0]
+}
+
+final class <#A: kotlin/Any?, #B: kotlin/Any> com.davils.kapi.runtime.client.channel/ChannelSpec { // com.davils.kapi.runtime.client.channel/ChannelSpec|null[0]
+    constructor <init>(kotlinx.serialization/SerializationStrategy<#A>, kotlinx.serialization/DeserializationStrategy<#B>, com.davils.kapi.runtime.client.channel/ChannelSettings = ..., com.davils.kapi.runtime.client.channel/Correlation<#A, #B>? = ...) // com.davils.kapi.runtime.client.channel/ChannelSpec.<init>|<init>(kotlinx.serialization.SerializationStrategy<1:0>;kotlinx.serialization.DeserializationStrategy<1:1>;com.davils.kapi.runtime.client.channel.ChannelSettings;com.davils.kapi.runtime.client.channel.Correlation<1:0,1:1>?){}[0]
+
+    final val correlation // com.davils.kapi.runtime.client.channel/ChannelSpec.correlation|{}correlation[0]
+        final fun <get-correlation>(): com.davils.kapi.runtime.client.channel/Correlation<#A, #B>? // com.davils.kapi.runtime.client.channel/ChannelSpec.correlation.<get-correlation>|<get-correlation>(){}[0]
+    final val receiveDeserializer // com.davils.kapi.runtime.client.channel/ChannelSpec.receiveDeserializer|{}receiveDeserializer[0]
+        final fun <get-receiveDeserializer>(): kotlinx.serialization/DeserializationStrategy<#B> // com.davils.kapi.runtime.client.channel/ChannelSpec.receiveDeserializer.<get-receiveDeserializer>|<get-receiveDeserializer>(){}[0]
+    final val sendSerializer // com.davils.kapi.runtime.client.channel/ChannelSpec.sendSerializer|{}sendSerializer[0]
+        final fun <get-sendSerializer>(): kotlinx.serialization/SerializationStrategy<#A> // com.davils.kapi.runtime.client.channel/ChannelSpec.sendSerializer.<get-sendSerializer>|<get-sendSerializer>(){}[0]
+    final val settings // com.davils.kapi.runtime.client.channel/ChannelSpec.settings|{}settings[0]
+        final fun <get-settings>(): com.davils.kapi.runtime.client.channel/ChannelSettings // com.davils.kapi.runtime.client.channel/ChannelSpec.settings.<get-settings>|<get-settings>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelSpec.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/Body { // com.davils.kapi.runtime.client.call/Body|null[0]
+    constructor <init>(com.davils.kapi.runtime.core.negotiation/MediaType, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.client.call/Body.<init>|<init>(com.davils.kapi.runtime.core.negotiation.MediaType;kotlinx.io.bytestring.ByteString){}[0]
+
+    final val content // com.davils.kapi.runtime.client.call/Body.content|{}content[0]
+        final fun <get-content>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.client.call/Body.content.<get-content>|<get-content>(){}[0]
+    final val contentType // com.davils.kapi.runtime.client.call/Body.contentType|{}contentType[0]
+        final fun <get-contentType>(): com.davils.kapi.runtime.core.negotiation/MediaType // com.davils.kapi.runtime.client.call/Body.contentType.<get-contentType>|<get-contentType>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/Body.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/Body.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Body.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/Call { // com.davils.kapi.runtime.client.call/Call|null[0]
+    final val accept // com.davils.kapi.runtime.client.call/Call.accept|{}accept[0]
+        final fun <get-accept>(): kotlin.collections/List<com.davils.kapi.runtime.core.negotiation/MediaRange> // com.davils.kapi.runtime.client.call/Call.accept.<get-accept>|<get-accept>(){}[0]
+    final val body // com.davils.kapi.runtime.client.call/Call.body|{}body[0]
+        final fun <get-body>(): com.davils.kapi.runtime.client.call/Body? // com.davils.kapi.runtime.client.call/Call.body.<get-body>|<get-body>(){}[0]
+    final val cookies // com.davils.kapi.runtime.client.call/Call.cookies|{}cookies[0]
+        final fun <get-cookies>(): kotlin.collections/List<com.davils.kapi.runtime.core.parameter/ParameterEntry> // com.davils.kapi.runtime.client.call/Call.cookies.<get-cookies>|<get-cookies>(){}[0]
+    final val destination // com.davils.kapi.runtime.client.call/Call.destination|{}destination[0]
+        final fun <get-destination>(): kotlin/String? // com.davils.kapi.runtime.client.call/Call.destination.<get-destination>|<get-destination>(){}[0]
+    final val headers // com.davils.kapi.runtime.client.call/Call.headers|{}headers[0]
+        final fun <get-headers>(): kotlin.collections/List<com.davils.kapi.runtime.core.parameter/ParameterEntry> // com.davils.kapi.runtime.client.call/Call.headers.<get-headers>|<get-headers>(){}[0]
+    final val idempotencyKey // com.davils.kapi.runtime.client.call/Call.idempotencyKey|{}idempotencyKey[0]
+        final fun <get-idempotencyKey>(): com.davils.kapi.runtime.core.header/IdempotencyKey? // com.davils.kapi.runtime.client.call/Call.idempotencyKey.<get-idempotencyKey>|<get-idempotencyKey>(){}[0]
+    final val isIdempotent // com.davils.kapi.runtime.client.call/Call.isIdempotent|{}isIdempotent[0]
+        final fun <get-isIdempotent>(): kotlin/Boolean // com.davils.kapi.runtime.client.call/Call.isIdempotent.<get-isIdempotent>|<get-isIdempotent>(){}[0]
+    final val isReplayable // com.davils.kapi.runtime.client.call/Call.isReplayable|{}isReplayable[0]
+        final fun <get-isReplayable>(): kotlin/Boolean // com.davils.kapi.runtime.client.call/Call.isReplayable.<get-isReplayable>|<get-isReplayable>(){}[0]
+    final val isRetryable // com.davils.kapi.runtime.client.call/Call.isRetryable|{}isRetryable[0]
+        final fun <get-isRetryable>(): kotlin/Boolean // com.davils.kapi.runtime.client.call/Call.isRetryable.<get-isRetryable>|<get-isRetryable>(){}[0]
+    final val method // com.davils.kapi.runtime.client.call/Call.method|{}method[0]
+        final fun <get-method>(): kotlin/String // com.davils.kapi.runtime.client.call/Call.method.<get-method>|<get-method>(){}[0]
+    final val operation // com.davils.kapi.runtime.client.call/Call.operation|{}operation[0]
+        final fun <get-operation>(): kotlin/String // com.davils.kapi.runtime.client.call/Call.operation.<get-operation>|<get-operation>(){}[0]
+    final val path // com.davils.kapi.runtime.client.call/Call.path|{}path[0]
+        final fun <get-path>(): kotlin/String // com.davils.kapi.runtime.client.call/Call.path.<get-path>|<get-path>(){}[0]
+    final val query // com.davils.kapi.runtime.client.call/Call.query|{}query[0]
+        final fun <get-query>(): kotlin.collections/List<com.davils.kapi.runtime.core.parameter/ParameterEntry> // com.davils.kapi.runtime.client.call/Call.query.<get-query>|<get-query>(){}[0]
+    final val refusal // com.davils.kapi.runtime.client.call/Call.refusal|{}refusal[0]
+        final fun <get-refusal>(): com.davils.kapi.runtime.client.call/CallFailure? // com.davils.kapi.runtime.client.call/Call.refusal.<get-refusal>|<get-refusal>(){}[0]
+    final val security // com.davils.kapi.runtime.client.call/Call.security|{}security[0]
+        final fun <get-security>(): kotlin.collections/List<kotlin.collections/List<com.davils.kapi.runtime.client.call/SecurityUse>> // com.davils.kapi.runtime.client.call/Call.security.<get-security>|<get-security>(){}[0]
+    final val timeout // com.davils.kapi.runtime.client.call/Call.timeout|{}timeout[0]
+        final fun <get-timeout>(): com.davils.kapi.runtime.client.call/Timeout? // com.davils.kapi.runtime.client.call/Call.timeout.<get-timeout>|<get-timeout>(){}[0]
+    final val upgrade // com.davils.kapi.runtime.client.call/Call.upgrade|{}upgrade[0]
+        final fun <get-upgrade>(): com.davils.kapi.runtime.client.call/Upgrade? // com.davils.kapi.runtime.client.call/Call.upgrade.<get-upgrade>|<get-upgrade>(){}[0]
+    final val upload // com.davils.kapi.runtime.client.call/Call.upload|{}upload[0]
+        final fun <get-upload>(): com.davils.kapi.runtime.client.call/Upload? // com.davils.kapi.runtime.client.call/Call.upload.<get-upload>|<get-upload>(){}[0]
+
+    final fun change(kotlin/Function1<com.davils.kapi.runtime.client.call/CallBuilder, kotlin/Unit>): com.davils.kapi.runtime.client.call/Call // com.davils.kapi.runtime.client.call/Call.change|change(kotlin.Function1<com.davils.kapi.runtime.client.call.CallBuilder,kotlin.Unit>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/Call.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/Call.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Call.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/CallBuilder { // com.davils.kapi.runtime.client.call/CallBuilder|null[0]
+    final fun accept(com.davils.kapi.runtime.core.negotiation/MediaRange) // com.davils.kapi.runtime.client.call/CallBuilder.accept|accept(com.davils.kapi.runtime.core.negotiation.MediaRange){}[0]
+    final fun body(com.davils.kapi.runtime.client.call/Body) // com.davils.kapi.runtime.client.call/CallBuilder.body|body(com.davils.kapi.runtime.client.call.Body){}[0]
+    final fun body(com.davils.kapi.runtime.core.negotiation/MediaType, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.client.call/CallBuilder.body|body(com.davils.kapi.runtime.core.negotiation.MediaType;kotlinx.io.bytestring.ByteString){}[0]
+    final fun cookie(com.davils.kapi.runtime.core.parameter/ParameterFormat, com.davils.kapi.runtime.core.parameter/ParameterValue) // com.davils.kapi.runtime.client.call/CallBuilder.cookie|cookie(com.davils.kapi.runtime.core.parameter.ParameterFormat;com.davils.kapi.runtime.core.parameter.ParameterValue){}[0]
+    final fun destination(kotlin/String) // com.davils.kapi.runtime.client.call/CallBuilder.destination|destination(kotlin.String){}[0]
+    final fun form(kotlin/Function1<com.davils.kapi.runtime.client.call/FormBuilder, kotlin/Unit>) // com.davils.kapi.runtime.client.call/CallBuilder.form|form(kotlin.Function1<com.davils.kapi.runtime.client.call.FormBuilder,kotlin.Unit>){}[0]
+    final fun header(com.davils.kapi.runtime.core.parameter/ParameterFormat, com.davils.kapi.runtime.core.parameter/ParameterValue) // com.davils.kapi.runtime.client.call/CallBuilder.header|header(com.davils.kapi.runtime.core.parameter.ParameterFormat;com.davils.kapi.runtime.core.parameter.ParameterValue){}[0]
+    final fun header(kotlin/String, kotlin/String) // com.davils.kapi.runtime.client.call/CallBuilder.header|header(kotlin.String;kotlin.String){}[0]
+    final fun idempotencyKey(com.davils.kapi.runtime.core.header/IdempotencyKey = ...) // com.davils.kapi.runtime.client.call/CallBuilder.idempotencyKey|idempotencyKey(com.davils.kapi.runtime.core.header.IdempotencyKey){}[0]
+    final fun idempotent() // com.davils.kapi.runtime.client.call/CallBuilder.idempotent|idempotent(){}[0]
+    final fun multipart(com.davils.kapi.runtime.core.codec.multipart/Boundary = ..., kotlin/Function1<com.davils.kapi.runtime.client.call/MultipartBuilder, kotlin/Unit>) // com.davils.kapi.runtime.client.call/CallBuilder.multipart|multipart(com.davils.kapi.runtime.core.codec.multipart.Boundary;kotlin.Function1<com.davils.kapi.runtime.client.call.MultipartBuilder,kotlin.Unit>){}[0]
+    final fun path(com.davils.kapi.runtime.core.parameter/ParameterFormat, com.davils.kapi.runtime.core.parameter/ParameterValue) // com.davils.kapi.runtime.client.call/CallBuilder.path|path(com.davils.kapi.runtime.core.parameter.ParameterFormat;com.davils.kapi.runtime.core.parameter.ParameterValue){}[0]
+    final fun path(kotlin/String) // com.davils.kapi.runtime.client.call/CallBuilder.path|path(kotlin.String){}[0]
+    final fun query(com.davils.kapi.runtime.core.parameter/ParameterFormat, com.davils.kapi.runtime.core.parameter/ParameterValue) // com.davils.kapi.runtime.client.call/CallBuilder.query|query(com.davils.kapi.runtime.core.parameter.ParameterFormat;com.davils.kapi.runtime.core.parameter.ParameterValue){}[0]
+    final fun query(kotlin/String, kotlin/String) // com.davils.kapi.runtime.client.call/CallBuilder.query|query(kotlin.String;kotlin.String){}[0]
+    final fun security(kotlin.collections/List<com.davils.kapi.runtime.client.call/SecurityUse>) // com.davils.kapi.runtime.client.call/CallBuilder.security|security(kotlin.collections.List<com.davils.kapi.runtime.client.call.SecurityUse>){}[0]
+    final fun timeout(kotlin.time/Duration? = ..., kotlin.time/Duration? = ..., kotlin.time/Duration? = ...) // com.davils.kapi.runtime.client.call/CallBuilder.timeout|timeout(kotlin.time.Duration?;kotlin.time.Duration?;kotlin.time.Duration?){}[0]
+    final fun upgrade(kotlin/String, kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString> = ...) // com.davils.kapi.runtime.client.call/CallBuilder.upgrade|upgrade(kotlin.String;kotlinx.coroutines.flow.Flow<kotlinx.io.bytestring.ByteString>){}[0]
+    final fun upload(com.davils.kapi.runtime.core.negotiation/MediaType, io.ktor.utils.io/ByteReadChannel, kotlin/Long? = ...) // com.davils.kapi.runtime.client.call/CallBuilder.upload|upload(com.davils.kapi.runtime.core.negotiation.MediaType;io.ktor.utils.io.ByteReadChannel;kotlin.Long?){}[0]
+    final fun upload(com.davils.kapi.runtime.core.negotiation/MediaType, kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString>, kotlin/Long? = ...) // com.davils.kapi.runtime.client.call/CallBuilder.upload|upload(com.davils.kapi.runtime.core.negotiation.MediaType;kotlinx.coroutines.flow.Flow<kotlinx.io.bytestring.ByteString>;kotlin.Long?){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/FormBuilder { // com.davils.kapi.runtime.client.call/FormBuilder|null[0]
+    final fun field(kotlin/String, kotlin/String) // com.davils.kapi.runtime.client.call/FormBuilder.field|field(kotlin.String;kotlin.String){}[0]
+    final fun fields(kotlin/String, kotlin.collections/List<kotlin/String>) // com.davils.kapi.runtime.client.call/FormBuilder.fields|fields(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/MultipartBuilder { // com.davils.kapi.runtime.client.call/MultipartBuilder|null[0]
+    final fun file(kotlin/String, com.davils.kapi.runtime.core.wire/FilePart, com.davils.kapi.runtime.core.negotiation/MediaType? = ...) // com.davils.kapi.runtime.client.call/MultipartBuilder.file|file(kotlin.String;com.davils.kapi.runtime.core.wire.FilePart;com.davils.kapi.runtime.core.negotiation.MediaType?){}[0]
+    final fun files(kotlin/String, kotlin.collections/List<com.davils.kapi.runtime.core.wire/FilePart>, com.davils.kapi.runtime.core.negotiation/MediaType? = ...) // com.davils.kapi.runtime.client.call/MultipartBuilder.files|files(kotlin.String;kotlin.collections.List<com.davils.kapi.runtime.core.wire.FilePart>;com.davils.kapi.runtime.core.negotiation.MediaType?){}[0]
+    final fun part(kotlin/String, com.davils.kapi.runtime.core.negotiation/MediaType, kotlinx.io.bytestring/ByteString) // com.davils.kapi.runtime.client.call/MultipartBuilder.part|part(kotlin.String;com.davils.kapi.runtime.core.negotiation.MediaType;kotlinx.io.bytestring.ByteString){}[0]
+    final fun text(kotlin/String, kotlin/String) // com.davils.kapi.runtime.client.call/MultipartBuilder.text|text(kotlin.String;kotlin.String){}[0]
+    final fun texts(kotlin/String, kotlin.collections/List<kotlin/String>) // com.davils.kapi.runtime.client.call/MultipartBuilder.texts|texts(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/SecurityUse { // com.davils.kapi.runtime.client.call/SecurityUse|null[0]
+    constructor <init>(kotlin/String, com.davils.kapi.runtime.client.call/CredentialPlacement) // com.davils.kapi.runtime.client.call/SecurityUse.<init>|<init>(kotlin.String;com.davils.kapi.runtime.client.call.CredentialPlacement){}[0]
+
+    final val placement // com.davils.kapi.runtime.client.call/SecurityUse.placement|{}placement[0]
+        final fun <get-placement>(): com.davils.kapi.runtime.client.call/CredentialPlacement // com.davils.kapi.runtime.client.call/SecurityUse.placement.<get-placement>|<get-placement>(){}[0]
+    final val scheme // com.davils.kapi.runtime.client.call/SecurityUse.scheme|{}scheme[0]
+        final fun <get-scheme>(): kotlin/String // com.davils.kapi.runtime.client.call/SecurityUse.scheme.<get-scheme>|<get-scheme>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/SecurityUse.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/SecurityUse.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/SecurityUse.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/Timeout { // com.davils.kapi.runtime.client.call/Timeout|null[0]
+    constructor <init>(kotlin.time/Duration? = ..., kotlin.time/Duration? = ..., kotlin.time/Duration? = ...) // com.davils.kapi.runtime.client.call/Timeout.<init>|<init>(kotlin.time.Duration?;kotlin.time.Duration?;kotlin.time.Duration?){}[0]
+
+    final val connect // com.davils.kapi.runtime.client.call/Timeout.connect|{}connect[0]
+        final fun <get-connect>(): kotlin.time/Duration? // com.davils.kapi.runtime.client.call/Timeout.connect.<get-connect>|<get-connect>(){}[0]
+    final val request // com.davils.kapi.runtime.client.call/Timeout.request|{}request[0]
+        final fun <get-request>(): kotlin.time/Duration? // com.davils.kapi.runtime.client.call/Timeout.request.<get-request>|<get-request>(){}[0]
+    final val socket // com.davils.kapi.runtime.client.call/Timeout.socket|{}socket[0]
+        final fun <get-socket>(): kotlin.time/Duration? // com.davils.kapi.runtime.client.call/Timeout.socket.<get-socket>|<get-socket>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/Timeout.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/Timeout.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Timeout.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/Upgrade { // com.davils.kapi.runtime.client.call/Upgrade|null[0]
+    constructor <init>(kotlin/String, kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString> = ...) // com.davils.kapi.runtime.client.call/Upgrade.<init>|<init>(kotlin.String;kotlinx.coroutines.flow.Flow<kotlinx.io.bytestring.ByteString>){}[0]
+
+    final val input // com.davils.kapi.runtime.client.call/Upgrade.input|{}input[0]
+        final fun <get-input>(): kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString> // com.davils.kapi.runtime.client.call/Upgrade.input.<get-input>|<get-input>(){}[0]
+    final val protocol // com.davils.kapi.runtime.client.call/Upgrade.protocol|{}protocol[0]
+        final fun <get-protocol>(): kotlin/String // com.davils.kapi.runtime.client.call/Upgrade.protocol.<get-protocol>|<get-protocol>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Upgrade.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.call/Upload { // com.davils.kapi.runtime.client.call/Upload|null[0]
+    constructor <init>(com.davils.kapi.runtime.core.negotiation/MediaType, kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString>, kotlin/Long? = ...) // com.davils.kapi.runtime.client.call/Upload.<init>|<init>(com.davils.kapi.runtime.core.negotiation.MediaType;kotlinx.coroutines.flow.Flow<kotlinx.io.bytestring.ByteString>;kotlin.Long?){}[0]
+
+    final val chunks // com.davils.kapi.runtime.client.call/Upload.chunks|{}chunks[0]
+        final fun <get-chunks>(): kotlinx.coroutines.flow/Flow<kotlinx.io.bytestring/ByteString> // com.davils.kapi.runtime.client.call/Upload.chunks.<get-chunks>|<get-chunks>(){}[0]
+    final val contentType // com.davils.kapi.runtime.client.call/Upload.contentType|{}contentType[0]
+        final fun <get-contentType>(): com.davils.kapi.runtime.core.negotiation/MediaType // com.davils.kapi.runtime.client.call/Upload.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val length // com.davils.kapi.runtime.client.call/Upload.length|{}length[0]
+        final fun <get-length>(): kotlin/Long? // com.davils.kapi.runtime.client.call/Upload.length.<get-length>|<get-length>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/Upload.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.channel/ChannelClose { // com.davils.kapi.runtime.client.channel/ChannelClose|null[0]
+    constructor <init>(kotlin/Int, kotlin/String = ..., kotlin/Boolean = ...) // com.davils.kapi.runtime.client.channel/ChannelClose.<init>|<init>(kotlin.Int;kotlin.String;kotlin.Boolean){}[0]
+
+    final val code // com.davils.kapi.runtime.client.channel/ChannelClose.code|{}code[0]
+        final fun <get-code>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelClose.code.<get-code>|<get-code>(){}[0]
+    final val isLocal // com.davils.kapi.runtime.client.channel/ChannelClose.isLocal|{}isLocal[0]
+        final fun <get-isLocal>(): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelClose.isLocal.<get-isLocal>|<get-isLocal>(){}[0]
+    final val kind // com.davils.kapi.runtime.client.channel/ChannelClose.kind|{}kind[0]
+        final fun <get-kind>(): com.davils.kapi.runtime.client.channel/CloseKind // com.davils.kapi.runtime.client.channel/ChannelClose.kind.<get-kind>|<get-kind>(){}[0]
+    final val reason // com.davils.kapi.runtime.client.channel/ChannelClose.reason|{}reason[0]
+        final fun <get-reason>(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelClose.reason.<get-reason>|<get-reason>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.channel/ChannelClose.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelClose.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelClose.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.channel/ChannelSettings : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.client.channel/ChannelSettings|null[0]
+    final val closeTimeout // com.davils.kapi.runtime.client.channel/ChannelSettings.closeTimeout|{}closeTimeout[0]
+        final fun <get-closeTimeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettings.closeTimeout.<get-closeTimeout>|<get-closeTimeout>(){}[0]
+    final val incomingCapacity // com.davils.kapi.runtime.client.channel/ChannelSettings.incomingCapacity|{}incomingCapacity[0]
+        final fun <get-incomingCapacity>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelSettings.incomingCapacity.<get-incomingCapacity>|<get-incomingCapacity>(){}[0]
+    final val maxFrameBytes // com.davils.kapi.runtime.client.channel/ChannelSettings.maxFrameBytes|{}maxFrameBytes[0]
+        final fun <get-maxFrameBytes>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettings.maxFrameBytes.<get-maxFrameBytes>|<get-maxFrameBytes>(){}[0]
+    final val maxMessageBytes // com.davils.kapi.runtime.client.channel/ChannelSettings.maxMessageBytes|{}maxMessageBytes[0]
+        final fun <get-maxMessageBytes>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettings.maxMessageBytes.<get-maxMessageBytes>|<get-maxMessageBytes>(){}[0]
+    final val maxPendingRequests // com.davils.kapi.runtime.client.channel/ChannelSettings.maxPendingRequests|{}maxPendingRequests[0]
+        final fun <get-maxPendingRequests>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelSettings.maxPendingRequests.<get-maxPendingRequests>|<get-maxPendingRequests>(){}[0]
+    final val mediaType // com.davils.kapi.runtime.client.channel/ChannelSettings.mediaType|{}mediaType[0]
+        final fun <get-mediaType>(): com.davils.kapi.runtime.core.negotiation/MediaType // com.davils.kapi.runtime.client.channel/ChannelSettings.mediaType.<get-mediaType>|<get-mediaType>(){}[0]
+    final val pingInterval // com.davils.kapi.runtime.client.channel/ChannelSettings.pingInterval|{}pingInterval[0]
+        final fun <get-pingInterval>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettings.pingInterval.<get-pingInterval>|<get-pingInterval>(){}[0]
+    final val pongTimeout // com.davils.kapi.runtime.client.channel/ChannelSettings.pongTimeout|{}pongTimeout[0]
+        final fun <get-pongTimeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettings.pongTimeout.<get-pongTimeout>|<get-pongTimeout>(){}[0]
+    final val subprotocols // com.davils.kapi.runtime.client.channel/ChannelSettings.subprotocols|{}subprotocols[0]
+        final fun <get-subprotocols>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.client.channel/ChannelSettings.subprotocols.<get-subprotocols>|<get-subprotocols>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.client.channel/ChannelSettings.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.channel/ChannelSettings.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion|null[0]
+        final const val HARD_COUNT // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_COUNT|{}HARD_COUNT[0]
+            final fun <get-HARD_COUNT>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_COUNT.<get-HARD_COUNT>|<get-HARD_COUNT>(){}[0]
+        final const val HARD_FRAME_BYTES // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_FRAME_BYTES|{}HARD_FRAME_BYTES[0]
+            final fun <get-HARD_FRAME_BYTES>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_FRAME_BYTES.<get-HARD_FRAME_BYTES>|<get-HARD_FRAME_BYTES>(){}[0]
+        final const val HARD_MESSAGE_BYTES // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_MESSAGE_BYTES|{}HARD_MESSAGE_BYTES[0]
+            final fun <get-HARD_MESSAGE_BYTES>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_MESSAGE_BYTES.<get-HARD_MESSAGE_BYTES>|<get-HARD_MESSAGE_BYTES>(){}[0]
+
+        final val Default // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.runtime.client.channel/ChannelSettings // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.Default.<get-Default>|<get-Default>(){}[0]
+        final val HARD_TIME // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_TIME|{}HARD_TIME[0]
+            final fun <get-HARD_TIME>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettings.Companion.HARD_TIME.<get-HARD_TIME>|<get-HARD_TIME>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.client.channel/ChannelSettings> { // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder|null[0]
+    final var closeTimeout // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.closeTimeout|{}closeTimeout[0]
+        final fun <get-closeTimeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.closeTimeout.<get-closeTimeout>|<get-closeTimeout>(){}[0]
+        final fun <set-closeTimeout>(kotlin.time/Duration) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.closeTimeout.<set-closeTimeout>|<set-closeTimeout>(kotlin.time.Duration){}[0]
+    final var incomingCapacity // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.incomingCapacity|{}incomingCapacity[0]
+        final fun <get-incomingCapacity>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.incomingCapacity.<get-incomingCapacity>|<get-incomingCapacity>(){}[0]
+        final fun <set-incomingCapacity>(kotlin/Int) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.incomingCapacity.<set-incomingCapacity>|<set-incomingCapacity>(kotlin.Int){}[0]
+    final var maxFrameBytes // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxFrameBytes|{}maxFrameBytes[0]
+        final fun <get-maxFrameBytes>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxFrameBytes.<get-maxFrameBytes>|<get-maxFrameBytes>(){}[0]
+        final fun <set-maxFrameBytes>(kotlin/Long) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxFrameBytes.<set-maxFrameBytes>|<set-maxFrameBytes>(kotlin.Long){}[0]
+    final var maxMessageBytes // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxMessageBytes|{}maxMessageBytes[0]
+        final fun <get-maxMessageBytes>(): kotlin/Long // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxMessageBytes.<get-maxMessageBytes>|<get-maxMessageBytes>(){}[0]
+        final fun <set-maxMessageBytes>(kotlin/Long) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxMessageBytes.<set-maxMessageBytes>|<set-maxMessageBytes>(kotlin.Long){}[0]
+    final var maxPendingRequests // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxPendingRequests|{}maxPendingRequests[0]
+        final fun <get-maxPendingRequests>(): kotlin/Int // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxPendingRequests.<get-maxPendingRequests>|<get-maxPendingRequests>(){}[0]
+        final fun <set-maxPendingRequests>(kotlin/Int) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.maxPendingRequests.<set-maxPendingRequests>|<set-maxPendingRequests>(kotlin.Int){}[0]
+    final var mediaType // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.mediaType|{}mediaType[0]
+        final fun <get-mediaType>(): com.davils.kapi.runtime.core.negotiation/MediaType // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.mediaType.<get-mediaType>|<get-mediaType>(){}[0]
+        final fun <set-mediaType>(com.davils.kapi.runtime.core.negotiation/MediaType) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.mediaType.<set-mediaType>|<set-mediaType>(com.davils.kapi.runtime.core.negotiation.MediaType){}[0]
+    final var pingInterval // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pingInterval|{}pingInterval[0]
+        final fun <get-pingInterval>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pingInterval.<get-pingInterval>|<get-pingInterval>(){}[0]
+        final fun <set-pingInterval>(kotlin.time/Duration) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pingInterval.<set-pingInterval>|<set-pingInterval>(kotlin.time.Duration){}[0]
+    final var pongTimeout // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pongTimeout|{}pongTimeout[0]
+        final fun <get-pongTimeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pongTimeout.<get-pongTimeout>|<get-pongTimeout>(){}[0]
+        final fun <set-pongTimeout>(kotlin.time/Duration) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.pongTimeout.<set-pongTimeout>|<set-pongTimeout>(kotlin.time.Duration){}[0]
+    final var subprotocols // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.subprotocols|{}subprotocols[0]
+        final fun <get-subprotocols>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.subprotocols.<get-subprotocols>|<get-subprotocols>(){}[0]
+        final fun <set-subprotocols>(kotlin.collections/List<kotlin/String>) // com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder.subprotocols.<set-subprotocols>|<set-subprotocols>(kotlin.collections.List<kotlin.String>){}[0]
+}
+
+final class com.davils.kapi.runtime.client.conditional/Validators { // com.davils.kapi.runtime.client.conditional/Validators|null[0]
+    constructor <init>(com.davils.kapi.runtime.core.conditional/EntityTag? = ..., com.davils.kapi.runtime.core.conditional/HttpDate? = ...) // com.davils.kapi.runtime.client.conditional/Validators.<init>|<init>(com.davils.kapi.runtime.core.conditional.EntityTag?;com.davils.kapi.runtime.core.conditional.HttpDate?){}[0]
+
+    final val entityTag // com.davils.kapi.runtime.client.conditional/Validators.entityTag|{}entityTag[0]
+        final fun <get-entityTag>(): com.davils.kapi.runtime.core.conditional/EntityTag? // com.davils.kapi.runtime.client.conditional/Validators.entityTag.<get-entityTag>|<get-entityTag>(){}[0]
+    final val isEmpty // com.davils.kapi.runtime.client.conditional/Validators.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/Validators.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
+    final val lastModified // com.davils.kapi.runtime.client.conditional/Validators.lastModified|{}lastModified[0]
+        final fun <get-lastModified>(): com.davils.kapi.runtime.core.conditional/HttpDate? // com.davils.kapi.runtime.client.conditional/Validators.lastModified.<get-lastModified>|<get-lastModified>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.conditional/Validators.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.conditional/Validators.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.conditional/Validators.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.conditional/Validators.Companion|null[0]
+        final fun of(com.davils.kapi.runtime.core.response/Headers): com.davils.kapi.runtime.client.conditional/Validators // com.davils.kapi.runtime.client.conditional/Validators.Companion.of|of(com.davils.kapi.runtime.core.response.Headers){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.dpop/DpopProofs { // com.davils.kapi.runtime.client.dpop/DpopProofs|null[0]
+    final val algorithm // com.davils.kapi.runtime.client.dpop/DpopProofs.algorithm|{}algorithm[0]
+        final fun <get-algorithm>(): com.davils.krypt.jose.jws/JwsAlgorithm // com.davils.kapi.runtime.client.dpop/DpopProofs.algorithm.<get-algorithm>|<get-algorithm>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.dpop/DpopProofs.toString|toString(){}[0]
+    final suspend fun acceptNonce(kotlin/String, kotlin/String?) // com.davils.kapi.runtime.client.dpop/DpopProofs.acceptNonce|acceptNonce(kotlin.String;kotlin.String?){}[0]
+    final suspend fun proof(kotlin/String, kotlin/String, com.davils.kapi.runtime.core.security/Secret? = ...): kotlin/String // com.davils.kapi.runtime.client.dpop/DpopProofs.proof|proof(kotlin.String;kotlin.String;com.davils.kapi.runtime.core.security.Secret?){}[0]
+}
+
+final class com.davils.kapi.runtime.client.oauth/AuthorizationRequest { // com.davils.kapi.runtime.client.oauth/AuthorizationRequest|null[0]
+    final val redirectUri // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.redirectUri|{}redirectUri[0]
+        final fun <get-redirectUri>(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.redirectUri.<get-redirectUri>|<get-redirectUri>(){}[0]
+    final val state // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.state|{}state[0]
+        final fun <get-state>(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.state.<get-state>|<get-state>(){}[0]
+    final val url // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.url|{}url[0]
+        final fun <get-url>(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.url.<get-url>|<get-url>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationRequest.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.oauth/AuthorizationResponse { // com.davils.kapi.runtime.client.oauth/AuthorizationResponse|null[0]
+    constructor <init>(com.davils.kapi.runtime.core.security/Secret, kotlin/String, kotlin/String? = ...) // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.<init>|<init>(com.davils.kapi.runtime.core.security.Secret;kotlin.String;kotlin.String?){}[0]
+
+    final val code // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.code|{}code[0]
+        final fun <get-code>(): com.davils.kapi.runtime.core.security/Secret // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.code.<get-code>|<get-code>(){}[0]
+    final val issuer // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.issuer.<get-issuer>|<get-issuer>(){}[0]
+    final val state // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.state|{}state[0]
+        final fun <get-state>(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.state.<get-state>|<get-state>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.Companion|null[0]
+        final fun fromRedirect(kotlin/String): com.davils.kapi.runtime.client.oauth/AuthorizationResponse? // com.davils.kapi.runtime.client.oauth/AuthorizationResponse.Companion.fromRedirect|fromRedirect(kotlin.String){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.oauth/DeviceAuthorization { // com.davils.kapi.runtime.client.oauth/DeviceAuthorization|null[0]
+    final val expiresIn // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.expiresIn|{}expiresIn[0]
+        final fun <get-expiresIn>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.expiresIn.<get-expiresIn>|<get-expiresIn>(){}[0]
+    final val userCode // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.userCode|{}userCode[0]
+        final fun <get-userCode>(): kotlin/String // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.userCode.<get-userCode>|<get-userCode>(){}[0]
+    final val verificationUri // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.verificationUri|{}verificationUri[0]
+        final fun <get-verificationUri>(): kotlin/String // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.verificationUri.<get-verificationUri>|<get-verificationUri>(){}[0]
+    final val verificationUriComplete // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.verificationUriComplete|{}verificationUriComplete[0]
+        final fun <get-verificationUriComplete>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.verificationUriComplete.<get-verificationUriComplete>|<get-verificationUriComplete>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/DeviceAuthorization.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.oauth/OAuthSettings : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.client.oauth/OAuthSettings|null[0]
+    final val authentication // com.davils.kapi.runtime.client.oauth/OAuthSettings.authentication|{}authentication[0]
+        final fun <get-authentication>(): com.davils.kapi.runtime.client.oauth/ClientAuthentication // com.davils.kapi.runtime.client.oauth/OAuthSettings.authentication.<get-authentication>|<get-authentication>(){}[0]
+    final val authorizationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettings.authorizationUrl|{}authorizationUrl[0]
+        final fun <get-authorizationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.authorizationUrl.<get-authorizationUrl>|<get-authorizationUrl>(){}[0]
+    final val clientId // com.davils.kapi.runtime.client.oauth/OAuthSettings.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.clientId.<get-clientId>|<get-clientId>(){}[0]
+    final val crypto // com.davils.kapi.runtime.client.oauth/OAuthSettings.crypto|{}crypto[0]
+        final fun <get-crypto>(): com.davils.krypt.primitive/Crypto // com.davils.kapi.runtime.client.oauth/OAuthSettings.crypto.<get-crypto>|<get-crypto>(){}[0]
+    final val destinations // com.davils.kapi.runtime.client.oauth/OAuthSettings.destinations|{}destinations[0]
+        final fun <get-destinations>(): com.davils.kapi.runtime.core.destination/DestinationPolicy // com.davils.kapi.runtime.client.oauth/OAuthSettings.destinations.<get-destinations>|<get-destinations>(){}[0]
+    final val deviceAuthorizationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettings.deviceAuthorizationUrl|{}deviceAuthorizationUrl[0]
+        final fun <get-deviceAuthorizationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.deviceAuthorizationUrl.<get-deviceAuthorizationUrl>|<get-deviceAuthorizationUrl>(){}[0]
+    final val discovery // com.davils.kapi.runtime.client.oauth/OAuthSettings.discovery|{}discovery[0]
+        final fun <get-discovery>(): com.davils.kapi.runtime.client.oauth/Discovery // com.davils.kapi.runtime.client.oauth/OAuthSettings.discovery.<get-discovery>|<get-discovery>(){}[0]
+    final val dpop // com.davils.kapi.runtime.client.oauth/OAuthSettings.dpop|{}dpop[0]
+        final fun <get-dpop>(): com.davils.kapi.runtime.client.dpop/DpopProofs? // com.davils.kapi.runtime.client.oauth/OAuthSettings.dpop.<get-dpop>|<get-dpop>(){}[0]
+    final val events // com.davils.kapi.runtime.client.oauth/OAuthSettings.events|{}events[0]
+        final fun <get-events>(): com.davils.konfetti.core/EventBus? // com.davils.kapi.runtime.client.oauth/OAuthSettings.events.<get-events>|<get-events>(){}[0]
+    final val grant // com.davils.kapi.runtime.client.oauth/OAuthSettings.grant|{}grant[0]
+        final fun <get-grant>(): com.davils.kapi.runtime.client.oauth/Grant // com.davils.kapi.runtime.client.oauth/OAuthSettings.grant.<get-grant>|<get-grant>(){}[0]
+    final val issuer // com.davils.kapi.runtime.client.oauth/OAuthSettings.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.issuer.<get-issuer>|<get-issuer>(){}[0]
+    final val leeway // com.davils.kapi.runtime.client.oauth/OAuthSettings.leeway|{}leeway[0]
+        final fun <get-leeway>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettings.leeway.<get-leeway>|<get-leeway>(){}[0]
+    final val revocationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettings.revocationUrl|{}revocationUrl[0]
+        final fun <get-revocationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.revocationUrl.<get-revocationUrl>|<get-revocationUrl>(){}[0]
+    final val scopes // com.davils.kapi.runtime.client.oauth/OAuthSettings.scopes|{}scopes[0]
+        final fun <get-scopes>(): kotlin.collections/Set<kotlin/String> // com.davils.kapi.runtime.client.oauth/OAuthSettings.scopes.<get-scopes>|<get-scopes>(){}[0]
+    final val timeSource // com.davils.kapi.runtime.client.oauth/OAuthSettings.timeSource|{}timeSource[0]
+        final fun <get-timeSource>(): kotlin.time/TimeSource.WithComparableMarks // com.davils.kapi.runtime.client.oauth/OAuthSettings.timeSource.<get-timeSource>|<get-timeSource>(){}[0]
+    final val timeout // com.davils.kapi.runtime.client.oauth/OAuthSettings.timeout|{}timeout[0]
+        final fun <get-timeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettings.timeout.<get-timeout>|<get-timeout>(){}[0]
+    final val tokenUrl // com.davils.kapi.runtime.client.oauth/OAuthSettings.tokenUrl|{}tokenUrl[0]
+        final fun <get-tokenUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.tokenUrl.<get-tokenUrl>|<get-tokenUrl>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.client.oauth/OAuthSettings.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.client.oauth/OAuthSettings> { // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder|null[0]
+    final var authentication // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authentication|{}authentication[0]
+        final fun <get-authentication>(): com.davils.kapi.runtime.client.oauth/ClientAuthentication // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authentication.<get-authentication>|<get-authentication>(){}[0]
+        final fun <set-authentication>(com.davils.kapi.runtime.client.oauth/ClientAuthentication) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authentication.<set-authentication>|<set-authentication>(com.davils.kapi.runtime.client.oauth.ClientAuthentication){}[0]
+    final var authorizationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authorizationUrl|{}authorizationUrl[0]
+        final fun <get-authorizationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authorizationUrl.<get-authorizationUrl>|<get-authorizationUrl>(){}[0]
+        final fun <set-authorizationUrl>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.authorizationUrl.<set-authorizationUrl>|<set-authorizationUrl>(kotlin.String){}[0]
+    final var clientId // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final fun <set-clientId>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.clientId.<set-clientId>|<set-clientId>(kotlin.String){}[0]
+    final var crypto // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.crypto|{}crypto[0]
+        final fun <get-crypto>(): com.davils.krypt.primitive/Crypto // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.crypto.<get-crypto>|<get-crypto>(){}[0]
+        final fun <set-crypto>(com.davils.krypt.primitive/Crypto) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.crypto.<set-crypto>|<set-crypto>(com.davils.krypt.primitive.Crypto){}[0]
+    final var destinations // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.destinations|{}destinations[0]
+        final fun <get-destinations>(): com.davils.kapi.runtime.core.destination/DestinationPolicy // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.destinations.<get-destinations>|<get-destinations>(){}[0]
+        final fun <set-destinations>(com.davils.kapi.runtime.core.destination/DestinationPolicy) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.destinations.<set-destinations>|<set-destinations>(com.davils.kapi.runtime.core.destination.DestinationPolicy){}[0]
+    final var deviceAuthorizationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.deviceAuthorizationUrl|{}deviceAuthorizationUrl[0]
+        final fun <get-deviceAuthorizationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.deviceAuthorizationUrl.<get-deviceAuthorizationUrl>|<get-deviceAuthorizationUrl>(){}[0]
+        final fun <set-deviceAuthorizationUrl>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.deviceAuthorizationUrl.<set-deviceAuthorizationUrl>|<set-deviceAuthorizationUrl>(kotlin.String){}[0]
+    final var discovery // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.discovery|{}discovery[0]
+        final fun <get-discovery>(): com.davils.kapi.runtime.client.oauth/Discovery // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.discovery.<get-discovery>|<get-discovery>(){}[0]
+        final fun <set-discovery>(com.davils.kapi.runtime.client.oauth/Discovery) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.discovery.<set-discovery>|<set-discovery>(com.davils.kapi.runtime.client.oauth.Discovery){}[0]
+    final var dpop // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.dpop|{}dpop[0]
+        final fun <get-dpop>(): com.davils.kapi.runtime.client.dpop/DpopProofs? // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.dpop.<get-dpop>|<get-dpop>(){}[0]
+        final fun <set-dpop>(com.davils.kapi.runtime.client.dpop/DpopProofs?) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.dpop.<set-dpop>|<set-dpop>(com.davils.kapi.runtime.client.dpop.DpopProofs?){}[0]
+    final var events // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.events|{}events[0]
+        final fun <get-events>(): com.davils.konfetti.core/EventBus? // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.events.<get-events>|<get-events>(){}[0]
+        final fun <set-events>(com.davils.konfetti.core/EventBus?) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.events.<set-events>|<set-events>(com.davils.konfetti.core.EventBus?){}[0]
+    final var grant // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.grant|{}grant[0]
+        final fun <get-grant>(): com.davils.kapi.runtime.client.oauth/Grant // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.grant.<get-grant>|<get-grant>(){}[0]
+        final fun <set-grant>(com.davils.kapi.runtime.client.oauth/Grant) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.grant.<set-grant>|<set-grant>(com.davils.kapi.runtime.client.oauth.Grant){}[0]
+    final var issuer // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.issuer.<get-issuer>|<get-issuer>(){}[0]
+        final fun <set-issuer>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.issuer.<set-issuer>|<set-issuer>(kotlin.String){}[0]
+    final var leeway // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway|{}leeway[0]
+        final fun <get-leeway>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway.<get-leeway>|<get-leeway>(){}[0]
+        final fun <set-leeway>(kotlin.time/Duration) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway.<set-leeway>|<set-leeway>(kotlin.time.Duration){}[0]
+    final var revocationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl|{}revocationUrl[0]
+        final fun <get-revocationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl.<get-revocationUrl>|<get-revocationUrl>(){}[0]
+        final fun <set-revocationUrl>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl.<set-revocationUrl>|<set-revocationUrl>(kotlin.String){}[0]
+    final var scopes // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.scopes|{}scopes[0]
+        final fun <get-scopes>(): kotlin.collections/Set<kotlin/String> // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.scopes.<get-scopes>|<get-scopes>(){}[0]
+        final fun <set-scopes>(kotlin.collections/Set<kotlin/String>) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.scopes.<set-scopes>|<set-scopes>(kotlin.collections.Set<kotlin.String>){}[0]
+    final var timeSource // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeSource|{}timeSource[0]
+        final fun <get-timeSource>(): kotlin.time/TimeSource.WithComparableMarks // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeSource.<get-timeSource>|<get-timeSource>(){}[0]
+        final fun <set-timeSource>(kotlin.time/TimeSource.WithComparableMarks) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeSource.<set-timeSource>|<set-timeSource>(kotlin.time.TimeSource.WithComparableMarks){}[0]
+    final var timeout // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeout|{}timeout[0]
+        final fun <get-timeout>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final fun <set-timeout>(kotlin.time/Duration) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.timeout.<set-timeout>|<set-timeout>(kotlin.time.Duration){}[0]
+    final var tokenUrl // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.tokenUrl|{}tokenUrl[0]
+        final fun <get-tokenUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.tokenUrl.<get-tokenUrl>|<get-tokenUrl>(){}[0]
+        final fun <set-tokenUrl>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.tokenUrl.<set-tokenUrl>|<set-tokenUrl>(kotlin.String){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion|null[0]
+        final val DEFAULT_LEEWAY // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_LEEWAY|{}DEFAULT_LEEWAY[0]
+            final fun <get-DEFAULT_LEEWAY>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_LEEWAY.<get-DEFAULT_LEEWAY>|<get-DEFAULT_LEEWAY>(){}[0]
+        final val DEFAULT_TIMEOUT // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_TIMEOUT|{}DEFAULT_TIMEOUT[0]
+            final fun <get-DEFAULT_TIMEOUT>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_TIMEOUT.<get-DEFAULT_TIMEOUT>|<get-DEFAULT_TIMEOUT>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.oauth/OAuthTokens : com.davils.kapi.runtime.core.security/RefreshingTokenSource { // com.davils.kapi.runtime.client.oauth/OAuthTokens|null[0]
+    final val grant // com.davils.kapi.runtime.client.oauth/OAuthTokens.grant|{}grant[0]
+        final fun <get-grant>(): kotlinx.coroutines.flow/StateFlow<com.davils.kapi.runtime.client.oauth/Grant> // com.davils.kapi.runtime.client.oauth/OAuthTokens.grant.<get-grant>|<get-grant>(){}[0]
+    final val settings // com.davils.kapi.runtime.client.oauth/OAuthTokens.settings|{}settings[0]
+        final fun <get-settings>(): com.davils.kapi.runtime.client.oauth/OAuthSettings // com.davils.kapi.runtime.client.oauth/OAuthTokens.settings.<get-settings>|<get-settings>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthTokens.toString|toString(){}[0]
+    final suspend fun metadata(): com.davils.kapi.runtime.client.oauth/ServerMetadata? // com.davils.kapi.runtime.client.oauth/OAuthTokens.metadata|metadata(){}[0]
+    final suspend fun refresh(com.davils.kapi.runtime.core.security/Secret?): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/OAuthTokens.refresh|refresh(com.davils.kapi.runtime.core.security.Secret?){}[0]
+    final suspend fun revoke(): com.davils.kapi.runtime.client.oauth/Revocation // com.davils.kapi.runtime.client.oauth/OAuthTokens.revoke|revoke(){}[0]
+    final suspend fun token(): com.davils.kapi.runtime.core.security/Secret? // com.davils.kapi.runtime.client.oauth/OAuthTokens.token|token(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.oauth/ServerMetadata { // com.davils.kapi.runtime.client.oauth/ServerMetadata|null[0]
+    final val authorizationEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.authorizationEndpoint|{}authorizationEndpoint[0]
+        final fun <get-authorizationEndpoint>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/ServerMetadata.authorizationEndpoint.<get-authorizationEndpoint>|<get-authorizationEndpoint>(){}[0]
+    final val codeChallengeMethods // com.davils.kapi.runtime.client.oauth/ServerMetadata.codeChallengeMethods|{}codeChallengeMethods[0]
+        final fun <get-codeChallengeMethods>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.client.oauth/ServerMetadata.codeChallengeMethods.<get-codeChallengeMethods>|<get-codeChallengeMethods>(){}[0]
+    final val deviceAuthorizationEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.deviceAuthorizationEndpoint|{}deviceAuthorizationEndpoint[0]
+        final fun <get-deviceAuthorizationEndpoint>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/ServerMetadata.deviceAuthorizationEndpoint.<get-deviceAuthorizationEndpoint>|<get-deviceAuthorizationEndpoint>(){}[0]
+    final val issuer // com.davils.kapi.runtime.client.oauth/ServerMetadata.issuer|{}issuer[0]
+        final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.client.oauth/ServerMetadata.issuer.<get-issuer>|<get-issuer>(){}[0]
+    final val revocationEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.revocationEndpoint|{}revocationEndpoint[0]
+        final fun <get-revocationEndpoint>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/ServerMetadata.revocationEndpoint.<get-revocationEndpoint>|<get-revocationEndpoint>(){}[0]
+    final val tokenEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.tokenEndpoint|{}tokenEndpoint[0]
+        final fun <get-tokenEndpoint>(): kotlin/String // com.davils.kapi.runtime.client.oauth/ServerMetadata.tokenEndpoint.<get-tokenEndpoint>|<get-tokenEndpoint>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.oauth/ServerMetadata.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.pipeline/Interception { // com.davils.kapi.runtime.client.pipeline/Interception|null[0]
+    constructor <init>(com.davils.kapi.runtime.client.pipeline/CallPhase, kotlin/String, com.davils.kapi.runtime.client.pipeline/Interceptor) // com.davils.kapi.runtime.client.pipeline/Interception.<init>|<init>(com.davils.kapi.runtime.client.pipeline.CallPhase;kotlin.String;com.davils.kapi.runtime.client.pipeline.Interceptor){}[0]
+
+    final val interceptor // com.davils.kapi.runtime.client.pipeline/Interception.interceptor|{}interceptor[0]
+        final fun <get-interceptor>(): com.davils.kapi.runtime.client.pipeline/Interceptor // com.davils.kapi.runtime.client.pipeline/Interception.interceptor.<get-interceptor>|<get-interceptor>(){}[0]
+    final val name // com.davils.kapi.runtime.client.pipeline/Interception.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client.pipeline/Interception.name.<get-name>|<get-name>(){}[0]
+    final val phase // com.davils.kapi.runtime.client.pipeline/Interception.phase|{}phase[0]
+        final fun <get-phase>(): com.davils.kapi.runtime.client.pipeline/CallPhase // com.davils.kapi.runtime.client.pipeline/Interception.phase.<get-phase>|<get-phase>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.pipeline/Interception.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.pipeline/RoundTrip { // com.davils.kapi.runtime.client.pipeline/RoundTrip|null[0]
+    final val call // com.davils.kapi.runtime.client.pipeline/RoundTrip.call|{}call[0]
+        final fun <get-call>(): com.davils.kapi.runtime.client.call/Call // com.davils.kapi.runtime.client.pipeline/RoundTrip.call.<get-call>|<get-call>(){}[0]
+    final val exchange // com.davils.kapi.runtime.client.pipeline/RoundTrip.exchange|{}exchange[0]
+        final fun <get-exchange>(): com.davils.kapi.runtime.client.call/Exchange? // com.davils.kapi.runtime.client.pipeline/RoundTrip.exchange.<get-exchange>|<get-exchange>(){}[0]
+    final val secrets // com.davils.kapi.runtime.client.pipeline/RoundTrip.secrets|{}secrets[0]
+        final fun <get-secrets>(): kotlin.collections/Map<kotlin/String, com.davils.kapi.runtime.core.security/Secret> // com.davils.kapi.runtime.client.pipeline/RoundTrip.secrets.<get-secrets>|<get-secrets>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.pipeline/RoundTrip.toString|toString(){}[0]
+    final fun withCall(com.davils.kapi.runtime.client.call/Call): com.davils.kapi.runtime.client.pipeline/RoundTrip // com.davils.kapi.runtime.client.pipeline/RoundTrip.withCall|withCall(com.davils.kapi.runtime.client.call.Call){}[0]
+    final fun withExchange(com.davils.kapi.runtime.client.call/Exchange): com.davils.kapi.runtime.client.pipeline/RoundTrip // com.davils.kapi.runtime.client.pipeline/RoundTrip.withExchange|withExchange(com.davils.kapi.runtime.client.call.Exchange){}[0]
+}
+
+final class com.davils.kapi.runtime.client.redirect/RedirectPolicy : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.client.redirect/RedirectPolicy|null[0]
+    final val isCrossOriginAllowed // com.davils.kapi.runtime.client.redirect/RedirectPolicy.isCrossOriginAllowed|{}isCrossOriginAllowed[0]
+        final fun <get-isCrossOriginAllowed>(): kotlin/Boolean // com.davils.kapi.runtime.client.redirect/RedirectPolicy.isCrossOriginAllowed.<get-isCrossOriginAllowed>|<get-isCrossOriginAllowed>(){}[0]
+    final val maxHops // com.davils.kapi.runtime.client.redirect/RedirectPolicy.maxHops|{}maxHops[0]
+        final fun <get-maxHops>(): kotlin/Int // com.davils.kapi.runtime.client.redirect/RedirectPolicy.maxHops.<get-maxHops>|<get-maxHops>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.client.redirect/RedirectPolicy.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.redirect/RedirectPolicy.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.redirect/RedirectPolicy.Companion|null[0]
+        final const val HARD_HOPS // com.davils.kapi.runtime.client.redirect/RedirectPolicy.Companion.HARD_HOPS|{}HARD_HOPS[0]
+            final fun <get-HARD_HOPS>(): kotlin/Int // com.davils.kapi.runtime.client.redirect/RedirectPolicy.Companion.HARD_HOPS.<get-HARD_HOPS>|<get-HARD_HOPS>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.client.redirect/RedirectPolicy> { // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder|null[0]
+    final var isCrossOriginAllowed // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.isCrossOriginAllowed|{}isCrossOriginAllowed[0]
+        final fun <get-isCrossOriginAllowed>(): kotlin/Boolean // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.isCrossOriginAllowed.<get-isCrossOriginAllowed>|<get-isCrossOriginAllowed>(){}[0]
+        final fun <set-isCrossOriginAllowed>(kotlin/Boolean) // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.isCrossOriginAllowed.<set-isCrossOriginAllowed>|<set-isCrossOriginAllowed>(kotlin.Boolean){}[0]
+    final var maxHops // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.maxHops|{}maxHops[0]
+        final fun <get-maxHops>(): kotlin/Int // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.maxHops.<get-maxHops>|<get-maxHops>(){}[0]
+        final fun <set-maxHops>(kotlin/Int) // com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder.maxHops.<set-maxHops>|<set-maxHops>(kotlin.Int){}[0]
+}
+
+final class com.davils.kapi.runtime.client.retry/Attempt { // com.davils.kapi.runtime.client.retry/Attempt|null[0]
+    constructor <init>(com.davils.kapi.runtime.client.call/Call, com.davils.kapi.runtime.client.call/Exchange) // com.davils.kapi.runtime.client.retry/Attempt.<init>|<init>(com.davils.kapi.runtime.client.call.Call;com.davils.kapi.runtime.client.call.Exchange){}[0]
+
+    final val call // com.davils.kapi.runtime.client.retry/Attempt.call|{}call[0]
+        final fun <get-call>(): com.davils.kapi.runtime.client.call/Call // com.davils.kapi.runtime.client.retry/Attempt.call.<get-call>|<get-call>(){}[0]
+    final val exchange // com.davils.kapi.runtime.client.retry/Attempt.exchange|{}exchange[0]
+        final fun <get-exchange>(): com.davils.kapi.runtime.client.call/Exchange // com.davils.kapi.runtime.client.retry/Attempt.exchange.<get-exchange>|<get-exchange>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.retry/Attempt.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.retry/Attempt.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.retry/Attempt.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.runtime.client.stream/Reconnection : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.client.stream/Reconnection|null[0]
+    final val delay // com.davils.kapi.runtime.client.stream/Reconnection.delay|{}delay[0]
+        final fun <get-delay>(): kotlin.time/Duration // com.davils.kapi.runtime.client.stream/Reconnection.delay.<get-delay>|<get-delay>(){}[0]
+    final val maxReconnects // com.davils.kapi.runtime.client.stream/Reconnection.maxReconnects|{}maxReconnects[0]
+        final fun <get-maxReconnects>(): kotlin/Int // com.davils.kapi.runtime.client.stream/Reconnection.maxReconnects.<get-maxReconnects>|<get-maxReconnects>(){}[0]
+    final val maximumDelay // com.davils.kapi.runtime.client.stream/Reconnection.maximumDelay|{}maximumDelay[0]
+        final fun <get-maximumDelay>(): kotlin.time/Duration // com.davils.kapi.runtime.client.stream/Reconnection.maximumDelay.<get-maximumDelay>|<get-maximumDelay>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.client.stream/Reconnection.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client.stream/Reconnection.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client.stream/Reconnection.Companion|null[0]
+        final const val HARD_RECONNECTS // com.davils.kapi.runtime.client.stream/Reconnection.Companion.HARD_RECONNECTS|{}HARD_RECONNECTS[0]
+            final fun <get-HARD_RECONNECTS>(): kotlin/Int // com.davils.kapi.runtime.client.stream/Reconnection.Companion.HARD_RECONNECTS.<get-HARD_RECONNECTS>|<get-HARD_RECONNECTS>(){}[0]
+
+        final val HARD_DELAY // com.davils.kapi.runtime.client.stream/Reconnection.Companion.HARD_DELAY|{}HARD_DELAY[0]
+            final fun <get-HARD_DELAY>(): kotlin.time/Duration // com.davils.kapi.runtime.client.stream/Reconnection.Companion.HARD_DELAY.<get-HARD_DELAY>|<get-HARD_DELAY>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client.stream/ReconnectionBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.client.stream/Reconnection> { // com.davils.kapi.runtime.client.stream/ReconnectionBuilder|null[0]
+    final var delay // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.delay|{}delay[0]
+        final fun <get-delay>(): kotlin.time/Duration // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.delay.<get-delay>|<get-delay>(){}[0]
+        final fun <set-delay>(kotlin.time/Duration) // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.delay.<set-delay>|<set-delay>(kotlin.time.Duration){}[0]
+    final var maxReconnects // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maxReconnects|{}maxReconnects[0]
+        final fun <get-maxReconnects>(): kotlin/Int // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maxReconnects.<get-maxReconnects>|<get-maxReconnects>(){}[0]
+        final fun <set-maxReconnects>(kotlin/Int) // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maxReconnects.<set-maxReconnects>|<set-maxReconnects>(kotlin.Int){}[0]
+    final var maximumDelay // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maximumDelay|{}maximumDelay[0]
+        final fun <get-maximumDelay>(): kotlin.time/Duration // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maximumDelay.<get-maximumDelay>|<get-maximumDelay>(){}[0]
+        final fun <set-maximumDelay>(kotlin.time/Duration) // com.davils.kapi.runtime.client.stream/ReconnectionBuilder.maximumDelay.<set-maximumDelay>|<set-maximumDelay>(kotlin.time.Duration){}[0]
+}
+
+final class com.davils.kapi.runtime.client/ApiClient { // com.davils.kapi.runtime.client/ApiClient|null[0]
+    final val settings // com.davils.kapi.runtime.client/ApiClient.settings|{}settings[0]
+        final fun <get-settings>(): com.davils.kapi.runtime.client/ClientSettings // com.davils.kapi.runtime.client/ApiClient.settings.<get-settings>|<get-settings>(){}[0]
+
+    final fun <#A1: kotlin/Any?> decode(kotlinx.serialization/DeserializationStrategy<#A1>, com.davils.kapi.runtime.client.call/Exchange.Answered): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.client/ApiClient.decode|decode(kotlinx.serialization.DeserializationStrategy<0:0>;com.davils.kapi.runtime.client.call.Exchange.Answered){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> encode(kotlinx.serialization/SerializationStrategy<#A1>, #A1, com.davils.kapi.runtime.core.negotiation/MediaType = ...): com.davils.kapi.runtime.client.call/Body? // com.davils.kapi.runtime.client/ApiClient.encode|encode(kotlinx.serialization.SerializationStrategy<0:0>;0:0;com.davils.kapi.runtime.core.negotiation.MediaType){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> fields(kotlinx.serialization/SerializationStrategy<#A1>, #A1): com.davils.kapi.runtime.core.parameter/ParameterValue.Fields // com.davils.kapi.runtime.client/ApiClient.fields|fields(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> json(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.client/ApiClient.json|json(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+    final fun acceptable(kotlin.collections/List<com.davils.kapi.runtime.core.negotiation/MediaType>): kotlin.collections/List<com.davils.kapi.runtime.core.negotiation/MediaRange> // com.davils.kapi.runtime.client/ApiClient.acceptable|acceptable(kotlin.collections.List<com.davils.kapi.runtime.core.negotiation.MediaType>){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ApiClient.toString|toString(){}[0]
+    final suspend fun execute(com.davils.kapi.runtime.client.call/Call): com.davils.kapi.runtime.client.call/Exchange // com.davils.kapi.runtime.client/ApiClient.execute|execute(com.davils.kapi.runtime.client.call.Call){}[0]
+}
+
+final class com.davils.kapi.runtime.client/ClientSettings : com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.client/ClientSettings|null[0]
+    final val baseUrl // com.davils.kapi.runtime.client/ClientSettings.baseUrl|{}baseUrl[0]
+        final fun <get-baseUrl>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettings.baseUrl.<get-baseUrl>|<get-baseUrl>(){}[0]
+    final val codecs // com.davils.kapi.runtime.client/ClientSettings.codecs|{}codecs[0]
+        final fun <get-codecs>(): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.client/ClientSettings.codecs.<get-codecs>|<get-codecs>(){}[0]
+    final val credentials // com.davils.kapi.runtime.client/ClientSettings.credentials|{}credentials[0]
+        final fun <get-credentials>(): com.davils.kapi.runtime.core.security/Credentials // com.davils.kapi.runtime.client/ClientSettings.credentials.<get-credentials>|<get-credentials>(){}[0]
+    final val destinations // com.davils.kapi.runtime.client/ClientSettings.destinations|{}destinations[0]
+        final fun <get-destinations>(): com.davils.kapi.runtime.core.destination/DestinationPolicy // com.davils.kapi.runtime.client/ClientSettings.destinations.<get-destinations>|<get-destinations>(){}[0]
+    final val dpop // com.davils.kapi.runtime.client/ClientSettings.dpop|{}dpop[0]
+        final fun <get-dpop>(): kotlin.collections/Map<kotlin/String, com.davils.kapi.runtime.client.dpop/DpopProofs> // com.davils.kapi.runtime.client/ClientSettings.dpop.<get-dpop>|<get-dpop>(){}[0]
+    final val events // com.davils.kapi.runtime.client/ClientSettings.events|{}events[0]
+        final fun <get-events>(): com.davils.konfetti.core/EventBus? // com.davils.kapi.runtime.client/ClientSettings.events.<get-events>|<get-events>(){}[0]
+    final val framing // com.davils.kapi.runtime.client/ClientSettings.framing|{}framing[0]
+        final fun <get-framing>(): com.davils.kapi.runtime.core.framing/FramingLimits // com.davils.kapi.runtime.client/ClientSettings.framing.<get-framing>|<get-framing>(){}[0]
+    final val interceptions // com.davils.kapi.runtime.client/ClientSettings.interceptions|{}interceptions[0]
+        final fun <get-interceptions>(): kotlin.collections/List<com.davils.kapi.runtime.client.pipeline/Interception> // com.davils.kapi.runtime.client/ClientSettings.interceptions.<get-interceptions>|<get-interceptions>(){}[0]
+    final val maxResponseBytes // com.davils.kapi.runtime.client/ClientSettings.maxResponseBytes|{}maxResponseBytes[0]
+        final fun <get-maxResponseBytes>(): kotlin/Long // com.davils.kapi.runtime.client/ClientSettings.maxResponseBytes.<get-maxResponseBytes>|<get-maxResponseBytes>(){}[0]
+    final val meters // com.davils.kapi.runtime.client/ClientSettings.meters|{}meters[0]
+        final fun <get-meters>(): com.davils.kollect.core/MeterRegistry? // com.davils.kapi.runtime.client/ClientSettings.meters.<get-meters>|<get-meters>(){}[0]
+    final val name // com.davils.kapi.runtime.client/ClientSettings.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettings.name.<get-name>|<get-name>(){}[0]
+    final val redirects // com.davils.kapi.runtime.client/ClientSettings.redirects|{}redirects[0]
+        final fun <get-redirects>(): com.davils.kapi.runtime.client.redirect/RedirectPolicy? // com.davils.kapi.runtime.client/ClientSettings.redirects.<get-redirects>|<get-redirects>(){}[0]
+    final val resilience // com.davils.kapi.runtime.client/ClientSettings.resilience|{}resilience[0]
+        final fun <get-resilience>(): com.davils.kontinuity.policy/Policy? // com.davils.kapi.runtime.client/ClientSettings.resilience.<get-resilience>|<get-resilience>(){}[0]
+    final val sensitiveHeaders // com.davils.kapi.runtime.client/ClientSettings.sensitiveHeaders|{}sensitiveHeaders[0]
+        final fun <get-sensitiveHeaders>(): kotlin.collections/Set<kotlin/String> // com.davils.kapi.runtime.client/ClientSettings.sensitiveHeaders.<get-sensitiveHeaders>|<get-sensitiveHeaders>(){}[0]
+    final val timeSource // com.davils.kapi.runtime.client/ClientSettings.timeSource|{}timeSource[0]
+        final fun <get-timeSource>(): kotlin.time/TimeSource.WithComparableMarks // com.davils.kapi.runtime.client/ClientSettings.timeSource.<get-timeSource>|<get-timeSource>(){}[0]
+    final val timeout // com.davils.kapi.runtime.client/ClientSettings.timeout|{}timeout[0]
+        final fun <get-timeout>(): com.davils.kapi.runtime.client.call/Timeout // com.davils.kapi.runtime.client/ClientSettings.timeout.<get-timeout>|<get-timeout>(){}[0]
+    final val tracer // com.davils.kapi.runtime.client/ClientSettings.tracer|{}tracer[0]
+        final fun <get-tracer>(): com.davils.kollect.core.trace/Tracer // com.davils.kapi.runtime.client/ClientSettings.tracer.<get-tracer>|<get-tracer>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.client/ClientSettings.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.client/ClientSettings.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client/ClientSettings.Companion|null[0]
+        final const val HARD_RESPONSE_BYTES // com.davils.kapi.runtime.client/ClientSettings.Companion.HARD_RESPONSE_BYTES|{}HARD_RESPONSE_BYTES[0]
+            final fun <get-HARD_RESPONSE_BYTES>(): kotlin/Long // com.davils.kapi.runtime.client/ClientSettings.Companion.HARD_RESPONSE_BYTES.<get-HARD_RESPONSE_BYTES>|<get-HARD_RESPONSE_BYTES>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.client/ClientSettingsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.client/ClientSettings> { // com.davils.kapi.runtime.client/ClientSettingsBuilder|null[0]
+    final var baseUrl // com.davils.kapi.runtime.client/ClientSettingsBuilder.baseUrl|{}baseUrl[0]
+        final fun <get-baseUrl>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettingsBuilder.baseUrl.<get-baseUrl>|<get-baseUrl>(){}[0]
+        final fun <set-baseUrl>(kotlin/String) // com.davils.kapi.runtime.client/ClientSettingsBuilder.baseUrl.<set-baseUrl>|<set-baseUrl>(kotlin.String){}[0]
+    final var codecs // com.davils.kapi.runtime.client/ClientSettingsBuilder.codecs|{}codecs[0]
+        final fun <get-codecs>(): com.davils.kapi.runtime.core.codec/Codecs // com.davils.kapi.runtime.client/ClientSettingsBuilder.codecs.<get-codecs>|<get-codecs>(){}[0]
+        final fun <set-codecs>(com.davils.kapi.runtime.core.codec/Codecs) // com.davils.kapi.runtime.client/ClientSettingsBuilder.codecs.<set-codecs>|<set-codecs>(com.davils.kapi.runtime.core.codec.Codecs){}[0]
+    final var credentials // com.davils.kapi.runtime.client/ClientSettingsBuilder.credentials|{}credentials[0]
+        final fun <get-credentials>(): com.davils.kapi.runtime.core.security/Credentials // com.davils.kapi.runtime.client/ClientSettingsBuilder.credentials.<get-credentials>|<get-credentials>(){}[0]
+        final fun <set-credentials>(com.davils.kapi.runtime.core.security/Credentials) // com.davils.kapi.runtime.client/ClientSettingsBuilder.credentials.<set-credentials>|<set-credentials>(com.davils.kapi.runtime.core.security.Credentials){}[0]
+    final var destinations // com.davils.kapi.runtime.client/ClientSettingsBuilder.destinations|{}destinations[0]
+        final fun <get-destinations>(): com.davils.kapi.runtime.core.destination/DestinationPolicy // com.davils.kapi.runtime.client/ClientSettingsBuilder.destinations.<get-destinations>|<get-destinations>(){}[0]
+        final fun <set-destinations>(com.davils.kapi.runtime.core.destination/DestinationPolicy) // com.davils.kapi.runtime.client/ClientSettingsBuilder.destinations.<set-destinations>|<set-destinations>(com.davils.kapi.runtime.core.destination.DestinationPolicy){}[0]
+    final var events // com.davils.kapi.runtime.client/ClientSettingsBuilder.events|{}events[0]
+        final fun <get-events>(): com.davils.konfetti.core/EventBus? // com.davils.kapi.runtime.client/ClientSettingsBuilder.events.<get-events>|<get-events>(){}[0]
+        final fun <set-events>(com.davils.konfetti.core/EventBus?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.events.<set-events>|<set-events>(com.davils.konfetti.core.EventBus?){}[0]
+    final var framing // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing|{}framing[0]
+        final fun <get-framing>(): com.davils.kapi.runtime.core.framing/FramingLimits // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing.<get-framing>|<get-framing>(){}[0]
+        final fun <set-framing>(com.davils.kapi.runtime.core.framing/FramingLimits) // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing.<set-framing>|<set-framing>(com.davils.kapi.runtime.core.framing.FramingLimits){}[0]
+    final var maxResponseBytes // com.davils.kapi.runtime.client/ClientSettingsBuilder.maxResponseBytes|{}maxResponseBytes[0]
+        final fun <get-maxResponseBytes>(): kotlin/Long // com.davils.kapi.runtime.client/ClientSettingsBuilder.maxResponseBytes.<get-maxResponseBytes>|<get-maxResponseBytes>(){}[0]
+        final fun <set-maxResponseBytes>(kotlin/Long) // com.davils.kapi.runtime.client/ClientSettingsBuilder.maxResponseBytes.<set-maxResponseBytes>|<set-maxResponseBytes>(kotlin.Long){}[0]
+    final var meters // com.davils.kapi.runtime.client/ClientSettingsBuilder.meters|{}meters[0]
+        final fun <get-meters>(): com.davils.kollect.core/MeterRegistry? // com.davils.kapi.runtime.client/ClientSettingsBuilder.meters.<get-meters>|<get-meters>(){}[0]
+        final fun <set-meters>(com.davils.kollect.core/MeterRegistry?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.meters.<set-meters>|<set-meters>(com.davils.kollect.core.MeterRegistry?){}[0]
+    final var name // com.davils.kapi.runtime.client/ClientSettingsBuilder.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettingsBuilder.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String) // com.davils.kapi.runtime.client/ClientSettingsBuilder.name.<set-name>|<set-name>(kotlin.String){}[0]
+    final var redirects // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects|{}redirects[0]
+        final fun <get-redirects>(): com.davils.kapi.runtime.client.redirect/RedirectPolicy? // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects.<get-redirects>|<get-redirects>(){}[0]
+        final fun <set-redirects>(com.davils.kapi.runtime.client.redirect/RedirectPolicy?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects.<set-redirects>|<set-redirects>(com.davils.kapi.runtime.client.redirect.RedirectPolicy?){}[0]
+    final var resilience // com.davils.kapi.runtime.client/ClientSettingsBuilder.resilience|{}resilience[0]
+        final fun <get-resilience>(): com.davils.kontinuity.policy/Policy? // com.davils.kapi.runtime.client/ClientSettingsBuilder.resilience.<get-resilience>|<get-resilience>(){}[0]
+        final fun <set-resilience>(com.davils.kontinuity.policy/Policy?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.resilience.<set-resilience>|<set-resilience>(com.davils.kontinuity.policy.Policy?){}[0]
+    final var sensitiveHeaders // com.davils.kapi.runtime.client/ClientSettingsBuilder.sensitiveHeaders|{}sensitiveHeaders[0]
+        final fun <get-sensitiveHeaders>(): kotlin.collections/Set<kotlin/String> // com.davils.kapi.runtime.client/ClientSettingsBuilder.sensitiveHeaders.<get-sensitiveHeaders>|<get-sensitiveHeaders>(){}[0]
+        final fun <set-sensitiveHeaders>(kotlin.collections/Set<kotlin/String>) // com.davils.kapi.runtime.client/ClientSettingsBuilder.sensitiveHeaders.<set-sensitiveHeaders>|<set-sensitiveHeaders>(kotlin.collections.Set<kotlin.String>){}[0]
+    final var timeSource // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeSource|{}timeSource[0]
+        final fun <get-timeSource>(): kotlin.time/TimeSource.WithComparableMarks // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeSource.<get-timeSource>|<get-timeSource>(){}[0]
+        final fun <set-timeSource>(kotlin.time/TimeSource.WithComparableMarks) // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeSource.<set-timeSource>|<set-timeSource>(kotlin.time.TimeSource.WithComparableMarks){}[0]
+    final var timeout // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeout|{}timeout[0]
+        final fun <get-timeout>(): com.davils.kapi.runtime.client.call/Timeout // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final fun <set-timeout>(com.davils.kapi.runtime.client.call/Timeout) // com.davils.kapi.runtime.client/ClientSettingsBuilder.timeout.<set-timeout>|<set-timeout>(com.davils.kapi.runtime.client.call.Timeout){}[0]
+    final var tracer // com.davils.kapi.runtime.client/ClientSettingsBuilder.tracer|{}tracer[0]
+        final fun <get-tracer>(): com.davils.kollect.core.trace/Tracer // com.davils.kapi.runtime.client/ClientSettingsBuilder.tracer.<get-tracer>|<get-tracer>(){}[0]
+        final fun <set-tracer>(com.davils.kollect.core.trace/Tracer) // com.davils.kapi.runtime.client/ClientSettingsBuilder.tracer.<set-tracer>|<set-tracer>(com.davils.kollect.core.trace.Tracer){}[0]
+
+    final fun dpop(kotlin/String, com.davils.kapi.runtime.client.dpop/DpopProofs) // com.davils.kapi.runtime.client/ClientSettingsBuilder.dpop|dpop(kotlin.String;com.davils.kapi.runtime.client.dpop.DpopProofs){}[0]
+    final fun intercept(com.davils.kapi.runtime.client.pipeline/CallPhase, kotlin/String, com.davils.kapi.runtime.client.pipeline/Interceptor) // com.davils.kapi.runtime.client/ClientSettingsBuilder.intercept|intercept(com.davils.kapi.runtime.client.pipeline.CallPhase;kotlin.String;com.davils.kapi.runtime.client.pipeline.Interceptor){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.client/ClientSettingsBuilder.Companion|null[0]
+        final const val DEFAULT_NAME // com.davils.kapi.runtime.client/ClientSettingsBuilder.Companion.DEFAULT_NAME|{}DEFAULT_NAME[0]
+            final fun <get-DEFAULT_NAME>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettingsBuilder.Companion.DEFAULT_NAME.<get-DEFAULT_NAME>|<get-DEFAULT_NAME>(){}[0]
+        final const val DEFAULT_RESPONSE_BYTES // com.davils.kapi.runtime.client/ClientSettingsBuilder.Companion.DEFAULT_RESPONSE_BYTES|{}DEFAULT_RESPONSE_BYTES[0]
+            final fun <get-DEFAULT_RESPONSE_BYTES>(): kotlin/Long // com.davils.kapi.runtime.client/ClientSettingsBuilder.Companion.DEFAULT_RESPONSE_BYTES.<get-DEFAULT_RESPONSE_BYTES>|<get-DEFAULT_RESPONSE_BYTES>(){}[0]
+    }
+}
+
+final object com.davils.kapi.runtime.client.call/RequestAttributes { // com.davils.kapi.runtime.client.call/RequestAttributes|null[0]
+    final val upgrade // com.davils.kapi.runtime.client.call/RequestAttributes.upgrade|{}upgrade[0]
+        final fun <get-upgrade>(): io.ktor.util/AttributeKey<com.davils.kapi.runtime.client.call/Upgrade> // com.davils.kapi.runtime.client.call/RequestAttributes.upgrade.<get-upgrade>|<get-upgrade>(){}[0]
+}
+
+final object com.davils.kapi.runtime.client.oauth/OAuthViolationCodes { // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes|null[0]
+    final val AUTHENTICATION_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.AUTHENTICATION_INVALID|{}AUTHENTICATION_INVALID[0]
+        final fun <get-AUTHENTICATION_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.AUTHENTICATION_INVALID.<get-AUTHENTICATION_INVALID>|<get-AUTHENTICATION_INVALID>(){}[0]
+    final val CLIENT_ID_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.CLIENT_ID_INVALID|{}CLIENT_ID_INVALID[0]
+        final fun <get-CLIENT_ID_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.CLIENT_ID_INVALID.<get-CLIENT_ID_INVALID>|<get-CLIENT_ID_INVALID>(){}[0]
+    final val GRANT_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.GRANT_INVALID|{}GRANT_INVALID[0]
+        final fun <get-GRANT_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.GRANT_INVALID.<get-GRANT_INVALID>|<get-GRANT_INVALID>(){}[0]
+    final val REDIRECTS_FOLLOWED // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.REDIRECTS_FOLLOWED|{}REDIRECTS_FOLLOWED[0]
+        final fun <get-REDIRECTS_FOLLOWED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.REDIRECTS_FOLLOWED.<get-REDIRECTS_FOLLOWED>|<get-REDIRECTS_FOLLOWED>(){}[0]
+    final val SCOPE_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.SCOPE_INVALID|{}SCOPE_INVALID[0]
+        final fun <get-SCOPE_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.SCOPE_INVALID.<get-SCOPE_INVALID>|<get-SCOPE_INVALID>(){}[0]
+    final val TIME_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.TIME_INVALID|{}TIME_INVALID[0]
+        final fun <get-TIME_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.TIME_INVALID.<get-TIME_INVALID>|<get-TIME_INVALID>(){}[0]
+    final val URL_INVALID // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.URL_INVALID|{}URL_INVALID[0]
+        final fun <get-URL_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client.oauth/OAuthViolationCodes.URL_INVALID.<get-URL_INVALID>|<get-URL_INVALID>(){}[0]
+}
+
+final object com.davils.kapi.runtime.client.oauth/TokenTypes { // com.davils.kapi.runtime.client.oauth/TokenTypes|null[0]
+    final const val ACCESS_TOKEN // com.davils.kapi.runtime.client.oauth/TokenTypes.ACCESS_TOKEN|{}ACCESS_TOKEN[0]
+        final fun <get-ACCESS_TOKEN>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.ACCESS_TOKEN.<get-ACCESS_TOKEN>|<get-ACCESS_TOKEN>(){}[0]
+    final const val ID_TOKEN // com.davils.kapi.runtime.client.oauth/TokenTypes.ID_TOKEN|{}ID_TOKEN[0]
+        final fun <get-ID_TOKEN>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.ID_TOKEN.<get-ID_TOKEN>|<get-ID_TOKEN>(){}[0]
+    final const val JWT // com.davils.kapi.runtime.client.oauth/TokenTypes.JWT|{}JWT[0]
+        final fun <get-JWT>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.JWT.<get-JWT>|<get-JWT>(){}[0]
+    final const val REFRESH_TOKEN // com.davils.kapi.runtime.client.oauth/TokenTypes.REFRESH_TOKEN|{}REFRESH_TOKEN[0]
+        final fun <get-REFRESH_TOKEN>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.REFRESH_TOKEN.<get-REFRESH_TOKEN>|<get-REFRESH_TOKEN>(){}[0]
+}
+
+final object com.davils.kapi.runtime.client.retry/CallRetry { // com.davils.kapi.runtime.client.retry/CallRetry|null[0]
+    final val results // com.davils.kapi.runtime.client.retry/CallRetry.results|{}results[0]
+        final fun <get-results>(): com.davils.kontinuity.core.filter/ResultFilter // com.davils.kapi.runtime.client.retry/CallRetry.results.<get-results>|<get-results>(){}[0]
+    final val transientStatuses // com.davils.kapi.runtime.client.retry/CallRetry.transientStatuses|{}transientStatuses[0]
+        final fun <get-transientStatuses>(): kotlin.collections/Set<kotlin/Int> // com.davils.kapi.runtime.client.retry/CallRetry.transientStatuses.<get-transientStatuses>|<get-transientStatuses>(){}[0]
+
+    final fun interval(kotlin.time/Duration = ..., kotlin.time/Clock = ...): com.davils.kontinuity.retry/RetryInterval // com.davils.kapi.runtime.client.retry/CallRetry.interval|interval(kotlin.time.Duration;kotlin.time.Clock){}[0]
+    final fun isTransient(com.davils.kapi.runtime.client.retry/Attempt): kotlin/Boolean // com.davils.kapi.runtime.client.retry/CallRetry.isTransient|isTransient(com.davils.kapi.runtime.client.retry.Attempt){}[0]
+    final fun retry(kotlin/String, kotlin/Int = ..., com.davils.kontinuity.core.backoff/Backoff = ..., kotlin.time/Duration = ..., com.davils.kontinuity.core/Environment = ...): com.davils.kontinuity.retry/Retry // com.davils.kapi.runtime.client.retry/CallRetry.retry|retry(kotlin.String;kotlin.Int;com.davils.kontinuity.core.backoff.Backoff;kotlin.time.Duration;com.davils.kontinuity.core.Environment){}[0]
+}
+
+final object com.davils.kapi.runtime.client/ClientContract { // com.davils.kapi.runtime.client/ClientContract|null[0]
+    final const val VERSION // com.davils.kapi.runtime.client/ClientContract.VERSION|{}VERSION[0]
+        final fun <get-VERSION>(): kotlin/Int // com.davils.kapi.runtime.client/ClientContract.VERSION.<get-VERSION>|<get-VERSION>(){}[0]
+}
+
+final object com.davils.kapi.runtime.client/ClientViolationCodes { // com.davils.kapi.runtime.client/ClientViolationCodes|null[0]
+    final val BASE_URL_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.BASE_URL_INVALID|{}BASE_URL_INVALID[0]
+        final fun <get-BASE_URL_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.BASE_URL_INVALID.<get-BASE_URL_INVALID>|<get-BASE_URL_INVALID>(){}[0]
+    final val DPOP_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.DPOP_INVALID|{}DPOP_INVALID[0]
+        final fun <get-DPOP_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.DPOP_INVALID.<get-DPOP_INVALID>|<get-DPOP_INVALID>(){}[0]
+    final val INTERCEPTOR_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.INTERCEPTOR_INVALID|{}INTERCEPTOR_INVALID[0]
+        final fun <get-INTERCEPTOR_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.INTERCEPTOR_INVALID.<get-INTERCEPTOR_INVALID>|<get-INTERCEPTOR_INVALID>(){}[0]
+    final val LIMIT_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.LIMIT_INVALID|{}LIMIT_INVALID[0]
+        final fun <get-LIMIT_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.LIMIT_INVALID.<get-LIMIT_INVALID>|<get-LIMIT_INVALID>(){}[0]
+    final val NAME_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.NAME_INVALID|{}NAME_INVALID[0]
+        final fun <get-NAME_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.NAME_INVALID.<get-NAME_INVALID>|<get-NAME_INVALID>(){}[0]
+    final val REDIRECTS_FOLLOWED // com.davils.kapi.runtime.client/ClientViolationCodes.REDIRECTS_FOLLOWED|{}REDIRECTS_FOLLOWED[0]
+        final fun <get-REDIRECTS_FOLLOWED>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.REDIRECTS_FOLLOWED.<get-REDIRECTS_FOLLOWED>|<get-REDIRECTS_FOLLOWED>(){}[0]
+    final val TIMEOUT_INVALID // com.davils.kapi.runtime.client/ClientViolationCodes.TIMEOUT_INVALID|{}TIMEOUT_INVALID[0]
+        final fun <get-TIMEOUT_INVALID>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.runtime.client/ClientViolationCodes.TIMEOUT_INVALID.<get-TIMEOUT_INVALID>|<get-TIMEOUT_INVALID>(){}[0]
+}
+
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.conditional/ifMatch(com.davils.kapi.runtime.core.conditional/EntityTagCondition) // com.davils.kapi.runtime.client.conditional/ifMatch|ifMatch@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.conditional.EntityTagCondition){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.conditional/ifModifiedSince(com.davils.kapi.runtime.core.conditional/HttpDate) // com.davils.kapi.runtime.client.conditional/ifModifiedSince|ifModifiedSince@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.conditional.HttpDate){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.conditional/ifNoneMatch(com.davils.kapi.runtime.core.conditional/EntityTagCondition) // com.davils.kapi.runtime.client.conditional/ifNoneMatch|ifNoneMatch@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.conditional.EntityTagCondition){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.conditional/ifUnmodifiedSince(com.davils.kapi.runtime.core.conditional/HttpDate) // com.davils.kapi.runtime.client.conditional/ifUnmodifiedSince|ifUnmodifiedSince@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.conditional.HttpDate){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.conditional/revalidate(com.davils.kapi.runtime.client.conditional/Validators) // com.davils.kapi.runtime.client.conditional/revalidate|revalidate@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.client.conditional.Validators){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.range/ifRange(com.davils.kapi.runtime.core.conditional/IfRange) // com.davils.kapi.runtime.client.range/ifRange|ifRange@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.conditional.IfRange){}[0]
+final fun (com.davils.kapi.runtime.client.call/CallBuilder).com.davils.kapi.runtime.client.range/range(com.davils.kapi.runtime.core.range/RangeRequest) // com.davils.kapi.runtime.client.range/range|range@com.davils.kapi.runtime.client.call.CallBuilder(com.davils.kapi.runtime.core.range.RangeRequest){}[0]
+final fun (com.davils.kapi.runtime.client.call/Exchange).com.davils.kapi.runtime.client.conditional/conditional(): com.davils.kapi.runtime.client.conditional/ConditionalOutcome // com.davils.kapi.runtime.client.conditional/conditional|conditional@com.davils.kapi.runtime.client.call.Exchange(){}[0]
+final fun (com.davils.kapi.runtime.client.call/Exchange).com.davils.kapi.runtime.client.range/ranged(): com.davils.kapi.runtime.client.range/RangeOutcome // com.davils.kapi.runtime.client.range/ranged|ranged@com.davils.kapi.runtime.client.call.Exchange(){}[0]
+final fun (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.page/linkPages(com.davils.kapi.runtime.client.call/Call, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.call/Exchange> // com.davils.kapi.runtime.client.page/linkPages|linkPages@com.davils.kapi.runtime.client.ApiClient(com.davils.kapi.runtime.client.call.Call;kotlin.Int){}[0]
+final fun (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.stream/bytes(com.davils.kapi.runtime.client.call/Call): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.stream/StreamEvent<kotlinx.io.bytestring/ByteString>> // com.davils.kapi.runtime.client.stream/bytes|bytes@com.davils.kapi.runtime.client.ApiClient(com.davils.kapi.runtime.client.call.Call){}[0]
+final fun (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.stream/events(com.davils.kapi.runtime.client.call/Call, com.davils.kapi.runtime.client.stream/Reconnection? = ...): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.stream/StreamEvent<com.davils.kapi.runtime.core.framing/ServerSentEvent>> // com.davils.kapi.runtime.client.stream/events|events@com.davils.kapi.runtime.client.ApiClient(com.davils.kapi.runtime.client.call.Call;com.davils.kapi.runtime.client.stream.Reconnection?){}[0]
+final fun (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.stream/lines(com.davils.kapi.runtime.client.call/Call): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.stream/StreamEvent<kotlin/String>> // com.davils.kapi.runtime.client.stream/lines|lines@com.davils.kapi.runtime.client.ApiClient(com.davils.kapi.runtime.client.call.Call){}[0]
+final fun <#A: kotlin/Any?> (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.stream/events(kotlinx.serialization/DeserializationStrategy<#A>, com.davils.kapi.runtime.client.call/Call, com.davils.kapi.runtime.client.stream/Reconnection? = ...): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.stream/StreamEvent<#A>> // com.davils.kapi.runtime.client.stream/events|events@com.davils.kapi.runtime.client.ApiClient(kotlinx.serialization.DeserializationStrategy<0:0>;com.davils.kapi.runtime.client.call.Call;com.davils.kapi.runtime.client.stream.Reconnection?){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.stream/records(kotlinx.serialization/DeserializationStrategy<#A>, com.davils.kapi.runtime.client.call/Call, com.davils.kapi.runtime.client.stream/RecordFraming = ...): kotlinx.coroutines.flow/Flow<com.davils.kapi.runtime.client.stream/StreamEvent<#A>> // com.davils.kapi.runtime.client.stream/records|records@com.davils.kapi.runtime.client.ApiClient(kotlinx.serialization.DeserializationStrategy<0:0>;com.davils.kapi.runtime.client.call.Call;com.davils.kapi.runtime.client.stream.RecordFraming){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.davils.kapi.runtime.client.page/cursorPages(kotlin/Function1<#A, kotlin/String?>, kotlin.coroutines/SuspendFunction1<kotlin/String?, #A>): kotlinx.coroutines.flow/Flow<#A> // com.davils.kapi.runtime.client.page/cursorPages|cursorPages(kotlin.Function1<0:0,kotlin.String?>;kotlin.coroutines.SuspendFunction1<kotlin.String?,0:0>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.davils.kapi.runtime.client.page/numberedPages(kotlin/Function1<#A, kotlin/Int?>, kotlin.coroutines/SuspendFunction1<kotlin/Long, #A>): kotlinx.coroutines.flow/Flow<#A> // com.davils.kapi.runtime.client.page/numberedPages|numberedPages(kotlin.Function1<0:0,kotlin.Int?>;kotlin.coroutines.SuspendFunction1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.davils.kapi.runtime.client.page/offsetPages(kotlin/Function1<#A, kotlin/Int?>, kotlin.coroutines/SuspendFunction1<kotlin/Long, #A>): kotlinx.coroutines.flow/Flow<#A> // com.davils.kapi.runtime.client.page/offsetPages|offsetPages(kotlin.Function1<0:0,kotlin.Int?>;kotlin.coroutines.SuspendFunction1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
+final fun com.davils.kapi.runtime.client.call/apiCall(kotlin/String, kotlin/String, kotlin/Function1<com.davils.kapi.runtime.client.call/CallBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client.call/Call // com.davils.kapi.runtime.client.call/apiCall|apiCall(kotlin.String;kotlin.String;kotlin.Function1<com.davils.kapi.runtime.client.call.CallBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.client.channel/channelSettings(kotlin/Function1<com.davils.kapi.runtime.client.channel/ChannelSettingsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client.channel/ChannelSettings // com.davils.kapi.runtime.client.channel/channelSettings|channelSettings(kotlin.Function1<com.davils.kapi.runtime.client.channel.ChannelSettingsBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.client.dpop/dpopProofs(com.davils.krypt.primitive/Crypto, com.davils.krypt.jose/JoseKey.Private, com.davils.krypt.primitive.key/PublicKey, com.davils.krypt.jose.jws/JwsAlgorithm): com.davils.kapi.runtime.client.dpop/DpopProofs // com.davils.kapi.runtime.client.dpop/dpopProofs|dpopProofs(com.davils.krypt.primitive.Crypto;com.davils.krypt.jose.JoseKey.Private;com.davils.krypt.primitive.key.PublicKey;com.davils.krypt.jose.jws.JwsAlgorithm){}[0]
+final fun com.davils.kapi.runtime.client.oauth/oauthTokens(io.ktor.client/HttpClient, kotlin/Function1<com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder, kotlin/Unit>): com.davils.kapi.runtime.client.oauth/OAuthTokens // com.davils.kapi.runtime.client.oauth/oauthTokens|oauthTokens(io.ktor.client.HttpClient;kotlin.Function1<com.davils.kapi.runtime.client.oauth.OAuthSettingsBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.client.redirect/redirectPolicy(kotlin/Function1<com.davils.kapi.runtime.client.redirect/RedirectPolicyBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client.redirect/RedirectPolicy // com.davils.kapi.runtime.client.redirect/redirectPolicy|redirectPolicy(kotlin.Function1<com.davils.kapi.runtime.client.redirect.RedirectPolicyBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.client.stream/reconnection(kotlin/Function1<com.davils.kapi.runtime.client.stream/ReconnectionBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client.stream/Reconnection // com.davils.kapi.runtime.client.stream/reconnection|reconnection(kotlin.Function1<com.davils.kapi.runtime.client.stream.ReconnectionBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.client/apiClient(io.ktor.client/HttpClient, kotlin/Function1<com.davils.kapi.runtime.client/ClientSettingsBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.client/ApiClient // com.davils.kapi.runtime.client/apiClient|apiClient(io.ktor.client.HttpClient;kotlin.Function1<com.davils.kapi.runtime.client.ClientSettingsBuilder,kotlin.Unit>){}[0]
+final suspend fun <#A: kotlin/Any?, #B: kotlin/Any, #C: kotlin/Any?> (com.davils.kapi.runtime.client/ApiClient).com.davils.kapi.runtime.client.channel/channel(com.davils.kapi.runtime.client.call/Call, com.davils.kapi.runtime.client.channel/ChannelSpec<#A, #B>, kotlin.coroutines/SuspendFunction1<com.davils.kapi.runtime.client.channel/ChannelSession<#A, #B>, #C>): com.davils.kapi.runtime.client.channel/ChannelOutcome<#C> // com.davils.kapi.runtime.client.channel/channel|channel@com.davils.kapi.runtime.client.ApiClient(com.davils.kapi.runtime.client.call.Call;com.davils.kapi.runtime.client.channel.ChannelSpec<0:0,0:1>;kotlin.coroutines.SuspendFunction1<com.davils.kapi.runtime.client.channel.ChannelSession<0:0,0:1>,0:2>){0§<kotlin.Any?>;1§<kotlin.Any>;2§<kotlin.Any?>}[0]
