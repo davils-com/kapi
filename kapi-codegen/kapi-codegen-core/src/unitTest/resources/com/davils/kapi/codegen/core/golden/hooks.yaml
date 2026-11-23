@@ -1,0 +1,105 @@
+openapi: 3.1.0
+info:
+  title: Petstore
+  version: 1.0.0
+security:
+  - key: []
+paths:
+  /subscriptions:
+    post:
+      operationId: subscribe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [callbackUrl]
+              properties:
+                callbackUrl:
+                  type: string
+      responses:
+        '201':
+          description: Subscribed
+      callbacks:
+        petChanged:
+          '{$request.body#/callbackUrl}':
+            post:
+              parameters:
+                - name: X-Delivery
+                  in: header
+                  required: true
+                  schema:
+                    type: string
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Pet'
+              responses:
+                '204':
+                  description: Taken
+webhooks:
+  petAdopted:
+    post:
+      operationId: petAdopted
+      parameters:
+        - name: attempt
+          in: query
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '202':
+          description: Noted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+        '410':
+          description: No longer wanted
+  petLost:
+    post:
+      security:
+        - key: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '204':
+          description: Taken
+components:
+  securitySchemes:
+    key:
+      type: apiKey
+      name: X-Hook-Key
+      in: header
+  schemas:
+    Pet:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+          minLength: 2
+    Receipt:
+      type: object
+      required: [seen]
+      properties:
+        seen:
+          type: integer
+          format: int32

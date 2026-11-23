@@ -1,0 +1,185 @@
+package com.example.petstore
+
+import com.davils.kore.core.principal.requirePrincipal
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.core.wire.Patch
+import com.davils.kapi.runtime.server.Server
+import com.example.petstore.client.PetstoreAdminClient
+import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstorePetPatch
+import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreProblem
+import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.operation.PetstoreCreatePetResponse
+import com.example.petstore.operation.PetstoreCreatePetResult
+import com.example.petstore.operation.PetstoreDeletePetResponse
+import com.example.petstore.operation.PetstoreDeletePetResult
+import com.example.petstore.operation.PetstoreGetAvatarResponse
+import com.example.petstore.operation.PetstoreGetAvatarResult
+import com.example.petstore.operation.PetstoreGetPetResponse
+import com.example.petstore.operation.PetstoreGetPetResult
+import com.example.petstore.operation.PetstoreListPetsResponse
+import com.example.petstore.operation.PetstoreListPetsResult
+import com.example.petstore.operation.PetstoreRenamePetResponse
+import com.example.petstore.operation.PetstoreRenamePetResult
+import com.example.petstore.operation.PetstoreSetAvatarResponse
+import com.example.petstore.operation.PetstoreSetAvatarResult
+import com.example.petstore.server.PetstoreAdminRoutes
+import com.example.petstore.server.PetstoreAdminService
+import com.example.petstore.server.PetstorePetsRoutes
+import com.example.petstore.server.PetstorePetsService
+import io.ktor.server.routing.Route
+import kotlinx.io.bytestring.ByteString
+import kotlinx.io.bytestring.decodeToString
+import kotlinx.io.bytestring.encodeToByteString
+
+public class Scenario(client: Client) {
+    private val pets: PetstorePetsClient = PetstorePetsClient(client)
+
+    private val admin: PetstoreAdminClient = PetstoreAdminClient(client)
+
+    public suspend fun run(): List<String> = listOf(
+        created(pets.createPet(PetstorePetWrite(name = "Rex", status = PetstoreStatus.OPEN))),
+        created(pets.createPet(PetstorePetWrite(name = "Rex"))),
+        created(pets.createPet(PetstorePetWrite(name = "x"))),
+        created(pets.createPet(PetstorePetWrite(name = "Max", status = PetstoreStatus.CLOSED))),
+        listed(pets.listPets()),
+        listed(pets.listPets(status = PetstoreStatus.OPEN, tag = listOf("a", "b"), limit = 5, xTrace = "t1")),
+        listed(pets.listPets(limit = -1)),
+        found(pets.getPet(1)),
+        found(pets.getPet(9)),
+        renamed(pets.renamePet(1, PetstorePetPatch(name = Patch.Value("Rexy")))),
+        renamed(pets.renamePet(1, PetstorePetPatch(status = Patch.Null))),
+        renamed(pets.renamePet(9, PetstorePetPatch())),
+        stored(pets.setAvatar(1, "PNG".encodeToByteString())),
+        pictured(pets.getAvatar(1)),
+        pictured(pets.getAvatar(2)),
+        deleted(admin.deletePet(2)),
+        deleted(admin.deletePet(2)),
+    )
+
+    private fun shown(pet: PetstorePet): String = "${pet.id}:${pet.name}:${pet.status}"
+
+    private fun created(result: PetstoreCreatePetResult): String = when (result) {
+        is PetstoreCreatePetResult.Created -> "created " + shown(result.body)
+        is PetstoreCreatePetResult.Conflict -> "conflict"
+        is PetstoreCreatePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreCreatePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreCreatePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun listed(result: PetstoreListPetsResult): String = when (result) {
+        is PetstoreListPetsResult.Ok -> "listed ${result.xTotal}: " + result.body.joinToString(transform = ::shown)
+        is PetstoreListPetsResult.Other -> "other ${result.status} ${result.body.title}"
+        is PetstoreListPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreListPetsResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreListPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun found(result: PetstoreGetPetResult): String = when (result) {
+        is PetstoreGetPetResult.Ok -> "found " + shown(result.body) + " as ${result.eTag}"
+        is PetstoreGetPetResult.NotFound -> "not found"
+        is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetPetResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreGetPetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun renamed(result: PetstoreRenamePetResult): String = when (result) {
+        is PetstoreRenamePetResult.Ok -> "renamed " + shown(result.body)
+        is PetstoreRenamePetResult.NotFound -> "not found"
+        is PetstoreRenamePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreRenamePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreRenamePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun stored(result: PetstoreSetAvatarResult): String = when (result) {
+        is PetstoreSetAvatarResult.NoContent -> "stored"
+        is PetstoreSetAvatarResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSetAvatarResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSetAvatarResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun pictured(result: PetstoreGetAvatarResult): String = when (result) {
+        is PetstoreGetAvatarResult.Ok -> "picture " + result.content.decodeToString()
+        is PetstoreGetAvatarResult.NotFound -> "not found"
+        is PetstoreGetAvatarResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetAvatarResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetAvatarResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun deleted(result: PetstoreDeletePetResult): String = when (result) {
+        is PetstoreDeletePetResult.NoContent -> "deleted"
+        is PetstoreDeletePetResult.NotFound -> "not found"
+        is PetstoreDeletePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreDeletePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreDeletePetResult.Failed -> "failed ${result.failure}"
+    }
+}
+
+public object Wiring {
+    public fun install(route: Route, server: Server) {
+        val store = Store()
+        PetstorePetsRoutes(PetsService(store), server).install(route)
+        PetstoreAdminRoutes(AdminService(store), server).install(route)
+    }
+}
+
+private class Store {
+    val pets: MutableMap<Long, PetstorePet> = linkedMapOf()
+
+    val avatars: MutableMap<Long, ByteString> = mutableMapOf()
+}
+
+private class PetsService(private val store: Store) : PetstorePetsService {
+    override suspend fun createPet(body: PetstorePetWrite): PetstoreCreatePetResponse {
+        check(requirePrincipal().id == "writer")
+        if (store.pets.values.any { pet -> pet.name == body.name }) return PetstoreCreatePetResponse.Conflict
+        val pet = PetstorePet(id = store.pets.size + 1L, name = body.name, status = body.status)
+        store.pets[store.pets.size + 1L] = pet
+        return PetstoreCreatePetResponse.Created(pet)
+    }
+
+    override suspend fun listPets(
+        status: PetstoreStatus?,
+        tag: List<String>?,
+        limit: Int?,
+        xTrace: String?,
+    ): PetstoreListPetsResponse {
+        if (limit != null && limit < 0) return PetstoreListPetsResponse.Other(400, PetstoreProblem("bad limit"))
+        val wanted = store.pets.values.filter { pet -> status == null || pet.status == status }
+        val traced = wanted.filter { tag == null || tag == listOf("a", "b") && xTrace == "t1" }
+        return PetstoreListPetsResponse.Ok(traced, traced.size)
+    }
+
+    override suspend fun getPet(petId: Long): PetstoreGetPetResponse {
+        val pet = store.pets[petId] ?: return PetstoreGetPetResponse.NotFound
+        return PetstoreGetPetResponse.Ok(pet, "v" + pet.name.length)
+    }
+
+    override suspend fun renamePet(petId: Long, body: PetstorePetPatch): PetstoreRenamePetResponse {
+        val pet = store.pets[petId] ?: return PetstoreRenamePetResponse.NotFound
+        val named = (body.name as? Patch.Value)?.value ?: pet.name
+        val cleared = pet.status.takeIf { body.status !is Patch.Null }
+        val patched = pet.copy(name = named, status = (body.status as? Patch.Value)?.value ?: cleared)
+        store.pets[petId] = patched
+        return PetstoreRenamePetResponse.Ok(patched)
+    }
+
+    override suspend fun setAvatar(petId: Long, body: ByteString): PetstoreSetAvatarResponse {
+        store.avatars[petId] = body
+        return PetstoreSetAvatarResponse.NoContent
+    }
+
+    override suspend fun getAvatar(petId: Long): PetstoreGetAvatarResponse {
+        val avatar = store.avatars[petId] ?: return PetstoreGetAvatarResponse.NotFound
+        return PetstoreGetAvatarResponse.Ok(avatar)
+    }
+}
+
+private class AdminService(private val store: Store) : PetstoreAdminService {
+    override suspend fun deletePet(petId: Long): PetstoreDeletePetResponse {
+        store.pets.remove(petId) ?: return PetstoreDeletePetResponse.NotFound
+        return PetstoreDeletePetResponse.NoContent
+    }
+}

@@ -1,0 +1,142 @@
+openapi: 3.1.0
+info:
+  title: Petstore
+  version: 1.0.0
+components:
+  schemas:
+    Pet:
+      type: object
+      required: [id, name, status]
+      properties:
+        id:
+          type: integer
+          format: int64
+          minimum: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 40
+          pattern: '^[a-z]+$'
+        status:
+          $ref: '#/components/schemas/Status'
+        tags:
+          type: array
+          uniqueItems: true
+          maxItems: 5
+          items:
+            type: string
+            minLength: 2
+        owner:
+          type: object
+          required: [email]
+          properties:
+            email:
+              type: string
+              x-kapi-sensitive: true
+            score:
+              type: number
+              multipleOf: 0.5
+              exclusiveMaximum: 10
+        friends:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'
+        photo:
+          type: string
+          format: byte
+        born:
+          type: [string, 'null']
+          format: date-time
+        meta:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+            multipleOf: 2
+        class:
+          type: string
+          enum: [a, b-c]
+    Status:
+      type: string
+      enum: [available, sold-out]
+    Level:
+      type: integer
+      enum: [1, -2]
+    Animal:
+      oneOf:
+        - $ref: '#/components/schemas/Cat'
+        - $ref: '#/components/schemas/Dog'
+      discriminator:
+        propertyName: kind
+        mapping:
+          cat: '#/components/schemas/Cat'
+          hound: '#/components/schemas/Dog'
+    Cat:
+      allOf:
+        - $ref: '#/components/schemas/Named'
+        - type: object
+          required: [kind]
+          properties:
+            kind:
+              type: string
+            lives:
+              type: integer
+              format: int32
+              maximum: 9
+    Dog:
+      type: object
+      required: [kind]
+      properties:
+        kind:
+          type: string
+        friend:
+          $ref: '#/components/schemas/Animal'
+    Named:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+    Payment:
+      type: object
+      required: [method]
+      properties:
+        method:
+          const: card
+        card:
+          type: string
+        expiry:
+          type: string
+        retries:
+          type: integer
+          format: int32
+          const: 3
+      dependentRequired:
+        card: [expiry]
+      not:
+        required: [iban]
+    Command:
+      oneOf:
+        - $ref: '#/components/schemas/Named'
+        - $ref: '#/components/schemas/Payment'
+    Account:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: string
+          readOnly: true
+        email:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+          x-kapi-sensitive: true
+    Team:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'

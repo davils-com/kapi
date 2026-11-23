@@ -1,0 +1,590 @@
+===== com/example/petstore/model/PetstorePet.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.architecture.`data`.DataTransferObject
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kapi.runtime.core.validation.ViolationCodes
+import kotlin.Long
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml#/components/schemas/Pet",
+)
+public data class PetstorePet(
+    @SerialName("id")
+    public val id: Long,
+    @SerialName("name")
+    public val name: String,
+) : DataTransferObject,
+    Validatable {
+    override fun ValidationScope.validate() {
+        if (Constraints.length(name) < 2) fail(::name, "must have at least 2 characters", ViolationCodes.MIN_LENGTH)
+    }
+}
+===== com/example/petstore/model/PetstorePetWrite.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.architecture.`data`.DataTransferObject
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kapi.runtime.core.validation.ViolationCodes
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml#/components/schemas/Pet",
+)
+public data class PetstorePetWrite(
+    @SerialName("name")
+    public val name: String,
+) : DataTransferObject,
+    Validatable {
+    override fun ValidationScope.validate() {
+        if (Constraints.length(name) < 2) fail(::name, "must have at least 2 characters", ViolationCodes.MIN_LENGTH)
+    }
+}
+===== com/example/petstore/model/PetstoreReceipt.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.architecture.`data`.DataTransferObject
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Int
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml#/components/schemas/Receipt",
+)
+public data class PetstoreReceipt(
+    @SerialName("seen")
+    public val seen: Int,
+) : DataTransferObject,
+    Validatable {
+    override fun ValidationScope.validate() {
+    }
+}
+===== com/example/petstore/webhook/PetstoreCallbacksSender.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.operation.PetstoreSubscribePetChangedPostResult
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.Map
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public class PetstoreCallbacksSender(
+    private val client: Client,
+) {
+    private val subscribePetChangedPostReaders:
+            Map<Int, (Exchange.Answered) -> PetstoreSubscribePetChangedPostResult> =
+            mapOf(
+        204 to { exchange -> PetstoreSubscribePetChangedPostResult.NoContent(exchange.content, exchange.headers) },
+    )
+
+    public suspend fun subscribePetChangedPost(
+        destination: String,
+        xDelivery: String,
+        body: PetstorePet,
+    ): PetstoreSubscribePetChangedPostResult {
+        val call = apiCall("subscribePetChangedPost", "POST") {
+            destination(destination)
+            header(ParameterFormat("X-Delivery", ParameterStyle.Simple, false), ParameterValue.Text(xDelivery))
+            body("application/json", client.json(PetstorePet.serializer(), body))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreSubscribePetChangedPostResult.Failed(exchange.failure)
+            is Exchange.Answered -> subscribePetChangedPostResult(exchange)
+        }
+    }
+
+    private fun subscribePetChangedPostResult(exchange: Exchange.Answered): PetstoreSubscribePetChangedPostResult {
+        val read = subscribePetChangedPostReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreSubscribePetChangedPostResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+}
+===== com/example/petstore/webhook/PetstoreWebhooksSender.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.call.CredentialPlacement
+import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.client.call.SecurityUse
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstoreReceipt
+import com.example.petstore.operation.PetstorePetAdoptedResult
+import com.example.petstore.operation.PetstorePetLostPostResult
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.Map
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public class PetstoreWebhooksSender(
+    private val client: Client,
+) {
+    private val petAdoptedReaders:
+            Map<Int, (Exchange.Answered) -> PetstorePetAdoptedResult> = mapOf(
+        202 to { exchange ->
+            when (val decoding = client.decode(PetstoreReceipt.serializer(), exchange)) {
+                is Decoding.Decoded -> PetstorePetAdoptedResult.Accepted(decoding.value, exchange.headers)
+                is Decoding.Failed -> PetstorePetAdoptedResult.Malformed(exchange.status, decoding.reason)
+            }
+        },
+        410 to { exchange -> PetstorePetAdoptedResult.Gone(exchange.content, exchange.headers) },
+    )
+
+    private val petLostPostReaders:
+            Map<Int, (Exchange.Answered) -> PetstorePetLostPostResult> = mapOf(
+        204 to { exchange -> PetstorePetLostPostResult.NoContent(exchange.content, exchange.headers) },
+    )
+
+    public suspend fun petAdopted(
+        destination: String,
+        body: PetstorePet,
+        attempt: Int? = null,
+    ): PetstorePetAdoptedResult {
+        val call = apiCall("petAdopted", "POST") {
+            destination(destination)
+            if (attempt != null) query(ParameterFormat("attempt", ParameterStyle.Form, true), ParameterValue.Text(attempt.toString()))
+            accept("application/json")
+            body("application/json", client.json(PetstorePet.serializer(), body))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstorePetAdoptedResult.Failed(exchange.failure)
+            is Exchange.Answered -> petAdoptedResult(exchange)
+        }
+    }
+
+    private fun petAdoptedResult(exchange: Exchange.Answered): PetstorePetAdoptedResult {
+        val read = petAdoptedReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstorePetAdoptedResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+
+    public suspend fun petLostPost(destination: String, body: PetstorePet): PetstorePetLostPostResult {
+        val call = apiCall("petLostPost", "POST") {
+            destination(destination)
+            body("application/json", client.json(PetstorePet.serializer(), body))
+            security(listOf(SecurityUse("key", CredentialPlacement.Header("X-Hook-Key"))))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstorePetLostPostResult.Failed(exchange.failure)
+            is Exchange.Answered -> petLostPostResult(exchange)
+        }
+    }
+
+    private fun petLostPostResult(exchange: Exchange.Answered): PetstorePetLostPostResult {
+        val read = petLostPostReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstorePetLostPostResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+}
+===== com/example/petstore/operation/PetstorePetAdoptedResult.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.example.petstore.model.PetstoreReceipt
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstorePetAdoptedResult {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Accepted(
+        public val body: PetstoreReceipt,
+        public val headers: Headers,
+    ) : PetstorePetAdoptedResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Gone(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstorePetAdoptedResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstorePetAdoptedResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstorePetAdoptedResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstorePetAdoptedResult
+}
+===== com/example/petstore/operation/PetstorePetLostPostResult.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstorePetLostPostResult {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class NoContent(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstorePetLostPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstorePetLostPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstorePetLostPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstorePetLostPostResult
+}
+===== com/example/petstore/operation/PetstoreSubscribePetChangedPostResult.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstoreSubscribePetChangedPostResult {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class NoContent(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreSubscribePetChangedPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreSubscribePetChangedPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreSubscribePetChangedPostResult
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreSubscribePetChangedPostResult
+}
+===== com/example/petstore/webhook/PetstoreCallbacksReceiver.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.operation.PetstoreSubscribePetChangedPostResponse
+import kotlin.String
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public interface PetstoreCallbacksReceiver {
+    public suspend fun subscribePetChangedPost(xDelivery: String, body: PetstorePet): PetstoreSubscribePetChangedPostResponse
+}
+===== com/example/petstore/webhook/PetstoreCallbacksRoutes.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.server.Server
+import com.davils.kapi.runtime.server.ktor.operation
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kapi.runtime.server.request.Text
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.operation.PetstoreSubscribePetChangedPostResponse
+import io.ktor.server.routing.Route
+import kotlin.String
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public class PetstoreCallbacksRoutes(
+    private val service: PetstoreCallbacksReceiver,
+    private val server: Server,
+) {
+    public fun install(route: Route) {
+        route.operation(server, Operation(
+            name = "subscribePetChangedPost",
+            method = "POST",
+            path = "/subscribePetChanged",
+            security = listOf(),
+            isDelivery = true,
+            handler = ::subscribePetChangedPost,
+        ))
+    }
+
+    private suspend fun subscribePetChangedPost(request: Request): Reply {
+        val input = server.input(request)
+        val xDelivery = input.value(Place.Header, ParameterFormat("X-Delivery", ParameterStyle.Simple, false), Text(String.serializer(), true), true)
+        val body = input.body(PetstorePet.serializer(), true)
+        if (!input.isValid || xDelivery == null || body == null) return input.refused()
+        return when (val response = service.subscribePetChangedPost(xDelivery = xDelivery, body = body)) {
+            is PetstoreSubscribePetChangedPostResponse.NoContent -> server.reply(204)
+        }
+    }
+}
+===== com/example/petstore/webhook/PetstoreWebhooksReceiver.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.operation.PetstorePetAdoptedResponse
+import com.example.petstore.operation.PetstorePetLostPostResponse
+import kotlin.Int
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public interface PetstoreWebhooksReceiver {
+    public suspend fun petAdopted(body: PetstorePet, attempt: Int? = null): PetstorePetAdoptedResponse
+
+    public suspend fun petLostPost(body: PetstorePet): PetstorePetLostPostResponse
+}
+===== com/example/petstore/webhook/PetstoreWebhooksRoutes.kt
+package com.example.petstore.webhook
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.server.Server
+import com.davils.kapi.runtime.server.ktor.operation
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kapi.runtime.server.request.Text
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstoreReceipt
+import com.example.petstore.operation.PetstorePetAdoptedResponse
+import com.example.petstore.operation.PetstorePetLostPostResponse
+import io.ktor.server.routing.Route
+import kotlin.Int
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public class PetstoreWebhooksRoutes(
+    private val service: PetstoreWebhooksReceiver,
+    private val server: Server,
+) {
+    public fun install(route: Route) {
+        route.operation(server, Operation(
+            name = "petAdopted",
+            method = "POST",
+            path = "/petAdopted",
+            security = listOf(),
+            isDelivery = true,
+            handler = ::petAdopted,
+        ))
+        route.operation(server, Operation(
+            name = "petLostPost",
+            method = "POST",
+            path = "/petLost",
+            security = listOf(listOf(SchemeUse("key", CredentialSource.Header("X-Hook-Key"), setOf()))),
+            isDelivery = true,
+            handler = ::petLostPost,
+        ))
+    }
+
+    private suspend fun petAdopted(request: Request): Reply {
+        val input = server.input(request)
+        val attempt = input.value(Place.Query, ParameterFormat("attempt", ParameterStyle.Form, true), Text(Int.serializer(), false), false)
+        val body = input.body(PetstorePet.serializer(), true)
+        if (!input.isValid || body == null) return input.refused()
+        return when (val response = service.petAdopted(body = body, attempt = attempt)) {
+            is PetstorePetAdoptedResponse.Accepted -> server.reply(202) {
+                json("application/json", PetstoreReceipt.serializer(), response.body)
+            }
+            is PetstorePetAdoptedResponse.Gone -> server.reply(410)
+        }
+    }
+
+    private suspend fun petLostPost(request: Request): Reply {
+        val input = server.input(request)
+        val body = input.body(PetstorePet.serializer(), true)
+        if (!input.isValid || body == null) return input.refused()
+        return when (val response = service.petLostPost(body = body)) {
+            is PetstorePetLostPostResponse.NoContent -> server.reply(204)
+        }
+    }
+}
+===== com/example/petstore/operation/PetstorePetAdoptedResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreReceipt
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstorePetAdoptedResponse {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data class Accepted(
+        public val body: PetstoreReceipt,
+    ) : PetstorePetAdoptedResponse
+
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data object Gone : PetstorePetAdoptedResponse
+}
+===== com/example/petstore/operation/PetstorePetLostPostResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstorePetLostPostResponse {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data object NoContent : PetstorePetLostPostResponse
+}
+===== com/example/petstore/operation/PetstoreSubscribePetChangedPostResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+@DavilsGenerated(
+    by = "kide-common-openapi-generator",
+    from = "hooks.yaml",
+)
+public sealed interface PetstoreSubscribePetChangedPostResponse {
+    @DavilsGenerated(
+        by = "kide-common-openapi-generator",
+        from = "hooks.yaml",
+    )
+    public data object NoContent : PetstoreSubscribePetChangedPostResponse
+}

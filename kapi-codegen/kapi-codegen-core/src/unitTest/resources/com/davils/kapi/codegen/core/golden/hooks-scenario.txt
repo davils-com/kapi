@@ -1,0 +1,92 @@
+package com.example.petstore
+
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.server.Server
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstoreReceipt
+import com.example.petstore.operation.PetstorePetAdoptedResponse
+import com.example.petstore.operation.PetstorePetAdoptedResult
+import com.example.petstore.operation.PetstorePetLostPostResponse
+import com.example.petstore.operation.PetstorePetLostPostResult
+import com.example.petstore.operation.PetstoreSubscribePetChangedPostResponse
+import com.example.petstore.operation.PetstoreSubscribePetChangedPostResult
+import com.example.petstore.webhook.PetstoreCallbacksReceiver
+import com.example.petstore.webhook.PetstoreCallbacksRoutes
+import com.example.petstore.webhook.PetstoreCallbacksSender
+import com.example.petstore.webhook.PetstoreWebhooksReceiver
+import com.example.petstore.webhook.PetstoreWebhooksRoutes
+import com.example.petstore.webhook.PetstoreWebhooksSender
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.route
+
+public class Scenario(client: Client) {
+    private val webhooks: PetstoreWebhooksSender = PetstoreWebhooksSender(client)
+
+    private val callbacks: PetstoreCallbacksSender = PetstoreCallbacksSender(client)
+
+    private val hooks: String = client.settings.baseUrl + "/hooks"
+
+    private val pet: PetstorePet = PetstorePet(id = 7, name = "Rex")
+
+    public suspend fun run(): List<String> = listOf(
+        adopted(webhooks.petAdopted("$hooks/petAdopted", pet)),
+        adopted(webhooks.petAdopted("$hooks/petAdopted", pet, attempt = 2)),
+        adopted(webhooks.petAdopted("$hooks/petAdopted", pet.copy(name = "x"))),
+        adopted(webhooks.petAdopted("$hooks/petAdopted", pet.copy(name = "Gone"))),
+        lost(webhooks.petLostPost("$hooks/petLost", pet)),
+        changed(callbacks.subscribePetChangedPost("$hooks/subscribePetChanged", "d-1", pet)),
+        adopted(webhooks.petAdopted("http://10.0.0.1/hooks/petAdopted", pet)),
+        adopted(webhooks.petAdopted("/hooks/petAdopted", pet)),
+    )
+
+    private fun adopted(result: PetstorePetAdoptedResult): String = when (result) {
+        is PetstorePetAdoptedResult.Accepted -> "noted ${result.body.seen}"
+        is PetstorePetAdoptedResult.Gone -> "gone"
+        is PetstorePetAdoptedResult.Unexpected -> "unexpected ${result.status}"
+        is PetstorePetAdoptedResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstorePetAdoptedResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun lost(result: PetstorePetLostPostResult): String = when (result) {
+        is PetstorePetLostPostResult.NoContent -> "lost"
+        is PetstorePetLostPostResult.Unexpected -> "unexpected ${result.status}"
+        is PetstorePetLostPostResult.Malformed -> "malformed ${result.status}"
+        is PetstorePetLostPostResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun changed(result: PetstoreSubscribePetChangedPostResult): String = when (result) {
+        is PetstoreSubscribePetChangedPostResult.NoContent -> "changed"
+        is PetstoreSubscribePetChangedPostResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSubscribePetChangedPostResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSubscribePetChangedPostResult.Failed -> "failed ${result.failure}"
+    }
+}
+
+public object Wiring {
+    public fun install(route: Route, server: Server) {
+        route.route("/hooks") {
+            PetstoreWebhooksRoutes(Webhooks(), server).install(this)
+            PetstoreCallbacksRoutes(Callbacks(), server).install(this)
+        }
+    }
+}
+
+private class Webhooks : PetstoreWebhooksReceiver {
+    override suspend fun petAdopted(body: PetstorePet, attempt: Int?): PetstorePetAdoptedResponse {
+        if (body.name == "Gone") return PetstorePetAdoptedResponse.Gone
+        return PetstorePetAdoptedResponse.Accepted(PetstoreReceipt(seen = attempt ?: 1))
+    }
+
+    override suspend fun petLostPost(body: PetstorePet): PetstorePetLostPostResponse =
+        PetstorePetLostPostResponse.NoContent
+}
+
+private class Callbacks : PetstoreCallbacksReceiver {
+    override suspend fun subscribePetChangedPost(
+        xDelivery: String,
+        body: PetstorePet,
+    ): PetstoreSubscribePetChangedPostResponse {
+        check(xDelivery == "d-1" && body.id == 7L)
+        return PetstoreSubscribePetChangedPostResponse.NoContent
+    }
+}

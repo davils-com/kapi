@@ -92,6 +92,7 @@ kreate {
                 ":kapi-spec:kapi-spec-schema",
                 ":kapi-spec:kapi-spec-openapi",
                 ":kapi-runtime:kapi-runtime-core",
+                ":kapi-codegen:kapi-codegen-core",
             )
         }
 

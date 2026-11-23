@@ -1,0 +1,166 @@
+package com.example.petstore
+
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.client.stream.StreamEvent
+import com.davils.kapi.runtime.core.wire.FilePart
+import com.davils.kapi.runtime.core.wire.Patch
+import com.example.petstore.client.PetstoreAdminClient
+import com.example.petstore.client.PetstoreAuthClient
+import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstorePetPatch
+import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreSearchPetsFilter
+import com.example.petstore.model.PetstoreUploadPhotoRequestMeta
+import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.operation.PetstoreCreatePetResult
+import com.example.petstore.operation.PetstoreDeletePetResult
+import com.example.petstore.operation.PetstoreGetPetResult
+import com.example.petstore.operation.PetstoreListPetsResult
+import com.example.petstore.operation.PetstoreLoginResult
+import com.example.petstore.operation.PetstorePagePetsResult
+import com.example.petstore.operation.PetstoreRenamePetResult
+import com.example.petstore.operation.PetstoreSearchPetsResult
+import com.example.petstore.operation.PetstoreSetAvatarResult
+import com.example.petstore.operation.PetstoreUploadPhotoResult
+import kotlinx.coroutines.flow.toList
+import kotlinx.io.bytestring.decodeToString
+import kotlinx.io.bytestring.encodeToByteString
+
+public class Scenario(client: Client) {
+    private val pets: PetstorePetsClient = PetstorePetsClient(client)
+
+    private val admin: PetstoreAdminClient = PetstoreAdminClient(client)
+
+    private val auth: PetstoreAuthClient = PetstoreAuthClient(client)
+
+    public suspend fun run(): List<String> = listOf(
+        listed(
+            pets.listPets(
+                status = PetstoreStatus.OPEN,
+                tag = listOf("a b", "c"),
+                limit = 2,
+                xTrace = "t-1",
+                state = listOf(PetstoreStatus.OPEN, PetstoreStatus.CLOSED),
+                session = "s-1",
+            ),
+        ),
+        listed(pets.listPets(limit = 503)),
+        listed(pets.listPets(limit = 400)),
+        created(pets.createPet(PetstorePetWrite(name = "Rex"))),
+        created(pets.createPet(PetstorePetWrite(name = "Taken"))),
+        found(pets.getPet(7)),
+        found(pets.getPet(404)),
+        found(pets.getPet(500)),
+        found(pets.getPet(0)),
+        renamed(pets.renamePet(7, PetstorePetPatch(name = Patch.Value("Max")))),
+        renamed(pets.renamePet(418)),
+        deleted(admin.deletePet(7)),
+        loggedIn(auth.login(user = "a b", password = "p&w", scopes = listOf("read", "write"))),
+        uploaded(
+            pets.uploadPhoto(
+                petId = 7,
+                photo = FilePart("PNG".encodeToByteString(), filename = "rex.png"),
+                caption = "Rex",
+                meta = PetstoreUploadPhotoRequestMeta(title = "Portrait"),
+            ),
+        ),
+        avatarSet(pets.setAvatar(petId = 7, body = "RAW".encodeToByteString())),
+        searched(
+            pets.searchPets(
+                filter = PetstoreSearchPetsFilter(name = "Rex", minAge = 2),
+                range = mapOf("from" to "1", "to" to "9"),
+            ),
+        ),
+        paged(pets.pagePetsPages(size = 1).toList()),
+        found(pets.getPet(9)),
+        streamed(pets.watchPetsStream().toList()),
+        streamed(pets.exportPetsStream(since = "2026").toList()),
+    )
+
+    private fun streamed(events: List<StreamEvent<PetstorePet>>): String =
+        "streamed " + events.joinToString(" | ", transform = ::event)
+
+    private fun event(event: StreamEvent<PetstorePet>): String = when (event) {
+        is StreamEvent.Item -> "${event.name}:${event.value.name}"
+        is StreamEvent.Malformed -> "malformed"
+        is StreamEvent.Ended -> "ended"
+    }
+
+    private fun paged(results: List<PetstorePagePetsResult>): String = "paged " + results.joinToString(" | ", transform = ::page)
+
+    private fun page(result: PetstorePagePetsResult): String = when (result) {
+        is PetstorePagePetsResult.Ok -> result.body.items.orEmpty().joinToString { pet -> pet.name }
+        is PetstorePagePetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstorePagePetsResult.Malformed -> "malformed ${result.status}"
+        is PetstorePagePetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun loggedIn(result: PetstoreLoginResult): String = when (result) {
+        is PetstoreLoginResult.Ok -> "token ${result.body.token}"
+        is PetstoreLoginResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreLoginResult.Malformed -> "malformed ${result.status}"
+        is PetstoreLoginResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun uploaded(result: PetstoreUploadPhotoResult): String = when (result) {
+        is PetstoreUploadPhotoResult.NoContent -> "uploaded"
+        is PetstoreUploadPhotoResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreUploadPhotoResult.Malformed -> "malformed ${result.status}"
+        is PetstoreUploadPhotoResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun avatarSet(result: PetstoreSetAvatarResult): String = when (result) {
+        is PetstoreSetAvatarResult.NoContent -> "avatar set"
+        is PetstoreSetAvatarResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSetAvatarResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSetAvatarResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun searched(result: PetstoreSearchPetsResult): String = when (result) {
+        is PetstoreSearchPetsResult.Ok -> "searched " + result.body.joinToString { pet -> "${pet.id}:${pet.name}" }
+        is PetstoreSearchPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSearchPetsResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSearchPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun listed(result: PetstoreListPetsResult): String = when (result) {
+        is PetstoreListPetsResult.Ok -> "listed " + result.body.joinToString { pet -> "${pet.id}:${pet.name}" }
+        is PetstoreListPetsResult.ServerError -> "server error ${result.status} ${result.body.title}"
+        is PetstoreListPetsResult.Other -> "other ${result.status} ${result.body.title}"
+        is PetstoreListPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreListPetsResult.Malformed -> "malformed ${result.status}"
+        is PetstoreListPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun created(result: PetstoreCreatePetResult): String = when (result) {
+        is PetstoreCreatePetResult.Created -> "created ${result.body.id}:${result.body.name}"
+        is PetstoreCreatePetResult.Conflict -> "conflict"
+        is PetstoreCreatePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreCreatePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreCreatePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun found(result: PetstoreGetPetResult): String = when (result) {
+        is PetstoreGetPetResult.Ok -> "found ${result.body.id}:${result.body.name} as ${result.eTag}"
+        is PetstoreGetPetResult.NotFound -> "not found"
+        is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status} ${result.content.decodeToString()}"
+        is PetstoreGetPetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetPetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun renamed(result: PetstoreRenamePetResult): String = when (result) {
+        is PetstoreRenamePetResult.Ok -> "renamed ${result.content.decodeToString()}"
+        is PetstoreRenamePetResult.Status418 -> "teapot"
+        is PetstoreRenamePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreRenamePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreRenamePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun deleted(result: PetstoreDeletePetResult): String = when (result) {
+        is PetstoreDeletePetResult.NoContent -> "deleted"
+        is PetstoreDeletePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreDeletePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreDeletePetResult.Failed -> "failed ${result.failure}"
+    }
+}

@@ -1,0 +1,165 @@
+package com.example.petstore
+
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.validate
+import com.davils.kapi.runtime.client.Client
+import com.davils.kapi.runtime.server.Server
+import com.example.petstore.client.PetstoreAdminClient
+import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.client.PetstoreZooClient
+import com.example.petstore.model.PetstoreAnimal
+import com.example.petstore.model.PetstoreBranch
+import com.example.petstore.model.PetstoreCat
+import com.example.petstore.model.PetstoreDog
+import com.example.petstore.model.PetstoreLeaf
+import com.example.petstore.model.PetstoreOwner
+import com.example.petstore.model.PetstoreOwnerWrite
+import com.example.petstore.model.PetstorePet
+import com.example.petstore.model.PetstorePetWrite
+import com.example.petstore.model.PetstoreStamp
+import com.example.petstore.model.PetstoreTree
+import com.example.petstore.operation.PetstoreCreatePetResult
+import com.example.petstore.operation.PetstoreDeletePetResult
+import com.example.petstore.operation.PetstoreGetAvatarResult
+import com.example.petstore.operation.PetstoreGetHealthResult
+import com.example.petstore.operation.PetstoreGetPetResult
+import com.example.petstore.operation.PetstoreGetStampResponse
+import com.example.petstore.operation.PetstoreGetStampResult
+import com.example.petstore.operation.PetstoreGetTreeResult
+import com.example.petstore.operation.PetstoreListAnimalsResult
+import com.example.petstore.operation.PetstoreListPetsResult
+import com.example.petstore.server.PetstoreAdminRoutes
+import com.example.petstore.server.PetstorePetsRoutes
+import com.example.petstore.server.PetstoreZooRoutes
+import com.example.petstore.testing.PetstoreAdminMockService
+import com.example.petstore.testing.PetstorePetsMockService
+import com.example.petstore.testing.PetstoreSamples
+import com.example.petstore.testing.PetstoreZooMockService
+import io.ktor.server.routing.Route
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+
+public class Scenario(client: Client) {
+    private val pets: PetstorePetsClient = PetstorePetsClient(client)
+
+    private val zoo: PetstoreZooClient = PetstoreZooClient(client)
+
+    private val admin: PetstoreAdminClient = PetstoreAdminClient(client)
+
+    public suspend fun run(): List<String> = answers() + samples()
+
+    private suspend fun answers(): List<String> = listOf(
+        listed(pets.listPets()),
+        created(pets.createPet(PetstoreSamples.petWrite)),
+        created(pets.createPet(PetstoreSamples.petWrite.copy(name = "rex"))),
+        found(pets.getPet(1)),
+        deleted(pets.deletePet(1)),
+        pictured(pets.getAvatar(1)),
+        animals(zoo.listAnimals()),
+        tree(zoo.getTree()),
+        stamped(admin.getStamp()),
+        health(admin.getHealth()),
+    )
+
+    private fun samples(): List<String> = listOf(
+        sound("animal", PetstoreAnimal.serializer(), PetstoreSamples.animal),
+        sound("branch", PetstoreBranch.serializer(), PetstoreSamples.branch),
+        sound("cat", PetstoreCat.serializer(), PetstoreSamples.cat),
+        sound("dog", PetstoreDog.serializer(), PetstoreSamples.dog),
+        sound("leaf", PetstoreLeaf.serializer(), PetstoreSamples.leaf),
+        sound("owner", PetstoreOwner.serializer(), PetstoreSamples.owner),
+        sound("ownerWrite", PetstoreOwnerWrite.serializer(), PetstoreSamples.ownerWrite),
+        sound("pet", PetstorePet.serializer(), PetstoreSamples.pet),
+        sound("petWrite", PetstorePetWrite.serializer(), PetstoreSamples.petWrite),
+        sound("tree", PetstoreTree.serializer(), PetstoreSamples.tree),
+    )
+
+    private fun <T : Validatable> sound(name: String, serializer: KSerializer<T>, sample: T): String {
+        val errors = sample.validate(name).errors
+        val text = Json.encodeToString(serializer, sample)
+        val isSame = Json.decodeFromString(serializer, text) == sample
+        return "$name: ${errors.size} errors, read back $isSame"
+    }
+
+    private fun listed(result: PetstoreListPetsResult): String = when (result) {
+        is PetstoreListPetsResult.Ok -> "listed ${result.xTotal} ${result.xNext}: ${result.body == listOf(PetstoreSamples.pet)}"
+        is PetstoreListPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreListPetsResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreListPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun created(result: PetstoreCreatePetResult): String = when (result) {
+        is PetstoreCreatePetResult.Created -> "created ${result.body == PetstoreSamples.pet}"
+        is PetstoreCreatePetResult.Conflict -> "conflict"
+        is PetstoreCreatePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreCreatePetResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreCreatePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun found(result: PetstoreGetPetResult): String = when (result) {
+        is PetstoreGetPetResult.Ok -> "found ${result.body.name} of ${result.body.owner?.pets}"
+        is PetstoreGetPetResult.NotFound -> "not found"
+        is PetstoreGetPetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetPetResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreGetPetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun deleted(result: PetstoreDeletePetResult): String = when (result) {
+        is PetstoreDeletePetResult.NoContent -> "deleted"
+        is PetstoreDeletePetResult.NotFound -> "not found"
+        is PetstoreDeletePetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreDeletePetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreDeletePetResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun pictured(result: PetstoreGetAvatarResult): String = when (result) {
+        is PetstoreGetAvatarResult.Ok -> "picture of ${result.content.size} bytes"
+        is PetstoreGetAvatarResult.NotFound -> "not found"
+        is PetstoreGetAvatarResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetAvatarResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetAvatarResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun animals(result: PetstoreListAnimalsResult): String = when (result) {
+        is PetstoreListAnimalsResult.Successful -> "animals ${result.status}: ${result.body}"
+        is PetstoreListAnimalsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreListAnimalsResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreListAnimalsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun tree(result: PetstoreGetTreeResult): String = when (result) {
+        is PetstoreGetTreeResult.NotFound -> "not found"
+        is PetstoreGetTreeResult.Other -> "tree ${result.status}: ${result.body}"
+        is PetstoreGetTreeResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetTreeResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreGetTreeResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun stamped(result: PetstoreGetStampResult): String = when (result) {
+        is PetstoreGetStampResult.Ok -> "stamped ${result.body.at}"
+        is PetstoreGetStampResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetStampResult.Malformed -> "malformed ${result.status} ${result.reason}"
+        is PetstoreGetStampResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun health(result: PetstoreGetHealthResult): String = when (result) {
+        is PetstoreGetHealthResult.ServiceUnavailable -> "down"
+        is PetstoreGetHealthResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetHealthResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetHealthResult.Failed -> "failed ${result.failure}"
+    }
+}
+
+public object Wiring {
+    public fun install(route: Route, server: Server) {
+        PetstorePetsRoutes(PetstorePetsMockService(), server).install(route)
+        PetstoreZooRoutes(PetstoreZooMockService(), server).install(route)
+        PetstoreAdminRoutes(AdminService(), server).install(route)
+    }
+}
+
+private class AdminService : PetstoreAdminMockService() {
+    override suspend fun getStamp(): PetstoreGetStampResponse =
+        PetstoreGetStampResponse.Ok(PetstoreStamp(at = 3.seconds))
+}

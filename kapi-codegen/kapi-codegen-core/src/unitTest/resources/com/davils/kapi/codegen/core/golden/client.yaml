@@ -1,0 +1,354 @@
+openapi: 3.1.0
+info:
+  title: Petstore
+  version: 1.0.0
+security:
+  - bearer: []
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      tags: [pets]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/Status'
+        - name: tag
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: X-Trace
+          in: header
+          schema:
+            type: string
+        - name: state
+          in: query
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Status'
+        - name: session
+          in: cookie
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        5XX:
+          description: The service failed
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: A problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      operationId: createPet
+      tags: [pets]
+      security:
+        - apiKey: []
+        - bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '409':
+          description: Exists
+  /pets/{petId}:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      operationId: getPet
+      tags: [pets]
+      security: []
+      responses:
+        '200':
+          description: The pet
+          headers:
+            ETag:
+              required: true
+              schema:
+                type: string
+            X-Rate-Remaining:
+              schema:
+                type: integer
+                format: int32
+            X-Tags:
+              schema:
+                type: array
+                items:
+                  type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: Unknown
+    patch:
+      operationId: renamePet
+      tags: [pets]
+      x-kapi-tri-state: true
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '200':
+          description: The pet
+          content:
+            text/plain:
+              schema:
+                type: string
+        '418':
+          description: A teapot
+    delete:
+      operationId: deletePet
+      tags: [admin]
+      responses:
+        '204':
+          description: Gone
+  /pets/pages:
+    get:
+      operationId: pagePets
+      tags: [pets]
+      x-kapi-pagination:
+        style: cursor
+        parameter: cursor
+        next: next
+      x-kapi-timeout:
+        request: PT30S
+        connect: PT2S
+      parameters:
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: size
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A page of pets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pet'
+                  next:
+                    type: string
+  /pets/events:
+    get:
+      operationId: watchPets
+      tags: [pets]
+      responses:
+        '200':
+          description: Every change of a pet
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Pet'
+  /pets/export:
+    get:
+      operationId: exportPets
+      tags: [pets]
+      parameters:
+        - name: since
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: One pet per line
+          content:
+            application/x-ndjson:
+              schema:
+                $ref: '#/components/schemas/Pet'
+  /pets/search:
+    get:
+      operationId: searchPets
+      tags: [pets]
+      parameters:
+        - name: filter
+          in: query
+          style: deepObject
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              minAge:
+                type: integer
+                format: int32
+        - name: range
+          in: query
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      responses:
+        '200':
+          description: The pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+  /pets/{petId}/photo:
+    post:
+      operationId: uploadPhoto
+      tags: [pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [photo]
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                caption:
+                  type: string
+                meta:
+                  type: object
+                  required: [title]
+                  properties:
+                    title:
+                      type: string
+            encoding:
+              photo:
+                contentType: image/png
+      responses:
+        '204':
+          description: Stored
+  /pets/{petId}/avatar:
+    put:
+      operationId: setAvatar
+      tags: [pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '204':
+          description: Stored
+  /login:
+    post:
+      operationId: login
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [user, password]
+              properties:
+                user:
+                  type: string
+                password:
+                  type: string
+                  x-kapi-sensitive: true
+                scopes:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: The token
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [token]
+                properties:
+                  token:
+                    type: string
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      name: X-Api-Key
+      in: header
+  schemas:
+    Status:
+      type: string
+      enum: [open, closed]
+    Pet:
+      type: object
+      required: [name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+    Problem:
+      type: object
+      properties:
+        title:
+          type: string

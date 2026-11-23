@@ -28,16 +28,19 @@ check:
       - ":kapi-spec:kapi-spec-schema:clean"
       - ":kapi-spec:kapi-spec-openapi:clean"
       - ":kapi-runtime:kapi-runtime-core:clean"
+      - ":kapi-codegen:kapi-codegen-core:clean"
     tasks:
       - ":kapi-spec:kapi-spec-core:jvmJar"
       - ":kapi-spec:kapi-spec-schema:jvmJar"
       - ":kapi-spec:kapi-spec-openapi:jvmJar"
       - ":kapi-runtime:kapi-runtime-core:jvmJar"
+      - ":kapi-codegen:kapi-codegen-core:jar"
     artifacts:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
       - "kapi-spec/kapi-spec-schema/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
+      - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
 
 policy:
   # Line breaks, paths and timers differ on Windows, and kapi reads documents from files and serves real sockets in
@@ -70,6 +73,7 @@ publish:
     - ":kapi-spec:kapi-spec-schema:publishAllPublicationsToDavilsRepository"
     - ":kapi-spec:kapi-spec-openapi:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
+    - ":kapi-codegen:kapi-codegen-core:publishAllPublicationsToDavilsRepository"
 
 snapshot:
   # kapi's own build makes every build without a release tag a snapshot.
@@ -116,6 +120,9 @@ release:
       - path: com/davils/kapi-runtime-core
         artifact: kapi-runtime-core
         task: ":kapi-runtime:kapi-runtime-core:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kapi-codegen-core
+        artifact: kapi-codegen-core
+        task: ":kapi-codegen:kapi-codegen-core:publishMavenPublicationToDavilsRepository"
   attest:
     subjects:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
@@ -126,6 +133,7 @@ release:
       - "kapi-spec/kapi-spec-openapi/build/libs/*.klib"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.klib"
+      - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
   github-release:
     enabled: false
 

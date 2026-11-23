@@ -1,0 +1,202 @@
+openapi: 3.1.0
+info:
+  title: Petstore
+  version: 1.0.0
+security:
+  - oauth: [pets:read]
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      tags: [pets]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/Status'
+        - name: tag
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: X-Trace
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The pets
+          headers:
+            X-Total:
+              required: true
+              schema:
+                type: integer
+                format: int32
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        default:
+          description: A problem
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      operationId: createPet
+      tags: [pets]
+      security:
+        - oauth: [pets:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '409':
+          description: Exists
+  /pets/{petId}:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      operationId: getPet
+      tags: [pets]
+      security: []
+      responses:
+        '200':
+          description: The pet
+          headers:
+            ETag:
+              required: true
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: Unknown
+    patch:
+      operationId: renamePet
+      tags: [pets]
+      x-kapi-tri-state: true
+      security:
+        - oauth: [pets:write]
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '200':
+          description: The pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: Unknown
+    delete:
+      operationId: deletePet
+      tags: [admin]
+      security:
+        - oauth: [pets:write]
+        - key: []
+      responses:
+        '204':
+          description: Gone
+        '404':
+          description: Unknown
+  /pets/{petId}/avatar:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      operationId: setAvatar
+      tags: [pets]
+      security:
+        - oauth: [pets:write]
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '204':
+          description: Stored
+    get:
+      operationId: getAvatar
+      tags: [pets]
+      responses:
+        '200':
+          description: The picture
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Unknown
+components:
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.example.com/oauth/token
+          scopes:
+            pets:read: Read pets
+            pets:write: Change pets
+    key:
+      type: apiKey
+      name: X-Api-Key
+      in: header
+  schemas:
+    Status:
+      type: string
+      enum: [open, closed]
+    Pet:
+      type: object
+      required: [name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+          minLength: 2
+        status:
+          $ref: '#/components/schemas/Status'
+    Problem:
+      type: object
+      properties:
+        title:
+          type: string
