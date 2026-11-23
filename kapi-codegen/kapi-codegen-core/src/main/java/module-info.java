@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 /**
- * The code generator of kapi: audits an OpenAPI document, names what it declares and emits Kotlin models, clients,
- * servers, mocks and webhooks with KotlinPoet, with the provenance of every file, and runs as the worker of the
- * Gradle plugin.
+ * The code generator of kapi: audits an OpenAPI or AsyncAPI document, names what it declares and emits Kotlin models,
+ * clients, servers, mocks, webhooks and WebSocket channels with KotlinPoet, with the provenance of every file, and runs
+ * as the worker of the Gradle plugin.
  */
 @SuppressWarnings({"module", "requires-automatic"})
 module com.davils.kapi.codegen.core {
@@ -25,12 +25,14 @@ module com.davils.kapi.codegen.core {
     requires transitive com.davils.kore.core;
     requires transitive com.davils.kapi.spec.core;
     requires transitive com.davils.kapi.spec.openapi;
+    requires transitive com.davils.kapi.spec.asyncapi;
     requires kotlinx.coroutines.core;
     requires kotlinx.io.bytestring;
     requires kotlinx.serialization.json;
     requires com.squareup.kotlinpoet;
 
     exports com.davils.kapi.codegen.core;
+    exports com.davils.kapi.codegen.core.asyncapi;
     exports com.davils.kapi.codegen.core.launch;
     exports com.davils.kapi.codegen.core.options;
 }

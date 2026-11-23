@@ -1,0 +1,106 @@
+package scenario
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.apiClient
+import com.davils.kapi.runtime.client.channel.ChannelOutcome
+import com.davils.kapi.runtime.client.channel.ChannelReply
+import com.davils.kapi.runtime.core.destination.destinationPolicy
+import com.davils.kapi.runtime.core.security.Secret
+import com.davils.kapi.runtime.core.security.credentials
+import com.davils.kapi.runtime.server.Kapi
+import com.davils.kapi.runtime.server.mount
+import com.davils.kapi.runtime.server.security.ApiKeyAuthorizer
+import com.davils.kore.core.principal.principal
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.client.QuotesQuotesChannel
+import com.example.quotes.model.QuotesPrice
+import com.example.quotes.model.QuotesQuote
+import com.example.quotes.model.QuotesRequest
+import com.example.quotes.model.QuotesTick
+import com.example.quotes.server.QuotesQuotesServerSession
+import com.example.quotes.server.QuotesQuotesService
+import com.example.quotes.server.QuotesRoutes
+import io.ktor.client.HttpClient
+import io.ktor.server.application.install
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.routing.routing
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import io.ktor.client.engine.cio.CIO as ClientEngine
+import io.ktor.client.plugins.websocket.WebSockets as ClientWebSockets
+import io.ktor.server.websocket.WebSockets as ServerWebSockets
+
+private const val HOST: String = "127.0.0.1"
+
+private class Desk : QuotesQuotesService {
+    override suspend fun serve(session: QuotesQuotesServerSession) {
+        session.incoming.collect { quote ->
+            session.sendTick(QuotesTick(type = "tick", symbol = quote.symbol, cents = 1))
+            if (quote.symbol != "SILENT") {
+                session.sendPrice(QuotesPrice(type = "price", request = quote.request, cents = 4200))
+            }
+        }
+    }
+}
+
+public object Scenario {
+    public fun run(): List<String> = runBlocking {
+        val keys = ApiKeyAuthorizer { key -> principal("desk").takeIf { key.reveal() == "k1" } }
+        val server = embeddedServer(CIO, port = 0, host = HOST) {
+            install(ServerWebSockets)
+            install(Kapi) { authorizer("key", keys) }
+            routing { mount(QuotesRoutes(Desk())) }
+        }
+        server.start(wait = false)
+        try {
+            val port = server.engine.resolvedConnectors().first().port
+            HttpClient(ClientEngine) {
+                followRedirects = false
+                install(ClientWebSockets)
+            }.use { http -> listOf(talk(clientOf(http, port, "k1")), talk(clientOf(http, port, "k2"))) }
+        } finally {
+            server.stop(gracePeriodMillis = 0, timeoutMillis = 0)
+        }
+    }
+
+    private suspend fun talk(client: ApiClient): String {
+        val outcome = QuotesQuotesChannel(client).connect {
+            coroutineScope {
+                val tick = async { incoming.first() }
+                val price = requestAskQuote(QuotesQuote(request = QuotesRequest(id = "r1"), symbol = "ACME"), 5.seconds)
+                val silent = requestAskQuote(QuotesQuote(request = QuotesRequest(id = "r2"), symbol = "SILENT"), 300.milliseconds)
+                listOf(reply(price), reply(silent), shown(tick.await())).joinToString(", ")
+            }
+        }
+        return when (outcome) {
+            is ChannelOutcome.Completed -> outcome.value + " closed " + outcome.close.code
+            is ChannelOutcome.Failed -> "failed " + outcome.failure
+        }
+    }
+
+    private fun clientOf(http: HttpClient, port: Int, key: String): ApiClient = apiClient(http) {
+        baseUrl = "http://$HOST:$port"
+        destinations = destinationPolicy {
+            schemes = setOf("http")
+            hosts = setOf(HOST)
+        }
+        credentials = credentials { scheme("key") { Secret(key) } }
+    }
+
+    private fun reply(reply: ChannelReply<QuotesQuotesServerMessage>): String = when (reply) {
+        is ChannelReply.Received -> "reply " + shown(reply.message)
+        ChannelReply.TimedOut -> "timed out"
+        ChannelReply.Closed -> "closed"
+        ChannelReply.Refused -> "refused"
+    }
+
+    private fun shown(message: QuotesQuotesServerMessage): String = when (message) {
+        is QuotesQuotesServerMessage.Price -> "price " + message.payload.request.id + " " + message.payload.cents
+        is QuotesQuotesServerMessage.Tick -> "tick " + message.payload.symbol
+    }
+}

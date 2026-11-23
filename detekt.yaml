@@ -171,6 +171,8 @@ libraries:
       - '**/codegen/core/ModelCatalog.kt'
       - '**/codegen/core/launch/LaunchReport.kt'
       - '**/codegen/core/launch/LaunchRequest.kt'
+      - '**/runtime/testing/fake/RefreshOutcome.kt'
+      - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -307,6 +309,8 @@ style:
       - '**/codegen/core/ModelCatalog.kt'
       - '**/codegen/core/launch/LaunchReport.kt'
       - '**/codegen/core/launch/LaunchRequest.kt'
+      - '**/runtime/testing/fake/RefreshOutcome.kt'
+      - '**/runtime/testing/mock/RecordedExchange.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false

@@ -1,0 +1,772 @@
+===== com/example/chat/model/ChatJoinedPayload.kt
+package com.example.chat.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "chat.yaml#/components/messages/Joined/payload",
+)
+public data class ChatJoinedPayload(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("member")
+    public val member: ChatMember,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "joined") fail(::type, "must be joined", ConstraintViolationCodes.CONST)
+        within(::member) { with(member) { validate() } }
+    }
+}
+===== com/example/chat/model/ChatLeavePayload.kt
+package com.example.chat.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "chat.yaml#/components/messages/Leave/payload",
+)
+public data class ChatLeavePayload(
+    @SerialName("type")
+    public val type: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "leave") fail(::type, "must be leave", ConstraintViolationCodes.CONST)
+    }
+}
+===== com/example/chat/model/ChatMember.kt
+package com.example.chat.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "chat.yaml#/components/schemas/Member",
+)
+public data class ChatMember(
+    @SerialName("nick")
+    public val nick: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+    }
+}
+===== com/example/chat/model/ChatSaid.kt
+package com.example.chat.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "chat.yaml#/components/schemas/Said",
+)
+public data class ChatSaid(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("from")
+    public val from: ChatMember,
+    @SerialName("text")
+    public val text: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "said") fail(::type, "must be said", ConstraintViolationCodes.CONST)
+        within(::from) { with(from) { validate() } }
+    }
+}
+===== com/example/chat/model/ChatSay.kt
+package com.example.chat.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "chat.yaml#/components/schemas/Say",
+)
+public data class ChatSay(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("text")
+    public val text: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "say") fail(::type, "must be say", ConstraintViolationCodes.CONST)
+    }
+}
+===== com/example/chat/channel/ChatRoomClientMessage.kt
+package com.example.chat.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.model.ChatLeavePayload
+import com.example.chat.model.ChatSay
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.Serializable
+
+/**
+ * The messages the client sends and the server receives on the channel `room`.
+ *
+ * AsyncAPI describes the server: these are the messages of its operations with the action `receive` (`receiveChat`) and the replies to the requests of the other side.
+ *
+ * A message is told apart from the others by the constant value of its property `type`; a message whose property names none of them is refused.
+ */
+@Serializable(with = ChatRoomClientMessageSerializer::class)
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public sealed interface ChatRoomClientMessage {
+    /**
+     * The message `say`.
+     *
+     * Something a member says.
+     *
+     * Its property `type` is `say`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Say(
+        public val payload: ChatSay,
+    ) : ChatRoomClientMessage {
+        override fun equals(other: Any?): Boolean = other is Say && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Say(" + payload + ")"
+    }
+
+    /**
+     * The message `leave`.
+     *
+     * A member leaves the room.
+     *
+     * Its property `type` is `leave`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Leave(
+        public val payload: ChatLeavePayload,
+    ) : ChatRoomClientMessage {
+        override fun equals(other: Any?): Boolean = other is Leave && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Leave(" + payload + ")"
+    }
+}
+===== com/example/chat/channel/ChatRoomClientMessageSerializer.kt
+package com.example.chat.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.model.ChatLeavePayload
+import com.example.chat.model.ChatSay
+import kotlin.String
+import kotlin.collections.Map
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.serializer
+
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+internal object ChatRoomClientMessageSerializer : KSerializer<ChatRoomClientMessage> {
+    private val saySerializer: KSerializer<ChatSay> = serializer()
+
+    private val leaveSerializer: KSerializer<ChatLeavePayload> = serializer()
+
+    private val members: Map<String, (Json, JsonElement) -> ChatRoomClientMessage> = mapOf(
+        "say" to { json, element -> ChatRoomClientMessage.Say(json.decodeFromJsonElement(saySerializer, element)) },
+        "leave" to { json, element -> ChatRoomClientMessage.Leave(json.decodeFromJsonElement(leaveSerializer, element)) },
+    )
+
+    override val descriptor: SerialDescriptor =
+            buildClassSerialDescriptor("com.example.chat.channel.ChatRoomClientMessage")
+
+    override fun serialize(encoder: Encoder, `value`: ChatRoomClientMessage) {
+        when (`value`) {
+            is ChatRoomClientMessage.Say -> encoder.encodeSerializableValue(saySerializer, `value`.payload)
+            is ChatRoomClientMessage.Leave -> encoder.encodeSerializableValue(leaveSerializer, `value`.payload)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): ChatRoomClientMessage {
+        val json = decoder as? JsonDecoder ?: throw SerializationException("The messages of ChatRoomClientMessage are read from JSON only")
+        val element = json.decodeJsonElement()
+        val tag = (element as? JsonObject)?.get("type") as? JsonPrimitive
+        val name = tag?.takeIf { primitive -> primitive.isString }?.content
+        val member = name?.let(members::get) ?: throw SerializationException("The message is none of ChatRoomClientMessage")
+        return member(json.json, element)
+    }
+}
+===== com/example/chat/channel/ChatRoomServerMessage.kt
+package com.example.chat.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.model.ChatJoinedPayload
+import com.example.chat.model.ChatSaid
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.Serializable
+
+/**
+ * The messages the server sends and the client receives on the channel `room`.
+ *
+ * AsyncAPI describes the server: these are the messages of its operations with the action `send` (`sendChat`) and the replies to the requests of the other side.
+ *
+ * A message is told apart from the others by the constant value of its property `type`; a message whose property names none of them is refused.
+ */
+@Serializable(with = ChatRoomServerMessageSerializer::class)
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public sealed interface ChatRoomServerMessage {
+    /**
+     * The message `said`.
+     *
+     * Something a member said, as every member sees it.
+     *
+     * Its property `type` is `said`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Said(
+        public val payload: ChatSaid,
+    ) : ChatRoomServerMessage {
+        override fun equals(other: Any?): Boolean = other is Said && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Said(" + payload + ")"
+    }
+
+    /**
+     * The message `joined`.
+     *
+     * Its property `type` is `joined`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Joined(
+        public val payload: ChatJoinedPayload,
+    ) : ChatRoomServerMessage {
+        override fun equals(other: Any?): Boolean = other is Joined && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Joined(" + payload + ")"
+    }
+}
+===== com/example/chat/channel/ChatRoomServerMessageSerializer.kt
+package com.example.chat.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.model.ChatJoinedPayload
+import com.example.chat.model.ChatSaid
+import kotlin.String
+import kotlin.collections.Map
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.serializer
+
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+internal object ChatRoomServerMessageSerializer : KSerializer<ChatRoomServerMessage> {
+    private val saidSerializer: KSerializer<ChatSaid> = serializer()
+
+    private val joinedSerializer: KSerializer<ChatJoinedPayload> = serializer()
+
+    private val members: Map<String, (Json, JsonElement) -> ChatRoomServerMessage> = mapOf(
+        "said" to { json, element -> ChatRoomServerMessage.Said(json.decodeFromJsonElement(saidSerializer, element)) },
+        "joined" to { json, element -> ChatRoomServerMessage.Joined(json.decodeFromJsonElement(joinedSerializer, element)) },
+    )
+
+    override val descriptor: SerialDescriptor =
+            buildClassSerialDescriptor("com.example.chat.channel.ChatRoomServerMessage")
+
+    override fun serialize(encoder: Encoder, `value`: ChatRoomServerMessage) {
+        when (`value`) {
+            is ChatRoomServerMessage.Said -> encoder.encodeSerializableValue(saidSerializer, `value`.payload)
+            is ChatRoomServerMessage.Joined -> encoder.encodeSerializableValue(joinedSerializer, `value`.payload)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): ChatRoomServerMessage {
+        val json = decoder as? JsonDecoder ?: throw SerializationException("The messages of ChatRoomServerMessage are read from JSON only")
+        val element = json.decodeJsonElement()
+        val tag = (element as? JsonObject)?.get("type") as? JsonPrimitive
+        val name = tag?.takeIf { primitive -> primitive.isString }?.content
+        val member = name?.let(members::get) ?: throw SerializationException("The message is none of ChatRoomServerMessage")
+        return member(json.json, element)
+    }
+}
+===== com/example/chat/client/ChatRoomChannel.kt
+package com.example.chat.client
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.call.CredentialPlacement
+import com.davils.kapi.runtime.client.call.SecurityUse
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.client.channel.ChannelOutcome
+import com.davils.kapi.runtime.client.channel.ChannelSettingsBuilder
+import com.davils.kapi.runtime.client.channel.ChannelSpec
+import com.davils.kapi.runtime.client.channel.channel
+import com.davils.kapi.runtime.client.channel.channelSettings
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.channel.ChatRoomClientMessage
+import com.example.chat.channel.ChatRoomClientMessageSerializer
+import com.example.chat.channel.ChatRoomServerMessage
+import com.example.chat.channel.ChatRoomServerMessageSerializer
+import kotlin.Long
+import kotlin.String
+import kotlin.Unit
+
+/**
+ * Opens the WebSocket channel `room` at `/rooms/{roomId}`.
+ *
+ * A chat room that members join with a nick.
+ *
+ * The client sends what the server receives and receives what the server sends: the operations of the document describe the server. [connect] opens the channel with its parameters, the credentials of its security requirement and the subprotocols of the document, runs the block with the open session and closes the channel with 1000 when the block returns.
+ *
+ * @param client the client the channel opens on, with its base URL, credentials and destination policy.
+ *
+ * @param configure changes the settings of the channel, such as its limits, after the subprotocols of the document are set.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public class ChatRoomChannel(
+    private val client: ApiClient,
+    configure: ChannelSettingsBuilder.() -> Unit = {},
+) {
+    private val spec: ChannelSpec<ChatRoomClientMessage, ChatRoomServerMessage> = ChannelSpec(
+        sendSerializer = ChatRoomClientMessageSerializer,
+        receiveDeserializer = ChatRoomServerMessageSerializer,
+        settings = channelSettings {
+            subprotocols = listOf("chat.v1")
+            configure()
+        },
+    )
+
+    /**
+     * Opens the channel, runs [block] with the open session and closes the channel.
+     * @param roomId the parameter `roomId` of the address.
+     * @param nick the query parameter `nick` of the handshake.
+     * @param since the query parameter `since` of the handshake.
+     * @param xClient the header `X-Client` of the handshake.
+     * @param block what to do with the open channel.
+     * @return the value of the block with how the channel closed, or why it did not open.
+     */
+    public suspend fun <T> connect(
+        roomId: String,
+        nick: String,
+        since: Long? = null,
+        xClient: String? = null,
+        block: suspend ChatRoomClientSession.() -> T,
+    ): ChannelOutcome<T> {
+        val call = apiCall(operation = "room", method = "GET") {
+            path("/rooms/")
+            path(ParameterFormat(name = "roomId", style = ParameterStyle.Simple, isExploded = false), ParameterValue.Text(roomId))
+            query("nick", nick)
+            since?.let { `value` -> query("since", `value`.toString()) }
+            xClient?.let { `value` -> `header`("X-Client", `value`) }
+            security(listOf(SecurityUse("token", CredentialPlacement.Bearer)))
+        }
+        return client.channel(call, spec) { ChatRoomClientSession(this).block() }
+    }
+}
+===== com/example/chat/client/ChatRoomClientSession.kt
+package com.example.chat.client
+
+import com.davils.kapi.runtime.client.channel.ChannelSession
+import com.davils.kapi.runtime.client.channel.CloseKind
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.channel.ChatRoomClientMessage
+import com.example.chat.channel.ChatRoomServerMessage
+import com.example.chat.model.ChatLeavePayload
+import com.example.chat.model.ChatSay
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * An open session of the WebSocket channel `room` at `/rooms/{roomId}`.
+ *
+ * A chat room that members join with a nick.
+ *
+ * It is safe to use from several coroutines inside the block of `connect` and must not be used after it.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public class ChatRoomClientSession internal constructor(
+    private val session: ChannelSession<ChatRoomClientMessage, ChatRoomServerMessage>,
+) {
+    /**
+     * The subprotocol the server chose.
+     */
+    public val subprotocol: String?
+        get() = session.subprotocol
+
+    /**
+     * The messages the server sends that are no reply to a request, in their order; collected once.
+     */
+    public val incoming: Flow<ChatRoomServerMessage>
+        get() = session.incoming
+
+    /**
+     * Sends [message], suspending while the transport cannot take it.
+     * @param message the message.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun send(message: ChatRoomClientMessage): Boolean = session.send(message)
+
+    /**
+     * Sends the message `say` with [payload].
+     * @param payload the payload.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun sendSay(payload: ChatSay): Boolean = session.send(ChatRoomClientMessage.Say(payload))
+
+    /**
+     * Sends the message `leave` with [payload].
+     * @param payload the payload.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun sendLeave(payload: ChatLeavePayload): Boolean = session.send(ChatRoomClientMessage.Leave(payload))
+
+    /**
+     * Closes the channel with [code] and [reason].
+     * @param code the close code: 1000 or one of 3000 to 4999.
+     * @param reason the reason, at most 123 bytes of UTF-8.
+     * @throws IllegalArgumentException if the code or the reason cannot be sent.
+     */
+    public suspend fun close(code: Int = CloseKind.Normal.code, reason: String = "") {
+        session.close(code, reason)
+    }
+}
+===== com/example/chat/server/ChatRoomService.kt
+package com.example.chat.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+/**
+ * Serves the WebSocket channel `room` at `/rooms/{roomId}`.
+ *
+ * A chat room that members join with a nick.
+ *
+ * The server receives what the client sends and sends what the client receives, as the operations of the document describe it. The routes call [serve] once per channel that opened, after the handshake was authorized and its parameters were read.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public interface ChatRoomService {
+    /**
+     * Serves one open channel until it closes; a failure closes the channel with 1011.
+     * @param session the open session.
+     */
+    public suspend fun serve(session: ChatRoomServerSession)
+}
+===== com/example/chat/server/ChatRoomServerSession.kt
+package com.example.chat.server
+
+import com.davils.kapi.runtime.server.channel.ChannelSession
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.channel.ChatRoomClientMessage
+import com.example.chat.channel.ChatRoomServerMessage
+import com.example.chat.model.ChatJoinedPayload
+import com.example.chat.model.ChatSaid
+import kotlin.Long
+import kotlin.Short
+import kotlin.String
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * An open session of the WebSocket channel `room` at `/rooms/{roomId}`.
+ *
+ * A chat room that members join with a nick.
+ *
+ * It is safe to send from several coroutines; receive from one.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#/channels/room",
+)
+public class ChatRoomServerSession internal constructor(
+    private val session: ChannelSession<ChatRoomClientMessage, ChatRoomServerMessage>,
+    /**
+     * The parameter `roomId` of the address.
+     */
+    public val roomId: String,
+    /**
+     * The value of `nick` in the handshake.
+     */
+    public val nick: String,
+    /**
+     * The value of `since` in the handshake.
+     */
+    public val since: Long?,
+    /**
+     * The value of `X-Client` in the handshake.
+     */
+    public val xClient: String?,
+) {
+    /**
+     * The request that opened the channel.
+     */
+    public val request: Request
+        get() = session.request
+
+    /**
+     * The subprotocol both sides agreed on, or `null`.
+     */
+    public val protocol: String?
+        get() = session.protocol
+
+    /**
+     * The messages as they arrive.
+     */
+    public val incoming: Flow<ChatRoomClientMessage>
+        get() = session.incoming
+
+    /**
+     * Receives the next message.
+     * @return the message, or `null` once the channel is closed.
+     */
+    public suspend fun receive(): ChatRoomClientMessage? = session.receive()
+
+    /**
+     * Sends [message].
+     * @param message the message.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun send(message: ChatRoomServerMessage) {
+        session.send(message)
+    }
+
+    /**
+     * Sends the message `said` with [payload].
+     * @param payload the payload.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun sendSaid(payload: ChatSaid) {
+        session.send(ChatRoomServerMessage.Said(payload))
+    }
+
+    /**
+     * Sends the message `joined` with [payload].
+     * @param payload the payload.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun sendJoined(payload: ChatJoinedPayload) {
+        session.send(ChatRoomServerMessage.Joined(payload))
+    }
+
+    /**
+     * Closes the channel with [code] and [reason].
+     * @param code the close code of RFC 6455; 1000 by default.
+     * @param reason the reason, at most 123 bytes of UTF-8 without control characters.
+     * @throws IllegalArgumentException if the reason is too long or holds a control character.
+     */
+    public suspend fun close(code: Short = ChannelSession.NORMAL, reason: String = "") {
+        session.close(code, reason)
+    }
+}
+===== com/example/chat/server/ChatRoutes.kt
+package com.example.chat.server
+
+import com.davils.kapi.runtime.server.channel.ChannelEndpoint
+import com.davils.kapi.runtime.server.channel.ChannelLimits
+import com.davils.kapi.runtime.server.channel.ChannelSession
+import com.davils.kapi.runtime.server.channel.MessageCodec
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.chat.channel.ChatRoomClientMessage
+import com.example.chat.channel.ChatRoomClientMessageSerializer
+import com.example.chat.channel.ChatRoomServerMessage
+import com.example.chat.channel.ChatRoomServerMessageSerializer
+import kotlin.collections.List
+
+/**
+ * The WebSocket channels `room`, mounted with `routing { mount(routes) }` below the path of the server.
+ *
+ * Every handshake is authorized by the security requirement of its channel before the WebSocket opens. Its parameters are read after it opened: a handshake that lacks a required one or carries one that is invalid closes the channel with 1008 before the service sees it.
+ *
+ * @param chatRoomService serves the channel `room`.
+ * @param limits the limits of every channel.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "chat.yaml#",
+)
+public class ChatRoutes(
+    private val chatRoomService: ChatRoomService,
+    private val limits: ChannelLimits = ChannelLimits.Default,
+) : Routes {
+    override val operations: List<Operation> = emptyList()
+
+    override val channels: List<ChannelEndpoint<*, *>> = listOf(
+        ChannelEndpoint(
+            name = "room",
+            path = "/rooms/{roomId}",
+            receive = MessageCodec(ChatRoomClientMessageSerializer),
+            send = MessageCodec(ChatRoomServerMessageSerializer),
+            protocols = listOf("chat.v1"),
+            security = listOf(listOf(SchemeUse("token", CredentialSource.Bearer, setOf()))),
+            limits = limits,
+            handler = { serveChatRoom(this) },
+        ),
+    )
+
+    private suspend fun serveChatRoom(session: ChannelSession<ChatRoomClientMessage, ChatRoomServerMessage>) {
+        val request = session.request
+        val roomId = request.pathParameters["roomId"].orEmpty()
+        val nick = request.query.firstOrNull { entry -> entry.first == "nick" }?.second
+        val sinceText = request.query.firstOrNull { entry -> entry.first == "since" }?.second
+        val since = sinceText?.toLongOrNull()
+        val xClient = request.headers["X-Client"]
+        if (nick == null || sinceText != null && since == null) return session.close(ChannelSession.POLICY_VIOLATION, "The handshake lacks a parameter or carries an invalid one")
+        chatRoomService.serve(ChatRoomServerSession(session = session, roomId = roomId, nick = nick, since = since, xClient = xClient))
+    }
+}
+===== META-INF/kapi/asyncapi/chat.provenance.json
+{
+  "protocol": 1,
+  "generator": "development",
+  "api": "Chat",
+  "packageName": "com.example.chat",
+  "options": "sha256:ffa516e05daea802dcc4be5954dec0fe480aef1ac369e92ec8e07243f7289304",
+  "sources": [
+    {
+      "name": "chat.yaml",
+      "digest": "sha256:edb94aecec8905523aa48354093361dc7d8eb5045a32656305e43b4751f53a4b"
+    }
+  ],
+  "files": [
+    {
+      "name": "com/example/chat/model/ChatJoinedPayload.kt",
+      "digest": "sha256:19fc64ac21de51e471cab67b011a2193ca1a6c1c6019ffb6ff53d58b66028009"
+    },
+    {
+      "name": "com/example/chat/model/ChatLeavePayload.kt",
+      "digest": "sha256:5d5853dea4f24258ac70b863d9000f1cac9dcc7e6b543a28a1607eb741241024"
+    },
+    {
+      "name": "com/example/chat/model/ChatMember.kt",
+      "digest": "sha256:f91506f5994d3147f58de1fb398156a142de7c7c8fa0750dba523084aad0779c"
+    },
+    {
+      "name": "com/example/chat/model/ChatSaid.kt",
+      "digest": "sha256:5e1a805dfb8d29230700b383b3efde029be458280f76634865efd864bd86b714"
+    },
+    {
+      "name": "com/example/chat/model/ChatSay.kt",
+      "digest": "sha256:43f921fc31c1b89ce38afddca500041610c776c0c49a7cc6eb0547df522cf912"
+    },
+    {
+      "name": "com/example/chat/channel/ChatRoomClientMessage.kt",
+      "digest": "sha256:2a726cd05d85f4d7d6b08e68a56ae34824978a32f65fc685daa5e00f2bf60525"
+    },
+    {
+      "name": "com/example/chat/channel/ChatRoomClientMessageSerializer.kt",
+      "digest": "sha256:4440ffeb5e54ff01d4fa482b7d03e8f328b52b91e97b10d33ee86842137ef277"
+    },
+    {
+      "name": "com/example/chat/channel/ChatRoomServerMessage.kt",
+      "digest": "sha256:4def6ee3dfad80c3a311ee4d5f7f3de76497d80c1aec87f2325ee8a167594004"
+    },
+    {
+      "name": "com/example/chat/channel/ChatRoomServerMessageSerializer.kt",
+      "digest": "sha256:96674c4a7de21871c98e93ecada974ef9eaa557a80f69c8d97a42a290baa867b"
+    },
+    {
+      "name": "com/example/chat/client/ChatRoomChannel.kt",
+      "digest": "sha256:15ff95c2ee5f91c166141aa7ebe2c34450cb8ee89a2ff40fb096d48a6494aa14"
+    },
+    {
+      "name": "com/example/chat/client/ChatRoomClientSession.kt",
+      "digest": "sha256:3312fa62e71a0faf4c7c5c1c4393f2228d9786b328655fa3dedc44676ae53ba4"
+    },
+    {
+      "name": "com/example/chat/server/ChatRoomService.kt",
+      "digest": "sha256:1ba4e09d4a8af89ee7e344ca5c8fde6360bf5080fa3fbd780b6914ce7e4c0f81"
+    },
+    {
+      "name": "com/example/chat/server/ChatRoomServerSession.kt",
+      "digest": "sha256:6ad6092ed1a3cf7bad498525170516dadd58ef1ef5d7ce8e1197b18426cb4f7e"
+    },
+    {
+      "name": "com/example/chat/server/ChatRoutes.kt",
+      "digest": "sha256:f91b461e7cda1f123beb916b2886380c52943f59d98d5254a3ca872078721aa0"
+    }
+  ]
+}

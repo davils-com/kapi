@@ -32,6 +32,7 @@ check:
       - ":kapi-runtime:kapi-runtime-core:clean"
       - ":kapi-runtime:kapi-runtime-client:clean"
       - ":kapi-runtime:kapi-runtime-server:clean"
+      - ":kapi-runtime:kapi-runtime-testing:clean"
       - ":kapi-codegen:kapi-codegen-core:clean"
       - ":kapi-codegen:kapi-codegen-gradle:clean"
     tasks:
@@ -43,6 +44,7 @@ check:
       - ":kapi-runtime:kapi-runtime-core:jvmJar"
       - ":kapi-runtime:kapi-runtime-client:jvmJar"
       - ":kapi-runtime:kapi-runtime-server:jar"
+      - ":kapi-runtime:kapi-runtime-testing:jvmJar"
       - ":kapi-codegen:kapi-codegen-core:jar"
       - ":kapi-codegen:kapi-codegen-gradle:jar"
     artifacts:
@@ -54,6 +56,7 @@ check:
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-gradle/build/libs/*.jar"
 
@@ -92,6 +95,7 @@ publish:
     - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-client:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-server:publishAllPublicationsToDavilsRepository"
+    - ":kapi-runtime:kapi-runtime-testing:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-gradle:publishAllPublicationsToDavilsRepository"
     - ":kapi-bom:publishAllPublicationsToDavilsRepository"
@@ -171,6 +175,15 @@ release:
       - path: com/davils/kapi-runtime-server
         artifact: kapi-runtime-server
         task: ":kapi-runtime:kapi-runtime-server:publishMavenPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-testing-jvm
+        artifact: kapi-runtime-testing-jvm
+        task: ":kapi-runtime:kapi-runtime-testing:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-testing-wasm-js
+        artifact: kapi-runtime-testing-wasm-js
+        task: ":kapi-runtime:kapi-runtime-testing:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-testing
+        artifact: kapi-runtime-testing
+        task: ":kapi-runtime:kapi-runtime-testing:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kapi-codegen-core
         artifact: kapi-codegen-core
         task: ":kapi-codegen:kapi-codegen-core:publishMavenPublicationToDavilsRepository"
@@ -200,6 +213,8 @@ release:
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.klib"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-testing/build/libs/*.klib"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-gradle/build/libs/*.jar"
   github-release:

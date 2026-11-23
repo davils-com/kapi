@@ -29,6 +29,7 @@ kreate {
 
 dependencies {
     api(project(":kapi-spec:kapi-spec-openapi"))
+    api(project(":kapi-spec:kapi-spec-asyncapi"))
     implementation(libs.kotlinpoet)
     implementation(libs.kotlinx.serialization.json)
 }

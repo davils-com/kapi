@@ -1,0 +1,620 @@
+===== com/example/quotes/model/QuotesPrice.kt
+package com.example.quotes.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Long
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Price",
+)
+public data class QuotesPrice(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("request")
+    public val request: QuotesRequest,
+    @SerialName("cents")
+    public val cents: Long,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "price") fail(::type, "must be price", ConstraintViolationCodes.CONST)
+        within(::request) { with(request) { validate() } }
+    }
+}
+===== com/example/quotes/model/QuotesQuote.kt
+package com.example.quotes.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Quote",
+)
+public data class QuotesQuote(
+    @SerialName("request")
+    public val request: QuotesRequest,
+    @SerialName("symbol")
+    public val symbol: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        within(::request) { with(request) { validate() } }
+    }
+}
+===== com/example/quotes/model/QuotesRequest.kt
+package com.example.quotes.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Request",
+)
+public data class QuotesRequest(
+    @SerialName("id")
+    public val id: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+    }
+}
+===== com/example/quotes/model/QuotesTick.kt
+package com.example.quotes.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Long
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "quotes.yaml#/components/schemas/Tick",
+)
+public data class QuotesTick(
+    @SerialName("type")
+    public val type: String,
+    @SerialName("symbol")
+    public val symbol: String,
+    @SerialName("cents")
+    public val cents: Long,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (type != "tick") fail(::type, "must be tick", ConstraintViolationCodes.CONST)
+    }
+}
+===== com/example/quotes/channel/QuotesQuotesServerMessage.kt
+package com.example.quotes.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesPrice
+import com.example.quotes.model.QuotesTick
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.Serializable
+
+/**
+ * The messages the server sends and the client receives on the channel `quotes`.
+ *
+ * AsyncAPI describes the server: these are the messages of its operations with the action `send` (`pushTicks`) and the replies to the requests of the other side.
+ *
+ * A message is told apart from the others by the constant value of its property `type`; a message whose property names none of them is refused.
+ */
+@Serializable(with = QuotesQuotesServerMessageSerializer::class)
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public sealed interface QuotesQuotesServerMessage {
+    /**
+     * The message `price`.
+     *
+     * Its property `type` is `price`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Price(
+        public val payload: QuotesPrice,
+    ) : QuotesQuotesServerMessage {
+        override fun equals(other: Any?): Boolean = other is Price && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Price(" + payload + ")"
+    }
+
+    /**
+     * The message `tick`.
+     *
+     * Its property `type` is `tick`.
+     *
+     * @property payload the payload of the message.
+     */
+    public class Tick(
+        public val payload: QuotesTick,
+    ) : QuotesQuotesServerMessage {
+        override fun equals(other: Any?): Boolean = other is Tick && payload == other.payload
+
+        override fun hashCode(): Int = payload.hashCode()
+
+        override fun toString(): String = "Tick(" + payload + ")"
+    }
+}
+===== com/example/quotes/channel/QuotesQuotesServerMessageSerializer.kt
+package com.example.quotes.channel
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.model.QuotesPrice
+import com.example.quotes.model.QuotesTick
+import kotlin.String
+import kotlin.collections.Map
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.serializer
+
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+internal object QuotesQuotesServerMessageSerializer : KSerializer<QuotesQuotesServerMessage> {
+    private val priceSerializer: KSerializer<QuotesPrice> = serializer()
+
+    private val tickSerializer: KSerializer<QuotesTick> = serializer()
+
+    private val members: Map<String, (Json, JsonElement) -> QuotesQuotesServerMessage> = mapOf(
+        "price" to { json, element -> QuotesQuotesServerMessage.Price(json.decodeFromJsonElement(priceSerializer, element)) },
+        "tick" to { json, element -> QuotesQuotesServerMessage.Tick(json.decodeFromJsonElement(tickSerializer, element)) },
+    )
+
+    override val descriptor: SerialDescriptor =
+            buildClassSerialDescriptor("com.example.quotes.channel.QuotesQuotesServerMessage")
+
+    override fun serialize(encoder: Encoder, `value`: QuotesQuotesServerMessage) {
+        when (`value`) {
+            is QuotesQuotesServerMessage.Price -> encoder.encodeSerializableValue(priceSerializer, `value`.payload)
+            is QuotesQuotesServerMessage.Tick -> encoder.encodeSerializableValue(tickSerializer, `value`.payload)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): QuotesQuotesServerMessage {
+        val json = decoder as? JsonDecoder ?: throw SerializationException("The messages of QuotesQuotesServerMessage are read from JSON only")
+        val element = json.decodeJsonElement()
+        val tag = (element as? JsonObject)?.get("type") as? JsonPrimitive
+        val name = tag?.takeIf { primitive -> primitive.isString }?.content
+        val member = name?.let(members::get) ?: throw SerializationException("The message is none of QuotesQuotesServerMessage")
+        return member(json.json, element)
+    }
+}
+===== com/example/quotes/client/QuotesQuotesCorrelation.kt
+package com.example.quotes.client
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.model.QuotesPrice
+import com.example.quotes.model.QuotesQuote
+import kotlin.String
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.serializer
+
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+internal object QuotesQuotesCorrelation {
+    private val json: Json = Json { encodeDefaults = true }
+
+    private val quoteSerializer: KSerializer<QuotesQuote> = serializer()
+
+    private val priceSerializer: KSerializer<QuotesPrice> = serializer()
+
+    public fun sent(message: QuotesQuote): String? = quoteSent(message)
+
+    public fun received(message: QuotesQuotesServerMessage): String? = when (message) {
+        is QuotesQuotesServerMessage.Price -> priceReceived(message.payload)
+        is QuotesQuotesServerMessage.Tick -> null
+    }
+
+    private fun quoteSent(payload: QuotesQuote): String? {
+        val root = json.encodeToJsonElement(quoteSerializer, payload)
+        val found = step(step(root, "request"), "id")
+        return (found as? JsonPrimitive)?.contentOrNull
+    }
+
+    private fun priceReceived(payload: QuotesPrice): String? {
+        val root = json.encodeToJsonElement(priceSerializer, payload)
+        val found = step(step(root, "request"), "id")
+        return (found as? JsonPrimitive)?.contentOrNull
+    }
+
+    private fun step(element: JsonElement?, token: String): JsonElement? {
+        val fields = element as? JsonObject
+        val items = element as? JsonArray
+        val index = token.toIntOrNull()
+        return fields?.get(token) ?: index?.let { position -> items?.getOrNull(position) }
+    }
+}
+===== com/example/quotes/client/QuotesQuotesChannel.kt
+package com.example.quotes.client
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.call.CredentialPlacement
+import com.davils.kapi.runtime.client.call.SecurityUse
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.client.channel.ChannelOutcome
+import com.davils.kapi.runtime.client.channel.ChannelSettingsBuilder
+import com.davils.kapi.runtime.client.channel.ChannelSpec
+import com.davils.kapi.runtime.client.channel.Correlation
+import com.davils.kapi.runtime.client.channel.channel
+import com.davils.kapi.runtime.client.channel.channelSettings
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.channel.QuotesQuotesServerMessageSerializer
+import com.example.quotes.model.QuotesQuote
+import kotlin.Unit
+import kotlinx.serialization.serializer
+
+/**
+ * Opens the WebSocket channel `quotes` at `/quotes`.
+ *
+ * The client sends what the server receives and receives what the server sends: the operations of the document describe the server. [connect] opens the channel with its parameters, the credentials of its security requirement and the subprotocols of the document, runs the block with the open session and closes the channel with 1000 when the block returns.
+ *
+ * @param client the client the channel opens on, with its base URL, credentials and destination policy.
+ *
+ * @param configure changes the settings of the channel, such as its limits, after the subprotocols of the document are set.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public class QuotesQuotesChannel(
+    private val client: ApiClient,
+    configure: ChannelSettingsBuilder.() -> Unit = {},
+) {
+    private val spec: ChannelSpec<QuotesQuote, QuotesQuotesServerMessage> = ChannelSpec(
+        sendSerializer = serializer<QuotesQuote>(),
+        receiveDeserializer = QuotesQuotesServerMessageSerializer,
+        settings = channelSettings(configure),
+        correlation = Correlation(sent = QuotesQuotesCorrelation::sent, received = QuotesQuotesCorrelation::received),
+    )
+
+    /**
+     * Opens the channel, runs [block] with the open session and closes the channel.
+     * @param block what to do with the open channel.
+     * @return the value of the block with how the channel closed, or why it did not open.
+     */
+    public suspend fun <T> connect(block: suspend QuotesQuotesClientSession.() -> T): ChannelOutcome<T> {
+        val call = apiCall(operation = "quotes", method = "GET") {
+            path("/quotes")
+            security(listOf(SecurityUse("key", CredentialPlacement.Header("X-Key"))))
+        }
+        return client.channel(call, spec) { QuotesQuotesClientSession(this).block() }
+    }
+}
+===== com/example/quotes/client/QuotesQuotesClientSession.kt
+package com.example.quotes.client
+
+import com.davils.kapi.runtime.client.channel.ChannelReply
+import com.davils.kapi.runtime.client.channel.ChannelSession
+import com.davils.kapi.runtime.client.channel.CloseKind
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.model.QuotesQuote
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.time.Duration
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * An open session of the WebSocket channel `quotes` at `/quotes`.
+ *
+ * It is safe to use from several coroutines inside the block of `connect` and must not be used after it.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public class QuotesQuotesClientSession internal constructor(
+    private val session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>,
+) {
+    /**
+     * The subprotocol the server chose.
+     */
+    public val subprotocol: String?
+        get() = session.subprotocol
+
+    /**
+     * The messages the server sends that are no reply to a request, in their order; collected once.
+     */
+    public val incoming: Flow<QuotesQuotesServerMessage>
+        get() = session.incoming
+
+    /**
+     * Sends [message], suspending while the transport cannot take it.
+     * @param message the message.
+     * @return `false` if it cannot be written or the channel is closed.
+     */
+    public suspend fun send(message: QuotesQuote): Boolean = session.send(message)
+
+    /**
+     * Sends the request of the operation `askQuote` and waits for the first reply with its correlation id.
+     * @param payload the request.
+     * @param timeout how long to wait for the reply.
+     * @return the reply, or why there is none.
+     */
+    public suspend fun requestAskQuote(payload: QuotesQuote, timeout: Duration): ChannelReply<QuotesQuotesServerMessage> = session.request(payload, timeout)
+
+    /**
+     * Closes the channel with [code] and [reason].
+     * @param code the close code: 1000 or one of 3000 to 4999.
+     * @param reason the reason, at most 123 bytes of UTF-8.
+     * @throws IllegalArgumentException if the code or the reason cannot be sent.
+     */
+    public suspend fun close(code: Int = CloseKind.Normal.code, reason: String = "") {
+        session.close(code, reason)
+    }
+}
+===== com/example/quotes/server/QuotesQuotesService.kt
+package com.example.quotes.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+
+/**
+ * Serves the WebSocket channel `quotes` at `/quotes`.
+ *
+ * The server receives what the client sends and sends what the client receives, as the operations of the document describe it. The routes call [serve] once per channel that opened, after the handshake was authorized and its parameters were read.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public interface QuotesQuotesService {
+    /**
+     * Serves one open channel until it closes; a failure closes the channel with 1011.
+     * @param session the open session.
+     */
+    public suspend fun serve(session: QuotesQuotesServerSession)
+}
+===== com/example/quotes/server/QuotesQuotesServerSession.kt
+package com.example.quotes.server
+
+import com.davils.kapi.runtime.server.channel.ChannelSession
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.model.QuotesPrice
+import com.example.quotes.model.QuotesQuote
+import com.example.quotes.model.QuotesTick
+import kotlin.Short
+import kotlin.String
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * An open session of the WebSocket channel `quotes` at `/quotes`.
+ *
+ * It is safe to send from several coroutines; receive from one.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#/channels/quotes",
+)
+public class QuotesQuotesServerSession internal constructor(
+    private val session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>,
+) {
+    /**
+     * The request that opened the channel.
+     */
+    public val request: Request
+        get() = session.request
+
+    /**
+     * The subprotocol both sides agreed on, or `null`.
+     */
+    public val protocol: String?
+        get() = session.protocol
+
+    /**
+     * The messages as they arrive.
+     */
+    public val incoming: Flow<QuotesQuote>
+        get() = session.incoming
+
+    /**
+     * Receives the next message.
+     * @return the message, or `null` once the channel is closed.
+     */
+    public suspend fun receive(): QuotesQuote? = session.receive()
+
+    /**
+     * Sends [message].
+     * @param message the message.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun send(message: QuotesQuotesServerMessage) {
+        session.send(message)
+    }
+
+    /**
+     * Sends the message `price` with [payload].
+     * @param payload the payload.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun sendPrice(payload: QuotesPrice) {
+        session.send(QuotesQuotesServerMessage.Price(payload))
+    }
+
+    /**
+     * Sends the message `tick` with [payload].
+     * @param payload the payload.
+     * @throws kotlinx.coroutines.channels.ClosedSendChannelException if the channel is closed.
+     */
+    public suspend fun sendTick(payload: QuotesTick) {
+        session.send(QuotesQuotesServerMessage.Tick(payload))
+    }
+
+    /**
+     * Closes the channel with [code] and [reason].
+     * @param code the close code of RFC 6455; 1000 by default.
+     * @param reason the reason, at most 123 bytes of UTF-8 without control characters.
+     * @throws IllegalArgumentException if the reason is too long or holds a control character.
+     */
+    public suspend fun close(code: Short = ChannelSession.NORMAL, reason: String = "") {
+        session.close(code, reason)
+    }
+}
+===== com/example/quotes/server/QuotesRoutes.kt
+package com.example.quotes.server
+
+import com.davils.kapi.runtime.server.channel.ChannelEndpoint
+import com.davils.kapi.runtime.server.channel.ChannelLimits
+import com.davils.kapi.runtime.server.channel.ChannelSession
+import com.davils.kapi.runtime.server.channel.MessageCodec
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.quotes.channel.QuotesQuotesServerMessage
+import com.example.quotes.channel.QuotesQuotesServerMessageSerializer
+import com.example.quotes.model.QuotesQuote
+import kotlin.collections.List
+import kotlinx.serialization.serializer
+
+/**
+ * The WebSocket channels `quotes`, mounted with `routing { mount(routes) }` below the path of the server.
+ *
+ * Every handshake is authorized by the security requirement of its channel before the WebSocket opens. Its parameters are read after it opened: a handshake that lacks a required one or carries one that is invalid closes the channel with 1008 before the service sees it.
+ *
+ * @param quotesQuotesService serves the channel `quotes`.
+ * @param limits the limits of every channel.
+ */
+@DavilsGenerated(
+    by = "kapi-codegen-asyncapi",
+    from = "quotes.yaml#",
+)
+public class QuotesRoutes(
+    private val quotesQuotesService: QuotesQuotesService,
+    private val limits: ChannelLimits = ChannelLimits.Default,
+) : Routes {
+    override val operations: List<Operation> = emptyList()
+
+    override val channels: List<ChannelEndpoint<*, *>> = listOf(
+        ChannelEndpoint(
+            name = "quotes",
+            path = "/quotes",
+            receive = MessageCodec(serializer<QuotesQuote>()),
+            send = MessageCodec(QuotesQuotesServerMessageSerializer),
+            protocols = listOf(),
+            security = listOf(listOf(SchemeUse("key", CredentialSource.Header("X-Key"), setOf()))),
+            limits = limits,
+            handler = { serveQuotesQuotes(this) },
+        ),
+    )
+
+    private suspend fun serveQuotesQuotes(session: ChannelSession<QuotesQuote, QuotesQuotesServerMessage>) {
+        val request = session.request
+        quotesQuotesService.serve(QuotesQuotesServerSession(session = session))
+    }
+}
+===== META-INF/kapi/asyncapi/quotes.provenance.json
+{
+  "protocol": 1,
+  "generator": "development",
+  "api": "Quotes",
+  "packageName": "com.example.quotes",
+  "options": "sha256:8575d985bd49a0e30baa0eac3685e4a5df411e1ee6a1aeb0b16f71dfb5b530f6",
+  "sources": [
+    {
+      "name": "quotes.yaml",
+      "digest": "sha256:59176d90e22aa8909cc2b333a94c0e0c177e8ac29df75a01f2afa5a835254fed"
+    }
+  ],
+  "files": [
+    {
+      "name": "com/example/quotes/model/QuotesPrice.kt",
+      "digest": "sha256:7353003130dc50768996bde184290f3249a15de96f2ca96c7aab111acf46d16a"
+    },
+    {
+      "name": "com/example/quotes/model/QuotesQuote.kt",
+      "digest": "sha256:5891a04e34dcda07342cd028103c6192c4dca367b4b24bf0094a4030d816ab47"
+    },
+    {
+      "name": "com/example/quotes/model/QuotesRequest.kt",
+      "digest": "sha256:bbe5cbdbdefabd8731ecb0b174551c438f81dfbeb7dc2a1e4805ca1b1e2ce302"
+    },
+    {
+      "name": "com/example/quotes/model/QuotesTick.kt",
+      "digest": "sha256:ec5f3aed68a4a906075abd60d82de91037ba5279bacfd93734844bb076cdd1f1"
+    },
+    {
+      "name": "com/example/quotes/channel/QuotesQuotesServerMessage.kt",
+      "digest": "sha256:31080cfe1c9b4aa065a40ff55139861c7207f042d4510180840de49ed3f1cce9"
+    },
+    {
+      "name": "com/example/quotes/channel/QuotesQuotesServerMessageSerializer.kt",
+      "digest": "sha256:a6ffb7ea0be173d161749bd2bd3328297b26faa30ca7de6f479c16f822e684a7"
+    },
+    {
+      "name": "com/example/quotes/client/QuotesQuotesCorrelation.kt",
+      "digest": "sha256:55414c1d3d5eec54b59014cd490b7e72edf66c8a87207224d6bd9c0eebf126cb"
+    },
+    {
+      "name": "com/example/quotes/client/QuotesQuotesChannel.kt",
+      "digest": "sha256:a415bed4737fcc695b7ef800c3bb43a4f08b74f7fe36101a605252e94c651bc8"
+    },
+    {
+      "name": "com/example/quotes/client/QuotesQuotesClientSession.kt",
+      "digest": "sha256:aa614e6b634209c864fc8697f7994d17167216ab14a7e59d80837a77c55600fa"
+    },
+    {
+      "name": "com/example/quotes/server/QuotesQuotesService.kt",
+      "digest": "sha256:d0c48ce97fd0609305a0adcae43bf789e36927ca11bfd6a56230172df7be25d9"
+    },
+    {
+      "name": "com/example/quotes/server/QuotesQuotesServerSession.kt",
+      "digest": "sha256:e66fb3e1f9c48a4bce6da2175b20c5cc46020cb8eccae2590e930b46ff581ee9"
+    },
+    {
+      "name": "com/example/quotes/server/QuotesRoutes.kt",
+      "digest": "sha256:a5d54ae7ecfd94da38bbc24f0d8a8b0985b750d943266598e4d07665b9c1f06e"
+    }
+  ]
+}
