@@ -17,6 +17,8 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.core.model.Referable
+import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.content.Encoding
 import com.davils.kapi.spec.openapi.model.content.Example
@@ -24,10 +26,19 @@ import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.RequestBody
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
+import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
+import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kapi.spec.openapi.resolve
 
-internal class ContentWriter(private val schemas: SchemaWriter, family: VersionFamily) {
-    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+internal class ContentWriter(private val schemas: SchemaWriter, private val document: Document) {
+    private val isCurrent: Boolean = document.version.family.isAtLeast(VersionFamily.V32)
+
+    fun parameters(parameters: List<Referable<Parameter>>): List<Referable<Parameter>> =
+        parameters.filter(::isExpressible)
+
+    fun parameters(parameters: Map<String, Referable<Parameter>>): Map<String, Referable<Parameter>> =
+        parameters.filterValues(::isExpressible)
 
     fun parameter(parameter: Parameter): YamlNode {
         val out = Out()
@@ -37,7 +48,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out.flag(Keys.REQUIRED, parameter.isRequired)
         out.flag(Keys.DEPRECATED, parameter.isDeprecated)
         out.flag(Keys.ALLOW_EMPTY_VALUE, parameter.isEmptyValueAllowed)
-        out[Keys.STYLE] = parameter.style?.keyword
+        out[Keys.STYLE] = styleOf(parameter.style)
         out.choice(Keys.EXPLODE, parameter.isExploded)
         out.flag(Keys.ALLOW_RESERVED, parameter.isReservedAllowed)
         out.node(Keys.SCHEMA, parameter.schema?.let(schemas::schema))
@@ -52,7 +63,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         out[Keys.DESCRIPTION] = header.description
         out.flag(Keys.REQUIRED, header.isRequired)
         out.flag(Keys.DEPRECATED, header.isDeprecated)
-        out[Keys.STYLE] = header.style?.keyword
+        out[Keys.STYLE] = styleOf(header.style)
         out.choice(Keys.EXPLODE, header.isExploded)
         out.node(Keys.SCHEMA, header.schema?.let(schemas::schema))
         out.map(Keys.CONTENT, header.content, ReferenceWriter.referables(::mediaType))
@@ -95,7 +106,7 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
         val out = Out()
         out[Keys.CONTENT_TYPE] = encoding.contentType
         out.map(Keys.HEADERS, encoding.headers, ReferenceWriter.referables(::header))
-        out[Keys.STYLE] = encoding.style?.keyword
+        out[Keys.STYLE] = styleOf(encoding.style)
         out.choice(Keys.EXPLODE, encoding.isExploded)
         out.flag(Keys.ALLOW_RESERVED, encoding.isReservedAllowed)
         out.map(Keys.ENCODING, encoding.nestedEncoding.takeIf { isCurrent }.orEmpty(), ::encoding)
@@ -106,5 +117,15 @@ internal class ContentWriter(private val schemas: SchemaWriter, family: VersionF
     private fun nested(out: Out, prefix: List<Encoding>, item: Encoding?) {
         out.list(Keys.PREFIX_ENCODING, prefix.takeIf { isCurrent }.orEmpty(), ::encoding)
         out.node(Keys.ITEM_ENCODING, item?.takeIf { isCurrent }?.let(::encoding))
+    }
+
+    private fun styleOf(style: ParameterStyle?): String? {
+        val isExpressible = isCurrent || style != ParameterStyle.Cookie
+        return style?.takeIf { isExpressible }?.keyword
+    }
+
+    private fun isExpressible(parameter: Referable<Parameter>): Boolean {
+        val placement = document.resolve(parameter)?.placement
+        return isCurrent || placement != ParameterPlacement.QueryString
     }
 }

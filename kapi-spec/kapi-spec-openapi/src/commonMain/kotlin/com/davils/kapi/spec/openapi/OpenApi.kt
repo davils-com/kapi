@@ -56,14 +56,17 @@ public object OpenApi {
      * Writes [document] as YAML in the form of its version family.
      *
      * Every value is written so that it reads back to the same document; text from the document cannot start a node
-     * of its own, because the emitter of kaml quotes what cannot be written plain.
+     * of its own, because the emitter of kaml quotes what cannot be written plain. What the version family of
+     * [document] cannot express is left out, such as the fields that OpenAPI 3.2 adds when an older family is written:
+     * a parameter `in: querystring` is dropped from the components and from every list of parameters, also where the
+     * list refers to it, and the style `cookie` is not written, so the default style of the location applies.
      *
      * @param document the document to write.
      * @return the YAML text of the document.
      * @since 1.0.0
      */
     public fun write(document: Document): String {
-        val writer = DocumentWriter(document.version.family)
+        val writer = DocumentWriter(document)
         return Yaml.Default.emit(writer.document(document))
     }
 }

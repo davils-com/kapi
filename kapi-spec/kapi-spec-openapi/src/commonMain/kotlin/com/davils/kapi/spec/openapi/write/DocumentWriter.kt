@@ -22,7 +22,9 @@ import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.component.Components
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal class DocumentWriter(family: VersionFamily) {
+internal class DocumentWriter(target: Document) {
+    private val family: VersionFamily = target.version.family
+
     private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
 
     private val info: InfoWriter = InfoWriter(family)
@@ -31,7 +33,7 @@ internal class DocumentWriter(family: VersionFamily) {
 
     private val schemas: SchemaWriter = SchemaWriter(family, info)
 
-    private val content: ContentWriter = ContentWriter(schemas, family)
+    private val content: ContentWriter = ContentWriter(schemas, target)
 
     private val responses: ResponseWriter = ResponseWriter(content, info, family)
 
@@ -63,7 +65,8 @@ internal class DocumentWriter(family: VersionFamily) {
         val out = Out()
         out.map(Keys.SCHEMAS, components.schemas, schemas::schema)
         out.map(Keys.RESPONSES, components.responses, ReferenceWriter.referables(responses::response))
-        out.map(Keys.PARAMETERS, components.parameters, ReferenceWriter.referables(content::parameter))
+        val parameters = content.parameters(components.parameters)
+        out.map(Keys.PARAMETERS, parameters, ReferenceWriter.referables(content::parameter))
         out.map(Keys.EXAMPLES, components.examples, ReferenceWriter.referables(content::example))
         out.map(Keys.REQUEST_BODIES, components.requestBodies, ReferenceWriter.referables(content::requestBody))
         out.map(Keys.HEADERS, components.headers, ReferenceWriter.referables(content::header))
