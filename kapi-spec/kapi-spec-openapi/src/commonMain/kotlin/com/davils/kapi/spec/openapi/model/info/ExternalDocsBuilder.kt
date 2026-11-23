@@ -19,13 +19,30 @@ package com.davils.kapi.spec.openapi.model.info
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kore.core.annotation.DavilsDsl
 
+/**
+ * The builder of an [ExternalDocs], filled by the readers of kapi.
+ *
+ * A builder is not safe to share between threads; the documentation it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
 public class ExternalDocsBuilder internal constructor() :
     ElementBuilder<ExternalDocs>() {
     override val subject: String get() = "openapi external documentation"
 
+    /**
+     * The value of `url`, the URL of the documentation; empty until it is set.
+     *
+     * @since 1.0.0
+     */
     public var url: String = ""
 
+    /**
+     * The value of `description`, the description of the documentation.
+     *
+     * @since 1.0.0
+     */
     public var description: String? = null
 
     override fun assemble(): ExternalDocs = ExternalDocs(this)
