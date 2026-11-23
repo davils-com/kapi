@@ -85,7 +85,10 @@ class ReaderBuilderTest : FunSpec({
             val builder = ReaderBuilder()
             builder.limits { maximumDocuments = 0 }
 
+            builder.severities { downgrade(DiagnosticCodes.FIELD_UNKNOWN, " ") }
+
             builder.limits shouldBe ReadLimits.Default
+            builder.severities shouldBe SeverityPolicy.Default
             shouldThrow<ValidationException> { AsyncApi.reader { limits { maximumDocuments = 0 } } }
         }
 

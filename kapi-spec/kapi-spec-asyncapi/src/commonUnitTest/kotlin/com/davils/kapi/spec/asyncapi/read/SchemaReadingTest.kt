@@ -130,6 +130,8 @@ class SchemaReadingTest : FunSpec({
                 "application/vnd.oai.openapi;version=3.1.0" to SchemaFormat.Unknown,
                 "application/vnd.apache.avro;version=2.0" to SchemaFormat.Unknown,
                 "application/xml" to SchemaFormat.Unknown,
+                "application/vnd.oai.openapi" to SchemaFormat.Unknown,
+                "application/schema+json;\tversion=draft-07" to SchemaFormat.JsonSchema,
             )
 
             formats.forEach { (text, format) -> formatOf(text) shouldBe format }

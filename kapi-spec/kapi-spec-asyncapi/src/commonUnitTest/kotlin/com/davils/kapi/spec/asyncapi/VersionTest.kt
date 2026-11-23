@@ -27,7 +27,7 @@ private const val LATEST: String = "3.0.0"
 class VersionTest : FunSpec({
     context("a version") {
         test("is read with its family, with or without a patch and a pre-release") {
-            listOf(LATEST, "3.0", "3.0.1", "3.0.0-rc1", "3.0.0-beta.2-x").forEach { text ->
+            listOf(LATEST, "3.0", "3.0.1", "3.0.0-rc1", "3.0.0-beta.2-x", "3.0.0-RC.1").forEach { text ->
                 val version = Version.parseOrNull(text).shouldNotBeNull()
 
                 version.family shouldBe VersionFamily.V30
@@ -44,7 +44,7 @@ class VersionTest : FunSpec({
 
         test("refuses every text that is no version of AsyncAPI 3.0") {
             val refused = listOf(
-                "2.6.0", "3.1.0", "3", "3.0.", "3.0.x", "3.0.0-", "3.0.0-a_b", "30.0",
+                "2.6.0", "3.0x", "3.1.0", "3", "3.0.", "3.0.x", "3.0.0-", "3.0.0-a_b", "30.0",
                 "3.0" +
                     "0".repeat(
                         64,
@@ -58,7 +58,8 @@ class VersionTest : FunSpec({
             Version.parseOrNull(LATEST) shouldBe Version.Latest
             Version.parseOrNull(LATEST).hashCode() shouldBe Version.Latest.hashCode()
             Version.parseOrNull("3.0.1") shouldNotBe Version.Latest
-            VersionFamily.V30.isAtLeast(VersionFamily.V30) shouldBe true
+            Version.Latest.equals(LATEST) shouldBe false
+            Version.Latest.family.prefix shouldBe "3.0"
         }
     }
 })

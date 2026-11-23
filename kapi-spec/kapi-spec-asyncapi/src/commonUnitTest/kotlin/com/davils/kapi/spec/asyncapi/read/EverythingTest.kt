@@ -354,7 +354,7 @@ class EverythingTest : FunSpec({
         parts.serverVariables.keys shouldContainExactly setOf("stage")
         parts.parameters.keys shouldContainExactly setOf("userId")
         parts.correlationIds.keys shouldContainExactly setOf("trace")
-        parts.replies.keys shouldContainExactly setOf("none")
+        parts.replies.keys shouldContainExactly setOf("channelOnly", "none")
         parts.replyAddresses.keys shouldContainExactly setOf("back")
         parts.externalDocs.keys shouldContainExactly setOf("docs")
         parts.tags.keys shouldContainExactly setOf(SHARED)

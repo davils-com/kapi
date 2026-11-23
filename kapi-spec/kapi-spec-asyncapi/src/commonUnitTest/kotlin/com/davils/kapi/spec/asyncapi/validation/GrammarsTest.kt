@@ -51,7 +51,9 @@ class GrammarsTest : FunSpec({
                 "a/b; q=\"x y\"",
                 "application/vnd.a+json",
             )
-            val invalid = listOf("", "json", "a/", "/b", "a/b/c", "a b/c", "a/b;c", "a/b;=c", "a/b;c=\"")
+            val invalid =
+                listOf("", "json", "a/", "/b", "a/b/c", "a b/c", "a/b;c", "a/b;=c") +
+                    listOf("a/b;c=\"", "a/b;c=\"x", "a/b;c=x\"")
 
             valid.forEach { text -> Grammars.isMediaType(text) shouldBe true }
             invalid.forEach { text -> Grammars.isMediaType(text) shouldBe false }
@@ -63,6 +65,17 @@ class GrammarsTest : FunSpec({
             Templates.names("{a}.{b}") shouldBe listOf("a", "b")
             Templates.names("plain") shouldBe emptyList()
             Templates.names("{a") shouldBe null
+        }
+    }
+
+    context("a key") {
+        test("of a component may hold dots, of a server not") {
+            Grammars.isComponentKey("a.b-c_D9") shouldBe true
+            Grammars.isComponentKey("") shouldBe false
+            Grammars.isComponentKey("a b") shouldBe false
+            Grammars.isIdentifier("a-b_C9") shouldBe true
+            Grammars.isIdentifier("a.b") shouldBe false
+            Grammars.isIdentifier("") shouldBe false
         }
     }
 })

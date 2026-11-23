@@ -121,6 +121,7 @@ class ReadingTest : FunSpec({
             first.hashCode() shouldBe second.hashCode()
             first shouldNotBe other
             readingOfText("[]") shouldBe readingOfText("[]")
+            first.equals(text) shouldBe false
         }
     }
 })

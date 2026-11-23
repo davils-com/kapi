@@ -114,6 +114,15 @@ class ReferenceReadingTest : FunSpec({
             reading.codes() shouldBe listOf(DiagnosticCodes.REFERENCE_OUTSIDE)
         }
 
+        test("is refused when it names a host or the root is remote") {
+            readingOf(messagesTo("//example.com/models.yaml#/Event")).codes() shouldBe
+                listOf(DiagnosticCodes.REFERENCE_OUTSIDE)
+            val text = yamlOf(head + TO_MODELS.trimIndent().lines())
+            val remote = AsyncApi.reader().read(Source.Text(text, DocumentUri("https://example.com/api.yaml")))
+
+            remote.codes() shouldBe listOf(DiagnosticCodes.LOAD_REMOTE)
+        }
+
         test("is refused when it is remote") {
             readingOf(messagesTo("https://example.com/models.yaml#/Event")).codes() shouldBe
                 listOf(DiagnosticCodes.LOAD_REMOTE)

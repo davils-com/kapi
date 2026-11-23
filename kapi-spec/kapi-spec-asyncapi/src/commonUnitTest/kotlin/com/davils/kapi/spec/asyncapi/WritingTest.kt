@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.asyncapi
 
 import com.davils.kapi.spec.asyncapi.fixture.document
+import com.davils.kapi.spec.asyncapi.fixture.partial
 import com.davils.kapi.spec.asyncapi.fixture.readingOf
 import com.davils.kapi.spec.asyncapi.fixture.readingOfText
 import com.davils.kapi.spec.asyncapi.fixture.rewritten
@@ -60,6 +61,9 @@ class WritingTest : FunSpec({
             val document = readingOf(
                 """
                     |x-count: 3
+                    |x-negative: -3
+                    |x-exponent: 1e3
+                    |x-small: -0.5
                     |x-ratio: -1.5e3
                     |x-none: null
                     |x-list: [1, two, false]
@@ -73,6 +77,12 @@ class WritingTest : FunSpec({
             ).document()
 
             document.rewritten() shouldBe document
+        }
+
+        test("writes what could be read of an invalid document") {
+            val partial = readingOf(listOf("operations:", "  send:", "    action: send")).partial()
+
+            AsyncApi.write(partial) shouldNotContain "channel"
         }
 
         test("reads back from JSON to the same document") {

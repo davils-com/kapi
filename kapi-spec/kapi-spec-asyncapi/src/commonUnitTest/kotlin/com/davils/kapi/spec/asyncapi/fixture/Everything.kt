@@ -230,6 +230,9 @@ internal val everything: String =
         |    Ack:
         |      payload:
         |        type: boolean
+        |      examples:
+        |        - headers:
+        |            id: ack
         |  securitySchemes:
         |    user:
         |      type: userPassword
@@ -267,6 +270,12 @@ internal val everything: String =
         |          availableScopes:
         |            listen: Listen
         |      scopes: [say]
+        |    implicitOnly:
+        |      type: oauth2
+        |      flows:
+        |        implicit:
+        |          authorizationUrl: https://example.com/authorize
+        |          availableScopes: {}
         |    oidc:
         |      type: openIdConnect
         |      openIdConnectUrl: https://example.com/.well-known/openid-configuration
@@ -295,6 +304,9 @@ internal val everything: String =
         |    trace:
         |      location: ${'$'}message.header#/traceId
         |  replies:
+        |    channelOnly:
+        |      channel:
+        |        ${'$'}ref: '#/components/channels/replies'
         |    none:
         |      address:
         |        location: ${'$'}message.header#/replyTo
@@ -345,6 +357,8 @@ internal val everything: String =
         |      mqtt:
         |        clientId: chat
         |  channelBindings:
+        |    bare:
+        |      ws: {}
         |    plain:
         |      amqp:
         |        is: queue
