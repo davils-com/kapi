@@ -56,7 +56,7 @@ internal class FieldScanner(private val text: String) {
         return text.substring(start, position).takeIf(String::isNotEmpty)
     }
 
-    fun quotedString(): String? {
+    fun quotedString(isUnicode: Boolean = false): String? {
         if (!consume(QUOTE)) return null
         val out = StringBuilder()
         var isOpen = true
@@ -65,13 +65,13 @@ internal class FieldScanner(private val text: String) {
             val char = peek()
             position += 1
             isOpen = char != QUOTE
-            isValid = char != null && appended(out, char)
+            isValid = char != null && appended(out, char, isUnicode)
         }
         return out.toString().takeIf { isValid }
     }
 
-    fun tokenOrQuoted(): String? {
-        if (peek() == QUOTE) return quotedString()
+    fun tokenOrQuoted(isUnicode: Boolean = false): String? {
+        if (peek() == QUOTE) return quotedString(isUnicode)
         return token()
     }
 
@@ -81,15 +81,17 @@ internal class FieldScanner(private val text: String) {
         return remaining
     }
 
-    private fun appended(out: StringBuilder, char: Char): Boolean {
+    private fun appended(out: StringBuilder, char: Char, isUnicode: Boolean): Boolean {
         if (char == QUOTE) return true
-        val shown = escaped(char)
+        val shown = escaped(char)?.takeIf { found -> isUnicode || !FieldGrammar.isBeyondLatin(found) }
         shown?.let(out::append)
         return shown != null
     }
 
+    private fun isQuotedChar(char: Char): Boolean = FieldGrammar.isQuotedText(char) || FieldGrammar.isBeyondLatin(char)
+
     private fun escaped(char: Char): Char? {
-        if (char != BACKSLASH) return char.takeIf(FieldGrammar::isQuotedText)
+        if (char != BACKSLASH) return char.takeIf(::isQuotedChar)
         val next = peek()?.takeIf(FieldGrammar::isQuotable)
         next?.let { position += 1 }
         return next

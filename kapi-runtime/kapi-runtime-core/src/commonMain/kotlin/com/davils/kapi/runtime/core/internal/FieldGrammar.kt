@@ -58,6 +58,8 @@ internal object FieldGrammar {
 
     fun isObsolete(char: Char): Boolean = char in FIRST_OBSOLETE..LAST_OBSOLETE
 
+    fun isBeyondLatin(char: Char): Boolean = char > LAST_OBSOLETE
+
     fun trimmed(text: String): String = text.trim(::isWhitespace)
 
     fun isSafeValue(text: String): Boolean = text.all { char -> isWhitespace(char) || isVisible(char) }
