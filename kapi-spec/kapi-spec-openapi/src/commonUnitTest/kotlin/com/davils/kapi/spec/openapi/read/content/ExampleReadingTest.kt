@@ -36,12 +36,14 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
-private const val SERIALIZED: String = "{dataValue: {name: Rex}, serializedValue: '{\"name\":\"Rex\"}'}"
+private const val SERIALIZED: String = """{dataValue: {name: Rex}, serializedValue: '{"name":"Rex"}'}"""
 
 private const val EXTERNAL: String = "{dataValue: {name: Rex}, externalValue: 'https://example.com/rex.json'}"
 
-private fun examples(vararg examples: String): List<String> =
+private fun examples(examples: List<String>): List<String> =
     listOf("components:", "  examples:") + examples.mapIndexed { index, fields -> "    E$index: $fields" }
+
+private fun examples(vararg examples: String): List<String> = examples(examples.asList())
 
 private fun Document.example(name: String): Example {
     val declared = parts().examples.getValue(name)
@@ -56,7 +58,7 @@ class ExampleReadingTest : FunSpec({
 
             reading.diagnostics.shouldBeEmpty()
             serialized.dataValue shouldBe Value.Mapping(mapOf("name" to Value.Text("Rex")))
-            serialized.serializedValue shouldBe "{\"name\":\"Rex\"}"
+            serialized.serializedValue shouldBe """{"name":"Rex"}"""
         }
 
         test("is written with them and reads back") {
@@ -69,15 +71,15 @@ class ExampleReadingTest : FunSpec({
         }
 
         test("gives its value in one of the combinations OpenAPI allows") {
-            val conflicting = examples(
+            val combinations = listOf(
                 "{value: 1, dataValue: 1}",
                 "{value: 1, serializedValue: '1'}",
                 "{externalValue: 'https://example.com/a', serializedValue: '1'}",
                 "{value: 1, externalValue: 'https://example.com/a'}",
             )
-            val reading = reading32(conflicting)
+            val reading = reading32(examples(combinations))
 
-            reading.codes() shouldBe List(4) { DiagnosticCodes.EXAMPLE_SHAPE }
+            reading.codes() shouldBe combinations.map { DiagnosticCodes.EXAMPLE_SHAPE }
         }
     }
 

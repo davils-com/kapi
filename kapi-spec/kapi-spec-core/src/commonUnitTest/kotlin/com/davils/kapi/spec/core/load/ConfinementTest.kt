@@ -62,7 +62,8 @@ class ConfinementTest : FunSpec({
 
     context("a configured root") {
         test("replaces the folder of the document") {
-            val wide = ReferencePolicyBuilder().apply { root = uri("file:///work/") }.build()
+            val builder = ReferencePolicyBuilder().apply { root = uri("file:///work/") }
+            val wide = builder.build()
             val confinement = Confinement.of(wide, petstore)
 
             confinement.contains(uri("file:///work/shared/errors.yaml")) shouldBe true
@@ -72,7 +73,8 @@ class ConfinementTest : FunSpec({
 
     context("a reader that allows no other document") {
         test("contains the document alone") {
-            val alone = ReferencePolicyBuilder().apply { isExternalAllowed = false }.build()
+            val builder = ReferencePolicyBuilder().apply { isExternalAllowed = false }
+            val alone = builder.build()
             val confinement = Confinement.of(alone, petstore)
 
             confinement.contains(petstore) shouldBe true

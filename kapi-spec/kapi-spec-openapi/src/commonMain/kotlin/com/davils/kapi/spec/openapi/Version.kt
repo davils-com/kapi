@@ -85,7 +85,8 @@ public class Version private constructor(
             val preRelease = rest.substringAfter('-', missingDelimiterValue = "")
             val hasPreRelease = '-' in rest
             val isCore = core.isEmpty() || isPatch(core)
-            val isPreRelease = !hasPreRelease || preRelease.isNotEmpty() && preRelease.all(::isPreReleaseCharacter)
+            val isValidPreRelease = preRelease.isNotEmpty() && preRelease.all(::isPreReleaseCharacter)
+            val isPreRelease = !hasPreRelease || isValidPreRelease
             return isCore && isPreRelease
         }
 

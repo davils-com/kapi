@@ -37,11 +37,11 @@ internal object OverlayMerge {
 
     private fun changed(entry: YamlEntry, change: YamlEntry?): YamlEntry {
         if (change == null) return entry
-        return YamlEntry(entry.key, deep(entry.value, change.value))
+        return YamlEntry(key = entry.key, value = deep(value = entry.value, change = change.value))
     }
 
     private fun deep(value: YamlNode, change: YamlNode): YamlNode {
         if (value !is YamlNode.Mapping || change !is YamlNode.Mapping) return change
-        return mapping(value, change)
+        return mapping(target = value, update = change)
     }
 }

@@ -46,7 +46,7 @@ private fun at(document: DocumentUri, offset: Int): Location = Location(
     document = document,
     pointer = JsonPointer.ROOT,
     range = TextRange.at(offset),
-    position = TextPosition(0, offset),
+    position = TextPosition(line = 0, column = offset),
 )
 
 private fun findings(policy: SeverityPolicy = SeverityPolicy.Default): Findings = Findings(policy, MAXIMUM)

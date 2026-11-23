@@ -154,7 +154,7 @@ class ReaderTest : FunSpec({
 
             diagnostic.code shouldBe DiagnosticCodes.FIELD_UNKNOWN
             diagnostic.message shouldBe "inof is no field of The document, did you mean info?"
-            diagnostic.location?.position shouldBe TextPosition(1, 0)
+            diagnostic.location?.position shouldBe TextPosition(line = 1, column = 0)
             diagnostic.snippet?.line shouldBe "inof:"
         }
 

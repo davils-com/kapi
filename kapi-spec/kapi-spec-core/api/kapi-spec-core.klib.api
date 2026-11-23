@@ -1,0 +1,719 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kapi-spec-core>
+final enum class com.davils.kapi.spec.core.source/Refusal : kotlin/Enum<com.davils.kapi.spec.core.source/Refusal> { // com.davils.kapi.spec.core.source/Refusal|null[0]
+    enum entry Confinement // com.davils.kapi.spec.core.source/Refusal.Confinement|null[0]
+    enum entry Size // com.davils.kapi.spec.core.source/Refusal.Size|null[0]
+    enum entry Unresolvable // com.davils.kapi.spec.core.source/Refusal.Unresolvable|null[0]
+
+    final val entries // com.davils.kapi.spec.core.source/Refusal.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.core.source/Refusal> // com.davils.kapi.spec.core.source/Refusal.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.spec.core.source/Refusal // com.davils.kapi.spec.core.source/Refusal.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.spec.core.source/Refusal> // com.davils.kapi.spec.core.source/Refusal.values|values#static(){}[0]
+}
+
+final enum class com.davils.kapi.spec.core.value/ValueKind : kotlin/Enum<com.davils.kapi.spec.core.value/ValueKind> { // com.davils.kapi.spec.core.value/ValueKind|null[0]
+    enum entry Flag // com.davils.kapi.spec.core.value/ValueKind.Flag|null[0]
+    enum entry Mapping // com.davils.kapi.spec.core.value/ValueKind.Mapping|null[0]
+    enum entry Null // com.davils.kapi.spec.core.value/ValueKind.Null|null[0]
+    enum entry Number // com.davils.kapi.spec.core.value/ValueKind.Number|null[0]
+    enum entry Sequence // com.davils.kapi.spec.core.value/ValueKind.Sequence|null[0]
+    enum entry Text // com.davils.kapi.spec.core.value/ValueKind.Text|null[0]
+
+    final val entries // com.davils.kapi.spec.core.value/ValueKind.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.davils.kapi.spec.core.value/ValueKind> // com.davils.kapi.spec.core.value/ValueKind.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/ValueKind.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.davils.kapi.spec.core.value/ValueKind> // com.davils.kapi.spec.core.value/ValueKind.values|values#static(){}[0]
+}
+
+abstract fun interface com.davils.kapi.spec.core.source/Resolver { // com.davils.kapi.spec.core.source/Resolver|null[0]
+    abstract suspend fun resolve(com.davils.kapi.spec.core.diagnostic/DocumentUri): com.davils.kapi.spec.core.source/Resolution // com.davils.kapi.spec.core.source/Resolver.resolve|resolve(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.source/Resolver.Companion|null[0]
+        final val None // com.davils.kapi.spec.core.source/Resolver.Companion.None|{}None[0]
+            final fun <get-None>(): com.davils.kapi.spec.core.source/Resolver // com.davils.kapi.spec.core.source/Resolver.Companion.None.<get-None>|<get-None>(){}[0]
+    }
+}
+
+abstract interface com.davils.kapi.spec.core.load/LoadCodes { // com.davils.kapi.spec.core.load/LoadCodes|null[0]
+    abstract val documentEmpty // com.davils.kapi.spec.core.load/LoadCodes.documentEmpty|{}documentEmpty[0]
+        abstract fun <get-documentEmpty>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.documentEmpty.<get-documentEmpty>|<get-documentEmpty>(){}[0]
+    abstract val encoding // com.davils.kapi.spec.core.load/LoadCodes.encoding|{}encoding[0]
+        abstract fun <get-encoding>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.encoding.<get-encoding>|<get-encoding>(){}[0]
+    abstract val failed // com.davils.kapi.spec.core.load/LoadCodes.failed|{}failed[0]
+        abstract fun <get-failed>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.failed.<get-failed>|<get-failed>(){}[0]
+    abstract val missing // com.davils.kapi.spec.core.load/LoadCodes.missing|{}missing[0]
+        abstract fun <get-missing>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.missing.<get-missing>|<get-missing>(){}[0]
+    abstract val multipleDocuments // com.davils.kapi.spec.core.load/LoadCodes.multipleDocuments|{}multipleDocuments[0]
+        abstract fun <get-multipleDocuments>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.multipleDocuments.<get-multipleDocuments>|<get-multipleDocuments>(){}[0]
+    abstract val outside // com.davils.kapi.spec.core.load/LoadCodes.outside|{}outside[0]
+        abstract fun <get-outside>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.outside.<get-outside>|<get-outside>(){}[0]
+    abstract val remote // com.davils.kapi.spec.core.load/LoadCodes.remote|{}remote[0]
+        abstract fun <get-remote>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.remote.<get-remote>|<get-remote>(){}[0]
+    abstract val scheme // com.davils.kapi.spec.core.load/LoadCodes.scheme|{}scheme[0]
+        abstract fun <get-scheme>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.scheme.<get-scheme>|<get-scheme>(){}[0]
+    abstract val size // com.davils.kapi.spec.core.load/LoadCodes.size|{}size[0]
+        abstract fun <get-size>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.size.<get-size>|<get-size>(){}[0]
+    abstract val tooManyDocuments // com.davils.kapi.spec.core.load/LoadCodes.tooManyDocuments|{}tooManyDocuments[0]
+        abstract fun <get-tooManyDocuments>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.load/LoadCodes.tooManyDocuments.<get-tooManyDocuments>|<get-tooManyDocuments>(){}[0]
+}
+
+sealed interface <#A: out com.davils.kapi.spec.core.model/Element> com.davils.kapi.spec.core.model/Referable { // com.davils.kapi.spec.core.model/Referable|null[0]
+    final class <#A1: out com.davils.kapi.spec.core.model/Element> Inline : com.davils.kapi.spec.core.model/Referable<#A1> { // com.davils.kapi.spec.core.model/Referable.Inline|null[0]
+        constructor <init>(#A1) // com.davils.kapi.spec.core.model/Referable.Inline.<init>|<init>(1:0){}[0]
+
+        final val value // com.davils.kapi.spec.core.model/Referable.Inline.value|{}value[0]
+            final fun <get-value>(): #A1 // com.davils.kapi.spec.core.model/Referable.Inline.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Referable.Inline.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Referable.Inline.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Referable.Inline.toString|toString(){}[0]
+    }
+
+    final class Referenced : com.davils.kapi.spec.core.model/Referable<kotlin/Nothing> { // com.davils.kapi.spec.core.model/Referable.Referenced|null[0]
+        constructor <init>(com.davils.kapi.spec.core.model/Reference) // com.davils.kapi.spec.core.model/Referable.Referenced.<init>|<init>(com.davils.kapi.spec.core.model.Reference){}[0]
+
+        final val reference // com.davils.kapi.spec.core.model/Referable.Referenced.reference|{}reference[0]
+            final fun <get-reference>(): com.davils.kapi.spec.core.model/Reference // com.davils.kapi.spec.core.model/Referable.Referenced.reference.<get-reference>|<get-reference>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Referable.Referenced.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Referable.Referenced.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Referable.Referenced.toString|toString(){}[0]
+    }
+}
+
+sealed interface <#A: out kotlin/Any?> com.davils.kapi.spec.core.value/ExtensionReading { // com.davils.kapi.spec.core.value/ExtensionReading|null[0]
+    final class <#A1: out kotlin/Any> Present : com.davils.kapi.spec.core.value/ExtensionReading<#A1> { // com.davils.kapi.spec.core.value/ExtensionReading.Present|null[0]
+        constructor <init>(#A1) // com.davils.kapi.spec.core.value/ExtensionReading.Present.<init>|<init>(1:0){}[0]
+
+        final val value // com.davils.kapi.spec.core.value/ExtensionReading.Present.value|{}value[0]
+            final fun <get-value>(): #A1 // com.davils.kapi.spec.core.value/ExtensionReading.Present.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionReading.Present.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionReading.Present.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionReading.Present.toString|toString(){}[0]
+    }
+
+    final class Mistyped : com.davils.kapi.spec.core.value/ExtensionReading<kotlin/Nothing> { // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped|null[0]
+        constructor <init>(com.davils.kapi.spec.core.value/Value, com.davils.kapi.spec.core.value/ValueKind) // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.<init>|<init>(com.davils.kapi.spec.core.value.Value;com.davils.kapi.spec.core.value.ValueKind){}[0]
+
+        final val expected // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.expected|{}expected[0]
+            final fun <get-expected>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.expected.<get-expected>|<get-expected>(){}[0]
+        final val found // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.found|{}found[0]
+            final fun <get-found>(): com.davils.kapi.spec.core.value/Value // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.found.<get-found>|<get-found>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionReading.Mistyped.toString|toString(){}[0]
+    }
+
+    final object Absent : com.davils.kapi.spec.core.value/ExtensionReading<kotlin/Nothing> { // com.davils.kapi.spec.core.value/ExtensionReading.Absent|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionReading.Absent.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionReading.Absent.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionReading.Absent.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.spec.core.source/Resolution { // com.davils.kapi.spec.core.source/Resolution|null[0]
+    final class Failed : com.davils.kapi.spec.core.source/Resolution { // com.davils.kapi.spec.core.source/Resolution.Failed|null[0]
+        constructor <init>(kotlin/String) // com.davils.kapi.spec.core.source/Resolution.Failed.<init>|<init>(kotlin.String){}[0]
+
+        final val reason // com.davils.kapi.spec.core.source/Resolution.Failed.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String // com.davils.kapi.spec.core.source/Resolution.Failed.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Resolution.Failed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Resolution.Failed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Resolution.Failed.toString|toString(){}[0]
+    }
+
+    final class Found : com.davils.kapi.spec.core.source/Resolution { // com.davils.kapi.spec.core.source/Resolution.Found|null[0]
+        constructor <init>(kotlinx.io.bytestring/ByteString) // com.davils.kapi.spec.core.source/Resolution.Found.<init>|<init>(kotlinx.io.bytestring.ByteString){}[0]
+
+        final val content // com.davils.kapi.spec.core.source/Resolution.Found.content|{}content[0]
+            final fun <get-content>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.spec.core.source/Resolution.Found.content.<get-content>|<get-content>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Resolution.Found.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Resolution.Found.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Resolution.Found.toString|toString(){}[0]
+    }
+
+    final class Refused : com.davils.kapi.spec.core.source/Resolution { // com.davils.kapi.spec.core.source/Resolution.Refused|null[0]
+        constructor <init>(com.davils.kapi.spec.core.source/Refusal) // com.davils.kapi.spec.core.source/Resolution.Refused.<init>|<init>(com.davils.kapi.spec.core.source.Refusal){}[0]
+
+        final val refusal // com.davils.kapi.spec.core.source/Resolution.Refused.refusal|{}refusal[0]
+            final fun <get-refusal>(): com.davils.kapi.spec.core.source/Refusal // com.davils.kapi.spec.core.source/Resolution.Refused.refusal.<get-refusal>|<get-refusal>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Resolution.Refused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Resolution.Refused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Resolution.Refused.toString|toString(){}[0]
+    }
+
+    final object Missing : com.davils.kapi.spec.core.source/Resolution { // com.davils.kapi.spec.core.source/Resolution.Missing|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Resolution.Missing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Resolution.Missing.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Resolution.Missing.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.spec.core.source/Source { // com.davils.kapi.spec.core.source/Source|null[0]
+    abstract val uri // com.davils.kapi.spec.core.source/Source.uri|{}uri[0]
+        abstract fun <get-uri>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.source/Source.uri.<get-uri>|<get-uri>(){}[0]
+
+    final class Located : com.davils.kapi.spec.core.source/Source { // com.davils.kapi.spec.core.source/Source.Located|null[0]
+        constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri) // com.davils.kapi.spec.core.source/Source.Located.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
+
+        final val uri // com.davils.kapi.spec.core.source/Source.Located.uri|{}uri[0]
+            final fun <get-uri>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.source/Source.Located.uri.<get-uri>|<get-uri>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Source.Located.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Source.Located.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Source.Located.toString|toString(){}[0]
+    }
+
+    final class Text : com.davils.kapi.spec.core.source/Source { // com.davils.kapi.spec.core.source/Source.Text|null[0]
+        constructor <init>(kotlin/String, com.davils.kapi.spec.core.diagnostic/DocumentUri = ...) // com.davils.kapi.spec.core.source/Source.Text.<init>|<init>(kotlin.String;com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
+
+        final val text // com.davils.kapi.spec.core.source/Source.Text.text|{}text[0]
+            final fun <get-text>(): kotlin/String // com.davils.kapi.spec.core.source/Source.Text.text.<get-text>|<get-text>(){}[0]
+        final val uri // com.davils.kapi.spec.core.source/Source.Text.uri|{}uri[0]
+            final fun <get-uri>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.source/Source.Text.uri.<get-uri>|<get-uri>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/Source.Text.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/Source.Text.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/Source.Text.toString|toString(){}[0]
+    }
+}
+
+sealed interface com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value|null[0]
+    abstract val kind // com.davils.kapi.spec.core.value/Value.kind|{}kind[0]
+        abstract fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.kind.<get-kind>|<get-kind>(){}[0]
+    abstract val location // com.davils.kapi.spec.core.value/Value.location|{}location[0]
+        abstract fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.location.<get-location>|<get-location>(){}[0]
+
+    final class Flag : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Flag|null[0]
+        constructor <init>(kotlin/Boolean, com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Flag.<init>|<init>(kotlin.Boolean;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val isTrue // com.davils.kapi.spec.core.value/Value.Flag.isTrue|{}isTrue[0]
+            final fun <get-isTrue>(): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Flag.isTrue.<get-isTrue>|<get-isTrue>(){}[0]
+        final val kind // com.davils.kapi.spec.core.value/Value.Flag.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Flag.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Flag.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Flag.location.<get-location>|<get-location>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Flag.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Flag.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Flag.toString|toString(){}[0]
+    }
+
+    final class Mapping : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Mapping|null[0]
+        constructor <init>(kotlin.collections/Map<kotlin/String, com.davils.kapi.spec.core.value/Value>, com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Mapping.<init>|<init>(kotlin.collections.Map<kotlin.String,com.davils.kapi.spec.core.value.Value>;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val entries // com.davils.kapi.spec.core.value/Value.Mapping.entries|{}entries[0]
+            final fun <get-entries>(): kotlin.collections/Map<kotlin/String, com.davils.kapi.spec.core.value/Value> // com.davils.kapi.spec.core.value/Value.Mapping.entries.<get-entries>|<get-entries>(){}[0]
+        final val kind // com.davils.kapi.spec.core.value/Value.Mapping.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Mapping.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Mapping.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Mapping.location.<get-location>|<get-location>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Mapping.equals|equals(kotlin.Any?){}[0]
+        final fun get(kotlin/String): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.value/Value.Mapping.get|get(kotlin.String){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Mapping.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Mapping.toString|toString(){}[0]
+    }
+
+    final class Null : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Null|null[0]
+        constructor <init>(com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Null.<init>|<init>(com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val kind // com.davils.kapi.spec.core.value/Value.Null.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Null.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Null.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Null.location.<get-location>|<get-location>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Null.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Null.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Null.toString|toString(){}[0]
+    }
+
+    final class Number : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Number|null[0]
+        constructor <init>(com.davils.kapi.spec.core.value/NumberValue, com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Number.<init>|<init>(com.davils.kapi.spec.core.value.NumberValue;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val kind // com.davils.kapi.spec.core.value/Value.Number.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Number.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Number.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Number.location.<get-location>|<get-location>(){}[0]
+        final val value // com.davils.kapi.spec.core.value/Value.Number.value|{}value[0]
+            final fun <get-value>(): com.davils.kapi.spec.core.value/NumberValue // com.davils.kapi.spec.core.value/Value.Number.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Number.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Number.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Number.toString|toString(){}[0]
+    }
+
+    final class Sequence : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Sequence|null[0]
+        constructor <init>(kotlin.collections/List<com.davils.kapi.spec.core.value/Value>, com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Sequence.<init>|<init>(kotlin.collections.List<com.davils.kapi.spec.core.value.Value>;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val items // com.davils.kapi.spec.core.value/Value.Sequence.items|{}items[0]
+            final fun <get-items>(): kotlin.collections/List<com.davils.kapi.spec.core.value/Value> // com.davils.kapi.spec.core.value/Value.Sequence.items.<get-items>|<get-items>(){}[0]
+        final val kind // com.davils.kapi.spec.core.value/Value.Sequence.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Sequence.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Sequence.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Sequence.location.<get-location>|<get-location>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Sequence.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Sequence.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Sequence.toString|toString(){}[0]
+    }
+
+    final class Text : com.davils.kapi.spec.core.value/Value { // com.davils.kapi.spec.core.value/Value.Text|null[0]
+        constructor <init>(kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.value/Value.Text.<init>|<init>(kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+        final val kind // com.davils.kapi.spec.core.value/Value.Text.kind|{}kind[0]
+            final fun <get-kind>(): com.davils.kapi.spec.core.value/ValueKind // com.davils.kapi.spec.core.value/Value.Text.kind.<get-kind>|<get-kind>(){}[0]
+        final val location // com.davils.kapi.spec.core.value/Value.Text.location|{}location[0]
+            final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.value/Value.Text.location.<get-location>|<get-location>(){}[0]
+        final val value // com.davils.kapi.spec.core.value/Value.Text.value|{}value[0]
+            final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.value/Value.Text.value.<get-value>|<get-value>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Value.Text.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Value.Text.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Value.Text.toString|toString(){}[0]
+    }
+}
+
+abstract class <#A: com.davils.kore.core.validation/Validatable> com.davils.kapi.spec.core.model/ElementBuilder : com.davils.kore.core.dsl/ValidatingBuilder<#A> { // com.davils.kapi.spec.core.model/ElementBuilder|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.model/ElementBuilder.<init>|<init>(){}[0]
+
+    final val extensions // com.davils.kapi.spec.core.model/ElementBuilder.extensions|{}extensions[0]
+        final fun <get-extensions>(): com.davils.kapi.spec.core.value/Extensions // com.davils.kapi.spec.core.model/ElementBuilder.extensions.<get-extensions>|<get-extensions>(){}[0]
+
+    final var location // com.davils.kapi.spec.core.model/ElementBuilder.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.model/ElementBuilder.location.<get-location>|<get-location>(){}[0]
+        final fun <set-location>(com.davils.kapi.spec.core.diagnostic/Location?) // com.davils.kapi.spec.core.model/ElementBuilder.location.<set-location>|<set-location>(com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+    final fun adopt(com.davils.kapi.spec.core.value/Extensions) // com.davils.kapi.spec.core.model/ElementBuilder.adopt|adopt(com.davils.kapi.spec.core.value.Extensions){}[0]
+    final fun extension(com.davils.kapi.spec.core.value/ExtensionName, com.davils.kapi.spec.core.value/Value) // com.davils.kapi.spec.core.model/ElementBuilder.extension|extension(com.davils.kapi.spec.core.value.ExtensionName;com.davils.kapi.spec.core.value.Value){}[0]
+}
+
+abstract class com.davils.kapi.spec.core.model/Element : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.model/Element|null[0]
+    constructor <init>(com.davils.kapi.spec.core.model/ElementBuilder<*>) // com.davils.kapi.spec.core.model/Element.<init>|<init>(com.davils.kapi.spec.core.model.ElementBuilder<*>){}[0]
+
+    abstract val identity // com.davils.kapi.spec.core.model/Element.identity|{}identity[0]
+        abstract fun <get-identity>(): kotlin.collections/List<kotlin/Any?> // com.davils.kapi.spec.core.model/Element.identity.<get-identity>|<get-identity>(){}[0]
+    final val extensions // com.davils.kapi.spec.core.model/Element.extensions|{}extensions[0]
+        final fun <get-extensions>(): com.davils.kapi.spec.core.value/Extensions // com.davils.kapi.spec.core.model/Element.extensions.<get-extensions>|<get-extensions>(){}[0]
+    final val location // com.davils.kapi.spec.core.model/Element.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.model/Element.location.<get-location>|<get-location>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Element.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Element.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Element.toString|toString(){}[0]
+    final fun walk(): kotlin.sequences/Sequence<com.davils.kapi.spec.core.model/Element> // com.davils.kapi.spec.core.model/Element.walk|walk(){}[0]
+    open fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.model/Element.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+}
+
+final class com.davils.kapi.spec.core.diagnostic/Diagnostic { // com.davils.kapi.spec.core.diagnostic/Diagnostic|null[0]
+    constructor <init>(com.davils.kore.core.validation.violation/ViolationCode, com.davils.kore.core.validation.violation/Severity, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ..., com.davils.kore.core.text/TextSnippet? = ...) // com.davils.kapi.spec.core.diagnostic/Diagnostic.<init>|<init>(com.davils.kore.core.validation.violation.ViolationCode;com.davils.kore.core.validation.violation.Severity;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kore.core.text.TextSnippet?){}[0]
+
+    final val code // com.davils.kapi.spec.core.diagnostic/Diagnostic.code|{}code[0]
+        final fun <get-code>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.diagnostic/Diagnostic.code.<get-code>|<get-code>(){}[0]
+    final val isError // com.davils.kapi.spec.core.diagnostic/Diagnostic.isError|{}isError[0]
+        final fun <get-isError>(): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/Diagnostic.isError.<get-isError>|<get-isError>(){}[0]
+    final val location // com.davils.kapi.spec.core.diagnostic/Diagnostic.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.diagnostic/Diagnostic.location.<get-location>|<get-location>(){}[0]
+    final val message // com.davils.kapi.spec.core.diagnostic/Diagnostic.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.davils.kapi.spec.core.diagnostic/Diagnostic.message.<get-message>|<get-message>(){}[0]
+    final val severity // com.davils.kapi.spec.core.diagnostic/Diagnostic.severity|{}severity[0]
+        final fun <get-severity>(): com.davils.kore.core.validation.violation/Severity // com.davils.kapi.spec.core.diagnostic/Diagnostic.severity.<get-severity>|<get-severity>(){}[0]
+    final val snippet // com.davils.kapi.spec.core.diagnostic/Diagnostic.snippet|{}snippet[0]
+        final fun <get-snippet>(): com.davils.kore.core.text/TextSnippet? // com.davils.kapi.spec.core.diagnostic/Diagnostic.snippet.<get-snippet>|<get-snippet>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/Diagnostic.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/Diagnostic.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/Diagnostic.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.diagnostic/Location { // com.davils.kapi.spec.core.diagnostic/Location|null[0]
+    constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kaml.document.pointer/JsonPointer, com.davils.kore.core.text/TextRange? = ..., com.davils.kore.core.text/TextPosition? = ...) // com.davils.kapi.spec.core.diagnostic/Location.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kaml.document.pointer.JsonPointer;com.davils.kore.core.text.TextRange?;com.davils.kore.core.text.TextPosition?){}[0]
+
+    final val document // com.davils.kapi.spec.core.diagnostic/Location.document|{}document[0]
+        final fun <get-document>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.diagnostic/Location.document.<get-document>|<get-document>(){}[0]
+    final val pointer // com.davils.kapi.spec.core.diagnostic/Location.pointer|{}pointer[0]
+        final fun <get-pointer>(): com.davils.kaml.document.pointer/JsonPointer // com.davils.kapi.spec.core.diagnostic/Location.pointer.<get-pointer>|<get-pointer>(){}[0]
+    final val position // com.davils.kapi.spec.core.diagnostic/Location.position|{}position[0]
+        final fun <get-position>(): com.davils.kore.core.text/TextPosition? // com.davils.kapi.spec.core.diagnostic/Location.position.<get-position>|<get-position>(){}[0]
+    final val range // com.davils.kapi.spec.core.diagnostic/Location.range|{}range[0]
+        final fun <get-range>(): com.davils.kore.core.text/TextRange? // com.davils.kapi.spec.core.diagnostic/Location.range.<get-range>|<get-range>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/Location.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/Location.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/Location.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.load/DocumentLoader { // com.davils.kapi.spec.core.load/DocumentLoader|null[0]
+    constructor <init>(com.davils.kapi.spec.core.load/LoadSettings, com.davils.kapi.spec.core.read/Findings, com.davils.kapi.spec.core.source/Source, com.davils.kapi.spec.core.load/LoadCodes, kotlin/Function1<com.davils.kapi.spec.core.load/LoadedDocument, com.davils.kapi.spec.core.load/LoadedDocument?> = ...) // com.davils.kapi.spec.core.load/DocumentLoader.<init>|<init>(com.davils.kapi.spec.core.load.LoadSettings;com.davils.kapi.spec.core.read.Findings;com.davils.kapi.spec.core.source.Source;com.davils.kapi.spec.core.load.LoadCodes;kotlin.Function1<com.davils.kapi.spec.core.load.LoadedDocument,com.davils.kapi.spec.core.load.LoadedDocument?>){}[0]
+
+    final val documents // com.davils.kapi.spec.core.load/DocumentLoader.documents|{}documents[0]
+        final fun <get-documents>(): kotlin.collections/List<com.davils.kapi.spec.core.load/LoadedDocument> // com.davils.kapi.spec.core.load/DocumentLoader.documents.<get-documents>|<get-documents>(){}[0]
+    final val order // com.davils.kapi.spec.core.load/DocumentLoader.order|{}order[0]
+        final fun <get-order>(): kotlin.collections/Map<com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/Int> // com.davils.kapi.spec.core.load/DocumentLoader.order.<get-order>|<get-order>(){}[0]
+    final val overlays // com.davils.kapi.spec.core.load/DocumentLoader.overlays|{}overlays[0]
+        final fun <get-overlays>(): kotlin.collections/List<com.davils.kapi.spec.core.load/LoadedDocument> // com.davils.kapi.spec.core.load/DocumentLoader.overlays.<get-overlays>|<get-overlays>(){}[0]
+
+    final fun replace(com.davils.kapi.spec.core.load/LoadedDocument) // com.davils.kapi.spec.core.load/DocumentLoader.replace|replace(com.davils.kapi.spec.core.load.LoadedDocument){}[0]
+    final suspend fun load(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kapi.spec.core.diagnostic/Location?): com.davils.kapi.spec.core.load/LoadedDocument? // com.davils.kapi.spec.core.load/DocumentLoader.load|load(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+    final suspend fun overlay(com.davils.kapi.spec.core.source/Source): com.davils.kapi.spec.core.load/LoadedDocument? // com.davils.kapi.spec.core.load/DocumentLoader.overlay|overlay(com.davils.kapi.spec.core.source.Source){}[0]
+    final suspend fun root(): com.davils.kapi.spec.core.load/LoadedDocument? // com.davils.kapi.spec.core.load/DocumentLoader.root|root(){}[0]
+}
+
+final class com.davils.kapi.spec.core.load/LoadSettings { // com.davils.kapi.spec.core.load/LoadSettings|null[0]
+    constructor <init>(com.davils.kapi.spec.core.source/Resolver, com.davils.kapi.spec.core.policy/ReadLimits, com.davils.kapi.spec.core.policy/ReferencePolicy, kotlin/Boolean) // com.davils.kapi.spec.core.load/LoadSettings.<init>|<init>(com.davils.kapi.spec.core.source.Resolver;com.davils.kapi.spec.core.policy.ReadLimits;com.davils.kapi.spec.core.policy.ReferencePolicy;kotlin.Boolean){}[0]
+
+    final val hasMergeKeys // com.davils.kapi.spec.core.load/LoadSettings.hasMergeKeys|{}hasMergeKeys[0]
+        final fun <get-hasMergeKeys>(): kotlin/Boolean // com.davils.kapi.spec.core.load/LoadSettings.hasMergeKeys.<get-hasMergeKeys>|<get-hasMergeKeys>(){}[0]
+    final val limits // com.davils.kapi.spec.core.load/LoadSettings.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kapi.spec.core.policy/ReadLimits // com.davils.kapi.spec.core.load/LoadSettings.limits.<get-limits>|<get-limits>(){}[0]
+    final val references // com.davils.kapi.spec.core.load/LoadSettings.references|{}references[0]
+        final fun <get-references>(): com.davils.kapi.spec.core.policy/ReferencePolicy // com.davils.kapi.spec.core.load/LoadSettings.references.<get-references>|<get-references>(){}[0]
+    final val resolver // com.davils.kapi.spec.core.load/LoadSettings.resolver|{}resolver[0]
+        final fun <get-resolver>(): com.davils.kapi.spec.core.source/Resolver // com.davils.kapi.spec.core.load/LoadSettings.resolver.<get-resolver>|<get-resolver>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.load/LoadSettings.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.load/LoadSettings.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.load/LoadSettings.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.load/LoadedDocument { // com.davils.kapi.spec.core.load/LoadedDocument|null[0]
+    constructor <init>(kotlin/String, com.davils.kaml.core.node/YamlNode, com.davils.kapi.spec.core.source/SourceDocument) // com.davils.kapi.spec.core.load/LoadedDocument.<init>|<init>(kotlin.String;com.davils.kaml.core.node.YamlNode;com.davils.kapi.spec.core.source.SourceDocument){}[0]
+
+    final val root // com.davils.kapi.spec.core.load/LoadedDocument.root|{}root[0]
+        final fun <get-root>(): com.davils.kaml.core.node/YamlNode // com.davils.kapi.spec.core.load/LoadedDocument.root.<get-root>|<get-root>(){}[0]
+    final val source // com.davils.kapi.spec.core.load/LoadedDocument.source|{}source[0]
+        final fun <get-source>(): com.davils.kapi.spec.core.source/SourceDocument // com.davils.kapi.spec.core.load/LoadedDocument.source.<get-source>|<get-source>(){}[0]
+    final val text // com.davils.kapi.spec.core.load/LoadedDocument.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.davils.kapi.spec.core.load/LoadedDocument.text.<get-text>|<get-text>(){}[0]
+    final val uri // com.davils.kapi.spec.core.load/LoadedDocument.uri|{}uri[0]
+        final fun <get-uri>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.load/LoadedDocument.uri.<get-uri>|<get-uri>(){}[0]
+
+    final fun locate(com.davils.kaml.document.pointer/JsonPointer, com.davils.kaml.core.node/YamlNode?): com.davils.kapi.spec.core.diagnostic/Location // com.davils.kapi.spec.core.load/LoadedDocument.locate|locate(com.davils.kaml.document.pointer.JsonPointer;com.davils.kaml.core.node.YamlNode?){}[0]
+    final fun locate(com.davils.kaml.document.pointer/JsonPointer, com.davils.kore.core.text/TextRange?): com.davils.kapi.spec.core.diagnostic/Location // com.davils.kapi.spec.core.load/LoadedDocument.locate|locate(com.davils.kaml.document.pointer.JsonPointer;com.davils.kore.core.text.TextRange?){}[0]
+    final fun snippet(com.davils.kapi.spec.core.diagnostic/Location): com.davils.kore.core.text/TextSnippet? // com.davils.kapi.spec.core.load/LoadedDocument.snippet|snippet(com.davils.kapi.spec.core.diagnostic.Location){}[0]
+}
+
+final class com.davils.kapi.spec.core.model/Reference { // com.davils.kapi.spec.core.model/Reference|null[0]
+    constructor <init>(kotlin/String, com.davils.kapi.spec.core.model/Target, kotlin/String? = ..., kotlin/String? = ..., com.davils.kapi.spec.core.diagnostic/Location? = ...) // com.davils.kapi.spec.core.model/Reference.<init>|<init>(kotlin.String;com.davils.kapi.spec.core.model.Target;kotlin.String?;kotlin.String?;com.davils.kapi.spec.core.diagnostic.Location?){}[0]
+
+    final val description // com.davils.kapi.spec.core.model/Reference.description|{}description[0]
+        final fun <get-description>(): kotlin/String? // com.davils.kapi.spec.core.model/Reference.description.<get-description>|<get-description>(){}[0]
+    final val location // com.davils.kapi.spec.core.model/Reference.location|{}location[0]
+        final fun <get-location>(): com.davils.kapi.spec.core.diagnostic/Location? // com.davils.kapi.spec.core.model/Reference.location.<get-location>|<get-location>(){}[0]
+    final val summary // com.davils.kapi.spec.core.model/Reference.summary|{}summary[0]
+        final fun <get-summary>(): kotlin/String? // com.davils.kapi.spec.core.model/Reference.summary.<get-summary>|<get-summary>(){}[0]
+    final val target // com.davils.kapi.spec.core.model/Reference.target|{}target[0]
+        final fun <get-target>(): com.davils.kapi.spec.core.model/Target // com.davils.kapi.spec.core.model/Reference.target.<get-target>|<get-target>(){}[0]
+    final val text // com.davils.kapi.spec.core.model/Reference.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.davils.kapi.spec.core.model/Reference.text.<get-text>|<get-text>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Reference.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Reference.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Reference.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.model/Target { // com.davils.kapi.spec.core.model/Target|null[0]
+    constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kaml.document.pointer/JsonPointer) // com.davils.kapi.spec.core.model/Target.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kaml.document.pointer.JsonPointer){}[0]
+
+    final val document // com.davils.kapi.spec.core.model/Target.document|{}document[0]
+        final fun <get-document>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.model/Target.document.<get-document>|<get-document>(){}[0]
+    final val pointer // com.davils.kapi.spec.core.model/Target.pointer|{}pointer[0]
+        final fun <get-pointer>(): com.davils.kaml.document.pointer/JsonPointer // com.davils.kapi.spec.core.model/Target.pointer.<get-pointer>|<get-pointer>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Target.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Target.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Target.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.policy/ReadLimits : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.policy/ReadLimits|null[0]
+    final val maximumAliasExpansion // com.davils.kapi.spec.core.policy/ReadLimits.maximumAliasExpansion|{}maximumAliasExpansion[0]
+        final fun <get-maximumAliasExpansion>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimits.maximumAliasExpansion.<get-maximumAliasExpansion>|<get-maximumAliasExpansion>(){}[0]
+    final val maximumDepth // com.davils.kapi.spec.core.policy/ReadLimits.maximumDepth|{}maximumDepth[0]
+        final fun <get-maximumDepth>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumDepth.<get-maximumDepth>|<get-maximumDepth>(){}[0]
+    final val maximumDiagnostics // com.davils.kapi.spec.core.policy/ReadLimits.maximumDiagnostics|{}maximumDiagnostics[0]
+        final fun <get-maximumDiagnostics>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumDiagnostics.<get-maximumDiagnostics>|<get-maximumDiagnostics>(){}[0]
+    final val maximumDocumentLength // com.davils.kapi.spec.core.policy/ReadLimits.maximumDocumentLength|{}maximumDocumentLength[0]
+        final fun <get-maximumDocumentLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumDocumentLength.<get-maximumDocumentLength>|<get-maximumDocumentLength>(){}[0]
+    final val maximumDocuments // com.davils.kapi.spec.core.policy/ReadLimits.maximumDocuments|{}maximumDocuments[0]
+        final fun <get-maximumDocuments>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumDocuments.<get-maximumDocuments>|<get-maximumDocuments>(){}[0]
+    final val maximumNodes // com.davils.kapi.spec.core.policy/ReadLimits.maximumNodes|{}maximumNodes[0]
+        final fun <get-maximumNodes>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimits.maximumNodes.<get-maximumNodes>|<get-maximumNodes>(){}[0]
+    final val maximumPatternLength // com.davils.kapi.spec.core.policy/ReadLimits.maximumPatternLength|{}maximumPatternLength[0]
+        final fun <get-maximumPatternLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumPatternLength.<get-maximumPatternLength>|<get-maximumPatternLength>(){}[0]
+    final val maximumReferenceHops // com.davils.kapi.spec.core.policy/ReadLimits.maximumReferenceHops|{}maximumReferenceHops[0]
+        final fun <get-maximumReferenceHops>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumReferenceHops.<get-maximumReferenceHops>|<get-maximumReferenceHops>(){}[0]
+    final val maximumScalarLength // com.davils.kapi.spec.core.policy/ReadLimits.maximumScalarLength|{}maximumScalarLength[0]
+        final fun <get-maximumScalarLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.maximumScalarLength.<get-maximumScalarLength>|<get-maximumScalarLength>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.policy/ReadLimits.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.policy/ReadLimits.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.policy/ReadLimits.Companion|null[0]
+        final const val HARD_ALIAS_EXPANSION // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_ALIAS_EXPANSION|{}HARD_ALIAS_EXPANSION[0]
+            final fun <get-HARD_ALIAS_EXPANSION>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_ALIAS_EXPANSION.<get-HARD_ALIAS_EXPANSION>|<get-HARD_ALIAS_EXPANSION>(){}[0]
+        final const val HARD_DEPTH // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DEPTH|{}HARD_DEPTH[0]
+            final fun <get-HARD_DEPTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DEPTH.<get-HARD_DEPTH>|<get-HARD_DEPTH>(){}[0]
+        final const val HARD_DIAGNOSTICS // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DIAGNOSTICS|{}HARD_DIAGNOSTICS[0]
+            final fun <get-HARD_DIAGNOSTICS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DIAGNOSTICS.<get-HARD_DIAGNOSTICS>|<get-HARD_DIAGNOSTICS>(){}[0]
+        final const val HARD_DOCUMENTS // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DOCUMENTS|{}HARD_DOCUMENTS[0]
+            final fun <get-HARD_DOCUMENTS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DOCUMENTS.<get-HARD_DOCUMENTS>|<get-HARD_DOCUMENTS>(){}[0]
+        final const val HARD_DOCUMENT_LENGTH // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DOCUMENT_LENGTH|{}HARD_DOCUMENT_LENGTH[0]
+            final fun <get-HARD_DOCUMENT_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_DOCUMENT_LENGTH.<get-HARD_DOCUMENT_LENGTH>|<get-HARD_DOCUMENT_LENGTH>(){}[0]
+        final const val HARD_NODES // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_NODES|{}HARD_NODES[0]
+            final fun <get-HARD_NODES>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_NODES.<get-HARD_NODES>|<get-HARD_NODES>(){}[0]
+        final const val HARD_PATTERN_LENGTH // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_PATTERN_LENGTH|{}HARD_PATTERN_LENGTH[0]
+            final fun <get-HARD_PATTERN_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_PATTERN_LENGTH.<get-HARD_PATTERN_LENGTH>|<get-HARD_PATTERN_LENGTH>(){}[0]
+        final const val HARD_REFERENCE_HOPS // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_REFERENCE_HOPS|{}HARD_REFERENCE_HOPS[0]
+            final fun <get-HARD_REFERENCE_HOPS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_REFERENCE_HOPS.<get-HARD_REFERENCE_HOPS>|<get-HARD_REFERENCE_HOPS>(){}[0]
+        final const val HARD_SCALAR_LENGTH // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_SCALAR_LENGTH|{}HARD_SCALAR_LENGTH[0]
+            final fun <get-HARD_SCALAR_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimits.Companion.HARD_SCALAR_LENGTH.<get-HARD_SCALAR_LENGTH>|<get-HARD_SCALAR_LENGTH>(){}[0]
+
+        final val Default // com.davils.kapi.spec.core.policy/ReadLimits.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.spec.core.policy/ReadLimits // com.davils.kapi.spec.core.policy/ReadLimits.Companion.Default.<get-Default>|<get-Default>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.policy/ReadLimitsBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.spec.core.policy/ReadLimits> { // com.davils.kapi.spec.core.policy/ReadLimitsBuilder|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.<init>|<init>(){}[0]
+
+    final var maximumAliasExpansion // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumAliasExpansion|{}maximumAliasExpansion[0]
+        final fun <get-maximumAliasExpansion>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumAliasExpansion.<get-maximumAliasExpansion>|<get-maximumAliasExpansion>(){}[0]
+        final fun <set-maximumAliasExpansion>(kotlin/Long) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumAliasExpansion.<set-maximumAliasExpansion>|<set-maximumAliasExpansion>(kotlin.Long){}[0]
+    final var maximumDepth // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDepth|{}maximumDepth[0]
+        final fun <get-maximumDepth>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDepth.<get-maximumDepth>|<get-maximumDepth>(){}[0]
+        final fun <set-maximumDepth>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDepth.<set-maximumDepth>|<set-maximumDepth>(kotlin.Int){}[0]
+    final var maximumDiagnostics // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDiagnostics|{}maximumDiagnostics[0]
+        final fun <get-maximumDiagnostics>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDiagnostics.<get-maximumDiagnostics>|<get-maximumDiagnostics>(){}[0]
+        final fun <set-maximumDiagnostics>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDiagnostics.<set-maximumDiagnostics>|<set-maximumDiagnostics>(kotlin.Int){}[0]
+    final var maximumDocumentLength // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocumentLength|{}maximumDocumentLength[0]
+        final fun <get-maximumDocumentLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocumentLength.<get-maximumDocumentLength>|<get-maximumDocumentLength>(){}[0]
+        final fun <set-maximumDocumentLength>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocumentLength.<set-maximumDocumentLength>|<set-maximumDocumentLength>(kotlin.Int){}[0]
+    final var maximumDocuments // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocuments|{}maximumDocuments[0]
+        final fun <get-maximumDocuments>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocuments.<get-maximumDocuments>|<get-maximumDocuments>(){}[0]
+        final fun <set-maximumDocuments>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumDocuments.<set-maximumDocuments>|<set-maximumDocuments>(kotlin.Int){}[0]
+    final var maximumNodes // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumNodes|{}maximumNodes[0]
+        final fun <get-maximumNodes>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumNodes.<get-maximumNodes>|<get-maximumNodes>(){}[0]
+        final fun <set-maximumNodes>(kotlin/Long) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumNodes.<set-maximumNodes>|<set-maximumNodes>(kotlin.Long){}[0]
+    final var maximumPatternLength // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumPatternLength|{}maximumPatternLength[0]
+        final fun <get-maximumPatternLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumPatternLength.<get-maximumPatternLength>|<get-maximumPatternLength>(){}[0]
+        final fun <set-maximumPatternLength>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumPatternLength.<set-maximumPatternLength>|<set-maximumPatternLength>(kotlin.Int){}[0]
+    final var maximumReferenceHops // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumReferenceHops|{}maximumReferenceHops[0]
+        final fun <get-maximumReferenceHops>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumReferenceHops.<get-maximumReferenceHops>|<get-maximumReferenceHops>(){}[0]
+        final fun <set-maximumReferenceHops>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumReferenceHops.<set-maximumReferenceHops>|<set-maximumReferenceHops>(kotlin.Int){}[0]
+    final var maximumScalarLength // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumScalarLength|{}maximumScalarLength[0]
+        final fun <get-maximumScalarLength>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumScalarLength.<get-maximumScalarLength>|<get-maximumScalarLength>(){}[0]
+        final fun <set-maximumScalarLength>(kotlin/Int) // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.maximumScalarLength.<set-maximumScalarLength>|<set-maximumScalarLength>(kotlin.Int){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion|null[0]
+        final const val DEFAULT_ALIAS_EXPANSION // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_ALIAS_EXPANSION|{}DEFAULT_ALIAS_EXPANSION[0]
+            final fun <get-DEFAULT_ALIAS_EXPANSION>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_ALIAS_EXPANSION.<get-DEFAULT_ALIAS_EXPANSION>|<get-DEFAULT_ALIAS_EXPANSION>(){}[0]
+        final const val DEFAULT_DEPTH // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DEPTH|{}DEFAULT_DEPTH[0]
+            final fun <get-DEFAULT_DEPTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DEPTH.<get-DEFAULT_DEPTH>|<get-DEFAULT_DEPTH>(){}[0]
+        final const val DEFAULT_DIAGNOSTICS // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DIAGNOSTICS|{}DEFAULT_DIAGNOSTICS[0]
+            final fun <get-DEFAULT_DIAGNOSTICS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DIAGNOSTICS.<get-DEFAULT_DIAGNOSTICS>|<get-DEFAULT_DIAGNOSTICS>(){}[0]
+        final const val DEFAULT_DOCUMENTS // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DOCUMENTS|{}DEFAULT_DOCUMENTS[0]
+            final fun <get-DEFAULT_DOCUMENTS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DOCUMENTS.<get-DEFAULT_DOCUMENTS>|<get-DEFAULT_DOCUMENTS>(){}[0]
+        final const val DEFAULT_DOCUMENT_LENGTH // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DOCUMENT_LENGTH|{}DEFAULT_DOCUMENT_LENGTH[0]
+            final fun <get-DEFAULT_DOCUMENT_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_DOCUMENT_LENGTH.<get-DEFAULT_DOCUMENT_LENGTH>|<get-DEFAULT_DOCUMENT_LENGTH>(){}[0]
+        final const val DEFAULT_NODES // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_NODES|{}DEFAULT_NODES[0]
+            final fun <get-DEFAULT_NODES>(): kotlin/Long // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_NODES.<get-DEFAULT_NODES>|<get-DEFAULT_NODES>(){}[0]
+        final const val DEFAULT_PATTERN_LENGTH // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_PATTERN_LENGTH|{}DEFAULT_PATTERN_LENGTH[0]
+            final fun <get-DEFAULT_PATTERN_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_PATTERN_LENGTH.<get-DEFAULT_PATTERN_LENGTH>|<get-DEFAULT_PATTERN_LENGTH>(){}[0]
+        final const val DEFAULT_REFERENCE_HOPS // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_REFERENCE_HOPS|{}DEFAULT_REFERENCE_HOPS[0]
+            final fun <get-DEFAULT_REFERENCE_HOPS>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_REFERENCE_HOPS.<get-DEFAULT_REFERENCE_HOPS>|<get-DEFAULT_REFERENCE_HOPS>(){}[0]
+        final const val DEFAULT_SCALAR_LENGTH // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_SCALAR_LENGTH|{}DEFAULT_SCALAR_LENGTH[0]
+            final fun <get-DEFAULT_SCALAR_LENGTH>(): kotlin/Int // com.davils.kapi.spec.core.policy/ReadLimitsBuilder.Companion.DEFAULT_SCALAR_LENGTH.<get-DEFAULT_SCALAR_LENGTH>|<get-DEFAULT_SCALAR_LENGTH>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.policy/ReferencePolicy : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.policy/ReferencePolicy|null[0]
+    final val isExternalAllowed // com.davils.kapi.spec.core.policy/ReferencePolicy.isExternalAllowed|{}isExternalAllowed[0]
+        final fun <get-isExternalAllowed>(): kotlin/Boolean // com.davils.kapi.spec.core.policy/ReferencePolicy.isExternalAllowed.<get-isExternalAllowed>|<get-isExternalAllowed>(){}[0]
+    final val root // com.davils.kapi.spec.core.policy/ReferencePolicy.root|{}root[0]
+        final fun <get-root>(): com.davils.kapi.spec.core.diagnostic/DocumentUri? // com.davils.kapi.spec.core.policy/ReferencePolicy.root.<get-root>|<get-root>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.policy/ReferencePolicy.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.policy/ReferencePolicy.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.policy/ReferencePolicy.Companion|null[0]
+        final val Default // com.davils.kapi.spec.core.policy/ReferencePolicy.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.spec.core.policy/ReferencePolicy // com.davils.kapi.spec.core.policy/ReferencePolicy.Companion.Default.<get-Default>|<get-Default>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.policy/ReferencePolicyBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.spec.core.policy/ReferencePolicy> { // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.<init>|<init>(){}[0]
+
+    final var isExternalAllowed // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.isExternalAllowed|{}isExternalAllowed[0]
+        final fun <get-isExternalAllowed>(): kotlin/Boolean // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.isExternalAllowed.<get-isExternalAllowed>|<get-isExternalAllowed>(){}[0]
+        final fun <set-isExternalAllowed>(kotlin/Boolean) // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.isExternalAllowed.<set-isExternalAllowed>|<set-isExternalAllowed>(kotlin.Boolean){}[0]
+    final var root // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.root|{}root[0]
+        final fun <get-root>(): com.davils.kapi.spec.core.diagnostic/DocumentUri? // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.root.<get-root>|<get-root>(){}[0]
+        final fun <set-root>(com.davils.kapi.spec.core.diagnostic/DocumentUri?) // com.davils.kapi.spec.core.policy/ReferencePolicyBuilder.root.<set-root>|<set-root>(com.davils.kapi.spec.core.diagnostic.DocumentUri?){}[0]
+}
+
+final class com.davils.kapi.spec.core.policy/SeverityPolicy : com.davils.kore.core.validation/Validatable { // com.davils.kapi.spec.core.policy/SeverityPolicy|null[0]
+    final val areWarningsErrors // com.davils.kapi.spec.core.policy/SeverityPolicy.areWarningsErrors|{}areWarningsErrors[0]
+        final fun <get-areWarningsErrors>(): kotlin/Boolean // com.davils.kapi.spec.core.policy/SeverityPolicy.areWarningsErrors.<get-areWarningsErrors>|<get-areWarningsErrors>(){}[0]
+    final val downgrades // com.davils.kapi.spec.core.policy/SeverityPolicy.downgrades|{}downgrades[0]
+        final fun <get-downgrades>(): kotlin.collections/Map<kotlin/String, kotlin/String> // com.davils.kapi.spec.core.policy/SeverityPolicy.downgrades.<get-downgrades>|<get-downgrades>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.policy/SeverityPolicy.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun isDowngraded(com.davils.kore.core.validation.violation/ViolationCode): kotlin/Boolean // com.davils.kapi.spec.core.policy/SeverityPolicy.isDowngraded|isDowngraded(com.davils.kore.core.validation.violation.ViolationCode){}[0]
+    final fun severityOf(com.davils.kore.core.validation.violation/ViolationCode, com.davils.kore.core.validation.violation/Severity): com.davils.kore.core.validation.violation/Severity // com.davils.kapi.spec.core.policy/SeverityPolicy.severityOf|severityOf(com.davils.kore.core.validation.violation.ViolationCode;com.davils.kore.core.validation.violation.Severity){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.policy/SeverityPolicy.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.policy/SeverityPolicy.Companion|null[0]
+        final val Default // com.davils.kapi.spec.core.policy/SeverityPolicy.Companion.Default|{}Default[0]
+            final fun <get-Default>(): com.davils.kapi.spec.core.policy/SeverityPolicy // com.davils.kapi.spec.core.policy/SeverityPolicy.Companion.Default.<get-Default>|<get-Default>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.policy/SeverityPolicyBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.spec.core.policy/SeverityPolicy> { // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder.<init>|<init>(){}[0]
+
+    final var areWarningsErrors // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder.areWarningsErrors|{}areWarningsErrors[0]
+        final fun <get-areWarningsErrors>(): kotlin/Boolean // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder.areWarningsErrors.<get-areWarningsErrors>|<get-areWarningsErrors>(){}[0]
+        final fun <set-areWarningsErrors>(kotlin/Boolean) // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder.areWarningsErrors.<set-areWarningsErrors>|<set-areWarningsErrors>(kotlin.Boolean){}[0]
+
+    final fun downgrade(com.davils.kore.core.validation.violation/ViolationCode, kotlin/String) // com.davils.kapi.spec.core.policy/SeverityPolicyBuilder.downgrade|downgrade(com.davils.kore.core.validation.violation.ViolationCode;kotlin.String){}[0]
+}
+
+final class com.davils.kapi.spec.core.source/SourceDocument { // com.davils.kapi.spec.core.source/SourceDocument|null[0]
+    constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/Int, kotlinx.io.bytestring/ByteString) // com.davils.kapi.spec.core.source/SourceDocument.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri;kotlin.Int;kotlinx.io.bytestring.ByteString){}[0]
+
+    final val digest // com.davils.kapi.spec.core.source/SourceDocument.digest|{}digest[0]
+        final fun <get-digest>(): kotlinx.io.bytestring/ByteString // com.davils.kapi.spec.core.source/SourceDocument.digest.<get-digest>|<get-digest>(){}[0]
+    final val length // com.davils.kapi.spec.core.source/SourceDocument.length|{}length[0]
+        final fun <get-length>(): kotlin/Int // com.davils.kapi.spec.core.source/SourceDocument.length.<get-length>|<get-length>(){}[0]
+    final val uri // com.davils.kapi.spec.core.source/SourceDocument.uri|{}uri[0]
+        final fun <get-uri>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.source/SourceDocument.uri.<get-uri>|<get-uri>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.source/SourceDocument.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.source/SourceDocument.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.source/SourceDocument.toString|toString(){}[0]
+}
+
+final class com.davils.kapi.spec.core.value/Extensions { // com.davils.kapi.spec.core.value/Extensions|null[0]
+    constructor <init>(kotlin.collections/Map<com.davils.kapi.spec.core.value/ExtensionName, com.davils.kapi.spec.core.value/Value>) // com.davils.kapi.spec.core.value/Extensions.<init>|<init>(kotlin.collections.Map<com.davils.kapi.spec.core.value.ExtensionName,com.davils.kapi.spec.core.value.Value>){}[0]
+
+    final val entries // com.davils.kapi.spec.core.value/Extensions.entries|{}entries[0]
+        final fun <get-entries>(): kotlin.collections/Map<com.davils.kapi.spec.core.value/ExtensionName, com.davils.kapi.spec.core.value/Value> // com.davils.kapi.spec.core.value/Extensions.entries.<get-entries>|<get-entries>(){}[0]
+    final val isEmpty // com.davils.kapi.spec.core.value/Extensions.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // com.davils.kapi.spec.core.value/Extensions.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
+    final val names // com.davils.kapi.spec.core.value/Extensions.names|{}names[0]
+        final fun <get-names>(): kotlin.collections/Set<com.davils.kapi.spec.core.value/ExtensionName> // com.davils.kapi.spec.core.value/Extensions.names.<get-names>|<get-names>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/Extensions.equals|equals(kotlin.Any?){}[0]
+    final fun flag(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/ExtensionReading<kotlin/Boolean> // com.davils.kapi.spec.core.value/Extensions.flag|flag(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun get(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/Value? // com.davils.kapi.spec.core.value/Extensions.get|get(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/Extensions.hashCode|hashCode(){}[0]
+    final fun mapping(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/ExtensionReading<kotlin.collections/Map<kotlin/String, com.davils.kapi.spec.core.value/Value>> // com.davils.kapi.spec.core.value/Extensions.mapping|mapping(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun number(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/ExtensionReading<com.davils.kapi.spec.core.value/NumberValue> // com.davils.kapi.spec.core.value/Extensions.number|number(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun text(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/ExtensionReading<kotlin/String> // com.davils.kapi.spec.core.value/Extensions.text|text(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun texts(com.davils.kapi.spec.core.value/ExtensionName): com.davils.kapi.spec.core.value/ExtensionReading<kotlin.collections/List<kotlin/String>> // com.davils.kapi.spec.core.value/Extensions.texts|texts(com.davils.kapi.spec.core.value.ExtensionName){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/Extensions.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.value/Extensions.Companion|null[0]
+        final val EMPTY // com.davils.kapi.spec.core.value/Extensions.Companion.EMPTY|{}EMPTY[0]
+            final fun <get-EMPTY>(): com.davils.kapi.spec.core.value/Extensions // com.davils.kapi.spec.core.value/Extensions.Companion.EMPTY.<get-EMPTY>|<get-EMPTY>(){}[0]
+    }
+}
+
+final class com.davils.kapi.spec.core.value/NumberValue : kotlin/Comparable<com.davils.kapi.spec.core.value/NumberValue> { // com.davils.kapi.spec.core.value/NumberValue|null[0]
+    final val isIntegral // com.davils.kapi.spec.core.value/NumberValue.isIntegral|{}isIntegral[0]
+        final fun <get-isIntegral>(): kotlin/Boolean // com.davils.kapi.spec.core.value/NumberValue.isIntegral.<get-isIntegral>|<get-isIntegral>(){}[0]
+    final val literal // com.davils.kapi.spec.core.value/NumberValue.literal|{}literal[0]
+        final fun <get-literal>(): kotlin/String // com.davils.kapi.spec.core.value/NumberValue.literal.<get-literal>|<get-literal>(){}[0]
+
+    final fun compareTo(com.davils.kapi.spec.core.value/NumberValue): kotlin/Int // com.davils.kapi.spec.core.value/NumberValue.compareTo|compareTo(com.davils.kapi.spec.core.value.NumberValue){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/NumberValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/NumberValue.hashCode|hashCode(){}[0]
+    final fun toDouble(): kotlin/Double // com.davils.kapi.spec.core.value/NumberValue.toDouble|toDouble(){}[0]
+    final fun toIntOrNull(): kotlin/Int? // com.davils.kapi.spec.core.value/NumberValue.toIntOrNull|toIntOrNull(){}[0]
+    final fun toLongOrNull(): kotlin/Long? // com.davils.kapi.spec.core.value/NumberValue.toLongOrNull|toLongOrNull(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/NumberValue.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.value/NumberValue.Companion|null[0]
+        final fun of(kotlin/Long): com.davils.kapi.spec.core.value/NumberValue // com.davils.kapi.spec.core.value/NumberValue.Companion.of|of(kotlin.Long){}[0]
+        final fun parseOrNull(kotlin/String): com.davils.kapi.spec.core.value/NumberValue? // com.davils.kapi.spec.core.value/NumberValue.Companion.parseOrNull|parseOrNull(kotlin.String){}[0]
+    }
+}
+
+final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davils.kapi.spec.core.diagnostic/DocumentUri|null[0]
+    constructor <init>(kotlin/String) // com.davils.kapi.spec.core.diagnostic/DocumentUri.<init>|<init>(kotlin.String){}[0]
+
+    final val scheme // com.davils.kapi.spec.core.diagnostic/DocumentUri.scheme|{}scheme[0]
+        final fun <get-scheme>(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.scheme.<get-scheme>|<get-scheme>(){}[0]
+    final val value // com.davils.kapi.spec.core.diagnostic/DocumentUri.value|{}value[0]
+        final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/DocumentUri.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/DocumentUri.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.diagnostic/DocumentUri.Companion|null[0]
+        final val MEMORY // com.davils.kapi.spec.core.diagnostic/DocumentUri.Companion.MEMORY|{}MEMORY[0]
+            final fun <get-MEMORY>(): com.davils.kapi.spec.core.diagnostic/DocumentUri // com.davils.kapi.spec.core.diagnostic/DocumentUri.Companion.MEMORY.<get-MEMORY>|<get-MEMORY>(){}[0]
+
+        final fun parseOrNull(kotlin/String): com.davils.kapi.spec.core.diagnostic/DocumentUri? // com.davils.kapi.spec.core.diagnostic/DocumentUri.Companion.parseOrNull|parseOrNull(kotlin.String){}[0]
+    }
+}
+
+final value class com.davils.kapi.spec.core.value/ExtensionName { // com.davils.kapi.spec.core.value/ExtensionName|null[0]
+    constructor <init>(kotlin/String) // com.davils.kapi.spec.core.value/ExtensionName.<init>|<init>(kotlin.String){}[0]
+
+    final val value // com.davils.kapi.spec.core.value/ExtensionName.value|{}value[0]
+        final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionName.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionName.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.spec.core.value/ExtensionName.Companion|null[0]
+        final fun isExtension(kotlin/String): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionName.Companion.isExtension|isExtension(kotlin.String){}[0]
+        final fun parseOrNull(kotlin/String): com.davils.kapi.spec.core.value/ExtensionName? // com.davils.kapi.spec.core.value/ExtensionName.Companion.parseOrNull|parseOrNull(kotlin.String){}[0]
+    }
+}
+
+open class com.davils.kapi.spec.core.read/Findings { // com.davils.kapi.spec.core.read/Findings|null[0]
+    constructor <init>(com.davils.kapi.spec.core.policy/SeverityPolicy, kotlin/Int, com.davils.kore.core.validation.violation/ViolationCode, kotlin/Function1<com.davils.kore.core.validation.violation/ViolationCode, com.davils.kore.core.validation.violation/Severity>) // com.davils.kapi.spec.core.read/Findings.<init>|<init>(com.davils.kapi.spec.core.policy.SeverityPolicy;kotlin.Int;com.davils.kore.core.validation.violation.ViolationCode;kotlin.Function1<com.davils.kore.core.validation.violation.ViolationCode,com.davils.kore.core.validation.violation.Severity>){}[0]
+
+    final val hasErrors // com.davils.kapi.spec.core.read/Findings.hasErrors|{}hasErrors[0]
+        final fun <get-hasErrors>(): kotlin/Boolean // com.davils.kapi.spec.core.read/Findings.hasErrors.<get-hasErrors>|<get-hasErrors>(){}[0]
+
+    final fun adopt(com.davils.kore.core.validation.violation/ViolationCode, com.davils.kore.core.validation.violation/Severity, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location, com.davils.kore.core.text/TextSnippet) // com.davils.kapi.spec.core.read/Findings.adopt|adopt(com.davils.kore.core.validation.violation.ViolationCode;com.davils.kore.core.validation.violation.Severity;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location;com.davils.kore.core.text.TextSnippet){}[0]
+    final fun pointersIn(com.davils.kapi.spec.core.diagnostic/DocumentUri): kotlin.collections/Set<com.davils.kaml.document.pointer/JsonPointer> // com.davils.kapi.spec.core.read/Findings.pointersIn|pointersIn(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
+    final fun report(com.davils.kore.core.validation.violation/ViolationCode, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ..., com.davils.kore.core.text/TextSnippet? = ...) // com.davils.kapi.spec.core.read/Findings.report|report(com.davils.kore.core.validation.violation.ViolationCode;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kore.core.text.TextSnippet?){}[0]
+    final fun sorted(kotlin.collections/Map<com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/Int>): kotlin.collections/List<com.davils.kapi.spec.core.diagnostic/Diagnostic> // com.davils.kapi.spec.core.read/Findings.sorted|sorted(kotlin.collections.Map<com.davils.kapi.spec.core.diagnostic.DocumentUri,kotlin.Int>){}[0]
+}
+
+final object com.davils.kapi.spec.core.policy/PolicyCodes { // com.davils.kapi.spec.core.policy/PolicyCodes|null[0]
+    final val ABOVE_HARD_LIMIT // com.davils.kapi.spec.core.policy/PolicyCodes.ABOVE_HARD_LIMIT|{}ABOVE_HARD_LIMIT[0]
+        final fun <get-ABOVE_HARD_LIMIT>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.policy/PolicyCodes.ABOVE_HARD_LIMIT.<get-ABOVE_HARD_LIMIT>|<get-ABOVE_HARD_LIMIT>(){}[0]
+    final val NOT_POSITIVE // com.davils.kapi.spec.core.policy/PolicyCodes.NOT_POSITIVE|{}NOT_POSITIVE[0]
+        final fun <get-NOT_POSITIVE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.policy/PolicyCodes.NOT_POSITIVE.<get-NOT_POSITIVE>|<get-NOT_POSITIVE>(){}[0]
+    final val REASON_MISSING // com.davils.kapi.spec.core.policy/PolicyCodes.REASON_MISSING|{}REASON_MISSING[0]
+        final fun <get-REASON_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.policy/PolicyCodes.REASON_MISSING.<get-REASON_MISSING>|<get-REASON_MISSING>(){}[0]
+    final val ROOT_NOT_DIRECTORY // com.davils.kapi.spec.core.policy/PolicyCodes.ROOT_NOT_DIRECTORY|{}ROOT_NOT_DIRECTORY[0]
+        final fun <get-ROOT_NOT_DIRECTORY>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.policy/PolicyCodes.ROOT_NOT_DIRECTORY.<get-ROOT_NOT_DIRECTORY>|<get-ROOT_NOT_DIRECTORY>(){}[0]
+}
+
+final val com.davils.kapi.spec.core.diagnostic/hasErrors // com.davils.kapi.spec.core.diagnostic/hasErrors|@kotlin.collections.Iterable<com.davils.kapi.spec.core.diagnostic.Diagnostic>{}hasErrors[0]
+    final fun (kotlin.collections/Iterable<com.davils.kapi.spec.core.diagnostic/Diagnostic>).<get-hasErrors>(): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/hasErrors.<get-hasErrors>|<get-hasErrors>@kotlin.collections.Iterable<com.davils.kapi.spec.core.diagnostic.Diagnostic>(){}[0]
+
+final fun (com.davils.kapi.spec.core.diagnostic/Diagnostic).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@com.davils.kapi.spec.core.diagnostic.Diagnostic(){}[0]
+final fun (kotlin.collections/Iterable<com.davils.kapi.spec.core.diagnostic/Diagnostic>).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@kotlin.collections.Iterable<com.davils.kapi.spec.core.diagnostic.Diagnostic>(){}[0]

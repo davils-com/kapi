@@ -42,6 +42,8 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val EVENTS: String = "text/event-stream"
 
+private const val FIELDS_OF_3_2: Int = 3
+
 private val stream: List<String> = listOf(
     "paths:",
     "  /events:",
@@ -87,9 +89,8 @@ class MediaTypeReadingTest : FunSpec({
             val item = mixed.itemEncoding.shouldNotBeNull()
 
             reading.diagnostics.shouldBeEmpty()
-            events.itemSchema
-                .defined()
-                .properties.keys shouldBe setOf("data")
+            val itemSchema = events.itemSchema.defined()
+            itemSchema.properties.keys shouldBe setOf("data")
             mixed.prefixEncoding.single().contentType shouldBe "application/json"
             item.contentType shouldBe "multipart/form-data"
             item.nestedEncoding.getValue("file").contentType shouldBe "image/png"
@@ -109,25 +110,26 @@ class MediaTypeReadingTest : FunSpec({
             val reading = reading32(shared)
             val document = reading.document()
             val body = document.operation("/pets", Method.Post).requestBody.shouldNotBeNull()
-            val content = document
-                .resolve(body)
-                ?.content
-                ?.get("application/json")
-                .shouldNotBeNull()
+            val contents = document.resolve(body).shouldNotBeNull().content
+            val content = contents["application/json"].shouldNotBeNull()
             val pet = document.resolve(content).shouldNotBeNull()
             val same = document.parts().mediaTypes.getValue("Same")
 
             reading.diagnostics.shouldBeEmpty()
             content.shouldBeInstanceOf<Referable.Referenced>()
-            pet.schema
-                .defined()
-                .types.size shouldBe 1
+            val schema = pet.schema.defined()
+            schema.types.size shouldBe 1
             document.resolve(same) shouldBe pet
             document.rewritten() shouldBe document
         }
 
         test("reports a reference to a media type that does not exist") {
-            val broken = shared.map { line -> line.replace("mediaTypes/Pet'}}}", "mediaTypes/Dog'}}}") }
+            val broken = shared.map { line ->
+                line.replace(
+                    oldValue = "mediaTypes/Pet'}}}",
+                    newValue = "mediaTypes/Dog'}}}",
+                )
+            }
 
             reading32(broken).codes() shouldBe listOf(DiagnosticCodes.REFERENCE_UNRESOLVED)
         }
@@ -138,7 +140,7 @@ class MediaTypeReadingTest : FunSpec({
             val reading = reading31(stream)
             val events = reading.readable().media(EVENTS)
 
-            reading.codes() shouldBe List(3) { DiagnosticCodes.FIELD_VERSION }
+            reading.codes() shouldBe List(FIELDS_OF_3_2) { DiagnosticCodes.FIELD_VERSION }
             events.itemSchema.shouldBeNull()
         }
 

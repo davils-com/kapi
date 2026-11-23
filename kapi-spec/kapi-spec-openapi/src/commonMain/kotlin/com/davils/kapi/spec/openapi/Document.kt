@@ -64,7 +64,8 @@ public class Document internal constructor(builder: DocumentBuilder) :
     public val info: Info = builder.info
 
     /**
-     * The `jsonSchemaDialect` of the document, the default `$schema` of its schemas, from OpenAPI 3.1 on; `null` when absent.
+     * The `jsonSchemaDialect` of the document, the default `$schema` of its schemas, from OpenAPI 3.1 on; `null` when
+     * absent.
      *
      * @since 1.0.0
      */

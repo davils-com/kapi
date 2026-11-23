@@ -23,7 +23,6 @@ import com.davils.kapi.spec.core.policy.ReferencePolicyBuilder
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicyBuilder
 import com.davils.kapi.spec.core.source.Resolver
-import com.davils.kapi.spec.openapi.StructureCheck
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 

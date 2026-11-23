@@ -1,0 +1,542 @@
+public final class com/davils/kapi/spec/core/diagnostic/Diagnostic {
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCode-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getSeverity ()Lcom/davils/kore/core/validation/violation/Severity;
+	public final fun getSnippet ()Lcom/davils/kore/core/text/TextSnippet;
+	public fun hashCode ()I
+	public final fun isError ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/diagnostic/DiagnosticsKt {
+	public static final fun getHasErrors (Ljava/lang/Iterable;)Z
+	public static final fun render (Lcom/davils/kapi/spec/core/diagnostic/Diagnostic;)Ljava/lang/String;
+	public static final fun render (Ljava/lang/Iterable;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/diagnostic/DocumentUri {
+	public static final field Companion Lcom/davils/kapi/spec/core/diagnostic/DocumentUri$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/core/diagnostic/DocumentUri;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getScheme-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/diagnostic/DocumentUri$Companion {
+	public final fun getMEMORY-bXwvJfo ()Ljava/lang/String;
+	public final fun parseOrNull-l97T-7k (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/diagnostic/Location {
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kore/core/text/TextRange;Lcom/davils/kore/core/text/TextPosition;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kore/core/text/TextRange;Lcom/davils/kore/core/text/TextPosition;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDocument-bXwvJfo ()Ljava/lang/String;
+	public final fun getPointer ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public final fun getPosition ()Lcom/davils/kore/core/text/TextPosition;
+	public final fun getRange ()Lcom/davils/kore/core/text/TextRange;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/load/DocumentLoader {
+	public fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/read/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/read/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDocuments ()Ljava/util/List;
+	public final fun getOrder ()Ljava/util/Map;
+	public final fun getOverlays ()Ljava/util/List;
+	public final fun load-BghGS2I (Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun overlay (Lcom/davils/kapi/spec/core/source/Source;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun replace (Lcom/davils/kapi/spec/core/load/LoadedDocument;)V
+	public final fun root (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/davils/kapi/spec/core/load/LoadCodes {
+	public abstract fun getDocumentEmpty-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getEncoding-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getFailed-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getMissing-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getMultipleDocuments-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getOutside-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getRemote-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getScheme-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getSize-J_S2PC0 ()Ljava/lang/String;
+	public abstract fun getTooManyDocuments-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/load/LoadSettings {
+	public fun <init> (Lcom/davils/kapi/spec/core/source/Resolver;Lcom/davils/kapi/spec/core/policy/ReadLimits;Lcom/davils/kapi/spec/core/policy/ReferencePolicy;Z)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHasMergeKeys ()Z
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public final fun getReferences ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
+	public final fun getResolver ()Lcom/davils/kapi/spec/core/source/Resolver;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/load/LoadedDocument {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kaml/core/node/YamlNode;Lcom/davils/kapi/spec/core/source/SourceDocument;)V
+	public final fun getRoot ()Lcom/davils/kaml/core/node/YamlNode;
+	public final fun getSource ()Lcom/davils/kapi/spec/core/source/SourceDocument;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getUri-bXwvJfo ()Ljava/lang/String;
+	public final fun locate (Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kaml/core/node/YamlNode;)Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun locate (Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kore/core/text/TextRange;)Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun snippet (Lcom/davils/kapi/spec/core/diagnostic/Location;)Lcom/davils/kore/core/text/TextSnippet;
+}
+
+public abstract class com/davils/kapi/spec/core/model/Element : com/davils/kore/core/validation/Validatable {
+	protected fun <init> (Lcom/davils/kapi/spec/core/model/ElementBuilder;)V
+	public final fun equals (Ljava/lang/Object;)Z
+	public final fun getExtensions ()Lcom/davils/kapi/spec/core/value/Extensions;
+	protected abstract fun getIdentity ()Ljava/util/List;
+	public final fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun hashCode ()I
+	public final fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+	public final fun walk ()Lkotlin/sequences/Sequence;
+}
+
+public abstract class com/davils/kapi/spec/core/model/ElementBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	protected fun <init> ()V
+	public final fun adopt (Lcom/davils/kapi/spec/core/value/Extensions;)V
+	public final fun extension-aOdog1U (Ljava/lang/String;Lcom/davils/kapi/spec/core/value/Value;)V
+	public final fun getExtensions ()Lcom/davils/kapi/spec/core/value/Extensions;
+	public final fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun setLocation (Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+}
+
+public abstract interface class com/davils/kapi/spec/core/model/Referable {
+}
+
+public final class com/davils/kapi/spec/core/model/Referable$Inline : com/davils/kapi/spec/core/model/Referable {
+	public fun <init> (Lcom/davils/kapi/spec/core/model/Element;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lcom/davils/kapi/spec/core/model/Element;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/model/Referable$Referenced : com/davils/kapi/spec/core/model/Referable {
+	public fun <init> (Lcom/davils/kapi/spec/core/model/Reference;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReference ()Lcom/davils/kapi/spec/core/model/Reference;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/model/Reference {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/model/Target;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/model/Target;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getSummary ()Ljava/lang/String;
+	public final fun getTarget ()Lcom/davils/kapi/spec/core/model/Target;
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/model/Target {
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kaml/document/pointer/JsonPointer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDocument-bXwvJfo ()Ljava/lang/String;
+	public final fun getPointer ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/policy/PolicyCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/core/policy/PolicyCodes;
+	public final fun getABOVE_HARD_LIMIT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNOT_POSITIVE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREASON_MISSING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getROOT_NOT_DIRECTORY-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/policy/ReadLimits : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/spec/core/policy/ReadLimits$Companion;
+	public static final field HARD_ALIAS_EXPANSION J
+	public static final field HARD_DEPTH I
+	public static final field HARD_DIAGNOSTICS I
+	public static final field HARD_DOCUMENTS I
+	public static final field HARD_DOCUMENT_LENGTH I
+	public static final field HARD_NODES J
+	public static final field HARD_PATTERN_LENGTH I
+	public static final field HARD_REFERENCE_HOPS I
+	public static final field HARD_SCALAR_LENGTH I
+	public final fun getMaximumAliasExpansion ()J
+	public final fun getMaximumDepth ()I
+	public final fun getMaximumDiagnostics ()I
+	public final fun getMaximumDocumentLength ()I
+	public final fun getMaximumDocuments ()I
+	public final fun getMaximumNodes ()J
+	public final fun getMaximumPatternLength ()I
+	public final fun getMaximumReferenceHops ()I
+	public final fun getMaximumScalarLength ()I
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/core/policy/ReadLimits$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+}
+
+public final class com/davils/kapi/spec/core/policy/ReadLimitsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/spec/core/policy/ReadLimitsBuilder$Companion;
+	public static final field DEFAULT_ALIAS_EXPANSION J
+	public static final field DEFAULT_DEPTH I
+	public static final field DEFAULT_DIAGNOSTICS I
+	public static final field DEFAULT_DOCUMENTS I
+	public static final field DEFAULT_DOCUMENT_LENGTH I
+	public static final field DEFAULT_NODES J
+	public static final field DEFAULT_PATTERN_LENGTH I
+	public static final field DEFAULT_REFERENCE_HOPS I
+	public static final field DEFAULT_SCALAR_LENGTH I
+	public fun <init> ()V
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getMaximumAliasExpansion ()J
+	public final fun getMaximumDepth ()I
+	public final fun getMaximumDiagnostics ()I
+	public final fun getMaximumDocumentLength ()I
+	public final fun getMaximumDocuments ()I
+	public final fun getMaximumNodes ()J
+	public final fun getMaximumPatternLength ()I
+	public final fun getMaximumReferenceHops ()I
+	public final fun getMaximumScalarLength ()I
+	public final fun setMaximumAliasExpansion (J)V
+	public final fun setMaximumDepth (I)V
+	public final fun setMaximumDiagnostics (I)V
+	public final fun setMaximumDocumentLength (I)V
+	public final fun setMaximumDocuments (I)V
+	public final fun setMaximumNodes (J)V
+	public final fun setMaximumPatternLength (I)V
+	public final fun setMaximumReferenceHops (I)V
+	public final fun setMaximumScalarLength (I)V
+}
+
+public final class com/davils/kapi/spec/core/policy/ReadLimitsBuilder$Companion {
+}
+
+public final class com/davils/kapi/spec/core/policy/ReferencePolicy : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/spec/core/policy/ReferencePolicy$Companion;
+	public final fun getRoot-c6GUG2s ()Ljava/lang/String;
+	public final fun isExternalAllowed ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/core/policy/ReferencePolicy$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/core/policy/ReferencePolicy;
+}
+
+public final class com/davils/kapi/spec/core/policy/ReferencePolicyBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public fun <init> ()V
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getRoot-c6GUG2s ()Ljava/lang/String;
+	public final fun isExternalAllowed ()Z
+	public final fun setExternalAllowed (Z)V
+	public final fun setRoot-nf7Vc34 (Ljava/lang/String;)V
+}
+
+public final class com/davils/kapi/spec/core/policy/SeverityPolicy : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/spec/core/policy/SeverityPolicy$Companion;
+	public final fun getAreWarningsErrors ()Z
+	public final fun getDowngrades ()Ljava/util/Map;
+	public final fun isDowngraded-odN_eIM (Ljava/lang/String;)Z
+	public final fun severityOf-7GJnixg (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;)Lcom/davils/kore/core/validation/violation/Severity;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/core/policy/SeverityPolicy$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/core/policy/SeverityPolicy;
+}
+
+public final class com/davils/kapi/spec/core/policy/SeverityPolicyBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public fun <init> ()V
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun downgrade-7GJnixg (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getAreWarningsErrors ()Z
+	public final fun setAreWarningsErrors (Z)V
+}
+
+public class com/davils/kapi/spec/core/read/Findings {
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/policy/SeverityPolicy;ILjava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun adopt-ITHqWAI (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
+	public final fun getHasErrors ()Z
+	public final fun pointersIn-zhsEnvQ (Ljava/lang/String;)Ljava/util/Set;
+	public final fun report-XlT1djc (Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
+	public static synthetic fun report-XlT1djc$default (Lcom/davils/kapi/spec/core/read/Findings;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;ILjava/lang/Object;)V
+	public final fun sorted (Ljava/util/Map;)Ljava/util/List;
+}
+
+public final class com/davils/kapi/spec/core/source/Refusal : java/lang/Enum {
+	public static final field Confinement Lcom/davils/kapi/spec/core/source/Refusal;
+	public static final field Size Lcom/davils/kapi/spec/core/source/Refusal;
+	public static final field Unresolvable Lcom/davils/kapi/spec/core/source/Refusal;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/core/source/Refusal;
+	public static fun values ()[Lcom/davils/kapi/spec/core/source/Refusal;
+}
+
+public abstract interface class com/davils/kapi/spec/core/source/Resolution {
+}
+
+public final class com/davils/kapi/spec/core/source/Resolution$Failed : com/davils/kapi/spec/core/source/Resolution {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/Resolution$Found : com/davils/kapi/spec/core/source/Resolution {
+	public fun <init> (Lkotlinx/io/bytestring/ByteString;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Lkotlinx/io/bytestring/ByteString;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/Resolution$Missing : com/davils/kapi/spec/core/source/Resolution {
+	public static final field INSTANCE Lcom/davils/kapi/spec/core/source/Resolution$Missing;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/Resolution$Refused : com/davils/kapi/spec/core/source/Resolution {
+	public fun <init> (Lcom/davils/kapi/spec/core/source/Refusal;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRefusal ()Lcom/davils/kapi/spec/core/source/Refusal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/spec/core/source/Resolver {
+	public static final field Companion Lcom/davils/kapi/spec/core/source/Resolver$Companion;
+	public abstract fun resolve-ABZ1FNU (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/spec/core/source/Resolver$Companion {
+	public final fun getNone ()Lcom/davils/kapi/spec/core/source/Resolver;
+}
+
+public abstract interface class com/davils/kapi/spec/core/source/Source {
+	public abstract fun getUri-bXwvJfo ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/Source$Located : com/davils/kapi/spec/core/source/Source {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getUri-bXwvJfo ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/Source$Text : com/davils/kapi/spec/core/source/Source {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getText ()Ljava/lang/String;
+	public fun getUri-bXwvJfo ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/source/SourceDocument {
+	public synthetic fun <init> (Ljava/lang/String;ILkotlinx/io/bytestring/ByteString;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDigest ()Lkotlinx/io/bytestring/ByteString;
+	public final fun getLength ()I
+	public final fun getUri-bXwvJfo ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/ExtensionName {
+	public static final field Companion Lcom/davils/kapi/spec/core/value/ExtensionName$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionName;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/ExtensionName$Companion {
+	public final fun isExtension (Ljava/lang/String;)Z
+	public final fun parseOrNull-ng9PqKY (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/spec/core/value/ExtensionReading {
+}
+
+public final class com/davils/kapi/spec/core/value/ExtensionReading$Absent : com/davils/kapi/spec/core/value/ExtensionReading {
+	public static final field INSTANCE Lcom/davils/kapi/spec/core/value/ExtensionReading$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/ExtensionReading$Mistyped : com/davils/kapi/spec/core/value/ExtensionReading {
+	public fun <init> (Lcom/davils/kapi/spec/core/value/Value;Lcom/davils/kapi/spec/core/value/ValueKind;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExpected ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public final fun getFound ()Lcom/davils/kapi/spec/core/value/Value;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/ExtensionReading$Present : com/davils/kapi/spec/core/value/ExtensionReading {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Extensions {
+	public static final field Companion Lcom/davils/kapi/spec/core/value/Extensions$Companion;
+	public fun <init> (Ljava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun flag-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionReading;
+	public final fun get-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getEntries ()Ljava/util/Map;
+	public final fun getNames ()Ljava/util/Set;
+	public fun hashCode ()I
+	public final fun isEmpty ()Z
+	public final fun mapping-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionReading;
+	public final fun number-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionReading;
+	public final fun text-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionReading;
+	public final fun texts-U12zWMU (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ExtensionReading;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Extensions$Companion {
+	public final fun getEMPTY ()Lcom/davils/kapi/spec/core/value/Extensions;
+}
+
+public final class com/davils/kapi/spec/core/value/NumberValue : java/lang/Comparable {
+	public static final field Companion Lcom/davils/kapi/spec/core/value/NumberValue$Companion;
+	public fun compareTo (Lcom/davils/kapi/spec/core/value/NumberValue;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLiteral ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isIntegral ()Z
+	public final fun toDouble ()D
+	public final fun toIntOrNull ()Ljava/lang/Integer;
+	public final fun toLongOrNull ()Ljava/lang/Long;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/NumberValue$Companion {
+	public final fun of (J)Lcom/davils/kapi/spec/core/value/NumberValue;
+	public final fun parseOrNull (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/NumberValue;
+}
+
+public abstract interface class com/davils/kapi/spec/core/value/Value {
+	public abstract fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public abstract fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Flag : com/davils/kapi/spec/core/value/Value {
+	public fun <init> (ZLcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (ZLcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public fun hashCode ()I
+	public final fun isTrue ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Mapping : com/davils/kapi/spec/core/value/Value {
+	public fun <init> (Ljava/util/Map;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Ljava/util/Map;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun get (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/Value;
+	public final fun getEntries ()Ljava/util/Map;
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Null : com/davils/kapi/spec/core/value/Value {
+	public fun <init> ()V
+	public fun <init> (Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Number : com/davils/kapi/spec/core/value/Value {
+	public fun <init> (Lcom/davils/kapi/spec/core/value/NumberValue;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/value/NumberValue;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getValue ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Sequence : com/davils/kapi/spec/core/value/Value {
+	public fun <init> (Ljava/util/List;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getItems ()Ljava/util/List;
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/Value$Text : com/davils/kapi/spec/core/value/Value {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKind ()Lcom/davils/kapi/spec/core/value/ValueKind;
+	public fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/value/ValueKind : java/lang/Enum {
+	public static final field Flag Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static final field Mapping Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static final field Null Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static final field Number Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static final field Sequence Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static final field Text Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/core/value/ValueKind;
+	public static fun values ()[Lcom/davils/kapi/spec/core/value/ValueKind;
+}
+

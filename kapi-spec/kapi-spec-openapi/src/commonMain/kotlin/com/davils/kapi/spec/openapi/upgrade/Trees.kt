@@ -88,11 +88,11 @@ internal object Trees {
 
     private fun replacedEntry(entry: YamlEntry, replacements: Map<String, YamlNode>): YamlEntry {
         val replacement = keyOf(entry)?.let(replacements::get) ?: return entry
-        return YamlEntry(entry.key, replacement)
+        return YamlEntry(key = entry.key, value = replacement)
     }
 
     private fun transformed(entry: YamlEntry, transform: (String, YamlNode) -> YamlNode): YamlEntry {
         val key = keyOf(entry)?.takeUnless { isExtension(entry) } ?: return entry
-        return YamlEntry(entry.key, transform(key, entry.value))
+        return YamlEntry(key = entry.key, value = transform(key, entry.value))
     }
 }

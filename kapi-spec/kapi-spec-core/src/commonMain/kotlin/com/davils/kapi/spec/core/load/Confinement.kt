@@ -39,7 +39,7 @@ internal class Confinement(
     private fun isEscaping(text: String): Boolean {
         val lowered = text.lowercase()
         val hasEncoded = forbidden.any { sequence -> sequence in lowered }
-        val hasParent = text.split(SEPARATOR).any { segment -> segment == PARENT }
+        val hasParent = PARENT in text.split(SEPARATOR)
         return hasEncoded || hasParent
     }
 

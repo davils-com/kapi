@@ -43,9 +43,9 @@ internal class PathWriter(
 
     fun pathItem(item: PathItem): YamlNode {
         val out = Out()
-        out.text(Keys.REFERENCE, item.reference?.text)
-        out.text(Keys.SUMMARY, item.summary)
-        out.text(Keys.DESCRIPTION, item.description)
+        out[Keys.REFERENCE] = item.reference?.text
+        out[Keys.SUMMARY] = item.summary
+        out[Keys.DESCRIPTION] = item.description
         val methods = item.operations.filterKeys { method -> method != Method.Query || isCurrent }
         methods.forEach { (method, operation) -> out.node(method.keyword, operation(operation)) }
         val additional = item.additionalOperations.takeIf { isCurrent }.orEmpty()
@@ -64,10 +64,10 @@ internal class PathWriter(
     private fun operation(operation: Operation): YamlNode {
         val out = Out()
         out.texts(Keys.TAGS, operation.tags)
-        out.text(Keys.SUMMARY, operation.summary)
-        out.text(Keys.DESCRIPTION, operation.description)
+        out[Keys.SUMMARY] = operation.summary
+        out[Keys.DESCRIPTION] = operation.description
         out.node(Keys.EXTERNAL_DOCS, operation.externalDocs?.let(info::externalDocs))
-        out.text(Keys.OPERATION_ID, operation.operationId)
+        out[Keys.OPERATION_ID] = operation.operationId
         out.list(Keys.PARAMETERS, operation.parameters, ReferenceWriter.referables(content::parameter))
         exchange(out, operation)
         out.flag(Keys.DEPRECATED, operation.isDeprecated)

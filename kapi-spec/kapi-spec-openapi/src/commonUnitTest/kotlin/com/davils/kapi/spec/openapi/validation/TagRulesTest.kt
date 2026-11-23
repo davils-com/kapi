@@ -54,7 +54,12 @@ class TagRulesTest : FunSpec({
                 "  - {name: d, parent: a}",
                 "  - {name: e, parent: e}",
             )
-            val places = reading.diagnostics.map { finding -> finding.location?.pointer.toString() }
+            val places = reading.diagnostics.map { finding ->
+                finding.location
+                    .shouldNotBeNull()
+                    .pointer
+                    .toString()
+            }
 
             reading.codes().toSet() shouldBe setOf(DiagnosticCodes.TAG_PARENT_CYCLE)
             places shouldBe listOf("/tags/0", "/tags/1", "/tags/2", "/tags/4")

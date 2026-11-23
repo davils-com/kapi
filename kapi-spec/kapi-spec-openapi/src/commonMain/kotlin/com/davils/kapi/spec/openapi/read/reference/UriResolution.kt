@@ -84,6 +84,6 @@ internal object UriResolution {
 
     private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int {
         if (!isEscape) return fragment[index].code
-        return fragment.substring(index + 1, index + ESCAPE_WIDTH).toInt(HEX_RADIX)
+        return fragment.substring(startIndex = index + 1, endIndex = index + ESCAPE_WIDTH).toInt(HEX_RADIX)
     }
 }

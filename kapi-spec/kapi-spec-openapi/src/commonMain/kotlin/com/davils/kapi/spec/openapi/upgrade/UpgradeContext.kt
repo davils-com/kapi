@@ -28,7 +28,10 @@ internal class UpgradeContext(root: YamlNode.Mapping, notes: UpgradeNotes) {
 
     val produces: List<String> = Trees.texts(root[SwaggerKeys.PRODUCES]) ?: listOf(SwaggerKeys.JSON)
 
-    val servers: Servers = Servers(root[SwaggerKeys.HOST].string(), root[SwaggerKeys.BASE_PATH].string())
+    val servers: Servers = Servers(
+        host = root[SwaggerKeys.HOST].string(),
+        basePath = root[SwaggerKeys.BASE_PATH].string(),
+    )
 
     private val styles: CollectionStyles = CollectionStyles(notes)
 
@@ -44,7 +47,7 @@ internal class UpgradeContext(root: YamlNode.Mapping, notes: UpgradeNotes) {
 
     fun resolved(parameter: YamlNode): YamlNode {
         val reference = ReferenceUpgrade.referenceOf(parameter)
-        val name = reference?.let { found -> ReferenceUpgrade.localName(found, Keys.PARAMETERS) }
+        val name = reference?.let { found -> ReferenceUpgrade.localName(reference = found, section = Keys.PARAMETERS) }
         return name?.let(shared::get) ?: parameter
     }
 

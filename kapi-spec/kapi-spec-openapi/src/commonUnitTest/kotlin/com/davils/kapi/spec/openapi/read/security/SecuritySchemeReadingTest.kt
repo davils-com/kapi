@@ -40,6 +40,10 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 private const val DEVICE: String = "{deviceAuthorizationUrl: 'https://id.example.com/device', " +
     "tokenUrl: 'https://id.example.com/token', scopes: {read: Read}}"
 
+private const val DEVICE_SCHEME: String = "device"
+
+private const val FIELDS_OF_3_2: Int = 7
+
 private val schemes: List<String> = listOf(
     "components:",
     "  securitySchemes:",
@@ -64,7 +68,7 @@ class SecuritySchemeReadingTest : FunSpec({
         test("may be deprecated") {
             val reading = reading32(schemes)
             val document = reading.document()
-            val deprecated = listOf("device", "key", "basic", "tls", "oidc").map { name ->
+            val deprecated = listOf(DEVICE_SCHEME, "key", "basic", "tls", "oidc").map { name ->
                 document.scheme(name).isDeprecated
             }
 
@@ -73,7 +77,8 @@ class SecuritySchemeReadingTest : FunSpec({
         }
 
         test("reads the metadata address and the device authorization flow of oauth2") {
-            val device = reading32(schemes).document().scheme("device").shouldBeInstanceOf<OAuth2Scheme>()
+            val document = reading32(schemes).document()
+            val device = document.scheme(DEVICE_SCHEME).shouldBeInstanceOf<OAuth2Scheme>()
             val flow = device.flows.deviceAuthorization.shouldNotBeNull()
 
             device.oauth2MetadataUrl shouldBe "https://id.example.com/.well-known/oauth-authorization-server"
@@ -110,10 +115,11 @@ class SecuritySchemeReadingTest : FunSpec({
     context("a security scheme before OpenAPI 3.2") {
         test("is never deprecated and has no metadata address or device authorization flow") {
             val reading = reading31(schemes)
-            val device = reading.readable().scheme("device").shouldBeInstanceOf<OAuth2Scheme>()
+            val scheme = reading.readable().scheme(DEVICE_SCHEME)
+            val device = scheme.shouldBeInstanceOf<OAuth2Scheme>()
 
             reading.codes().toSet() shouldBe setOf(DiagnosticCodes.FIELD_VERSION)
-            reading.codes().size shouldBe 7
+            reading.codes().size shouldBe FIELDS_OF_3_2
             device.isDeprecated shouldBe false
             device.oauth2MetadataUrl.shouldBeNull()
             device.flows.deviceAuthorization.shouldBeNull()

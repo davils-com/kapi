@@ -38,7 +38,7 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
 
     private fun definition(schema: SchemaDefinition): YamlNode {
         val out = Out()
-        out.text(Keys.REFERENCE, schema.reference?.text)
+        out[Keys.REFERENCE] = schema.reference?.text
         identity(out, schema)
         keywords.typing(out, schema)
         keywords.constraints(out, schema)
@@ -50,15 +50,15 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
     }
 
     private fun identity(out: Out, schema: SchemaDefinition) {
-        out.text(Keys.SCHEMA_ID, schema.id)
-        out.text(Keys.DIALECT, schema.dialect)
-        out.text(Keys.ANCHOR, schema.anchor)
-        out.text(Keys.DYNAMIC_ANCHOR, schema.dynamicAnchor)
-        out.text(Keys.DYNAMIC_REFERENCE, schema.dynamicReference)
-        out.text(Keys.COMMENT, schema.comment)
+        out[Keys.SCHEMA_ID] = schema.id
+        out[Keys.DIALECT] = schema.dialect
+        out[Keys.ANCHOR] = schema.anchor
+        out[Keys.DYNAMIC_ANCHOR] = schema.dynamicAnchor
+        out[Keys.DYNAMIC_REFERENCE] = schema.dynamicReference
+        out[Keys.COMMENT] = schema.comment
         out.map(Keys.DEFINITIONS, schema.definitions, ::schema)
-        out.text(Keys.TITLE, schema.title)
-        out.text(Keys.DESCRIPTION, schema.description)
+        out[Keys.TITLE] = schema.title
+        out[Keys.DESCRIPTION] = schema.description
     }
 
     private fun structure(out: Out, schema: SchemaDefinition) {
@@ -90,8 +90,8 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
         out.flag(Keys.DEPRECATED, schema.isDeprecated)
         out.flag(Keys.READ_ONLY, schema.isReadOnly)
         out.flag(Keys.WRITE_ONLY, schema.isWriteOnly)
-        out.text(Keys.CONTENT_ENCODING, schema.contentEncoding)
-        out.text(Keys.CONTENT_MEDIA_TYPE, schema.contentMediaType)
+        out[Keys.CONTENT_ENCODING] = schema.contentEncoding
+        out[Keys.CONTENT_MEDIA_TYPE] = schema.contentMediaType
         out.node(Keys.DISCRIMINATOR, schema.discriminator?.let(::discriminator))
         out.node(Keys.XML, schema.xml?.let(::xml))
         out.node(Keys.EXTERNAL_DOCS, schema.externalDocs?.let(info::externalDocs))
@@ -99,20 +99,20 @@ internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter)
 
     private fun discriminator(discriminator: Discriminator): YamlNode {
         val out = Out()
-        out.text(Keys.PROPERTY_NAME, discriminator.propertyName)
+        out[Keys.PROPERTY_NAME] = discriminator.propertyName
         out.map(Keys.MAPPING, discriminator.mapping) { target -> yamlScalar(target) }
-        out.text(Keys.DEFAULT_MAPPING, discriminator.defaultMapping?.takeIf { isCurrent })
+        out[Keys.DEFAULT_MAPPING] = discriminator.defaultMapping?.takeIf { isCurrent }
         return out.build(discriminator)
     }
 
     private fun xml(xml: Xml): YamlNode {
         val out = Out()
-        out.text(Keys.NAME, xml.name)
-        out.text(Keys.NAMESPACE, xml.namespace)
-        out.text(Keys.PREFIX, xml.prefix)
+        out[Keys.NAME] = xml.name
+        out[Keys.NAMESPACE] = xml.namespace
+        out[Keys.PREFIX] = xml.prefix
         out.flag(Keys.ATTRIBUTE, xml.isAttribute)
         out.flag(Keys.WRAPPED, xml.isWrapped)
-        out.text(Keys.NODE_TYPE, xml.nodeType?.takeIf { isCurrent }?.keyword)
+        out[Keys.NODE_TYPE] = xml.nodeType?.takeIf { isCurrent }?.keyword
         return out.build(xml)
     }
 }

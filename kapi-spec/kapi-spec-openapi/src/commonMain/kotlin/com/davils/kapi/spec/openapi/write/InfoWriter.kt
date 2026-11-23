@@ -32,11 +32,11 @@ internal class InfoWriter(family: VersionFamily) {
 
     fun info(info: Info): YamlNode {
         val out = Out()
-        out.text(Keys.TITLE, info.title)
-        out.text(Keys.VERSION, info.version)
-        out.text(Keys.SUMMARY, info.summary)
-        out.text(Keys.DESCRIPTION, info.description)
-        out.text(Keys.TERMS_OF_SERVICE, info.termsOfService)
+        out[Keys.TITLE] = info.title
+        out[Keys.VERSION] = info.version
+        out[Keys.SUMMARY] = info.summary
+        out[Keys.DESCRIPTION] = info.description
+        out[Keys.TERMS_OF_SERVICE] = info.termsOfService
         out.node(Keys.CONTACT, info.contact?.let(::contact))
         out.node(Keys.LICENSE, info.license?.let(::license))
         return out.build(info)
@@ -44,27 +44,27 @@ internal class InfoWriter(family: VersionFamily) {
 
     fun externalDocs(docs: ExternalDocs): YamlNode {
         val out = Out()
-        out.text(Keys.URL, docs.url)
-        out.text(Keys.DESCRIPTION, docs.description)
+        out[Keys.URL] = docs.url
+        out[Keys.DESCRIPTION] = docs.description
         return out.build(docs)
     }
 
     fun tag(tag: Tag): YamlNode {
         val out = Out()
-        out.text(Keys.NAME, tag.name)
-        out.text(Keys.SUMMARY, tag.summary?.takeIf { isCurrent })
-        out.text(Keys.DESCRIPTION, tag.description)
+        out[Keys.NAME] = tag.name
+        out[Keys.SUMMARY] = tag.summary?.takeIf { isCurrent }
+        out[Keys.DESCRIPTION] = tag.description
         out.node(Keys.EXTERNAL_DOCS, tag.externalDocs?.let(::externalDocs))
-        out.text(Keys.PARENT, tag.parent?.takeIf { isCurrent })
-        out.text(Keys.KIND, tag.kind?.takeIf { isCurrent })
+        out[Keys.PARENT] = tag.parent?.takeIf { isCurrent }
+        out[Keys.KIND] = tag.kind?.takeIf { isCurrent }
         return out.build(tag)
     }
 
     fun server(server: Server): YamlNode {
         val out = Out()
-        out.text(Keys.URL, server.url)
-        out.text(Keys.DESCRIPTION, server.description)
-        out.text(Keys.NAME, server.name?.takeIf { isCurrent })
+        out[Keys.URL] = server.url
+        out[Keys.DESCRIPTION] = server.description
+        out[Keys.NAME] = server.name?.takeIf { isCurrent }
         out.map(Keys.VARIABLES, server.variables, ::variable)
         return out.build(server)
     }
@@ -72,24 +72,24 @@ internal class InfoWriter(family: VersionFamily) {
     private fun variable(variable: ServerVariable): YamlNode {
         val out = Out()
         out.texts(Keys.ENUM, variable.enumeration)
-        out.text(Keys.DEFAULT, variable.default)
-        out.text(Keys.DESCRIPTION, variable.description)
+        out[Keys.DEFAULT] = variable.default
+        out[Keys.DESCRIPTION] = variable.description
         return out.build(variable)
     }
 
     private fun contact(contact: Contact): YamlNode {
         val out = Out()
-        out.text(Keys.NAME, contact.name)
-        out.text(Keys.URL, contact.url)
-        out.text(Keys.EMAIL, contact.email)
+        out[Keys.NAME] = contact.name
+        out[Keys.URL] = contact.url
+        out[Keys.EMAIL] = contact.email
         return out.build(contact)
     }
 
     private fun license(license: License): YamlNode {
         val out = Out()
-        out.text(Keys.NAME, license.name)
-        out.text(Keys.IDENTIFIER, license.identifier)
-        out.text(Keys.URL, license.url)
+        out[Keys.NAME] = license.name
+        out[Keys.IDENTIFIER] = license.identifier
+        out[Keys.URL] = license.url
         return out.build(license)
     }
 }

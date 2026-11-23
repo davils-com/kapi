@@ -48,7 +48,7 @@ class SecurityUpgradeTest : FunSpec({
                 "accessCode" to "authorizationCode: {authorizationUrl: 'https://a', tokenUrl: 'https://t', scopes: {}}",
             )
             flows.forEach { (flow, upgraded) ->
-                val settings = upgraded.substringAfter(": ").removeSurrounding("{", "}")
+                val settings = upgraded.substringAfter(": ").removeSurrounding(prefix = "{", suffix = "}")
 
                 schemeOf("{type: oauth2, flow: $flow, description: Tokens, x-vendor: kide, $settings}") shouldBe
                     nodeOf("{type: oauth2, description: Tokens, x-vendor: kide, flows: {$upgraded}}")
@@ -57,6 +57,13 @@ class SecurityUpgradeTest : FunSpec({
 
         test("stays as written when its flow is unknown") {
             schemeOf("{type: oauth2, flow: device}") shouldBe nodeOf("{type: oauth2, flow: device}")
+        }
+
+        test("stays as written when it names no flow or no type, or not as text") {
+            schemeOf("{type: oauth2, description: Tokens}") shouldBe nodeOf("{type: oauth2, description: Tokens}")
+            schemeOf("{type: oauth2, flow: [implicit]}") shouldBe nodeOf("{type: oauth2, flow: [implicit]}")
+            schemeOf("{description: Nothing}") shouldBe nodeOf("{description: Nothing}")
+            schemeOf("{type: [basic]}") shouldBe nodeOf("{type: [basic]}")
         }
     }
 })

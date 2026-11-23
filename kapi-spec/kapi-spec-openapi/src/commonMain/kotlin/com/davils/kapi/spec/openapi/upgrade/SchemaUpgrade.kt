@@ -46,8 +46,8 @@ internal object SchemaUpgrade {
 
     private fun schemaOf(mapping: YamlNode.Mapping): YamlNode.Mapping {
         val entries = mapping.entries.mapNotNull(::entryOf)
-        val maximum = bounded(entries, Keys.MAXIMUM, Keys.EXCLUSIVE_MAXIMUM)
-        val bounded = bounded(maximum, Keys.MINIMUM, Keys.EXCLUSIVE_MINIMUM)
+        val maximum = bounded(entries = entries, limit = Keys.MAXIMUM, exclusive = Keys.EXCLUSIVE_MAXIMUM)
+        val bounded = bounded(entries = maximum, limit = Keys.MINIMUM, exclusive = Keys.EXCLUSIVE_MINIMUM)
         val schema = Trees.mappingAt(mapping, binary(mapping, bounded))
         val isNullable = Trees.isTrue(Trees.valueOf(mapping.entries, SwaggerKeys.NULLABLE))
         return schema.takeUnless { isNullable } ?: Nullability.nullable(schema)
@@ -56,7 +56,7 @@ internal object SchemaUpgrade {
     private fun entryOf(entry: YamlEntry): YamlEntry? {
         val key = Trees.keyOf(entry)
         val transform = key?.let(transforms::get)
-        val upgraded = transform?.let { change -> YamlEntry(entry.key, change(entry.value)) } ?: entry
+        val upgraded = transform?.let { change -> YamlEntry(key = entry.key, value = change(entry.value)) } ?: entry
         return upgraded.takeUnless { key == SwaggerKeys.NULLABLE }
     }
 

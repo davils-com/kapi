@@ -96,15 +96,35 @@ public class ReadLimits internal constructor(builder: ReadLimitsBuilder) : Valid
     public val maximumDiagnostics: Int = builder.maximumDiagnostics
 
     override fun ValidationScope.validate() {
-        bounded(::maximumDocumentLength, maximumDocumentLength.toLong(), HARD_DOCUMENT_LENGTH.toLong())
-        bounded(::maximumDocuments, maximumDocuments.toLong(), HARD_DOCUMENTS.toLong())
-        bounded(::maximumDepth, maximumDepth.toLong(), HARD_DEPTH.toLong())
-        bounded(::maximumNodes, maximumNodes, HARD_NODES)
-        bounded(::maximumAliasExpansion, maximumAliasExpansion, HARD_ALIAS_EXPANSION)
-        bounded(::maximumReferenceHops, maximumReferenceHops.toLong(), HARD_REFERENCE_HOPS.toLong())
-        bounded(::maximumScalarLength, maximumScalarLength.toLong(), HARD_SCALAR_LENGTH.toLong())
-        bounded(::maximumPatternLength, maximumPatternLength.toLong(), HARD_PATTERN_LENGTH.toLong())
-        bounded(::maximumDiagnostics, maximumDiagnostics.toLong(), HARD_DIAGNOSTICS.toLong())
+        bounded(
+            property = ::maximumDocumentLength,
+            value = maximumDocumentLength.toLong(),
+            ceiling = HARD_DOCUMENT_LENGTH.toLong(),
+        )
+        bounded(property = ::maximumDocuments, value = maximumDocuments.toLong(), ceiling = HARD_DOCUMENTS.toLong())
+        bounded(property = ::maximumDepth, value = maximumDepth.toLong(), ceiling = HARD_DEPTH.toLong())
+        bounded(property = ::maximumNodes, value = maximumNodes, ceiling = HARD_NODES)
+        bounded(property = ::maximumAliasExpansion, value = maximumAliasExpansion, ceiling = HARD_ALIAS_EXPANSION)
+        bounded(
+            property = ::maximumReferenceHops,
+            value = maximumReferenceHops.toLong(),
+            ceiling = HARD_REFERENCE_HOPS.toLong(),
+        )
+        bounded(
+            property = ::maximumScalarLength,
+            value = maximumScalarLength.toLong(),
+            ceiling = HARD_SCALAR_LENGTH.toLong(),
+        )
+        bounded(
+            property = ::maximumPatternLength,
+            value = maximumPatternLength.toLong(),
+            ceiling = HARD_PATTERN_LENGTH.toLong(),
+        )
+        bounded(
+            property = ::maximumDiagnostics,
+            value = maximumDiagnostics.toLong(),
+            ceiling = HARD_DIAGNOSTICS.toLong(),
+        )
     }
 
     override fun toString(): String =

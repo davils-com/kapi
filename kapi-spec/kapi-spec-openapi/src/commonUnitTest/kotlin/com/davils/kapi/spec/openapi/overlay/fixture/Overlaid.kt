@@ -55,7 +55,10 @@ internal fun overlaid(document: List<String>, overlay: List<String>): Overlaid {
     return Overlaid(root, findings.sorted(mapOf(overlayUri to 0)))
 }
 
-internal fun actionsOf(vararg actions: String): Overlaid = overlaid(listOf("a: 1"), overlayHead + actions)
+internal fun actionsOf(vararg actions: String): Overlaid = overlaid(
+    document = listOf("a: 1"),
+    overlay = overlayHead + actions,
+)
 
 private fun loadedOf(lines: List<String>): LoadedDocument {
     val text = yamlOf(lines)

@@ -49,6 +49,6 @@ internal class PathUpgrade(private val context: UpgradeContext) {
         val pointer = place.pointer.child(key).takeIf { key in methods }
         val operation = pointer?.let { found -> operations.upgraded(Located(entry.value, found), bodies) }
         val reference = ReferenceUpgrade.upgradedEntry(entry).takeIf { key == Keys.REFERENCE }
-        return operation?.let { upgraded -> YamlEntry(entry.key, upgraded) } ?: reference ?: entry
+        return operation?.let { upgraded -> YamlEntry(key = entry.key, value = upgraded) } ?: reference ?: entry
     }
 }

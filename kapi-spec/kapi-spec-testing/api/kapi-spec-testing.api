@@ -1,0 +1,22 @@
+public final class com/davils/kapi/spec/testing/Corpus {
+	public static final field INSTANCE Lcom/davils/kapi/spec/testing/Corpus;
+	public final fun getOpenApiNames ()Ljava/util/List;
+	public final fun openApi (Ljava/lang/String;)Lcom/davils/kapi/spec/core/source/Source$Text;
+	public final fun openApiText (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/testing/HostileDocuments {
+	public static final field INSTANCE Lcom/davils/kapi/spec/testing/HostileDocuments;
+	public final fun aliasBomb (I)Ljava/lang/String;
+	public final fun deepNesting (I)Ljava/lang/String;
+	public final fun referenceChain (I)Ljava/lang/String;
+	public final fun unknownFields (I)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/testing/MemoryResolver : com/davils/kapi/spec/core/source/Resolver {
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getRequested ()Ljava/util/List;
+	public fun resolve-ABZ1FNU (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

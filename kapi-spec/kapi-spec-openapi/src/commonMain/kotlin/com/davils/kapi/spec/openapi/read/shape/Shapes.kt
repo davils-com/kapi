@@ -221,7 +221,12 @@ internal object Shapes {
         subject = "A response",
         fields = listOf(
             FieldRule(Keys.SUMMARY, FieldKind.Text, since = VersionFamily.V32),
-            FieldRule(Keys.DESCRIPTION, FieldKind.Text, isRequired = true, optionalSince = VersionFamily.V32),
+            FieldRule(
+                name = Keys.DESCRIPTION,
+                kind = FieldKind.Text,
+                isRequired = true,
+                optionalSince = VersionFamily.V32,
+            ),
             FieldRule(Keys.HEADERS, FieldKind.Mapping),
             FieldRule(Keys.CONTENT, FieldKind.Mapping),
             FieldRule(Keys.LINKS, FieldKind.Mapping),

@@ -31,9 +31,10 @@ internal object SelfBase {
         val uri = root.document.uri
         if (root.scope.isAdopted(uri)) return
         val version = field(root, Keys.OPENAPI)?.text?.let(Version::parseOrNull)
-        val isCurrent = version?.family?.isAtLeast(VersionFamily.V32) == true
+        val family = version?.family
+        val isCurrent = family?.isAtLeast(VersionFamily.V32) == true
         val written = field(root, Keys.SELF)?.takeIf { isCurrent }
-        root.scope.adopt(uri, written?.let(::baseOf))
+        root.scope.adopt(retrieval = uri, self = written?.let(::baseOf))
     }
 
     private fun field(root: Cursor, name: String): Cursor? {

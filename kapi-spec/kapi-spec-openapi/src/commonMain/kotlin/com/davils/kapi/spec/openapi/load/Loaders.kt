@@ -34,5 +34,11 @@ internal fun loaderOf(configuration: ReaderConfiguration, findings: Findings, so
         hasMergeKeys = configuration.hasMergeKeys,
     )
     val upgrade = SwaggerUpgrade(findings)
-    return DocumentLoader(settings, findings, source, LoadDiagnostics, upgrade::upgraded)
+    return DocumentLoader(
+        settings = settings,
+        findings = findings,
+        source = source,
+        codes = LoadDiagnostics,
+        prepare = upgrade::upgraded,
+    )
 }
