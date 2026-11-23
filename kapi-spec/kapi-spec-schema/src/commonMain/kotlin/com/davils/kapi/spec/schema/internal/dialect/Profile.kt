@@ -21,7 +21,7 @@ import com.davils.kapi.spec.schema.Dialect
 internal class Profile(
     val draft: Draft,
     val vocabularies: Set<Vocabulary>,
-    val formatAssertion: Boolean,
+    val isFormatAsserted: Boolean,
     val dialect: Dialect?,
 ) {
     fun enables(vocabulary: Vocabulary?): Boolean {
@@ -30,5 +30,5 @@ internal class Profile(
         return (Vocabulary.Applicator.takeIf { isMerged } ?: vocabulary) in vocabularies
     }
 
-    override fun toString(): String = "Profile($draft, $vocabularies, formatAssertion=$formatAssertion)"
+    override fun toString(): String = "Profile($draft, $vocabularies, isFormatAsserted=$isFormatAsserted)"
 }

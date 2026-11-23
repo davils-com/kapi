@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.spec.schema.internal
 
 import com.davils.kapi.spec.schema.pattern.Pattern

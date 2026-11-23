@@ -28,7 +28,7 @@ internal sealed interface Instance {
         override val type: String get() = "null"
     }
 
-    class BooleanValue(val value: Boolean) : Instance {
+    class BooleanValue(val isTrue: Boolean) : Instance {
         override val type: String get() = "boolean"
     }
 

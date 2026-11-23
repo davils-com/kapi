@@ -26,15 +26,19 @@ internal class OneOfKeyword(private val children: List<Int>) : Keyword("oneOf") 
         val matched = ArrayList<Int>()
         var first: Evaluated? = null
         for ((index, child) in children.withIndex()) {
-            val result = frame.inPlace(child, frame.trail(name, index.toString()), failures)
+            val result = frame.inPlace(
+                index = child,
+                keywordTrail = frame.trail(name, index.toString()),
+                sink = failures,
+            )
             first = first ?: result
-            result?.let { matched += index }
+            if (result != null) matched += index
             if (matched.size > 1) break
         }
         if (matched.size == 1) frame.merge(first)
         if (matched.isEmpty()) frame.failAll(failures)
         val message = "The value matches none of the ${children.size} subschemas".takeIf { matched.isEmpty() }
             ?: "The value matches the subschemas ${matched.joinToString(" and ")} but must match exactly one"
-        return matched.size == 1 || frame.fail(name, message)
+        return matched.size == 1 || failed(frame, message)
     }
 }

@@ -28,6 +28,12 @@ internal class Visit(
 ) {
     fun entering(resource: Int): Visit {
         if (scope?.resource == resource) return this
-        return Visit(instance, instanceTrail, keywordTrail, Scope(scope, resource), chain)
+        return Visit(
+            instance = instance,
+            instanceTrail = instanceTrail,
+            keywordTrail = keywordTrail,
+            scope = Scope(scope, resource),
+            chain = chain,
+        )
     }
 }

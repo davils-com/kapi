@@ -81,7 +81,10 @@ internal object ApplicatorRules {
 
     fun patternProperties(context: KeywordContext, element: JsonElement): Keyword? {
         val members = element as? JsonObject
-            ?: return context.report(PATTERN_PROPERTIES, "The keyword patternProperties must be an object of schemas")
+            ?: return context.report(
+                keyword = PATTERN_PROPERTIES,
+                message = "The keyword patternProperties must be an object of schemas",
+            )
         val entries = members.keys.mapNotNull { source ->
             val matcher = context.pattern(PATTERN_PROPERTIES, source)
             matcher?.let { PatternEntry(source, it, context.child(PATTERN_PROPERTIES, source)) }
@@ -95,7 +98,11 @@ internal object ApplicatorRules {
         val names = named?.keys.orEmpty().sorted()
         val limits = context.session.limits
         val patterns = patterned?.keys.orEmpty().mapNotNull { source ->
-            Patterns.compile(source, limits.maximumPatternLength, limits.maximumStringLength)
+            Patterns.compile(
+                source = source,
+                maximumSourceLength = limits.maximumPatternLength,
+                maximumInputLength = limits.maximumStringLength,
+            )
         }
         val child = context.schemaOrFlag(element, "additionalProperties")
         return AdditionalPropertiesKeyword(child, names, patterns)
@@ -111,7 +118,7 @@ internal object ApplicatorRules {
 
     fun dependencies(context: KeywordContext, element: JsonElement): Keyword? {
         val members = element as? JsonObject
-            ?: return context.report(DEPENDENCIES, "The keyword dependencies must be an object")
+            ?: return context.report(keyword = DEPENDENCIES, message = "The keyword dependencies must be an object")
         val entries = members.mapNotNull { (name, value) ->
             val required = (value as? JsonArray)?.let { context.texts(DEPENDENCIES, it) }
             val schema = value.takeIf { it !is JsonArray }?.let { context.child(DEPENDENCIES, name) }
@@ -121,13 +128,22 @@ internal object ApplicatorRules {
     }
 
     fun items(context: KeywordContext, element: JsonElement): Keyword? {
-        if (element is JsonArray) return context.report(ITEMS, "The keyword items must be a single schema")
+        if (element is JsonArray) {
+            return context.report(
+                keyword = ITEMS,
+                message = "The keyword items must be a single schema",
+            )
+        }
         val prefix = context.active(PREFIX_ITEMS) as? JsonArray
-        return RestItemsKeyword(ITEMS, prefix?.size ?: 0, context.child(ITEMS))
+        return RestItemsKeyword(name = ITEMS, start = prefix?.size ?: 0, child = context.child(ITEMS))
     }
 
     fun legacyItems(context: KeywordContext, element: JsonElement): Keyword {
-        val items = element as? JsonArray ?: return RestItemsKeyword(ITEMS, 0, context.child(ITEMS))
+        val items = element as? JsonArray ?: return RestItemsKeyword(
+            name = ITEMS,
+            start = 0,
+            child = context.child(ITEMS),
+        )
         return TupleKeyword(ITEMS, items.indices.map { index -> context.child(ITEMS, index.toString()) })
     }
 
@@ -136,20 +152,24 @@ internal object ApplicatorRules {
 
     fun additionalItems(context: KeywordContext, element: JsonElement): Keyword? {
         val items = context.members[ITEMS] as? JsonArray ?: return null
-        return RestItemsKeyword("additionalItems", items.size, context.schemaOrFlag(element, "additionalItems"))
+        return RestItemsKeyword(
+            name = "additionalItems",
+            start = items.size,
+            child = context.schemaOrFlag(element, "additionalItems"),
+        )
     }
 
     fun contains(context: KeywordContext): Keyword {
         val isLegacy = context.draft == Draft.Draft06 || context.draft == Draft.Draft07
-        val counts = !isLegacy && context.profile.enables(Vocabulary.Validation)
-        val minimum = context.members[MIN_CONTAINS]?.takeIf { counts }?.let { context.count(MIN_CONTAINS, it) }
-        val maximum = context.members[MAX_CONTAINS]?.takeIf { counts }?.let { context.count(MAX_CONTAINS, it) }
+        val isCounted = !isLegacy && context.profile.enables(Vocabulary.Validation)
+        val minimum = context.members[MIN_CONTAINS]?.takeIf { isCounted }?.let { context.count(MIN_CONTAINS, it) }
+        val maximum = context.members[MAX_CONTAINS]?.takeIf { isCounted }?.let { context.count(MAX_CONTAINS, it) }
         return ContainsKeyword(
             child = context.child(CONTAINS),
             minimum = minimum ?: 1L,
             maximum = maximum,
             minimumName = MIN_CONTAINS.takeIf { minimum != null } ?: CONTAINS,
-            marks = context.draft == Draft.Draft202012,
+            isMarking = context.draft == Draft.Draft202012,
         )
     }
 

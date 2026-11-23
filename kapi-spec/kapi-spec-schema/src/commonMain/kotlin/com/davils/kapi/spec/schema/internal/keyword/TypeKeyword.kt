@@ -25,8 +25,8 @@ internal class TypeKeyword(
     private val isIntegerStrict: Boolean,
 ) : Keyword("type") {
     override fun evaluate(frame: Frame): Boolean {
-        val matches = Types.bitsOf(frame.instance, isIntegerStrict) and types != 0
+        val isMatching = Types.bitsOf(frame.instance, isIntegerStrict) and types != 0
         val expected = names.joinToString(" or ")
-        return matches || frame.fail(name, "The value is of type ${frame.instance.type} but must be $expected")
+        return isMatching || failed(frame, "The value is of type ${frame.instance.type} but must be $expected")
     }
 }

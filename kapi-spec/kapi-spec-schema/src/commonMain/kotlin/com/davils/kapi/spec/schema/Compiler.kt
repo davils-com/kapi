@@ -50,7 +50,7 @@ import kotlinx.serialization.json.JsonElement
  * every compilation has its own state.
  *
  * @property defaultDialect the dialect of a schema without `$schema`.
- * @property formatAssertion whether `format` asserts.
+ * @property isFormatAsserted whether `format` asserts.
  * @property limits the limits of compilation and of validation.
  * @param schemas the documents registered by URI.
  * @param loader the loader of unknown documents.
@@ -58,7 +58,7 @@ import kotlinx.serialization.json.JsonElement
  */
 public class Compiler internal constructor(
     public val defaultDialect: Dialect,
-    public val formatAssertion: Boolean,
+    public val isFormatAsserted: Boolean,
     public val limits: SchemaLimits,
     schemas: List<Pair<DocumentUri, JsonElement>>,
     internal val loader: SchemaLoader?,
@@ -96,11 +96,21 @@ public class Compiler internal constructor(
      */
     public suspend fun compile(schema: YamlNode, uri: DocumentUri? = null): Compilation {
         val converted = try {
-            YamlReader(limits.maximumSchemaDepth, limits.maximumInstanceNodes).read(schema)
+            YamlReader(
+                maximumDepth = limits.maximumSchemaDepth,
+                maximumNodes = limits.maximumInstanceNodes,
+            ).read(schema)
         } catch (refusal: Refusal) {
             val location = Location(uri ?: DocumentUri.MEMORY, Trail.pointerOf(refusal.trail))
             return Compilation.Invalid(
-                listOf(Diagnostic(DiagnosticCodes.NOT_JSON, Severity.Error, refusal.description, location)),
+                listOf(
+                    Diagnostic(
+                        code = DiagnosticCodes.NOT_JSON,
+                        severity = Severity.Error,
+                        message = refusal.description,
+                        location = location,
+                    ),
+                ),
             )
         }
         return compile(converted, uri)
@@ -115,5 +125,5 @@ public class Compiler internal constructor(
     }
 
     override fun toString(): String =
-        "Compiler(defaultDialect=$defaultDialect, formatAssertion=$formatAssertion, schemas=${uris.size}, $limits)"
+        "Compiler(defaultDialect=$defaultDialect, isFormatAsserted=$isFormatAsserted, schemas=${uris.size}, $limits)"
 }

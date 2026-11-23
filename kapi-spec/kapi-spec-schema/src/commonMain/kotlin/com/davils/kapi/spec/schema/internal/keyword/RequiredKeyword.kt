@@ -29,7 +29,7 @@ internal class RequiredKeyword(private val names: List<String>) : Keyword("requi
         val members = frame.instance as? Instance.ObjectValue ?: return true
         frame.run.charge(names.size.toLong())
         val missing = names.filter { property -> members.indexOf(property) == null }
-        missing.forEach { property -> frame.fail(name, "The property ${SafeText.quoted(property)} is missing") }
+        missing.forEach { property -> failed(frame, "The property ${SafeText.quoted(property)} is missing") }
         return missing.isEmpty()
     }
 }

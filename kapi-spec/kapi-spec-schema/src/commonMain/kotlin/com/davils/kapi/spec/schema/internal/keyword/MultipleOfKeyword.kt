@@ -26,6 +26,6 @@ internal class MultipleOfKeyword(private val divisor: Decimal) : Keyword("multip
     override fun evaluate(frame: Frame): Boolean {
         val number = (frame.instance as? Instance.NumberValue)?.value ?: return true
         val isMultiple = Divisibility.isMultiple(number, divisor, frame.run)
-        return isMultiple || frame.fail(name, "The number $number is no multiple of $divisor")
+        return isMultiple || failed(frame, "The number $number is no multiple of $divisor")
     }
 }

@@ -50,7 +50,7 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
      *
      * @since 1.0.0
      */
-    public var formatAssertion: Boolean = false
+    public var isFormatAsserted: Boolean = false
 
     /**
      * Loads the documents that a schema refers to and the compiler does not know; `null` by default, which leaves
@@ -88,7 +88,7 @@ public class CompilerBuilder internal constructor() : ValidatingBuilder<Compiler
 
     override fun assemble(): Compiler = Compiler(
         defaultDialect = defaultDialect,
-        formatAssertion = formatAssertion,
+        isFormatAsserted = isFormatAsserted,
         limits = limits ?: SchemaLimits.Default,
         schemas = schemas.toList(),
         loader = loader,

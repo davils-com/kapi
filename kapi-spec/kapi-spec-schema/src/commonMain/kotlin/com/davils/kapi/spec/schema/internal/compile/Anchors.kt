@@ -22,9 +22,9 @@ internal object Anchors {
     fun isValid(name: String, draft: Draft): Boolean {
         val first = name.firstOrNull() ?: return false
         val isModern = draft == Draft.Draft202012
-        val startsWell = first.isAsciiLetter() || (isModern && first == '_')
+        val isStartValid = first.isAsciiLetter() || (isModern && first == '_')
         val extra = "-._".takeIf { isModern } ?: "-.:_"
-        return startsWell && name.all { it.isAsciiLetter() || it in '0'..'9' || it in extra }
+        return isStartValid && name.all { it.isAsciiLetter() || it in '0'..'9' || it in extra }
     }
 
     private fun Char.isAsciiLetter(): Boolean = this in 'a'..'z' || this in 'A'..'Z'

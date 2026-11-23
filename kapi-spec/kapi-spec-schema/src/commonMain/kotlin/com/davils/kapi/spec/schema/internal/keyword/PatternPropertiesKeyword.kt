@@ -25,9 +25,11 @@ internal class PatternPropertiesKeyword(private val entries: List<PatternEntry>)
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for ((index, property) in members.keys.withIndex()) {
-            val passed = entries.all { entry -> check(frame, members, index, property, entry) }
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = entries.all { entry ->
+                check(frame = frame, members = members, index = index, property = property, entry = entry)
+            }
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }
@@ -42,6 +44,12 @@ internal class PatternPropertiesKeyword(private val entries: List<PatternEntry>)
         if (!Patterns.matches(entry.matcher, property, frame.run)) return true
         frame.evaluated.mark(index)
         val trail = frame.trail(name, entry.source)
-        return frame.descend(entry.schema, members.values[index], property, trail, frame.sink)
+        return frame.descend(
+            index = entry.schema,
+            child = members.values[index],
+            token = property,
+            keywordTrail = trail,
+            sink = frame.sink,
+        )
     }
 }

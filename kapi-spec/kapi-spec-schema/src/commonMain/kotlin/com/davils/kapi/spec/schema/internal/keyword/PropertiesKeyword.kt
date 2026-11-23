@@ -25,9 +25,9 @@ internal class PropertiesKeyword(private val entries: List<Pair<String, Int>>) :
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for ((property, child) in entries) {
-            val passed = checked(frame, members, property, child)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = checked(frame = frame, members = members, property = property, child = child)
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }
@@ -35,6 +35,12 @@ internal class PropertiesKeyword(private val entries: List<Pair<String, Int>>) :
     private fun checked(frame: Frame, members: Instance.ObjectValue, property: String, child: Int): Boolean {
         val index = members.indexOf(property) ?: return true
         frame.evaluated.mark(index)
-        return frame.descend(child, members.values[index], property, frame.trail(name, property), frame.sink)
+        return frame.descend(
+            index = child,
+            child = members.values[index],
+            token = property,
+            keywordTrail = frame.trail(name, property),
+            sink = frame.sink,
+        )
     }
 }

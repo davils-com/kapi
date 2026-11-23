@@ -107,6 +107,8 @@ libraries:
       - '**/spec/openapi/model/schema/Bound.kt'
       - '**/spec/openapi/Reading.kt'
       - '**/spec/openapi/Version.kt'
+      - '**/spec/schema/Compilation.kt'
+      - '**/spec/schema/YamlConversion.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -177,6 +179,8 @@ style:
       - '**/spec/openapi/model/schema/Bound.kt'
       - '**/spec/openapi/Reading.kt'
       - '**/spec/openapi/Version.kt'
+      - '**/spec/schema/Compilation.kt'
+      - '**/spec/schema/YamlConversion.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false

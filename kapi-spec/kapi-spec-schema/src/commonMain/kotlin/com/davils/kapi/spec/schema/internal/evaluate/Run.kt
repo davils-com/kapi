@@ -28,7 +28,7 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
 
     private var depth: Int = 0
 
-    val tracksAnnotations: Boolean get() = graph.tracksAnnotations
+    val isTrackingAnnotations: Boolean get() = graph.isTrackingAnnotations
 
     var trail: Trail? = null
         private set
@@ -59,7 +59,13 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
         }
         val node = graph.nodes[index]
         val evaluated = annotationsFor(visit.instance)
-        val frame = Frame(this, node, visit.entering(node.resource), evaluated, sink)
+        val frame = Frame(
+            run = this,
+            node = node,
+            visit = visit.entering(node.resource),
+            evaluated = evaluated,
+            sink = sink,
+        )
         val isValid = frame.evaluateKeywords()
         depth--
         return evaluated.takeIf { isValid }
@@ -77,9 +83,9 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
     }
 
     private fun annotationsFor(instance: Instance): Evaluated {
-        val items = (instance as? Instance.ArrayValue)?.items?.size
-        val size = items ?: (instance as? Instance.ObjectValue)?.keys?.size
-        val tracked = size?.takeIf { tracksAnnotations }
+        val items = (instance as? Instance.ArrayValue)?.run { items.size }
+        val size = items ?: (instance as? Instance.ObjectValue)?.run { keys.size }
+        val tracked = size?.takeIf { isTrackingAnnotations }
         return tracked?.let(Evaluated::of) ?: Evaluated.UNTRACKED
     }
 }

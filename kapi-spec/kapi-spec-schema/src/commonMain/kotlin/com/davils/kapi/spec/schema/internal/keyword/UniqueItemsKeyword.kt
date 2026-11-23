@@ -30,8 +30,7 @@ internal class UniqueItemsKeyword : Keyword("uniqueItems") {
         val duplicate = (1 until order.size).firstOrNull { position ->
             keys[order[position]] == keys[order[position - 1]]
         }
-        val first = duplicate?.let { minOf(order[it], order[it - 1]) }
-        val second = duplicate?.let { maxOf(order[it], order[it - 1]) }
-        return duplicate == null || frame.fail(name, "The items at $first and $second are equal")
+        val positions = duplicate?.let { position -> listOf(order[position - 1], order[position]).sorted() }
+        return positions == null || failed(frame, "The items at ${positions.first()} and ${positions.last()} are equal")
     }
 }

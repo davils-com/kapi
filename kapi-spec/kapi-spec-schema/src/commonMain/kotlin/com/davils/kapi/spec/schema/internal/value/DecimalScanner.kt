@@ -30,14 +30,20 @@ internal class DecimalScanner(private val text: String) {
         val exponent = fraction?.let { exponentPart() }
         val isComplete = integer != null && fraction != null && exponent != null && position == text.length
         if (!isComplete) return null
-        return Decimal.of(isNegative, integer, fraction, exponent, isPlain)
+        return Decimal.of(
+            isNegative = isNegative,
+            integer = integer,
+            fraction = fraction,
+            exponent = exponent,
+            isPlain = isPlain,
+        )
     }
 
     private fun integerPart(): String? {
         val start = position
         val isZero = accept('0')
         if (!isZero) skipDigits()
-        return text.substring(start, position).takeIf { it.isNotEmpty() }
+        return text.substring(startIndex = start, endIndex = position).takeIf { it.isNotEmpty() }
     }
 
     private fun fractionPart(): String? {
@@ -45,7 +51,7 @@ internal class DecimalScanner(private val text: String) {
         isPlain = false
         val start = position
         skipDigits()
-        return text.substring(start, position).takeIf { it.isNotEmpty() }
+        return text.substring(startIndex = start, endIndex = position).takeIf { it.isNotEmpty() }
     }
 
     private fun exponentPart(): Long? {
@@ -55,7 +61,7 @@ internal class DecimalScanner(private val text: String) {
         if (!isNegative) accept('+')
         val start = position
         skipDigits()
-        val digits = text.substring(start, position)
+        val digits = text.substring(startIndex = start, endIndex = position)
         val significant = digits.trimStart('0')
         val isBounded = digits.isNotEmpty() && significant.length <= MAXIMUM_EXPONENT_DIGITS
         val sign = (-1L).takeIf { isNegative } ?: 1L

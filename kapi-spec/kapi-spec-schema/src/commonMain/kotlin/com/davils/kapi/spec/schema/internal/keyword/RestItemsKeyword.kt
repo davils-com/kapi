@@ -25,10 +25,16 @@ internal class RestItemsKeyword(name: String, private val start: Int, private va
         val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
         var isValid = true
         for (index in start until items.size) {
-            val passed = frame.descend(child, items[index], index.toString(), frame.trail(name), frame.sink)
+            val isPassed = frame.descend(
+                index = child,
+                child = items[index],
+                token = index.toString(),
+                keywordTrail = frame.trail(name),
+                sink = frame.sink,
+            )
             frame.evaluated.mark(index)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }

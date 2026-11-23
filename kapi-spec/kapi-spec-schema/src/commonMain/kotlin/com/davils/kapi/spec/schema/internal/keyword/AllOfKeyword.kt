@@ -23,10 +23,14 @@ internal class AllOfKeyword(private val children: List<Int>) : Keyword("allOf") 
     override fun evaluate(frame: Frame): Boolean {
         var isValid = true
         for ((index, child) in children.withIndex()) {
-            val result = frame.inPlace(child, frame.trail(name, index.toString()), frame.sink)
+            val result = frame.inPlace(
+                index = child,
+                keywordTrail = frame.trail(name, index.toString()),
+                sink = frame.sink,
+            )
             frame.merge(result)
             isValid = isValid && result != null
-            if (!isValid && !frame.collects) break
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }

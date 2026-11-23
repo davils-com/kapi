@@ -20,5 +20,5 @@ import com.davils.kapi.spec.schema.internal.evaluate.Frame
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 
 internal class FalseKeyword : Keyword("") {
-    override fun evaluate(frame: Frame): Boolean = frame.fail(name, "The schema false allows no value")
+    override fun evaluate(frame: Frame): Boolean = failed(frame, "The schema false allows no value")
 }

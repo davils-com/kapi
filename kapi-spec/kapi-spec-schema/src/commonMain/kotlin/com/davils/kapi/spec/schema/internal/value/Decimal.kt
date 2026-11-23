@@ -36,7 +36,7 @@ internal class Decimal private constructor(
 
     val canonical: String
         get() {
-            val minus = "-".takeIf { isNegative } ?: ""
+            val minus = "-".takeIf { isNegative }.orEmpty()
             return "0".takeIf { isZero } ?: "$minus${digits}e$exponent"
         }
 
@@ -51,7 +51,7 @@ internal class Decimal private constructor(
     private fun compareMagnitude(other: Decimal): Int {
         val positions = magnitude.compareTo(other.magnitude)
         if (positions != 0) return positions
-        val length = maxOf(digits.length, other.digits.length)
+        val length = digits.length.coerceAtLeast(other.digits.length)
         return digits.padEnd(length, '0').compareTo(other.digits.padEnd(length, '0'))
     }
 
@@ -75,7 +75,12 @@ internal class Decimal private constructor(
             val power = exponent - fraction.length + (all.length - significand.length)
             val isZero = significand.isEmpty()
             val normalized = 0L.takeIf { isZero } ?: power
-            return Decimal(isNegative && !isZero, significand, normalized, isPlain)
+            return Decimal(
+                isNegative = isNegative && !isZero,
+                digits = significand,
+                exponent = normalized,
+                isPlain = isPlain,
+            )
         }
     }
 }

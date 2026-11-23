@@ -32,7 +32,7 @@ internal class FormatKeyword(private val format: String) : Keyword("format") {
         val text = (frame.instance as? Instance.StringValue)?.value ?: return true
         frame.run.refuseLongText(text)
         frame.run.charge(text.length.toLong() / CHARACTERS_PER_STEP + 1L)
-        val isValid = FormatAssertions.check(format, text) ?: true
-        return isValid || frame.fail(name, "The string is no valid ${SafeText.quoted(format)}")
+        val isValid = FormatAssertions.check(format, text) != false
+        return isValid || failed(frame, "The string is no valid ${SafeText.quoted(format)}")
     }
 }

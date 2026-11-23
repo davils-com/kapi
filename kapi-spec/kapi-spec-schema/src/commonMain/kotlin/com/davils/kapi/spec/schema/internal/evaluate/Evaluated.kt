@@ -21,7 +21,7 @@ internal class Evaluated private constructor(private val marks: BooleanArray?) {
         marks?.set(index, true)
     }
 
-    fun isMarked(index: Int): Boolean = marks?.get(index) ?: false
+    fun isMarked(index: Int): Boolean = marks?.get(index) == true
 
     fun merge(other: Evaluated) {
         val target = marks ?: return

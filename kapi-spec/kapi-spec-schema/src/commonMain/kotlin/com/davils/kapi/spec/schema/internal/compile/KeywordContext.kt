@@ -55,9 +55,9 @@ internal class KeywordContext(
     }
 
     fun schemaOrFlag(element: JsonElement, vararg tokens: String): Int {
-        val flag = flagOf(element)?.takeIf { !draft.allowsBooleanSchemas } ?: return child(*tokens)
+        val isTrue = flagOf(element)?.takeIf { !draft.areBooleanSchemasAllowed } ?: return child(*tokens)
         val absolute = session.absoluteOf(resource, target.pointer + tokens)
-        return factory.constant(flag, resource, absolute)
+        return factory.constant(isTrue, resource, absolute)
     }
 
     fun schemas(keyword: String, element: JsonElement): List<Int>? {
@@ -72,15 +72,14 @@ internal class KeywordContext(
         return entries.keys.map { key -> key to child(keyword, key) }
     }
 
-    fun text(keyword: String, element: JsonElement): String? {
-        val text = (element as? JsonPrimitive)?.takeIf { it.isString }?.content
-        return text ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a string")
-    }
+    fun text(keyword: String, element: JsonElement): String? =
+        textOf(element) ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a string")
 
     fun texts(keyword: String, element: JsonElement): List<String>? {
-        val items = (element as? JsonArray)?.map { item -> (item as? JsonPrimitive)?.takeIf { it.isString }?.content }
-        val isValid = items != null && items.all { it != null }
-        return items?.filterNotNull()?.takeIf { isValid }
+        val array = element as? JsonArray
+        val texts = array.orEmpty().mapNotNull { item -> textOf(item) }
+        val isValid = array != null && texts.size == array.size
+        return texts.takeIf { isValid }
             ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be an array of strings")
     }
 
@@ -88,12 +87,8 @@ internal class KeywordContext(
         flagOf(element) ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a boolean")
 
     fun number(keyword: String, element: JsonElement): Decimal? {
-        val primitive = (element as? JsonPrimitive)?.takeIf {
-            !it.isString &&
-                flagOf(
-                    it,
-                ) == null &&
-                it.content != "null"
+        val primitive = (element as? JsonPrimitive)?.takeIf { value ->
+            !value.isString && flagOf(value) == null && value.content != "null"
         }
         val number = primitive?.let { Decimal.parse(it.content) }
         return number ?: report(keyword, "The keyword ${SafeText.quoted(keyword)} must be a number")
@@ -118,7 +113,12 @@ internal class KeywordContext(
         if (source.length > maximum) {
             return report(keyword, "The pattern is longer than $maximum characters", DiagnosticCodes.LIMIT_EXCEEDED)
         }
-        return Patterns.compile(source, maximum, session.limits.maximumStringLength)
+        val compiled = Patterns.compile(
+            source = source,
+            maximumSourceLength = maximum,
+            maximumInputLength = session.limits.maximumStringLength,
+        )
+        return compiled
             ?: report(
                 keyword,
                 "The pattern ${SafeText.quoted(source)} is not supported",
@@ -135,13 +135,15 @@ internal class KeywordContext(
         val base = session.resources[resource].uri
         val absolute = Uris.resolve(text, base)
         val located = absolute?.let(session::locate)
-        val reference = located?.let { Reference(factory.nodeAt(it.document, it.pointer), checkNotNull(absolute), it) }
+        val reference = located?.let { Reference(factory.nodeAt(it.document, it.pointer), absolute, it) }
         return reference ?: report(
             keyword,
             "The reference ${SafeText.quoted(text)} leads to no schema that is known or could be loaded",
             DiagnosticCodes.REFERENCE_UNRESOLVED,
         )
     }
+
+    private fun textOf(element: JsonElement): String? = (element as? JsonPrimitive)?.takeIf { it.isString }?.content
 
     private fun flagOf(element: JsonElement): Boolean? {
         val primitive = (element as? JsonPrimitive)?.takeIf { !it.isString }

@@ -22,7 +22,7 @@ import com.davils.kapi.spec.schema.internal.value.Canonical
 
 internal class ConstKeyword(private val canonical: String) : Keyword("const") {
     override fun evaluate(frame: Frame): Boolean {
-        val matches = Canonical.of(frame.instance, frame.run) == canonical
-        return matches || frame.fail(name, "The value is not the constant of the schema")
+        val isMatching = Canonical.of(frame.instance, frame.run) == canonical
+        return isMatching || failed(frame, "The value is not the constant of the schema")
     }
 }

@@ -30,9 +30,9 @@ internal enum class Measure(val unit: String) {
 
     fun of(instance: Instance, meter: Meter): Long? {
         val size = when (this) {
-            Length -> (instance as? Instance.StringValue)?.value?.let { text -> lengthOf(text, meter) }
-            Items -> (instance as? Instance.ArrayValue)?.items?.size
-            Properties -> (instance as? Instance.ObjectValue)?.keys?.size
+            Length -> (instance as? Instance.StringValue)?.let { text -> lengthOf(text.value, meter) }
+            Items -> (instance as? Instance.ArrayValue)?.run { items.size }
+            Properties -> (instance as? Instance.ObjectValue)?.run { keys.size }
         }
         return size?.toLong()
     }

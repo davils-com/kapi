@@ -24,12 +24,16 @@ internal class AnyOfKeyword(private val children: List<Int>) : Keyword("anyOf") 
         val failures = frame.temporarySink()
         var isMatched = false
         for ((index, child) in children.withIndex()) {
-            if (isMatched && !frame.run.tracksAnnotations) break
-            val result = frame.inPlace(child, frame.trail(name, index.toString()), failures)
+            if (isMatched && !frame.run.isTrackingAnnotations) break
+            val result = frame.inPlace(
+                index = child,
+                keywordTrail = frame.trail(name, index.toString()),
+                sink = failures,
+            )
             frame.merge(result)
             isMatched = isMatched || result != null
         }
         if (!isMatched) frame.failAll(failures)
-        return isMatched || frame.fail(name, "The value matches none of the ${children.size} subschemas")
+        return isMatched || failed(frame, "The value matches none of the ${children.size} subschemas")
     }
 }

@@ -21,7 +21,7 @@ import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 
 internal class NotKeyword(private val child: Int) : Keyword("not") {
     override fun evaluate(frame: Frame): Boolean {
-        val result = frame.inPlace(child, frame.trail(name), null)
-        return result == null || frame.fail(name, "The value matches the subschema it must not match")
+        val result = frame.inPlace(index = child, keywordTrail = frame.trail(name), sink = null)
+        return result == null || failed(frame, "The value matches the subschema it must not match")
     }
 }

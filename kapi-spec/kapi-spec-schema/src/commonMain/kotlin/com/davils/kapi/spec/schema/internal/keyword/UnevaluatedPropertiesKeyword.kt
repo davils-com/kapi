@@ -27,15 +27,22 @@ internal class UnevaluatedPropertiesKeyword(private val child: Int) : Keyword("u
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for ((index, property) in members.keys.withIndex()) {
-            val passed = frame.evaluated.isMarked(index) || checked(frame, members, index, property)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = frame.evaluated.isMarked(index) ||
+                checked(frame = frame, members = members, index = index, property = property)
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }
 
     private fun checked(frame: Frame, members: Instance.ObjectValue, index: Int, property: String): Boolean {
         frame.evaluated.mark(index)
-        return frame.descend(child, members.values[index], property, frame.trail(name), frame.sink)
+        return frame.descend(
+            index = child,
+            child = members.values[index],
+            token = property,
+            keywordTrail = frame.trail(name),
+            sink = frame.sink,
+        )
     }
 }

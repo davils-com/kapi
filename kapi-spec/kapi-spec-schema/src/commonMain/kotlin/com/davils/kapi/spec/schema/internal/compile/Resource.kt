@@ -22,7 +22,11 @@ import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.collection.OrderedMap
 
 internal class Resource(val index: Int, var uri: String, val document: Int, val pointer: List<String>) {
-    var recursiveAnchor: Boolean = false
+    var hasRecursiveAnchor: Boolean = false
 
     val dynamicAnchors: OrderedMap<String, List<String>> = OrderedMap()
+
+    fun isRootOf(target: List<String>): Boolean = pointer == target
+
+    fun anchorKey(name: String): String = "$uri#$name"
 }

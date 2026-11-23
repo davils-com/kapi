@@ -27,7 +27,7 @@ internal object Canonical {
         meter.charge(1L)
         when (instance) {
             is Instance.NullValue -> out.append('n')
-            is Instance.BooleanValue -> out.append('t'.takeIf { instance.value } ?: 'f')
+            is Instance.BooleanValue -> out.append('t'.takeIf { instance.isTrue } ?: 'f')
             is Instance.NumberValue -> number(instance.value, out)
             is Instance.StringValue -> text(instance.value, out, meter)
             is Instance.ArrayValue -> items(instance, out, meter)

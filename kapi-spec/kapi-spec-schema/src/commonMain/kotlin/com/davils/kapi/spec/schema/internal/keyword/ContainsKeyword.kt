@@ -25,27 +25,36 @@ internal class ContainsKeyword(
     private val minimum: Long,
     private val maximum: Long?,
     private val minimumName: String,
-    private val marks: Boolean,
+    private val isMarking: Boolean,
 ) : Keyword("contains") {
     override fun evaluate(frame: Frame): Boolean {
         val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
         val count = matches(frame, items)
         val hasMinimum = count >= minimum ||
-            frame.fail(minimumName, "The array has $count matching items but needs $minimum")
+            frame.fail(keyword = minimumName, message = "The array has $count matching items but needs $minimum")
         val hasMaximum = maximum == null ||
             count <= maximum ||
-            frame.fail("maxContains", "The array has $count matching items but allows at most $maximum")
+            frame.fail(
+                keyword = "maxContains",
+                message = "The array has $count matching items but allows at most $maximum",
+            )
         return hasMinimum && hasMaximum
     }
 
     private fun matches(frame: Frame, items: List<Instance>): Long {
-        val needsAll = maximum != null || (marks && frame.run.tracksAnnotations)
+        val isCountingAll = maximum != null || (isMarking && frame.run.isTrackingAnnotations)
         var count = 0L
         var index = 0
-        while (index < items.size && (needsAll || count < minimum)) {
-            val passed = frame.descend(child, items[index], index.toString(), frame.trail(name), null)
-            if (passed && marks) frame.evaluated.mark(index)
-            count += 1L.takeIf { passed } ?: 0L
+        while (index < items.size && (isCountingAll || count < minimum)) {
+            val isPassed = frame.descend(
+                index = child,
+                child = items[index],
+                token = index.toString(),
+                keywordTrail = frame.trail(name),
+                sink = null,
+            )
+            if (isPassed && isMarking) frame.evaluated.mark(index)
+            count += 1L.takeIf { isPassed } ?: 0L
             index++
         }
         return count

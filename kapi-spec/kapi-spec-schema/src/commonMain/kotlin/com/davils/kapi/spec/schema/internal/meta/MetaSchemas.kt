@@ -53,6 +53,6 @@ internal object MetaSchemas {
 
     fun textOf(uri: String): String? {
         val bare = uri.removeSuffix("#")
-        return texts[bare.replace("https://json-schema.org/", JSON_SCHEMA)]
+        return texts[bare.replace(oldValue = "https://json-schema.org/", newValue = JSON_SCHEMA)]
     }
 }
