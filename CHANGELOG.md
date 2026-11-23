@@ -12,3 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The build** of kapi with Kreate 5.4.1: one module per concern, one convention plugin per concern, strict
   dependency locking and verification, Detekt with every rule over main and test sources, Kover at 97 %, the API and
   semver check, Trivy, the standards audit and the assurance gate.
+- **The client runtime** `kapi-runtime-client`: `ApiClient` and the `apiCall` DSL over the Ktor `HttpClient` of the
+  application, with an interceptor chain, credentials, the destination policy for every URL and redirect hop,
+  controlled redirects, retries with `Retry-After`, `RateLimit` and idempotency keys through kontinuity, conditional
+  and range requests, streams, server-sent events with resumption, NDJSON and JSON text sequences, pages by cursor,
+  offset, number and `Link`, multipart and form bodies, OAuth 2 token sources (client credentials, refresh,
+  authorization code with PKCE, device authorization, token exchange, JWT client authentication, DPoP, discovery and
+  revocation), WebSocket channel sessions, and spans, meters and events in kollect and konfetti.
