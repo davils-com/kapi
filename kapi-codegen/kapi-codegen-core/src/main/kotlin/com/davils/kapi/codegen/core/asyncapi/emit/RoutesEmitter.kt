@@ -201,7 +201,8 @@ internal class RoutesEmitter(private val emission: Emission, private val servers
         val present = CodeBlock.of("%N != null && ", field.member).takeIf { !field.isRequired } ?: CodeBlock.of("")
         val chosen = CodeBlock.of("%L%N !in setOf(%L)", present, field.member, choices(field.choices))
         val isChosen = !isParsed && field.choices.isNotEmpty()
-        return listOfNotNull(missing, invalid.takeIf { isParsed }, chosen.takeIf { isChosen })
+        val isUnchecked = isParsed && !field.isRequired
+        return listOfNotNull(missing, invalid.takeIf { isUnchecked }, chosen.takeIf { isChosen })
     }
 
     private fun choices(values: List<String>): CodeBlock = values.map(Texts::literal).joinToCode(", ")
