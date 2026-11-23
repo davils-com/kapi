@@ -43,6 +43,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   schemas of other formats, such as Avro, to the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
   `operations` and `asyncapi.security.reference-placement` for a security requirement that refers outside
   `components/securitySchemes`.
+- **The comparison of two versions of a document** in `kapi-spec-core`: `Comparison` of `Change`s, each with a stable
+  code, a message, its places in the baseline and the candidate and its `Impact` (`Breaking`, `NonBreaking` or `Info`)
+  for clients and for providers, configured by `ComparisonBuilder` within `ReadLimits`, and the `@DavilsInternal` JSON
+  Schema comparison `SchemaComparison` over `SchemaView`s that OpenAPI and AsyncAPI share: types and nullability,
+  bounds, patterns, formats, enums, constants, properties, required properties, additional properties, items and
+  alternatives, judged by the direction the data flows in, bounded in depth, reference hops, steps and changes, and
+  safe against cyclic schemas.
 
 ### Changed
 

@@ -50,6 +50,13 @@ class PointerTreeTest : FunSpec({
             tree.hasBelow(JsonPointer.of("info")) shouldBe false
         }
 
+        test("relates a place below a reported place and answers for the root") {
+            val tree = PointerTree(listOf(JsonPointer.of(PATHS), JsonPointer.ROOT))
+
+            tree.isRelated(JsonPointer.of(PATHS, PETS, "get")) shouldBe true
+            tree.hasBelow(JsonPointer.of("info", "title")) shouldBe false
+        }
+
         test("relates nothing when nothing was reported") {
             val tree = PointerTree(emptyList())
 

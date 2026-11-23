@@ -32,6 +32,126 @@ public final class com/davils/kapi/spec/core/collection/KeyingKt {
 	public static final fun toKeyedMap (Ljava/lang/Iterable;)Ljava/util/Map;
 }
 
+public final class com/davils/kapi/spec/core/compatibility/Change {
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/compatibility/Impact;Lcom/davils/kapi/spec/core/compatibility/Impact;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/compatibility/Impact;Lcom/davils/kapi/spec/core/compatibility/Impact;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBaseline ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getCandidate ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public final fun getClient ()Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public final fun getCode-J_S2PC0 ()Ljava/lang/String;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getProvider ()Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public fun hashCode ()I
+	public final fun isBreaking ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/compatibility/ChangeLog {
+	public fun <init> (Ljava/lang/String;Lcom/davils/kapi/spec/core/compatibility/ComparisonSettings;)V
+	public final fun code-09zFoAs (Ljava/lang/String;)Ljava/lang/String;
+	public final fun comparison ()Lcom/davils/kapi/spec/core/compatibility/Comparison;
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public final fun incomplete (Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public final fun report (Ljava/lang/String;Lkotlin/Pair;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;)V
+	public final fun step (Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;)Z
+	public final fun steps (JLcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kapi/spec/core/diagnostic/Location;)Z
+}
+
+public final class com/davils/kapi/spec/core/compatibility/Comparison {
+	public fun <init> (Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBreakingForClients ()Ljava/util/List;
+	public final fun getBreakingForProviders ()Ljava/util/List;
+	public final fun getChanges ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun isBreakingForClients ()Z
+	public final fun isBreakingForProviders ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/core/compatibility/ComparisonBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public fun <init> ()V
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public final fun limits (Lkotlin/jvm/functions/Function1;)V
+	public final fun setLimits (Lcom/davils/kapi/spec/core/policy/ReadLimits;)V
+}
+
+public final class com/davils/kapi/spec/core/compatibility/ComparisonSettings : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/spec/core/compatibility/ComparisonSettings$Companion;
+	public final fun getLimits ()Lcom/davils/kapi/spec/core/policy/ReadLimits;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/core/compatibility/ComparisonSettings$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/core/compatibility/ComparisonSettings;
+}
+
+public abstract class com/davils/kapi/spec/core/compatibility/Direction : java/lang/Enum {
+	public static final field Request Lcom/davils/kapi/spec/core/compatibility/Direction;
+	public static final field Response Lcom/davils/kapi/spec/core/compatibility/Direction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getLabel ()Ljava/lang/String;
+	public abstract fun getNarrowed ()Lkotlin/Pair;
+	public abstract fun getWidened ()Lkotlin/Pair;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/core/compatibility/Direction;
+	public static fun values ()[Lcom/davils/kapi/spec/core/compatibility/Direction;
+}
+
+public final class com/davils/kapi/spec/core/compatibility/Impact : java/lang/Enum {
+	public static final field Breaking Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public static final field Info Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public static final field NonBreaking Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/core/compatibility/Impact;
+	public static fun values ()[Lcom/davils/kapi/spec/core/compatibility/Impact;
+}
+
+public final class com/davils/kapi/spec/core/compatibility/SchemaComparison {
+	public fun <init> (Lcom/davils/kapi/spec/core/compatibility/ChangeLog;)V
+	public final fun compare (Lcom/davils/kapi/spec/core/compatibility/SchemaView;Lcom/davils/kapi/spec/core/compatibility/SchemaView;Lcom/davils/kapi/spec/core/compatibility/Direction;)V
+}
+
+public abstract class com/davils/kapi/spec/core/compatibility/SchemaView {
+	public fun <init> ()V
+	public final fun dereferenced (I)Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public abstract fun getAdditionalProperties ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public abstract fun getAllOf ()Ljava/util/List;
+	public abstract fun getAnyOf ()Ljava/util/List;
+	public abstract fun getConstant ()Lcom/davils/kapi/spec/core/value/Value;
+	public abstract fun getDiscriminator ()Ljava/lang/String;
+	public abstract fun getEnumeration ()Ljava/util/List;
+	public abstract fun getFormat ()Ljava/lang/String;
+	public abstract fun getHasUniqueItems ()Z
+	public abstract fun getItems ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public abstract fun getLocation ()Lcom/davils/kapi/spec/core/diagnostic/Location;
+	public abstract fun getMaxItems ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMaxLength ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMaxProperties ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMaximum ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMinItems ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMinLength ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMinProperties ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMinimum ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getMultipleOf ()Lcom/davils/kapi/spec/core/value/NumberValue;
+	public abstract fun getOneOf ()Ljava/util/List;
+	public abstract fun getOpaque ()Lcom/davils/kapi/spec/core/value/Value;
+	public abstract fun getPattern ()Ljava/lang/String;
+	public abstract fun getProperties ()Ljava/util/Map;
+	public abstract fun getRequired ()Ljava/util/List;
+	public abstract fun getTarget ()Lcom/davils/kapi/spec/core/compatibility/SchemaView;
+	public abstract fun getTypes ()Ljava/util/Set;
+	public abstract fun isAccepting ()Ljava/lang/Boolean;
+	public abstract fun isDeprecated ()Z
+	public abstract fun isMaximumExclusive ()Z
+	public abstract fun isMinimumExclusive ()Z
+	public abstract fun isReadOnly ()Z
+	public abstract fun isUnresolved ()Z
+	public abstract fun isWriteOnly ()Z
+}
+
 public final class com/davils/kapi/spec/core/diagnostic/Diagnostic {
 	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;Lkotlin/jvm/internal/DefaultConstructorMarker;)V

@@ -29,6 +29,7 @@ module com.davils.kapi.spec.core {
     requires com.davils.krypt.primitive;
 
     exports com.davils.kapi.spec.core.collection;
+    exports com.davils.kapi.spec.core.compatibility;
     exports com.davils.kapi.spec.core.diagnostic;
     exports com.davils.kapi.spec.core.load;
     exports com.davils.kapi.spec.core.model;
