@@ -81,7 +81,8 @@ internal class DateReader(private val text: String, private val nowYear: Int?) {
     }
 
     private fun rfc850(): DateParts? {
-        val date = tokens.getOrNull(1)?.split('-').orEmpty()
+        val dateToken = tokens.getOrNull(1)
+        val date = dateToken?.split('-').orEmpty()
         val isShaped = tokens.size == RFC850_TOKENS && tokens.last() == GMT && isNamed(tokens[0])
         if (!isShaped || date.size != TIME_PARTS) return null
         val year = date[2].takeIf(::isTwoDigits)?.let(::number)
@@ -134,10 +135,11 @@ internal class DateReader(private val text: String, private val nowYear: Int?) {
 
     private fun timeOf(time: String): Long? {
         val parts = time.split(':').takeIf { found -> found.size == TIME_PARTS && found.all(::isTwoDigits) }
-        val numbers = parts?.mapNotNull(::number)?.takeIf { found -> found.size == TIME_PARTS }
-        val hour = numbers?.get(0)?.takeIf { value -> value <= LAST_HOUR }
-        val minute = numbers?.get(1)?.takeIf { value -> value <= LAST_MINUTE }
-        val second = numbers?.get(2)?.takeIf { value -> value <= LAST_SECOND }
+        val numbers = parts?.mapNotNull(::number).orEmpty()
+        val isComplete = numbers.size == TIME_PARTS
+        val hour = numbers.getOrNull(0)?.takeIf { value -> isComplete && value <= LAST_HOUR }
+        val minute = numbers.getOrNull(1)?.takeIf { value -> value <= LAST_MINUTE }
+        val second = numbers.getOrNull(2)?.takeIf { value -> value <= LAST_SECOND }
         if (hour == null || minute == null || second == null) return null
         return hour * SECONDS_PER_HOUR + minute * SECONDS_PER_MINUTE + second
     }

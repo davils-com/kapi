@@ -26,132 +26,180 @@ import io.kotest.matchers.string.shouldNotContain
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 
+private const val LF: String = "\n"
+
+private const val CR: String = "\r"
+
 private const val RETRY: Long = 3_000L
 
 private const val TEST: String = "test"
 
+private const val UPDATE: String = "update"
+
+private const val DATA_TEST: String = "data: test"
+
+private const val DATA_X: String = "data: x"
+
 private const val SMALL: Int = 8
 
-private fun read(vararg chunks: String, reader: ServerSentEventReader = ServerSentEventReader()): List<ServerSentEvent> =
-    chunks.flatMap { chunk -> reader.feed(chunk.encodeToByteString()).getOrNull().shouldNotBeNull() }
+private val byteOrderMark: ByteArray = byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte())
+
+private fun lines(vararg lines: String): String = lines.joinToString(LF)
+
+private fun stream(vararg lines: String): String = lines.joinToString(separator = LF, postfix = LF)
+
+private fun read(
+    vararg chunks: String,
+    reader: ServerSentEventReader = ServerSentEventReader(),
+): List<ServerSentEvent> = chunks.flatMap { chunk ->
+    val outcome = reader.feed(chunk.encodeToByteString())
+    outcome.getOrNull().shouldNotBeNull()
+}
+
+private fun event(data: String, id: String? = null): ServerSentEvent = ServerSentEvent(data = data, id = id)
 
 class ServerSentEventReaderTest : FunSpec({
     context("the examples of the WHATWG HTML standard §9.2.6") {
         test("join several data lines with line feeds") {
-            read("data: YHOO\ndata: +2\ndata: 10\n\n") shouldBe listOf(ServerSentEvent("YHOO\n+2\n10"))
+            read(stream("data: YHOO", "data: +2", "data: 10", "")) shouldBe listOf(event(lines("YHOO", "+2", "10")))
         }
 
         test("skip comments, keep the last event ID and strip one leading space only") {
-            val stream = ": test stream\n\ndata: first event\nid: 1\n\ndata:second event\nid\n\ndata:  third event\n\n"
-
-            read(stream) shouldBe listOf(
-                ServerSentEvent("first event", id = "1"),
-                ServerSentEvent("second event"),
-                ServerSentEvent(" third event"),
+            val text = stream(
+                ": test stream",
+                "",
+                "data: first event",
+                "id: 1",
+                "",
+                "data:second event",
+                "id",
+                "",
+                "data:  third event",
+                "",
             )
+
+            read(text) shouldBe listOf(event("first event", id = "1"), event("second event"), event(" third event"))
         }
 
         test("dispatch empty data and discard an event without its empty line") {
             val reader = ServerSentEventReader()
 
-            read("data\n\ndata\ndata\n\ndata:", reader = reader) shouldBe
-                listOf(ServerSentEvent(""), ServerSentEvent("\n"))
+            read(lines("data", "", "data", "data", "", "data:"), reader = reader) shouldBe
+                listOf(event(""), event(LF))
             reader.isIncomplete shouldBe true
             reader.finish() shouldBe Outcome.Success(emptyList())
         }
 
         test("read data with and without a space alike") {
-            read("data:test\n\ndata: test\n\n") shouldBe listOf(ServerSentEvent(TEST), ServerSentEvent(TEST))
+            read(stream("data:test", "", DATA_TEST, "")) shouldBe listOf(event(TEST), event(TEST))
         }
     }
 
     context("lines") {
         test("end with CR, LF or CRLF, also when the two arrive apart") {
-            read("data: a\r\r", "data: b\r", "\n\r\n", "data: c\n\n") shouldBe
-                listOf(ServerSentEvent("a"), ServerSentEvent("b"), ServerSentEvent("c"))
+            read("data: a$CR$CR", "data: b$CR", "$LF$CR$LF", stream("data: c", "")) shouldBe
+                listOf(event("a"), event("b"), event("c"))
         }
 
         test("lose a byte order mark at the start of the stream only") {
-            val bom = ByteString(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()))
             val reader = ServerSentEventReader()
-            val events = reader.feed(ByteString(bom.toByteArray() + "data: x\n\n".encodeToByteArray()))
+            val first = ByteString(byteOrderMark + stream(DATA_X, "").encodeToByteArray())
+            val second = ByteString(byteOrderMark + stream("data: y", "").encodeToByteArray())
 
-            events shouldBe Outcome.Success(listOf(ServerSentEvent("x")))
-            reader.feed(ByteString(bom.toByteArray() + "data: y\n\n".encodeToByteArray())) shouldBe
-                Outcome.Success(emptyList())
+            reader.feed(first) shouldBe Outcome.Success(listOf(event("x")))
+            reader.feed(second) shouldBe Outcome.Success(emptyList())
         }
 
         test("replace malformed UTF-8") {
             val reader = ServerSentEventReader()
-            val bytes = "data: ".encodeToByteArray() + byteArrayOf(0xFF.toByte()) + "\n\n".encodeToByteArray()
+            val bytes = "data: ".encodeToByteArray() + byteArrayOf(0xFF.toByte()) + stream("", "").encodeToByteArray()
 
-            reader.feed(ByteString(bytes)) shouldBe Outcome.Success(listOf(ServerSentEvent("�")))
+            reader.feed(ByteString(bytes)) shouldBe Outcome.Success(listOf(event("�")))
         }
     }
 
     context("fields") {
         test("set the type, the reconnection time and the ID") {
             val reader = ServerSentEventReader()
-            val events = read("event: update\nretry: 3000\nid: 7\ndata: x\n\ndata: y\n\n", reader = reader)
+            val text = stream("event: update", "retry: 3000", "id: 7", DATA_X, "", "data: y", "")
 
-            events shouldBe listOf(
-                ServerSentEvent("x", type = "update", id = "7", retry = RETRY),
-                ServerSentEvent("y", id = "7", retry = RETRY),
+            read(text, reader = reader) shouldBe listOf(
+                ServerSentEvent(data = "x", type = UPDATE, id = "7", retry = RETRY),
+                ServerSentEvent(data = "y", id = "7", retry = RETRY),
             )
             reader.lastEventId shouldBe "7"
             reader.retry shouldBe RETRY
         }
 
         test("ignore an ID with NUL, a retry that is no number and unknown fields") {
-            read("id: 1\nid: a\u0000b\nretry: 1s\nretry\nfoo: bar\ndata: x\n\n") shouldBe
-                listOf(ServerSentEvent("x", id = "1"))
+            val text = stream("id: 1", "id: a\u0000b", "retry: 1s", "retry", "foo: bar", DATA_X, "")
+
+            read(text) shouldBe listOf(event("x", id = "1"))
         }
     }
 
     context("limits") {
         test("refuse a line that is too long and stay failed") {
             val reader = ServerSentEventReader(framingLimits { maxRecordBytes = SMALL })
+            val refused = Outcome.Failure(FramingFailure.RecordTooLong)
 
-            reader.feed("data: 12\n\n".encodeToByteString()) shouldBe Outcome.Success(listOf(ServerSentEvent("12")))
-            reader.feed("data: 123\n\n".encodeToByteString()) shouldBe Outcome.Failure(FramingFailure.RecordTooLong)
-            reader.feed("data: 1\n\n".encodeToByteString()) shouldBe Outcome.Failure(FramingFailure.RecordTooLong)
-            reader.finish() shouldBe Outcome.Failure(FramingFailure.RecordTooLong)
+            reader.feed(stream("data: 12", "").encodeToByteString()) shouldBe Outcome.Success(listOf(event("12")))
+            reader.feed(stream("data: 123", "").encodeToByteString()) shouldBe refused
+            reader.feed(stream("data: 1", "").encodeToByteString()) shouldBe refused
+            reader.finish() shouldBe refused
         }
 
         test("refuse data of one event that grows too large") {
             val reader = ServerSentEventReader(framingLimits { maxEventBytes = SMALL * 2 })
+            val two = stream("data: a", "data: b", "")
+            val three = stream("data: a", "data: b", "data: c", "")
 
-            reader.feed("data: a\ndata: b\n\n".encodeToByteString()) shouldBe
-                Outcome.Success(listOf(ServerSentEvent("a\nb")))
-            reader.feed("data: a\ndata: b\ndata: c\n\n".encodeToByteString()) shouldBe
-                Outcome.Failure(FramingFailure.EventTooLong)
+            reader.feed(two.encodeToByteString()) shouldBe Outcome.Success(listOf(event(lines("a", "b"))))
+            reader.feed(three.encodeToByteString()) shouldBe Outcome.Failure(FramingFailure.EventTooLong)
         }
     }
 
     context("the writer") {
         test("writes every field and splits data into lines that read back") {
-            val event = ServerSentEvent("line 1\r\nline 2\rline 3\n", type = "update", id = "42", retry = RETRY)
+            val data = "line 1\r\nline 2${CR}line 3$LF"
+            val event = ServerSentEvent(data = data, type = UPDATE, id = "42", retry = RETRY)
             val text = ServerSentEvents.encode(event)
+            val written = stream(
+                "event: update",
+                "id: 42",
+                "retry: 3000",
+                "data: line 1",
+                "data: line 2",
+                "data: line 3",
+                "data: ",
+                "",
+            )
+            val back = ServerSentEvent(
+                data = stream("line 1", "line 2", "line 3"),
+                type = UPDATE,
+                id = "42",
+                retry = RETRY,
+            )
 
-            text shouldBe "event: update\nid: 42\nretry: 3000\ndata: line 1\ndata: line 2\ndata: line 3\ndata: \n\n"
-            read(text) shouldBe listOf(ServerSentEvent("line 1\nline 2\nline 3\n", "update", "42", RETRY))
-            ServerSentEvents.encode(ServerSentEvent(TEST)) shouldBe "data: test\n\n"
-            ServerSentEvents.frame(ServerSentEvent(TEST)) shouldBe "data: test\n\n".encodeToByteString()
-            ServerSentEvents.comment("ping") shouldBe ":ping\n"
+            text shouldBe written
+            read(text) shouldBe listOf(back)
+            ServerSentEvents.encode(event(TEST)) shouldBe stream(DATA_TEST, "")
+            ServerSentEvents.frame(event(TEST)) shouldBe stream(DATA_TEST, "").encodeToByteString()
+            ServerSentEvents.comment("ping") shouldBe stream(":ping")
         }
 
         test("refuses what would end an event early or inject a field") {
-            shouldThrow<IllegalArgumentException> { ServerSentEvent(TEST, type = "a\ndata: x") }
-            shouldThrow<IllegalArgumentException> { ServerSentEvent(TEST, id = "1\r\nevent: x") }
-            shouldThrow<IllegalArgumentException> { ServerSentEvent(TEST, id = "a\u0000") }
-            shouldThrow<IllegalArgumentException> { ServerSentEvent(TEST, retry = -1L) }
-            shouldThrow<IllegalArgumentException> { ServerSentEvents.comment("a\n\ndata: x") }
+            shouldThrow<IllegalArgumentException> { ServerSentEvent(data = TEST, type = "a${LF}data: x") }
+            shouldThrow<IllegalArgumentException> { ServerSentEvent(data = TEST, id = "1\r\nevent: x") }
+            shouldThrow<IllegalArgumentException> { ServerSentEvent(data = TEST, id = "a\u0000") }
+            shouldThrow<IllegalArgumentException> { ServerSentEvent(data = TEST, retry = -1L) }
+            shouldThrow<IllegalArgumentException> { ServerSentEvents.comment(lines("a", "", DATA_X)) }
         }
 
         test("compares events by value and shows them escaped") {
-            ServerSentEvent(TEST).hashCode() shouldBe ServerSentEvent(TEST).hashCode()
-            ServerSentEvent("a\nb").toString() shouldNotContain "\n"
-            ServerSentEvent(TEST, id = "1").toString() shouldBe "ServerSentEvent(type=message, id=1, retry=null, data=test)"
+            event(TEST).hashCode() shouldBe event(TEST).hashCode()
+            event(lines("a", "b")).toString() shouldNotContain LF
+            event(TEST, id = "1").toString() shouldBe "ServerSentEvent(type=message, id=1, retry=none, data=test)"
         }
     }
 })

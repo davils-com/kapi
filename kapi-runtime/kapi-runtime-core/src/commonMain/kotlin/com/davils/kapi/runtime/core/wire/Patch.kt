@@ -22,6 +22,8 @@ import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
 import kotlinx.serialization.Serializable
 
+private const val NULL: String = "null"
+
 /**
  * A field of a partial update, such as the body of a JSON merge patch of RFC 7396, which tells three states apart: a
  * field that is left out, one that is cleared with `null` and one that is set to a value.
@@ -63,7 +65,7 @@ public sealed interface Patch<out T> {
 
         override fun hashCode(): Int = value.hashCode()
 
-        override fun toString(): String = "Value(${SafeText.text(value.toString())})"
+        override fun toString(): String = "Value(${SafeText.text(value?.toString() ?: NULL)})"
     }
 
     /**

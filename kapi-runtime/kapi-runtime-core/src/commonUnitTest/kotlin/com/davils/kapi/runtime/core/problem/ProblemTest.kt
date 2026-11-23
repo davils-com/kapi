@@ -36,6 +36,10 @@ import kotlinx.serialization.json.JsonPrimitive
 
 private const val NOT_FOUND: Int = 404
 
+private const val BALANCE: Int = 30
+
+private fun traced(): Problem = Problem(detail = "line\nbreak", extensions = mapOf("trace" to JsonPrimitive("id")))
+
 private const val EMPTY: String = "{}"
 
 private const val RFC_EXAMPLE: String = """{"type":"https://example.com/probs/out-of-credit",""" +
@@ -61,7 +65,9 @@ private val full: Problem = Problem(
     detail = "No pet 7",
     instance = "/pets/7",
     code = "pets.not-found",
-    violations = listOf(ProblemViolation("id", "kapi.runtime.constraint.minimum", "must be at least 1")),
+    violations = listOf(
+        ProblemViolation(path = "id", code = "kapi.runtime.constraint.minimum", message = "must be at least 1"),
+    ),
 )
 
 class ProblemTest : FunSpec({
@@ -92,7 +98,7 @@ class ProblemTest : FunSpec({
             val problem = Json.decodeFromString(Problem.serializer(), RFC_EXAMPLE)
 
             problem.title shouldBe "You do not have enough credit."
-            problem.extensions["balance"] shouldBe JsonPrimitive(30)
+            problem.extensions["balance"] shouldBe JsonPrimitive(BALANCE)
             problem.extensions["accounts"] shouldBe JsonArray(
                 listOf(JsonPrimitive("/account/12345"), JsonPrimitive("/account/67890")),
             )
@@ -123,10 +129,8 @@ class ProblemTest : FunSpec({
         }
 
         test("is read as application/problem+json by the codecs, also as CBOR") {
-            val content = Codecs.Default
-                .codecFor(Problem.MEDIA_TYPE)
-                .shouldNotBeNull()
-                .encode(Problem.serializer(), full)
+            val json = Codecs.Default.codecFor(Problem.MEDIA_TYPE).shouldNotBeNull()
+            val content = json.encode(Problem.serializer(), full)
             val cbor = Codecs.Default.codecFor("application/cbor").shouldNotBeNull()
 
             Codecs.Default.decode(Problem.serializer(), content, Problem.MEDIA_TYPE) shouldBe Decoding.Decoded(full)
@@ -139,25 +143,26 @@ class ProblemTest : FunSpec({
         }
 
         test("is equal by its members and shows its texts escaped") {
-            val problem = Problem(detail = "line\nbreak", extensions = mapOf("trace" to JsonPrimitive("id")))
+            val problem = traced()
 
-            problem shouldBe Problem(detail = "line\nbreak", extensions = mapOf("trace" to JsonPrimitive("id")))
-            problem.hashCode() shouldBe Problem(
-                detail = "line\nbreak",
-                extensions = mapOf("trace" to JsonPrimitive("id")),
-            ).hashCode()
+            problem shouldBe traced()
+            problem.hashCode() shouldBe traced().hashCode()
             problem shouldNotBe Problem()
             problem.toString() shouldNotContain "\n"
             problem.toString() shouldContain "extensions=[trace]"
-            ProblemViolation("a\nb", "c", "d").toString() shouldNotContain "\n"
+            ProblemViolation(path = "a\nb", code = "c", message = "d").toString() shouldNotContain "\n"
         }
 
         test("needs every member of a violation") {
             shouldThrow<SerializationException> {
                 Json.decodeFromString(ProblemViolation.serializer(), """{"path":"id"}""")
             }
-            ProblemViolation("a", "b", "c").hashCode() shouldBe ProblemViolation("a", "b", "c").hashCode()
-            ProblemViolation("a", "b", "c").equals("a") shouldBe false
+            ProblemViolation(
+                path = "a",
+                code = "b",
+                message = "c",
+            ).hashCode() shouldBe ProblemViolation(path = "a", code = "b", message = "c").hashCode()
+            ProblemViolation(path = "a", code = "b", message = "c").equals("a") shouldBe false
         }
     }
 

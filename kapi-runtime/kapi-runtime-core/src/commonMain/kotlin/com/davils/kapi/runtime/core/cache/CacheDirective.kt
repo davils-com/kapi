@@ -50,12 +50,13 @@ public class CacheDirective(name: String, public val argument: String? = null) {
         require(argument == null || FieldGrammar.isSafeValue(argument)) { "The argument holds a control character" }
     }
 
-    override fun equals(other: Any?): Boolean = other is CacheDirective && name == other.name && argument == other.argument
+    override fun equals(other: Any?): Boolean =
+        other is CacheDirective && name == other.name && argument == other.argument
 
     override fun hashCode(): Int = name.hashCode() * HASH_FACTOR + argument.hashCode()
 
     override fun toString(): String {
-        val written = argument?.let { value -> "=" + FieldGrammar.tokenOrQuoted(value) } ?: ""
+        val written = argument?.let { value -> "=" + FieldGrammar.tokenOrQuoted(value) }.orEmpty()
         return name + written
     }
 

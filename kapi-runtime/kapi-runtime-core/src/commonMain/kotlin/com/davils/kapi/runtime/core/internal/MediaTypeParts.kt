@@ -16,4 +16,4 @@
 
 package com.davils.kapi.runtime.core.internal
 
-internal class MediaTypeParts(val type: String, val subtype: String, val parameters: List<Pair<String, String>>)
+internal data class MediaTypeParts(val type: String, val subtype: String, val parameters: List<Pair<String, String>>)

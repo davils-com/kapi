@@ -58,7 +58,11 @@ public class Vary(fields: List<String>, public val isAny: Boolean = false) {
 
     override fun hashCode(): Int = listOf(fields, isAny).hashCode()
 
-    override fun toString(): String = (listOf(ANY).takeIf { isAny }.orEmpty() + fields).joinToString(", ")
+    override fun toString(): String {
+        val any = listOf(ANY).takeIf { isAny }
+        val members = any.orEmpty() + fields
+        return members.joinToString(", ")
+    }
 
     /**
      * Reads `Vary`.
@@ -76,7 +80,12 @@ public class Vary(fields: List<String>, public val isAny: Boolean = false) {
          * @since 1.0.0
          */
         public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): Vary? {
-            val names = FieldLists.read(text, limits.maxFieldLength, limits.maxMembers, FieldScanner::token)
+            val names = FieldLists.read(
+                text = text,
+                maxLength = limits.maxFieldLength,
+                maxMembers = limits.maxMembers,
+                element = FieldScanner::token,
+            )
             val isAny = names?.contains(ANY) == true
             return names?.let { found -> Vary(found.filterNot { name -> name == ANY }, isAny) }
         }

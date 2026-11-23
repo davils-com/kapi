@@ -44,6 +44,6 @@ internal class ByteWindow {
     }
 
     fun drop(count: Int) {
-        bytes = bytes.copyOfRange(minOf(count, bytes.size), bytes.size)
+        bytes = bytes.copyOfRange(fromIndex = minOf(a = count, b = bytes.size), toIndex = bytes.size)
     }
 }

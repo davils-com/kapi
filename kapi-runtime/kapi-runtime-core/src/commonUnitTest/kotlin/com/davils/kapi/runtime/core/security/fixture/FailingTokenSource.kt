@@ -19,8 +19,10 @@ package com.davils.kapi.runtime.core.security.fixture
 import com.davils.kapi.runtime.core.security.RefreshingTokenSource
 import com.davils.kapi.runtime.core.security.Secret
 
-internal class FailingTokenSource : RefreshingTokenSource {
-    override suspend fun token(): Secret = throw IllegalStateException("the vault is sealed")
+private const val SEALED: String = "the vault is sealed"
 
-    override suspend fun refresh(rejected: Secret?): Boolean = throw IllegalStateException("the vault is sealed")
+internal class FailingTokenSource : RefreshingTokenSource {
+    override suspend fun token(): Secret = error(SEALED)
+
+    override suspend fun refresh(rejected: Secret?): Boolean = error(SEALED)
 }

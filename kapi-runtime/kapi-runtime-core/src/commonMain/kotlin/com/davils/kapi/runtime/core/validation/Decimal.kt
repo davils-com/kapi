@@ -29,6 +29,8 @@ private const val MINUS: Char = '-'
 
 private const val PLUS: Char = '+'
 
+private const val SIGN: String = "-"
+
 private const val POINT: Char = '.'
 
 private const val HASH_FACTOR: Int = 31
@@ -90,7 +92,7 @@ public class Decimal private constructor(
     override fun hashCode(): Int = (digits.hashCode() * HASH_FACTOR + exponent) * HASH_FACTOR + isNegative.hashCode()
 
     override fun toString(): String {
-        val sign = MINUS.toString().takeIf { isNegative } ?: ""
+        val sign = SIGN.takeIf { isNegative }.orEmpty()
         return sign + magnitudeText()
     }
 
@@ -98,8 +100,8 @@ public class Decimal private constructor(
         val adjusted = digits.length + exponent
         val otherAdjusted = other.digits.length + other.exponent
         if (adjusted != otherAdjusted) return adjusted.compareTo(otherAdjusted)
-        val width = maxOf(digits.length, other.digits.length)
-        return DecimalDigits.compareMagnitude(digits.padEnd(width, '0'), other.digits.padEnd(width, '0'))
+        val width = maxOf(a = digits.length, b = other.digits.length)
+        return DecimalDigits.compareMagnitude(left = digits.padEnd(width, '0'), right = other.digits.padEnd(width, '0'))
     }
 
     private fun magnitudeText(): String {
@@ -111,8 +113,8 @@ public class Decimal private constructor(
 
     private fun plainText(point: Int): String {
         if (exponent >= 0) return digits + ZERO.repeat(exponent)
-        val whole = digits.take(maxOf(point, 0)).ifEmpty { ZERO }
-        val fraction = ZERO.repeat(maxOf(-point, 0)) + digits.drop(maxOf(point, 0))
+        val whole = digits.take(maxOf(a = point, b = 0)).ifEmpty { ZERO }
+        val fraction = ZERO.repeat(maxOf(a = -point, b = 0)) + digits.drop(maxOf(a = point, b = 0))
         return whole + POINT + fraction
     }
 
@@ -213,14 +215,14 @@ public class Decimal private constructor(
             if (!isNegative) consume(PLUS)
             val significant = digitsOrNull()?.trimStart('0')
             val value = significant?.takeIf { digits -> digits.length < MOST_EXPONENT_DIGITS }
-            val magnitude = value?.ifEmpty { ZERO }?.toInt()
+            val magnitude = value?.run { ifEmpty { ZERO }.toInt() }
             return magnitude?.let { number -> (-number).takeIf { isNegative } ?: number }
         }
 
         private fun digitsOrNull(): String? {
             val start = position
             while (position < text.length && FieldGrammar.isDigit(text[position])) position += 1
-            return text.substring(start, position).takeIf(String::isNotEmpty)
+            return text.substring(startIndex = start, endIndex = position).takeIf(String::isNotEmpty)
         }
 
         private fun consume(char: Char): Boolean {

@@ -27,5 +27,5 @@ private val nothing: String? = null
 internal object SilentSerializer : DeserializationStrategy<Int> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Silent", PrimitiveKind.INT)
 
-    override fun deserialize(decoder: Decoder): Int = throw IllegalStateException(nothing)
+    override fun deserialize(decoder: Decoder): Int = throw UnsupportedOperationException(nothing)
 }

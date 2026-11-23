@@ -16,6 +16,8 @@
 
 package com.davils.kapi.runtime.core.conditional
 
+private const val NONE: String = "none"
+
 /**
  * What a server knows of the selected representation of a resource when it evaluates preconditions.
  *
@@ -29,11 +31,14 @@ public class RepresentationState(
     public val lastModified: HttpDate? = null,
     public val isPresent: Boolean = true,
 ) {
-    override fun equals(other: Any?): Boolean = other is RepresentationState && entityTag == other.entityTag &&
-        lastModified == other.lastModified && isPresent == other.isPresent
+    override fun equals(other: Any?): Boolean = other is RepresentationState &&
+        entityTag == other.entityTag &&
+        lastModified == other.lastModified &&
+        isPresent == other.isPresent
 
     override fun hashCode(): Int = listOf(entityTag, lastModified, isPresent).hashCode()
 
     override fun toString(): String =
-        "RepresentationState(entityTag=$entityTag, lastModified=$lastModified, isPresent=$isPresent)"
+        "RepresentationState(entityTag=${entityTag ?: NONE}, lastModified=${lastModified ?: NONE}, " +
+            "isPresent=$isPresent)"
 }

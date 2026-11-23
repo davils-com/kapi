@@ -209,7 +209,8 @@ public class CacheControl(directives: List<CacheDirective>) {
         val argument = get(name)?.argument ?: return null
         val isDelta = argument.isNotEmpty() && argument.all(FieldGrammar::isDigit)
         val significant = argument.trimStart('0').takeIf { isDelta }
-        return significant?.let { digits -> minOf(digits.take(MOST_DIGITS + 1).ifEmpty { "0" }.toLong(), MOST_DELTA) }
+        val clipped = significant?.run { take(MOST_DIGITS + 1).ifEmpty { "0" } }
+        return clipped?.let { digits -> minOf(a = digits.toLong(), b = MOST_DELTA) }
     }
 
     private fun fields(name: String): List<String> {
@@ -355,7 +356,12 @@ public class CacheControl(directives: List<CacheDirective>) {
          * @since 1.0.0
          */
         public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): CacheControl? {
-            val directives = FieldLists.read(text, limits.maxFieldLength, limits.maxMembers, ::directive)
+            val directives = FieldLists.read(
+                text = text,
+                maxLength = limits.maxFieldLength,
+                maxMembers = limits.maxMembers,
+                element = ::directive,
+            )
             return directives?.let(::CacheControl)
         }
 

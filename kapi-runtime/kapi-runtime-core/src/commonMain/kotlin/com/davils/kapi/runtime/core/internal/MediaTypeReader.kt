@@ -43,7 +43,7 @@ internal object MediaTypeReader {
         val subtype = scanner.token()?.takeIf { hasSlash }
         val parameters = subtype?.let { parameters(scanner, maxParameters) }
         if (type == null || subtype == null || parameters == null) return null
-        return MediaTypeParts(type.lowercase(), subtype.lowercase(), parameters)
+        return MediaTypeParts(type = type.lowercase(), subtype = subtype.lowercase(), parameters = parameters)
     }
 
     fun parameters(scanner: FieldScanner, maxParameters: Int): List<Pair<String, String>>? {
@@ -86,6 +86,6 @@ internal object MediaTypeReader {
                 )
         } ?: return null
         val normalized = value.lowercase().takeIf { name == CHARSET } ?: value
-        return (name ?: "") to normalized
+        return name.orEmpty() to normalized
     }
 }

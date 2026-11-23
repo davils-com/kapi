@@ -182,14 +182,18 @@ public class MediaRange private constructor(
          * @since 1.0.0
          */
         public fun of(mediaType: MediaType): MediaRange =
-            MediaRange(mediaType.type, mediaType.subtype, mediaType.parameters)
+            MediaRange(type = mediaType.type, subtype = mediaType.subtype, parameters = mediaType.parameters)
 
         internal fun rangeOf(parts: MediaTypeParts): MediaRange? {
             val isAnyType = parts.type == WILDCARD
             val isWildSubtype = parts.subtype == WILDCARD || parts.subtype.startsWith(SUFFIX_WILDCARD)
             val isSubtypeValid = isWildSubtype || WILDCARD !in parts.subtype
             val isValid = isSubtypeValid && (!isAnyType || isWildSubtype) && WILDCARD !in parts.type.drop(1)
-            return MediaRange(parts.type, parts.subtype, parts.parameters).takeIf { isValid }
+            return MediaRange(
+                type = parts.type,
+                subtype = parts.subtype,
+                parameters = parts.parameters,
+            ).takeIf { isValid }
         }
     }
 }

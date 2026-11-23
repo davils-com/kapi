@@ -62,7 +62,7 @@ internal object DecimalDigits {
                 value[index] = difference + BASE * borrow
             }
             val leading = (0 until length).firstOrNull { index -> value[index] != 0 } ?: length
-            value.copyInto(value, destinationOffset = 0, startIndex = leading, endIndex = length)
+            value.copyInto(destination = value, destinationOffset = 0, startIndex = leading, endIndex = length)
             length -= leading
         }
     }

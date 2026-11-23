@@ -82,10 +82,11 @@ public class RangeRequest(specs: List<ByteRangeSpec>) {
 
     private fun inside(spec: ByteRangeSpec, length: Long): ResolvedRange? = when (spec) {
         is ByteRangeSpec.FromTo -> spec.takeIf { range -> range.first < length }?.let { range ->
-            ResolvedRange(range.first, minOf(range.last ?: (length - 1), length - 1))
+            ResolvedRange(first = range.first, last = minOf(a = range.last ?: (length - 1), b = length - 1))
         }
+
         is ByteRangeSpec.Suffix -> spec.takeIf { range -> range.length > 0 && length > 0 }?.let { range ->
-            ResolvedRange(maxOf(0, length - range.length), length - 1)
+            ResolvedRange(first = maxOf(a = 0, b = length - range.length), last = length - 1)
         }
     }
 
@@ -97,7 +98,12 @@ public class RangeRequest(specs: List<ByteRangeSpec>) {
         sorted.forEach { range ->
             val previous = merged.lastOrNull()?.takeIf { last -> range.first <= last.last + 1 }
             if (previous == null) merged += range
-            previous?.let { found -> merged[merged.lastIndex] = ResolvedRange(found.first, maxOf(found.last, range.last)) }
+            previous?.let { found ->
+                merged[merged.lastIndex] = ResolvedRange(
+                    first = found.first,
+                    last = maxOf(a = found.last, b = range.last),
+                )
+            }
         }
         return merged
     }
@@ -142,7 +148,7 @@ public class RangeRequest(specs: List<ByteRangeSpec>) {
             val end = last?.let(RangeNumbers::parse)
             val isValid = start != null && (last == null || (end != null && end >= start))
             if (!isValid) return null
-            return ByteRangeSpec.FromTo(start, end)
+            return ByteRangeSpec.FromTo(first = start, last = end)
         }
     }
 }

@@ -34,6 +34,8 @@ private const val QUOTE: String = "\""
 
 private const val ESCAPED_QUOTE: String = "%22"
 
+private const val NONE: String = "none"
+
 /**
  * One part of a multipart body: its header fields and its content.
  *
@@ -67,7 +69,9 @@ public class MultipartPart(headers: List<Pair<String, String>>, public val conte
      *
      * @since 1.0.0
      */
-    public val disposition: ContentDisposition? get() = header(CONTENT_DISPOSITION)?.let(ContentDisposition::parseOrNull)
+    public val disposition: ContentDisposition? get() = header(
+        CONTENT_DISPOSITION,
+    )?.let(ContentDisposition::parseOrNull)
 
     /**
      * The name of the field of a form the part belongs to, or `null`.
@@ -107,8 +111,8 @@ public class MultipartPart(headers: List<Pair<String, String>>, public val conte
     override fun hashCode(): Int = listOf(headers, content).hashCode()
 
     override fun toString(): String {
-        val shownName = name?.let(SafeText::text)
-        val shownFile = filename?.let(SafeText::text)
+        val shownName = name?.let(SafeText::text) ?: NONE
+        val shownFile = filename?.let(SafeText::text) ?: NONE
         return "MultipartPart(name=$shownName, filename=$shownFile, ${content.size} bytes)"
     }
 
@@ -152,13 +156,13 @@ public class MultipartPart(headers: List<Pair<String, String>>, public val conte
         )
 
         private fun disposition(name: String, filename: String?): String {
-            val file = filename?.let { found -> "; filename=\"${escaped(found)}\"" } ?: ""
+            val file = filename?.let { found -> "; filename=\"${escaped(found)}\"" }.orEmpty()
             return "form-data; name=\"${escaped(name)}\"$file"
         }
 
         private fun escaped(text: String): String {
             require(text.none(FieldGrammar::isControl)) { "A name of a form holds no control character" }
-            return text.replace(QUOTE, ESCAPED_QUOTE)
+            return text.replace(oldValue = QUOTE, newValue = ESCAPED_QUOTE)
         }
     }
 }

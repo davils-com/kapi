@@ -111,7 +111,7 @@ internal object PathStyle {
 
     private fun split(format: ParameterFormat, text: String, shape: ParameterShape): ParameterValue? {
         val parts = text.takeIf { candidate -> candidate.startsWith(MATRIX) }?.let { found ->
-            Delimited.split(found.substring(1), MATRIX)
+            Delimited.split(text = found.substring(1), separator = MATRIX)
         }
         return parts?.let { found -> splitParts(format, found, shape) }
     }

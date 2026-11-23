@@ -39,7 +39,7 @@ internal object CborFloats {
         val exponent = (bits shr EXPONENT_SHIFT).toInt() and EXPONENT_MASK
         val mantissa = (bits and MANTISSA_MASK).toDouble()
         val implicit = IMPLICIT.takeIf { exponent > 0 } ?: 0.0
-        val magnitude = (mantissa + implicit) * BASE.pow(maxOf(exponent, 1) - BIAS)
+        val magnitude = (mantissa + implicit) * BASE.pow(maxOf(a = exponent, b = 1) - BIAS)
         val finite = magnitude.takeIf { exponent != SPECIAL } ?: Double.NaN
         return finite.takeIf { bits and SIGN == 0L } ?: -finite
     }

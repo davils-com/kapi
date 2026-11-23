@@ -39,68 +39,84 @@ private const val RESET: Long = 30L
 
 private const val DEFAULT: String = "default"
 
+private const val EXAMPLE_POLICIES: String = """"burst";q=100;w=60,"daily";q=1000;w=86400"""
+
+private const val EXAMPLE_LIMIT: String = """"default";r=50;t=30"""
+
+private const val WITH_UNIT: String = """"bytes";q=1000;qu="content-bytes";w=60;pk=:YWJj:"""
+
+private const val UNDEFINED_POLICIES: String = """burst;q=1, "no-quota";w=1, "bad";q=-1, "unit";q=1;qu="apples", """ +
+    """"window";q=1;w="x", "key";q=1;pk=1, ("inner");q=1, "good";q=5"""
+
+private const val UNDEFINED_LIMITS: String = """"a";t=1, "b";r=1;t=-1, "c";r=1;pk="x""""
+
+private fun policies(text: String): List<RateLimitPolicy> = RateLimits.parsePolicies(text).shouldNotBeNull()
+
+private fun limits(text: String): List<RateLimit> = RateLimits.parseLimits(text).shouldNotBeNull()
+
 class RateLimitsTest : FunSpec({
     context("RateLimit-Policy") {
         test("reads the examples of the draft") {
-            val policies = RateLimits.parsePolicies("\"burst\";q=100;w=60,\"daily\";q=1000;w=86400").shouldNotBeNull()
-
-            policies shouldBe listOf(RateLimitPolicy("burst", BURST, window = MINUTE), RateLimitPolicy("daily", DAILY, window = DAY))
+            policies(EXAMPLE_POLICIES) shouldBe listOf(
+                RateLimitPolicy(name = "burst", quota = BURST, window = MINUTE),
+                RateLimitPolicy(name = "daily", quota = DAILY, window = DAY),
+            )
         }
 
         test("reads the unit and the partition key and writes them back") {
-            val text = "\"bytes\";q=1000;qu=\"content-bytes\";w=60;pk=:YWJj:"
-            val policy = RateLimits.parsePolicies(text).shouldNotBeNull().single()
+            val policy = policies(WITH_UNIT).single()
 
             policy.unit shouldBe QuotaUnit.ContentBytes
             policy.partitionKey shouldBe "abc".encodeToByteString()
-            RateLimits.formatPolicies(listOf(policy)) shouldBe text
+            RateLimits.formatPolicies(listOf(policy)) shouldBe WITH_UNIT
         }
 
         test("ignores members the draft does not define") {
-            val text = "burst;q=1, \"no-quota\";w=1, \"bad\";q=-1, \"unit\";q=1;qu=\"apples\", \"window\";q=1;w=\"x\", " +
-                "\"key\";q=1;pk=1, (\"inner\");q=1, \"good\";q=5"
-
-            RateLimits.parsePolicies(text).shouldNotBeNull().map(RateLimitPolicy::name) shouldBe listOf("good")
+            policies(UNDEFINED_POLICIES).map(RateLimitPolicy::name) shouldBe listOf("good")
         }
 
         test("refuses what is no List and what exceeds the limits") {
-            RateLimits.parsePolicies("\"a\";q=1,").shouldBeNull()
-            RateLimits.parsePolicies("\"a\";q=1, \"b\";q=1", fieldLimits { maxMembers = 1 }).shouldBeNull()
+            RateLimits.parsePolicies(""""a";q=1,""").shouldBeNull()
+            RateLimits.parsePolicies(""""a";q=1, "b";q=1""", fieldLimits { maxMembers = 1 }).shouldBeNull()
         }
     }
 
     context("RateLimit") {
         test("reads the example of the draft and writes it back") {
-            val limit = RateLimits.parseLimits("\"default\";r=50;t=30").shouldNotBeNull().single()
+            val limit = limits(EXAMPLE_LIMIT).single()
 
-            limit shouldBe RateLimit(DEFAULT, REMAINING, RESET)
-            RateLimits.formatLimits(listOf(limit, RateLimit("x", 0L))) shouldBe "\"default\";r=50;t=30, \"x\";r=0"
+            limit shouldBe RateLimit(name = DEFAULT, remaining = REMAINING, reset = RESET)
+            RateLimits.formatLimits(listOf(limit, RateLimit(name = "x", remaining = 0L))) shouldBe
+                """$EXAMPLE_LIMIT, "x";r=0"""
         }
 
         test("ignores members without a remaining quota or with a malformed reset") {
-            RateLimits.parseLimits("\"a\";t=1, \"b\";r=1;t=-1, \"c\";r=1;pk=\"x\"").shouldNotBeNull() shouldBe emptyList()
-            RateLimits.parseLimits("\"a\";r=1;x=2").shouldNotBeNull().single().remaining shouldBe 1L
+            limits(UNDEFINED_LIMITS) shouldBe emptyList()
+            limits(""""a";r=1;x=2""").single().remaining shouldBe 1L
             RateLimits.parseLimits("nope nope").shouldBeNull()
         }
     }
 
     context("the values") {
         test("refuse what a field cannot carry") {
-            shouldThrow<IllegalArgumentException> { RateLimitPolicy("a\r\nb", 1L) }
-            shouldThrow<IllegalArgumentException> { RateLimitPolicy(DEFAULT, -1L) }
-            shouldThrow<IllegalArgumentException> { RateLimitPolicy(DEFAULT, 1L, window = -1L) }
-            shouldThrow<IllegalArgumentException> { RateLimit(DEFAULT, -1L) }
-            shouldThrow<IllegalArgumentException> { RateLimit(DEFAULT, 1L, reset = -1L) }
-            shouldThrow<IllegalArgumentException> { RateLimit("é", 1L) }
+            shouldThrow<IllegalArgumentException> { RateLimitPolicy(name = "a\r\nb", quota = 1L) }
+            shouldThrow<IllegalArgumentException> { RateLimitPolicy(name = DEFAULT, quota = -1L) }
+            shouldThrow<IllegalArgumentException> { RateLimitPolicy(name = DEFAULT, quota = 1L, window = -1L) }
+            shouldThrow<IllegalArgumentException> { RateLimit(name = DEFAULT, remaining = -1L) }
+            shouldThrow<IllegalArgumentException> { RateLimit(name = DEFAULT, remaining = 1L, reset = -1L) }
+            shouldThrow<IllegalArgumentException> { RateLimit(name = "é", remaining = 1L) }
         }
 
         test("are equal by their items") {
-            RateLimit(DEFAULT, 1L) shouldBe RateLimit(DEFAULT, 1L)
-            RateLimit(DEFAULT, 1L).hashCode() shouldBe RateLimit(DEFAULT, 1L).hashCode()
-            RateLimitPolicy(DEFAULT, 1L).hashCode() shouldBe RateLimitPolicy(DEFAULT, 1L).hashCode()
-            RateLimitPolicy(DEFAULT, 1L) shouldNotBe RateLimitPolicy(DEFAULT, 1L, QuotaUnit.ConcurrentRequests)
-            RateLimitPolicy(DEFAULT, 1L).toString() shouldBe "\"default\";q=1"
-            RateLimit(DEFAULT, 1L).toString() shouldBe "\"default\";r=1"
+            val limit = RateLimit(name = DEFAULT, remaining = 1L)
+            val policy = RateLimitPolicy(name = DEFAULT, quota = 1L)
+
+            limit shouldBe RateLimit(name = DEFAULT, remaining = 1L)
+            limit.hashCode() shouldBe RateLimit(name = DEFAULT, remaining = 1L).hashCode()
+            policy.hashCode() shouldBe RateLimitPolicy(name = DEFAULT, quota = 1L).hashCode()
+            policy shouldNotBe RateLimitPolicy(name = DEFAULT, quota = 1L, unit = QuotaUnit.ConcurrentRequests)
+            policy.toString() shouldBe """"default";q=1"""
+            limit.toString() shouldBe """"default";r=1"""
         }
     }
 })

@@ -29,12 +29,12 @@ internal object JsonDepth {
         var isInString = false
         var isEscaped = false
         text.forEach { char ->
-            val wasEscaped = isEscaped
-            isEscaped = isInString && !wasEscaped && char == BACKSLASH
-            isInString = isInString != (char == QUOTE && !wasEscaped)
+            val isAfterEscape = isEscaped
+            isEscaped = isInString && !isAfterEscape && char == BACKSLASH
+            isInString = isInString != (char == QUOTE && !isAfterEscape)
             val isStructural = !isInString && char != QUOTE
             depth += delta(char).takeIf { isStructural } ?: 0
-            deepest = maxOf(deepest, depth)
+            deepest = maxOf(a = deepest, b = depth)
         }
         return deepest <= maxDepth
     }

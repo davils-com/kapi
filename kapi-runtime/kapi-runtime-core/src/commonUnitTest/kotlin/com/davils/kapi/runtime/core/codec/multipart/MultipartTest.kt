@@ -33,31 +33,57 @@ import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
 
-private const val RFC_BODY: String = "--AaB03x\r\n" +
-    "content-disposition: form-data; name=\"field1\"\r\n" +
-    "content-type: text/plain;charset=UTF-8\r\n" +
-    "content-transfer-encoding: quoted-printable\r\n" +
-    "\r\n" +
-    "Joe owes =E2=82=AC100.\r\n" +
-    "--AaB03x--\r\n"
+private const val CRLF: String = "\r\n"
 
-private const val SIMPLE: String = "--b\r\nContent-Disposition: form-data; name=\"a\"\r\n\r\nvalue\r\n--b--"
+private const val OPEN: String = "--b"
 
-private const val SMALL: Int = 4
+private const val CLOSE: String = "--b--"
+
+private const val CONTENT: String = "x"
+
+private const val SECRET: String = "secret"
+
+private const val PADDING: Int = 65
+
+private const val LONGEST_BOUNDARY: Int = 70
+
+private const val BODY_LIMIT: Int = 64
+
+private const val SMALL: Long = 4L
+
+private const val FIELD: String = """Content-Disposition: form-data; name="a""""
 
 private val boundary: Boundary = Boundary("b")
 
-private fun decode(text: String, limits: MultipartLimits = MultipartLimits.Default): Outcome<List<MultipartPart>, MultipartFailure> =
-    MultipartFormData.decode(text.encodeToByteString(), boundary, limits)
+private fun lines(vararg parts: String): String = parts.joinToString(CRLF)
 
-private fun failure(text: String, limits: MultipartLimits = MultipartLimits.Default): MultipartFailure? =
-    (decode(text, limits) as? Outcome.Failure)?.failure
+private fun decode(text: String, limits: MultipartLimits = MultipartLimits.Default): List<MultipartPart>? {
+    val outcome = MultipartFormData.decode(text.encodeToByteString(), boundary, limits)
+    return outcome.getOrNull()
+}
+
+private fun failure(text: String, limits: MultipartLimits = MultipartLimits.Default): MultipartFailure? {
+    val outcome = MultipartFormData.decode(text.encodeToByteString(), boundary, limits)
+    return (outcome as? Outcome.Failure)?.failure
+}
+
+private fun simple(field: String, content: String): String = lines(OPEN, field, "", content, CLOSE)
 
 class MultipartTest : FunSpec({
     context("the example of RFC 7578 §4.5") {
         test("reads the field with its headers") {
-            val parts = MultipartFormData.decode(RFC_BODY.encodeToByteString(), Boundary("AaB03x"))
-                .getOrNull().shouldNotBeNull()
+            val body = lines(
+                "--AaB03x",
+                """content-disposition: form-data; name="field1"""",
+                "content-type: text/plain;charset=UTF-8",
+                "content-transfer-encoding: quoted-printable",
+                "",
+                "Joe owes =E2=82=AC100.",
+                "--AaB03x--",
+                "",
+            )
+            val outcome = MultipartFormData.decode(body.encodeToByteString(), Boundary("AaB03x"))
+            val parts = outcome.getOrNull().shouldNotBeNull()
             val part = parts.single()
 
             part.name shouldBe "field1"
@@ -69,43 +95,48 @@ class MultipartTest : FunSpec({
 
     context("writing") {
         test("writes fields and files that read back") {
+            val photo = ByteString(byteArrayOf(0, 1))
+            val png = MediaType.parse("image/png")
             val parts = listOf(
-                MultipartPart.field("title", "Grüße"),
-                MultipartPart.file("photo", "a\"b.png", ByteString(byteArrayOf(0, 1)), MediaType.parse("image/png")),
+                MultipartPart.field(name = "title", value = "Grüße"),
+                MultipartPart.file(name = "photo", filename = """a"b.png""", content = photo, contentType = png),
             )
             val body = MultipartFormData.encode(parts, Boundary("x-y"))
+            val read = MultipartFormData.decode(body, Boundary("x-y")).getOrNull()
 
-            body.decodeToString() shouldStartWith "--x-y\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\nGrüße"
-            val read = MultipartFormData.decode(body, Boundary("x-y")).getOrNull().shouldNotBeNull()
+            body.decodeToString() shouldStartWith
+                lines("--x-y", """Content-Disposition: form-data; name="title"""", "", "Grüße")
             read shouldBe parts
-            read[1].filename shouldBe "a%22b.png"
-            read[1].name shouldBe "photo"
+            read.shouldNotBeNull()[1].filename shouldBe "a%22b.png"
         }
 
         test("refuses a header that would inject a field and content that holds the delimiter") {
-            shouldThrow<IllegalArgumentException> { MultipartPart.field("a\r\nX-Injected: 1", "v") }
-            shouldThrow<IllegalArgumentException> { MultipartPart.file("a", "b\n.png", ByteString()) }
-            shouldThrow<IllegalArgumentException> { MultipartPart(listOf("X: a\r\nb" to "c"), ByteString()) }
+            shouldThrow<IllegalArgumentException> { MultipartPart.field(name = "a${CRLF}X-Injected: 1", value = "v") }
+            shouldThrow<IllegalArgumentException> {
+                MultipartPart.file(name = "a", filename = "b\n.png", content = ByteString())
+            }
+            shouldThrow<IllegalArgumentException> { MultipartPart(listOf("X: a${CRLF}b" to "c"), ByteString()) }
             shouldThrow<IllegalArgumentException> { MultipartPart(listOf("X" to "a\nb"), ByteString()) }
             shouldThrow<IllegalArgumentException> {
-                MultipartFormData.encode(listOf(MultipartPart.field("a", "x\r\n--b--")), boundary)
+                MultipartFormData.encode(listOf(MultipartPart.field(name = "a", value = "x$CRLF$CLOSE")), boundary)
             }
         }
 
         test("names its media type and its boundary") {
             val type = MultipartFormData.contentType(boundary)
+            val spaced = MediaType.parse("""multipart/form-data; boundary="a b """")
 
             type.toString() shouldBe "multipart/form-data; boundary=b"
             MultipartFormData.boundaryOf(type) shouldBe boundary
-            MultipartFormData.boundaryOf(MediaType.parse("multipart/form-data; boundary=\"a b \"")).shouldBeNull()
+            MultipartFormData.boundaryOf(spaced).shouldBeNull()
             MultipartFormData.boundaryOf(MediaType.MultipartFormData).shouldBeNull()
         }
     }
 
     context("a boundary") {
         test("has 1 to 70 characters of the set of RFC 2046 and is random when made") {
-            Boundary.parseOrNull("a".repeat(70)).shouldNotBeNull()
-            listOf("", "a".repeat(71), "a ", "a\r\nb", "a;b", "a\"b").forEach { text ->
+            Boundary.parseOrNull("a".repeat(LONGEST_BOUNDARY)).shouldNotBeNull()
+            listOf("", "a".repeat(LONGEST_BOUNDARY + 1), "a ", "a${CRLF}b", "a;b", """a"b""").forEach { text ->
                 Boundary.parseOrNull(text).shouldBeNull()
             }
             Boundary.random() shouldNotBe Boundary.random()
@@ -116,8 +147,8 @@ class MultipartTest : FunSpec({
 
     context("decoding") {
         test("skips preamble and epilogue and allows padding after a boundary") {
-            val text = "preamble\r\n--b  \t\r\n\r\nfirst\r\n--b\r\n\r\nsecond\r\n--b--  epilogue --b\r\n"
-            val parts = decode(text).getOrNull().shouldNotBeNull()
+            val text = lines("preamble", "--b  \t", "", "first", OPEN, "", "second", "--b--  epilogue --b", "")
+            val parts = decode(text).shouldNotBeNull()
 
             parts.map { part -> part.content.decodeToString() } shouldBe listOf("first", "second")
             parts.first().headers shouldBe emptyList()
@@ -125,46 +156,51 @@ class MultipartTest : FunSpec({
 
         test("streams a part split at every byte") {
             val decoder = MultipartDecoder(boundary)
-            val events = SIMPLE.encodeToByteArray().flatMap { byte ->
-                decoder.feed(ByteString(byteArrayOf(byte))).getOrNull().shouldNotBeNull()
+            val bytes = simple(field = FIELD, content = "value").encodeToByteArray()
+            val events = bytes.flatMap { byte ->
+                val outcome = decoder.feed(ByteString(byteArrayOf(byte)))
+                outcome.getOrNull().shouldNotBeNull()
             }
-            val content = events.filterIsInstance<MultipartEvent.Content>().joinToString("") { event ->
-                event.bytes.decodeToString()
-            }
+            val pieces = events.filterIsInstance<MultipartEvent.Content>()
 
-            content shouldBe "value"
-            events.first().shouldNotBeNull().toString() shouldBe "Started(MultipartPart(name=a, filename=null, 0 bytes))"
+            pieces.joinToString("") { event -> event.bytes.decodeToString() } shouldBe "value"
+            events.first().toString() shouldBe "Started(MultipartPart(name=a, filename=none, 0 bytes))"
             events.last() shouldBe MultipartEvent.Finished
             decoder.finish() shouldBe Outcome.Success(emptyList())
         }
 
         test("keeps a nested multipart body as opaque content") {
-            val inner = "--inner\r\nContent-Type: text/plain\r\n\r\nnested --b-ish\r\n--inner--"
-            val text = "--b\r\nContent-Type: multipart/mixed; boundary=inner\r\n\r\n$inner\r\n--b--"
+            val inner = lines("--inner", "Content-Type: text/plain", "", "nested --b-ish", "--inner--")
+            val text = lines(OPEN, "Content-Type: multipart/mixed; boundary=inner", "", inner, CLOSE)
+            val parts = decode(text).shouldNotBeNull()
+            val part = parts.single()
 
-            decode(text).getOrNull().shouldNotBeNull().single().content.decodeToString() shouldBe inner
+            part.content.decodeToString() shouldBe inner
         }
 
         test("refuses a boundary that is followed by anything else") {
-            failure("--b\r\n\r\nx\r\n--bx\r\n--b--") shouldBe MultipartFailure.MalformedDelimiter
-            failure("--b junk\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedDelimiter
-            failure("--b" + " ".repeat(65) + "\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedDelimiter
+            failure(lines(OPEN, "", CONTENT, "--bx", CLOSE)) shouldBe MultipartFailure.MalformedDelimiter
+            failure(lines("--b junk", "", CONTENT, CLOSE)) shouldBe MultipartFailure.MalformedDelimiter
+            failure(lines(OPEN + " ".repeat(PADDING), "", CONTENT, CLOSE)) shouldBe MultipartFailure.MalformedDelimiter
         }
 
         test("refuses malformed headers") {
-            failure("--b\r\nNo colon\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedHeader
-            failure("--b\r\nA: 1\r\n folded\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedHeader
-            failure("--b\r\nA b: 1\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedHeader
-            failure("--b\r\nA: \u0001\r\n\r\nx\r\n--b--") shouldBe MultipartFailure.MalformedHeader
-            val broken = "--b\r\nA: ".encodeToByteArray() + byteArrayOf(0xC3.toByte()) + "\r\n\r\nx\r\n--b--".encodeToByteArray()
-            (MultipartFormData.decode(ByteString(broken), boundary) as? Outcome.Failure)?.failure shouldBe
-                MultipartFailure.MalformedHeader
+            failure(simple(field = "No colon", content = CONTENT)) shouldBe MultipartFailure.MalformedHeader
+            failure(lines(OPEN, "A: 1", " folded", "", CONTENT, CLOSE)) shouldBe MultipartFailure.MalformedHeader
+            failure(simple(field = "A b: 1", content = CONTENT)) shouldBe MultipartFailure.MalformedHeader
+            failure(simple(field = "A: \u0001", content = CONTENT)) shouldBe MultipartFailure.MalformedHeader
+            val broken = "$OPEN${CRLF}A: ".encodeToByteArray() +
+                byteArrayOf(0xC3.toByte()) +
+                lines("", "", CONTENT, CLOSE).encodeToByteArray()
+            val outcome = MultipartFormData.decode(ByteString(broken), boundary)
+
+            (outcome as? Outcome.Failure)?.failure shouldBe MultipartFailure.MalformedHeader
         }
 
         test("refuses a body that ends early") {
-            failure("--b\r\n\r\nx") shouldBe MultipartFailure.Truncated
+            failure(lines(OPEN, "", CONTENT)) shouldBe MultipartFailure.Truncated
             failure("") shouldBe MultipartFailure.Truncated
-            failure("--b\r\n\r\nx\r\n--b") shouldBe MultipartFailure.Truncated
+            failure(lines(OPEN, "", CONTENT, OPEN)) shouldBe MultipartFailure.Truncated
         }
 
         test("keeps every limit at the limit and refuses one past it") {
@@ -172,39 +208,46 @@ class MultipartTest : FunSpec({
                 maxParts = 2
                 maxHeaders = 1
                 maxHeaderBytes = 8
-                maxPartBytes = SMALL.toLong()
+                maxPartBytes = SMALL
                 maxBodyBytes = 64
-                maxPreambleBytes = SMALL
+                maxPreambleBytes = 4
             }
+            val atLimits = lines(OPEN, "", "1234", OPEN, "A: 12345", "", "", CLOSE)
+            val tooMany = lines(OPEN, "", "", OPEN, "", "", OPEN, "", "", CLOSE)
 
-            decode("--b\r\n\r\n1234\r\n--b\r\nA: 12345\r\n\r\n\r\n--b--", limits).getOrNull().shouldNotBeNull() shouldHaveSize 2
-            failure("--b\r\n\r\n\r\n--b\r\n\r\n\r\n--b\r\n\r\n\r\n--b--", limits) shouldBe MultipartFailure.TooManyParts
-            failure("--b\r\nA: 1\r\nB: 2\r\n\r\n\r\n--b--", multipartLimits { maxHeaders = 1 }) shouldBe
+            decode(atLimits, limits).shouldNotBeNull() shouldHaveSize 2
+            failure(tooMany, limits) shouldBe MultipartFailure.TooManyParts
+            failure(lines(OPEN, "A: 1", "B: 2", "", "", CLOSE), multipartLimits { maxHeaders = 1 }) shouldBe
                 MultipartFailure.TooManyHeaders
-            failure("--b\r\nA: 123456\r\n\r\n\r\n--b--", limits) shouldBe MultipartFailure.HeadersTooLong
-            failure("--b\r\nA: 123456789", limits) shouldBe MultipartFailure.HeadersTooLong
-            failure("--b\r\n\r\n12345\r\n--b--", limits) shouldBe MultipartFailure.PartTooLarge
-            failure("1234\r\n--b\r\n\r\n\r\n--b--", limits).shouldBeNull()
-            failure("12345\r\n--b\r\n\r\n\r\n--b--", limits) shouldBe MultipartFailure.PreambleTooLong
-            failure("--b\r\n\r\n" + "x".repeat(64), multipartLimits { maxBodyBytes = 64 }) shouldBe
+            failure(lines(OPEN, "A: 123456", "", "", CLOSE), limits) shouldBe MultipartFailure.HeadersTooLong
+            failure(lines(OPEN, "A: 123456789"), limits) shouldBe MultipartFailure.HeadersTooLong
+            failure(lines(OPEN, "", "12345", CLOSE), limits) shouldBe MultipartFailure.PartTooLarge
+            failure(lines("1234", OPEN, "", "", CLOSE), limits).shouldBeNull()
+            failure(lines("12345", OPEN, "", "", CLOSE), limits) shouldBe MultipartFailure.PreambleTooLong
+            failure(
+                lines(OPEN, "", "x".repeat(BODY_LIMIT)),
+                multipartLimits { maxBodyBytes = BODY_LIMIT.toLong() },
+            ) shouldBe
                 MultipartFailure.BodyTooLarge
         }
 
         test("stays failed") {
             val decoder = MultipartDecoder(boundary)
+            val refused = Outcome.Failure(MultipartFailure.MalformedDelimiter)
 
-            decoder.feed("--b junk".encodeToByteString()) shouldBe Outcome.Failure(MultipartFailure.MalformedDelimiter)
-            decoder.feed(SIMPLE.encodeToByteString()) shouldBe Outcome.Failure(MultipartFailure.MalformedDelimiter)
-            decoder.finish() shouldBe Outcome.Failure(MultipartFailure.MalformedDelimiter)
+            decoder.feed("--b junk".encodeToByteString()) shouldBe refused
+            decoder.feed(simple(field = FIELD, content = CONTENT).encodeToByteString()) shouldBe refused
+            decoder.finish() shouldBe refused
         }
     }
 
     context("the values") {
         test("show sizes and names, never content") {
-            val part = MultipartPart.field("n\u00e9", "secret")
+            val part = MultipartPart.field(name = "né", value = SECRET)
+            val same = MultipartPart.field(name = "né", value = SECRET)
 
-            part.toString() shouldNotContain "secret"
-            part.hashCode() shouldBe MultipartPart.field("n\u00e9", "secret").hashCode()
+            part.toString() shouldNotContain SECRET
+            part.hashCode() shouldBe same.hashCode()
             MultipartEvent.Content(ByteString(byteArrayOf(1))).toString() shouldBe "Content(1 bytes)"
             MultipartEvent.Content(ByteString()).hashCode() shouldBe ByteString().hashCode()
             MultipartEvent.Started(part).hashCode() shouldBe part.hashCode()

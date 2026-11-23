@@ -105,7 +105,7 @@ public object Negotiation {
     public fun qualityOfLanguage(accepted: List<Weighted<String>>?, tag: String): Quality {
         if (accepted == null) return Quality.Highest
         val lowered = tag.lowercase()
-        val covering = accepted.filter { member -> covers(member.value, lowered) }
+        val covering = accepted.filter { member -> covers(range = member.value, tag = lowered) }
         return covering.maxByOrNull { member -> lengthOf(member.value) }?.quality ?: Quality.NotAcceptable
     }
 

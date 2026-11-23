@@ -23,6 +23,8 @@ private const val GET: String = "GET"
 
 private const val HEAD: String = "HEAD"
 
+private const val NONE: String = "none"
+
 private val nothing: EntityTagCondition = EntityTagCondition.Tags(emptyList())
 
 /**
@@ -68,14 +70,22 @@ public class Preconditions(
             ?: PreconditionDecision.Proceed
     }
 
-    override fun equals(other: Any?): Boolean = other is Preconditions && ifMatch == other.ifMatch &&
-        ifNoneMatch == other.ifNoneMatch && ifModifiedSince == other.ifModifiedSince &&
+    override fun equals(other: Any?): Boolean = other is Preconditions &&
+        ifMatch == other.ifMatch &&
+        ifNoneMatch == other.ifNoneMatch &&
+        ifModifiedSince == other.ifModifiedSince &&
         ifUnmodifiedSince == other.ifUnmodifiedSince
 
     override fun hashCode(): Int = listOf(ifMatch, ifNoneMatch, ifModifiedSince, ifUnmodifiedSince).hashCode()
 
-    override fun toString(): String = "Preconditions(ifMatch=$ifMatch, ifNoneMatch=$ifNoneMatch, " +
-        "ifModifiedSince=$ifModifiedSince, ifUnmodifiedSince=$ifUnmodifiedSince)"
+    override fun toString(): String {
+        val match = ifMatch ?: NONE
+        val noneMatch = ifNoneMatch ?: NONE
+        val modified = ifModifiedSince ?: NONE
+        val unmodified = ifUnmodifiedSince ?: NONE
+        return "Preconditions(ifMatch=$match, ifNoneMatch=$noneMatch, ifModifiedSince=$modified, " +
+            "ifUnmodifiedSince=$unmodified)"
+    }
 
     private fun isMatchFailed(state: RepresentationState): Boolean {
         val condition = ifMatch ?: return false
@@ -97,7 +107,14 @@ public class Preconditions(
     private fun isMatched(condition: EntityTagCondition, state: RepresentationState, isStrong: Boolean): Boolean =
         when (condition) {
             EntityTagCondition.Any -> state.isPresent
-            is EntityTagCondition.Tags -> condition.tags.any { tag -> isTagMatched(tag, state.entityTag, isStrong) }
+
+            is EntityTagCondition.Tags -> condition.entityTags.any { tag ->
+                isTagMatched(
+                    tag,
+                    state.entityTag,
+                    isStrong,
+                )
+            }
         }
 
     private fun isTagMatched(tag: EntityTag, current: EntityTag?, isStrong: Boolean): Boolean {
@@ -137,7 +154,12 @@ public class Preconditions(
             ifMatch = ifMatch?.let { text -> EntityTagCondition.parseOrNull(text, limits) ?: nothing },
             ifNoneMatch = ifNoneMatch?.let { text -> EntityTagCondition.parseOrNull(text, limits) ?: nothing },
             ifModifiedSince = ifModifiedSince?.let { text -> HttpDate.parseOrNull(FieldGrammar.trimmed(text), now) },
-            ifUnmodifiedSince = ifUnmodifiedSince?.let { text -> HttpDate.parseOrNull(FieldGrammar.trimmed(text), now) },
+            ifUnmodifiedSince = ifUnmodifiedSince?.let { text ->
+                HttpDate.parseOrNull(
+                    FieldGrammar.trimmed(text),
+                    now,
+                )
+            },
         )
     }
 }

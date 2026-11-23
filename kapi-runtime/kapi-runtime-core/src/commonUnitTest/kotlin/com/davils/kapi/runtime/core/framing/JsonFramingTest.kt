@@ -31,6 +31,14 @@ private const val SECOND: String = "[2]"
 
 private const val SMALL: Int = 4
 
+private const val LINE_FEED: Byte = 0x0A
+
+private const val LF: String = "\n"
+
+private const val CRLF: String = "\r\n"
+
+private const val CUT: String = """{"cut""""
+
 private const val SEPARATOR: Char = '\u001E'
 
 class JsonFramingTest : FunSpec({
@@ -39,7 +47,7 @@ class JsonFramingTest : FunSpec({
             val reader = JsonLinesReader()
 
             reader.feed("{\"a\"".encodeToByteString()) shouldBe Outcome.Success(emptyList())
-            reader.feed(":1}\r\n\n  \n[".encodeToByteString()) shouldBe Outcome.Success(listOf(FIRST))
+            reader.feed(":1}$CRLF$LF  $LF[".encodeToByteString()) shouldBe Outcome.Success(listOf(FIRST))
             reader.feed("2]".encodeToByteString()) shouldBe Outcome.Success(emptyList())
             reader.finish() shouldBe Outcome.Success(listOf(SECOND))
         }
@@ -51,7 +59,9 @@ class JsonFramingTest : FunSpec({
             small.feed("1234\n".encodeToByteString()) shouldBe Outcome.Success(listOf("1234"))
             small.feed("12345\n".encodeToByteString()) shouldBe Outcome.Failure(FramingFailure.RecordTooLong)
             small.finish() shouldBe Outcome.Failure(FramingFailure.RecordTooLong)
-            broken.feed(ByteString(byteArrayOf(0xC3.toByte(), 0x0A))) shouldBe Outcome.Failure(FramingFailure.NotUtf8)
+            broken.feed(
+                ByteString(byteArrayOf(0xC3.toByte(), LINE_FEED)),
+            ) shouldBe Outcome.Failure(FramingFailure.NotUtf8)
         }
 
         test("frames compact records and refuses line breaks") {
@@ -64,7 +74,7 @@ class JsonFramingTest : FunSpec({
     context("JSON text sequences of RFC 7464") {
         test("split records, skip what precedes the first separator and count truncated records") {
             val reader = JsonSequenceReader()
-            val stream = "junk$SEPARATOR$FIRST\n$SEPARATOR$SEPARATOR{\"cut\"$SEPARATOR$SECOND\n"
+            val stream = "junk$SEPARATOR$FIRST$LF$SEPARATOR$SEPARATOR$CUT$SEPARATOR$SECOND$LF"
 
             reader.feed(stream.encodeToByteString()) shouldBe Outcome.Success(listOf(FIRST))
             reader.finish() shouldBe Outcome.Success(listOf(SECOND))

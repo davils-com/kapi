@@ -70,7 +70,7 @@ public class Destination(public val scheme: String, public val host: String, pub
     override fun hashCode(): Int = (scheme.hashCode() * HASH_FACTOR + host.hashCode()) * HASH_FACTOR + (port ?: 0)
 
     override fun toString(): String {
-        val shownPort = port?.let { number -> ":$number" } ?: ""
+        val shownPort = port?.let { number -> ":$number" }.orEmpty()
         return "Destination(${SafeText.text(scheme)}://${SafeText.text(host)}$shownPort)"
     }
 }

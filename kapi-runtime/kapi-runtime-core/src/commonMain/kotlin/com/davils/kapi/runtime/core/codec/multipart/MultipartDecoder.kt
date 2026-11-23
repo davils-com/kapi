@@ -120,7 +120,7 @@ public class MultipartDecoder(boundary: Boundary, private val limits: MultipartL
 
     private fun preamble(): Boolean {
         val index = window.indexOf(delimiter)
-        val skipped = index.takeIf { found -> found >= 0 } ?: maxOf(0, window.size - delimiter.size + 1)
+        val skipped = index.takeIf { found -> found >= 0 } ?: maxOf(a = 0, b = window.size - delimiter.size + 1)
         preambleBytes += skipped
         window.drop(skipped)
         if (preambleBytes > limits.maxPreambleBytes) fail(MultipartFailure.PreambleTooLong)
@@ -172,13 +172,14 @@ public class MultipartDecoder(boundary: Boundary, private val limits: MultipartL
         val isTooLong = (end < 0 && window.size > limits.maxHeaderBytes) || end > limits.maxHeaderBytes
         if (isTooLong) fail(MultipartFailure.HeadersTooLong)
         val block = window.takeIf { end >= 0 && !isTooLong }?.take(end)
-        block?.let { window.drop(headerEnd.size) }
+        if (block != null) window.drop(headerEnd.size)
         return block
     }
 
     private fun fieldsOf(block: ByteArray): List<Pair<String, String>>? {
         val text = Utf8.decodeOrNull(block)
-        val lines = text?.takeIf(String::isNotEmpty)?.split("\r\n").orEmpty()
+        val nonEmpty = text?.takeIf(String::isNotEmpty)
+        val lines = nonEmpty?.split("\r\n").orEmpty()
         val fields = lines.map(::fieldOf)
         val isValid = text != null && fields.all { field -> field != null }
         if (!isValid) fail(MultipartFailure.MalformedHeader)
@@ -195,7 +196,7 @@ public class MultipartDecoder(boundary: Boundary, private val limits: MultipartL
 
     private fun body(events: MutableList<MultipartEvent>): Boolean {
         val index = window.indexOf(delimiter)
-        val certain = index.takeIf { found -> found >= 0 } ?: maxOf(0, window.size - delimiter.size + 1)
+        val certain = index.takeIf { found -> found >= 0 } ?: maxOf(a = 0, b = window.size - delimiter.size + 1)
         if (certain > 0) content(window.take(certain), events)
         if (index < 0 || failure != null) return false
         window.drop(delimiter.size)

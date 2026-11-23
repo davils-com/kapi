@@ -53,7 +53,7 @@ public class LinkValue(public val target: String, parameters: List<Pair<String, 
     public val parameters: List<Pair<String, String>> = parameters.map { (name, value) -> name.lowercase() to value }
 
     init {
-        require(UriReference.parseOrNull(target) != null) { "${SafeText.quoted(target)} is no URI reference" }
+        requireNotNull(UriReference.parseOrNull(target)) { "${SafeText.quoted(target)} is no URI reference" }
         val names = this.parameters.map { (name, _) -> name }
         require(names.all(FieldGrammar::isToken) && names.toSet().size == names.size) {
             "The parameters of a link have distinct names that are tokens"
@@ -70,7 +70,8 @@ public class LinkValue(public val target: String, parameters: List<Pair<String, 
      */
     public val relations: List<String>
         get() {
-            val types = parameter(REL)?.split(' ', '\t').orEmpty()
+            val relation = parameter(REL)
+            val types = relation?.split(' ', '\t').orEmpty()
             return types.filter(String::isNotEmpty).map(String::lowercase)
         }
 

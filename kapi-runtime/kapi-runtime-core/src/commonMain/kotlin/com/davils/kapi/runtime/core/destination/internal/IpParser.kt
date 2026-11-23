@@ -83,7 +83,7 @@ internal object IpParser {
     private fun words(head: List<Int>, tail: List<Int>, isCompressed: Boolean): List<Int>? {
         val count = head.size + tail.size
         val isComplete = (isCompressed && count < IPV6_GROUPS) || (!isCompressed && count == IPV6_GROUPS)
-        return (head + List(maxOf(0, IPV6_GROUPS - count)) { 0 } + tail).takeIf { isComplete }
+        return (head + List(maxOf(a = 0, b = IPV6_GROUPS - count)) { 0 } + tail).takeIf { isComplete }
     }
 
     private fun groups(text: String, isLast: Boolean): List<Int>? {
@@ -100,7 +100,10 @@ internal object IpParser {
 
     private fun embeddedGroups(embedded: ByteArray?): List<Int> {
         if (embedded == null) return emptyList()
-        return listOf(word(embedded[0], embedded[1]), word(embedded[2], embedded[IPV4_BYTES - 1]))
+        return listOf(
+            word(high = embedded[0], low = embedded[1]),
+            word(high = embedded[2], low = embedded[IPV4_BYTES - 1]),
+        )
     }
 
     private fun word(high: Byte, low: Byte): Int =

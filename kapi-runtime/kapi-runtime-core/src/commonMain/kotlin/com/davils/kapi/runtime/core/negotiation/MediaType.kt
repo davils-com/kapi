@@ -256,12 +256,16 @@ public class MediaType private constructor(
             }
             parameters.forEach { (_, value) -> FieldGrammar.quote(value) }
             val lowered = parameters.map { (name, value) -> normalized(name.lowercase(), value) }
-            return MediaType(type.lowercase(), subtype.lowercase(), lowered)
+            return MediaType(type = type.lowercase(), subtype = subtype.lowercase(), parameters = lowered)
         }
 
         internal fun typeOf(parts: MediaTypeParts): MediaType? {
             val isConcrete = parts.type != WILDCARD && parts.subtype != WILDCARD && WILDCARD !in parts.subtype
-            return MediaType(parts.type, parts.subtype, parts.parameters).takeIf { isConcrete }
+            return MediaType(
+                type = parts.type,
+                subtype = parts.subtype,
+                parameters = parts.parameters,
+            ).takeIf { isConcrete }
         }
 
         private fun isConcrete(part: String): Boolean = FieldGrammar.isToken(part) && WILDCARD !in part

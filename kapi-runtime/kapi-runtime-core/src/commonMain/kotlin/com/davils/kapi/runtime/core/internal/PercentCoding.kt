@@ -41,7 +41,14 @@ private const val RADIX: Int = 16
 internal object PercentCoding {
     fun encode(text: String, isKept: (Char) -> Boolean, isSpacePlus: Boolean = false): String {
         val out = StringBuilder(text.length)
-        text.encodeToByteArray().forEach { byte -> append(out, byte.toInt() and BYTE, isKept, isSpacePlus) }
+        text.encodeToByteArray().forEach { byte ->
+            append(
+                out = out,
+                code = byte.toInt() and BYTE,
+                isKept = isKept,
+                isSpacePlus = isSpacePlus,
+            )
+        }
         return out.toString()
     }
 

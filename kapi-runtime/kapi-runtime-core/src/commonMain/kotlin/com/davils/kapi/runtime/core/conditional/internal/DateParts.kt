@@ -16,7 +16,7 @@
 
 package com.davils.kapi.runtime.core.conditional.internal
 
-internal class DateParts(
+internal data class DateParts(
     val dayName: String,
     val names: List<String>,
     val day: String?,

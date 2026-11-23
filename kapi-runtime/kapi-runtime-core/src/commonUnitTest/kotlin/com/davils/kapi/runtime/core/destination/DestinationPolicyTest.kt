@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.core.destination
 
+import com.davils.kapi.runtime.core.destination.fixture.HTTPS
 import com.davils.kapi.runtime.core.destination.fixture.LOCALHOST
 import com.davils.kapi.runtime.core.destination.fixture.PRIVATE_ADDRESS
 import com.davils.kapi.runtime.core.destination.fixture.PUBLIC_ADDRESS
@@ -36,6 +37,14 @@ import io.kotest.matchers.string.shouldContain
 
 private const val LONGEST_LABEL_COUNT: Int = 130
 
+private const val API_HOST: String = "api.example.com"
+
+private const val API_PAGE: String = "https://api.example.com/a"
+
+private const val UPPER_HTTPS: String = "HTTPS"
+
+private const val HTTP_PORT: Int = 80
+
 private val notPublic: DestinationDecision = refused(DestinationRefusal.NotPublic)
 
 private val invalid: DestinationDecision = refused(DestinationRefusal.Host)
@@ -46,11 +55,11 @@ class DestinationPolicyTest : FunSpec({
 
         test("allows https to a public name without resolving it") {
             policy.checkHost(PUBLIC_NAME) shouldBe allowed
-            policy.checkHost("Hooks.Example.COM.", "HTTPS") shouldBe allowed
+            policy.checkHost(host = "Hooks.Example.COM.", scheme = UPPER_HTTPS) shouldBe allowed
         }
 
         test("refuses another scheme") {
-            policy.checkHost(PUBLIC_NAME, "http") shouldBe refused(DestinationRefusal.Scheme)
+            policy.checkHost(host = PUBLIC_NAME, scheme = "http") shouldBe refused(DestinationRefusal.Scheme)
         }
 
         test("allows a public address and names it") {
@@ -118,35 +127,48 @@ class DestinationPolicyTest : FunSpec({
         }
 
         test("checks every redirect hop resolved against the URL it came from") {
-            policy.checkRedirect("https://api.example.com/a/b", "../c") shouldBe allowed
-            policy.checkRedirect("https://api.example.com/a", "https://169.254.169.254/latest") shouldBe notPublic
-            policy.checkRedirect("https://api.example.com/a", "//localhost/x") shouldBe notPublic
-            policy.checkRedirect("https://api.example.com/a", "http://api.example.com/") shouldBe
+            policy.checkRedirect(from = "https://api.example.com/a/b", location = "../c") shouldBe allowed
+            policy.checkRedirect(
+                from = API_PAGE,
+                location = "https://169.254.169.254/latest",
+            ) shouldBe notPublic
+            policy.checkRedirect(from = API_PAGE, location = "//localhost/x") shouldBe notPublic
+            policy.checkRedirect(from = API_PAGE, location = "http://api.example.com/") shouldBe
                 refused(DestinationRefusal.Scheme)
-            policy.checkRedirect("not a url", "/x") shouldBe refused(DestinationRefusal.Url)
-            policy.checkRedirect("https://api.example.com/", "a b") shouldBe refused(DestinationRefusal.Url)
+            policy.checkRedirect(from = "not a url", location = "/x") shouldBe refused(DestinationRefusal.Url)
+            policy.checkRedirect(
+                from = "https://api.example.com/",
+                location = "a b",
+            ) shouldBe refused(DestinationRefusal.Url)
         }
     }
 
     context("an origin") {
         test("is shared by scheme, host and effective port") {
-            val origin = Destination("https", "api.example.com")
+            val origin = Destination(scheme = HTTPS, host = API_HOST)
 
-            origin.isSameOrigin(Destination("HTTPS", "API.example.com", 443)) shouldBe true
-            origin.isSameOrigin(Destination("https", "api.example.com.", null)) shouldBe true
-            origin.isSameOrigin(Destination("https", "api.example.com", 8443)) shouldBe false
-            origin.isSameOrigin(Destination("http", "api.example.com")) shouldBe false
-            origin.isSameOrigin(Destination("https", "evil.example.com")) shouldBe false
-            Destination("ws", "a").effectivePort shouldBe 80
-            Destination("ftp", "a").effectivePort shouldBe null
+            origin.isSameOrigin(Destination(scheme = UPPER_HTTPS, host = "API.example.com", port = 443)) shouldBe true
+            origin.isSameOrigin(Destination(scheme = HTTPS, host = "api.example.com.", port = null)) shouldBe true
+            origin.isSameOrigin(Destination(scheme = HTTPS, host = API_HOST, port = 8443)) shouldBe false
+            origin.isSameOrigin(Destination(scheme = "http", host = API_HOST)) shouldBe false
+            origin.isSameOrigin(Destination(scheme = HTTPS, host = "evil.example.com")) shouldBe false
+            Destination(scheme = "ws", host = "a").effectivePort shouldBe HTTP_PORT
+            Destination(scheme = "ftp", host = "a").effectivePort shouldBe null
         }
 
         test("is equal by its parts and shown escaped") {
-            Destination("https", "a", 1) shouldBe Destination("https", "a", 1)
-            Destination("https", "a").hashCode() shouldBe Destination("https", "a").hashCode()
-            Destination("https", "a\n").toString() shouldBe "Destination(https://a\\n)"
-            Destination("https", "a", 1).toString() shouldBe "Destination(https://a:1)"
-            Destination("https", "a").equals("a") shouldBe false
+            Destination(
+                scheme = HTTPS,
+                host = "a",
+                port = 1,
+            ) shouldBe Destination(scheme = HTTPS, host = "a", port = 1)
+            Destination(
+                scheme = HTTPS,
+                host = "a",
+            ).hashCode() shouldBe Destination(scheme = HTTPS, host = "a").hashCode()
+            Destination(scheme = HTTPS, host = "a\n").toString() shouldBe "Destination(https://a\\n)"
+            Destination(scheme = HTTPS, host = "a", port = 1).toString() shouldBe "Destination(https://a:1)"
+            Destination(scheme = HTTPS, host = "a").equals("a") shouldBe false
         }
     }
 
@@ -157,7 +179,7 @@ class DestinationPolicyTest : FunSpec({
             policy.checkHost(PUBLIC_NAME) shouldBe allowed
             policy.checkHost("eu.partner.example") shouldBe allowed
             policy.checkHost(PRIVATE_ADDRESS) shouldBe allowed
-            policy.checkResolved(Destination("https", PUBLIC_NAME), emptyList()) shouldBe allowed
+            policy.checkResolved(Destination(scheme = HTTPS, host = PUBLIC_NAME), emptyList()) shouldBe allowed
         }
 
         test("refuse every other host") {
@@ -224,7 +246,7 @@ class DestinationPolicyTest : FunSpec({
 
     context("addresses an engine resolved") {
         val policy = DestinationPolicy.Default
-        val destination = Destination("https", PUBLIC_NAME)
+        val destination = Destination(scheme = HTTPS, host = PUBLIC_NAME)
 
         test("pass when they are all public and are refused otherwise") {
             val public = listOf(IpAddress.parse(PUBLIC_ADDRESS))
@@ -233,7 +255,7 @@ class DestinationPolicyTest : FunSpec({
             policy.checkResolved(destination, listOf(IpAddress.parse("10.1.2.3"))) shouldBe
                 refused(DestinationRefusal.ResolvesToPrivate)
             policy.checkResolved(destination, emptyList()) shouldBe refused(DestinationRefusal.Unresolved)
-            policy.checkResolved(Destination("https", LOCALHOST), public) shouldBe notPublic
+            policy.checkResolved(Destination(scheme = HTTPS, host = LOCALHOST), public) shouldBe notPublic
             policy.checkAddresses(public) shouldBe DestinationDecision.Allowed(public)
             policy.checkAddresses(listOf(IpAddress.parse("::1"))) shouldBe refused(DestinationRefusal.ResolvesToPrivate)
         }
@@ -257,7 +279,7 @@ class DestinationPolicyTest : FunSpec({
 
         test("reports every scheme and every host that is not written as the policy compares it") {
             val builder = DestinationPolicyBuilder()
-            builder.schemes = setOf("HTTPS", "https", "1x", "")
+            builder.schemes = setOf(UPPER_HTTPS, HTTPS, "1x", "")
             builder.hosts = setOf("Example.com", "[::1]", UNREADABLE)
 
             builder.validate().violations.map { violation -> violation.code } shouldBe listOf(

@@ -71,7 +71,7 @@ public class EntityTag(public val opaque: String, public val isWeak: Boolean = f
     override fun hashCode(): Int = opaque.hashCode() * HASH_FACTOR + isWeak.hashCode()
 
     override fun toString(): String {
-        val prefix = WEAK.takeIf { isWeak } ?: ""
+        val prefix = WEAK.takeIf { isWeak }.orEmpty()
         return "$prefix$QUOTE$opaque$QUOTE"
     }
 

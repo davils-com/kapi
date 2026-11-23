@@ -23,6 +23,7 @@ import com.davils.kapi.runtime.core.structured.Item
 import com.davils.kapi.runtime.core.structured.Parameters
 import kotlinx.io.bytestring.ByteString
 import kotlin.io.encoding.Base64
+import kotlin.math.abs
 
 private const val MOST_INTEGER: Long = 999_999_999_999_999L
 
@@ -82,8 +83,8 @@ internal object StructuredGrammar {
     }
 
     fun decimalText(thousandths: Long): String {
-        val sign = "-".takeIf { thousandths < 0 } ?: ""
-        val magnitude = kotlin.math.abs(thousandths)
+        val sign = "-".takeIf { thousandths < 0 }.orEmpty()
+        val magnitude = abs(thousandths)
         val fraction = (magnitude % SCALE).toString().padStart(FRACTION_DIGITS, '0')
         val trimmed = fraction.trimEnd('0').ifEmpty { "0" }
         return "$sign${magnitude / SCALE}.$trimmed"
@@ -124,11 +125,10 @@ internal object StructuredGrammar {
     fun parametersText(parameters: Parameters): String =
         parameters.entries.joinToString("") { (key, value) -> ";" + key + valueText(value) }
 
-    fun dictionaryText(dictionary: Dictionary): String =
-        dictionary.entries.joinToString(", ") { (key, member) ->
-            val isTrue = member is Item && member.value == BareItem.Flag(true)
-            key + ("=$member".takeUnless { isTrue } ?: member.parameters.toString())
-        }
+    fun dictionaryText(dictionary: Dictionary): String = dictionary.entries.joinToString(", ") { (key, member) ->
+        val isTrue = member is Item && member.value == BareItem.Flag(true)
+        key + ("=$member".takeUnless { isTrue } ?: member.parameters.toString())
+    }
 
     private fun valueText(value: BareItem): String {
         if (value == BareItem.Flag(true)) return ""

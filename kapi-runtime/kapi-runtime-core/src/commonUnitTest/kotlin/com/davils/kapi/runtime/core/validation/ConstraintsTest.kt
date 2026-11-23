@@ -30,6 +30,8 @@ private const val SIX: Long = 6L
 
 private const val FOUR: Long = 4L
 
+private const val SEVEN: Long = 7L
+
 private const val THIRD: Double = 0.3
 
 private const val TENTH: Double = 0.1
@@ -50,22 +52,22 @@ class ConstraintsTest : FunSpec({
 
     context("isMultipleOf") {
         test("divides whole numbers") {
-            Constraints.isMultipleOf(SIX, 2L) shouldBe true
-            Constraints.isMultipleOf(SIX, FOUR) shouldBe false
-            Constraints.isMultipleOf(SIX, 0L) shouldBe false
+            Constraints.isMultipleOf(value = SIX, factor = 2L) shouldBe true
+            Constraints.isMultipleOf(value = SIX, factor = FOUR) shouldBe false
+            Constraints.isMultipleOf(value = SIX, factor = 0L) shouldBe false
         }
 
         test("divides decimals the way they are written") {
-            Constraints.isMultipleOf(THIRD, TENTH) shouldBe true
-            Constraints.isMultipleOf(THIRD, QUARTER) shouldBe false
-            Constraints.isMultipleOf(1e-5, 1e-6) shouldBe true
-            Constraints.isMultipleOf(decimal("12.5"), decimal("2.5")) shouldBe true
+            Constraints.isMultipleOf(value = THIRD, factor = TENTH) shouldBe true
+            Constraints.isMultipleOf(value = THIRD, factor = QUARTER) shouldBe false
+            Constraints.isMultipleOf(value = 1e-5, factor = 1e-6) shouldBe true
+            Constraints.isMultipleOf(value = decimal("12.5"), factor = decimal("2.5")) shouldBe true
         }
 
         test("holds for nothing that is not a number or has no factor") {
-            Constraints.isMultipleOf(Double.NaN, TENTH) shouldBe false
-            Constraints.isMultipleOf(THIRD, Double.POSITIVE_INFINITY) shouldBe false
-            Constraints.isMultipleOf(THIRD, 0.0) shouldBe false
+            Constraints.isMultipleOf(value = Double.NaN, factor = TENTH) shouldBe false
+            Constraints.isMultipleOf(value = THIRD, factor = Double.POSITIVE_INFINITY) shouldBe false
+            Constraints.isMultipleOf(value = THIRD, factor = 0.0) shouldBe false
         }
     }
 
@@ -83,7 +85,7 @@ class ConstraintsTest : FunSpec({
             listOf("0", "-12.50", "0.001", "1E3", "1E+30", "1.5E-30", "123.456").map { text ->
                 decimal(text).toString()
             } shouldBe listOf("0", "-12.5", "0.001", "1000", "1E30", "15E-31", "123.456")
-            Decimal.of(-7L).toString() shouldBe "-7"
+            Decimal.of(-SEVEN).toString() shouldBe "-7"
         }
 
         test("compares exactly") {
@@ -108,9 +110,10 @@ class ConstraintsTest : FunSpec({
         }
 
         test("refuses what is no JSON number and what exceeds its limits") {
-            listOf("", "-", "01", "1.", ".5", "+1", "1e", "1e+", "0x1", "1 ", "NaN", "Infinity", "1E1001").forEach {
-                    text,
-                ->
+            val malformed =
+                listOf("", "-", "01", "1.", ".5", "+1", "1e", "1e+", "0x1", "1 ", "NaN", "Infinity", "1E1001")
+
+            malformed.forEach { text ->
                 Decimal.parseOrNull(text).shouldBeNull()
             }
             Decimal.parseOrNull("1E1000") shouldBe decimal("1E1000")

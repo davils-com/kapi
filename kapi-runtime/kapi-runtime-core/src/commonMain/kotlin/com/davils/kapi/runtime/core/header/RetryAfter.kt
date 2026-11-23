@@ -66,7 +66,7 @@ public sealed interface RetryAfter {
      * @since 1.0.0
      */
     public class Date(public val date: HttpDate) : RetryAfter {
-        override fun secondsFrom(now: HttpDate): Long = maxOf(0L, date.epochSeconds - now.epochSeconds)
+        override fun secondsFrom(now: HttpDate): Long = maxOf(a = 0L, b = date.epochSeconds - now.epochSeconds)
 
         override fun equals(other: Any?): Boolean = other is Date && date == other.date
 

@@ -82,7 +82,8 @@ internal object Hosts {
 
     private fun literalOf(host: String): String? {
         val isBracketed = host.startsWith(OPEN) && host.endsWith(CLOSE)
-        if (isBracketed) return host.substring(1, host.length - 1).takeIf { inner -> COLON in inner } ?: ""
+        val inner = host.removeSurrounding(prefix = OPEN, suffix = CLOSE)
+        if (isBracketed) return inner.takeIf { text -> COLON in text }.orEmpty()
         return host.takeIf { COLON in host || OPEN in host || isNumeric(host.substringAfterLast(DOT)) }
     }
 

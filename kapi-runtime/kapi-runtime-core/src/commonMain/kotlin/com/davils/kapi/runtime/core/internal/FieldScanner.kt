@@ -53,7 +53,7 @@ internal class FieldScanner(private val text: String) {
     fun span(predicate: (Char) -> Boolean): String? {
         val start = position
         while (!isAtEnd && predicate(text[position])) position += 1
-        return text.substring(start, position).takeIf(String::isNotEmpty)
+        return text.substring(startIndex = start, endIndex = position).takeIf(String::isNotEmpty)
     }
 
     fun quotedString(isUnicode: Boolean = false): String? {
@@ -76,7 +76,7 @@ internal class FieldScanner(private val text: String) {
     }
 
     fun rest(): String {
-        val remaining = text.substring(minOf(position, text.length))
+        val remaining = text.substring(minOf(a = position, b = text.length))
         position = text.length
         return remaining
     }
@@ -93,7 +93,7 @@ internal class FieldScanner(private val text: String) {
     private fun escaped(char: Char): Char? {
         if (char != BACKSLASH) return char.takeIf(::isQuotedChar)
         val next = peek()?.takeIf(FieldGrammar::isQuotable)
-        next?.let { position += 1 }
+        if (next != null) position += 1
         return next
     }
 }

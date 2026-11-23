@@ -21,6 +21,8 @@ package com.davils.kapi.runtime.core.codec
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
 
+private const val NULL: String = "null"
+
 /**
  * The result of decoding content: the value it holds, or why it holds none.
  *
@@ -40,7 +42,7 @@ public sealed interface Decoding<out T> {
 
         override fun hashCode(): Int = value.hashCode()
 
-        override fun toString(): String = "Decoded(${SafeText.text(value.toString())})"
+        override fun toString(): String = "Decoded(${SafeText.text(value?.toString() ?: NULL)})"
     }
 
     /**

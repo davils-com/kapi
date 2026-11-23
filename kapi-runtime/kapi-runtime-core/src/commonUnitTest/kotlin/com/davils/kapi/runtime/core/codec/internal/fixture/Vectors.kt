@@ -20,6 +20,8 @@ internal const val ENDS_EARLY: String = "ends early"
 
 internal const val NOT_FINITE: String = "not finite"
 
+private const val OBJECT: String = """{"a":1,"b":[2,3]}"""
+
 internal val readVectors: Map<String, String> = mapOf(
     "00" to "0",
     "17" to "23",
@@ -44,8 +46,8 @@ internal val readVectors: Map<String, String> = mapOf(
     "83010203" to "[1,2,3]",
     "9f018202039f0405ffff" to "[1,[2,3],[4,5]]",
     "a0" to "{}",
-    "a26161016162820203" to """{"a":1,"b":[2,3]}""",
-    "bf61610161629f0203ffff" to """{"a":1,"b":[2,3]}""",
+    "a26161016162820203" to OBJECT,
+    "bf61610161629f0203ffff" to OBJECT,
     "c074323031332d30332d32315432303a30343a30305a" to "\"2013-03-21T20:04:00Z\"",
     "d81801" to "1",
 )
@@ -56,7 +58,7 @@ internal val floatVectors: Map<String, Double> = mapOf(
     "f90001" to 5.960464477539063E-8,
     "f9c400" to -4.0,
     "f90000" to 0.0,
-    "fa47c35000" to 100000.0,
+    "fa47c35000" to 100_000.0,
 )
 
 internal val refusedVectors: Map<String, String> = mapOf(
@@ -113,5 +115,5 @@ internal val writeVectors: Map<String, String> = mapOf(
     "[]" to "80",
     "[1,2,3]" to "83010203",
     "{}" to "a0",
-    """{"a":1,"b":[2,3]}""" to "a26161016162820203",
+    OBJECT to "a26161016162820203",
 )

@@ -80,9 +80,9 @@ public class JsonSequenceReader(limits: FramingLimits = FramingLimits.Default) {
     }
 
     private fun record(bytes: ByteArray, records: MutableList<String>) {
-        val wasStarted = isStarted
+        val hasStarted = isStarted
         isStarted = true
-        if (!wasStarted || bytes.isEmpty()) return
+        if (!hasStarted || bytes.isEmpty()) return
         val isComplete = bytes.last() == LINE_FEED
         if (!isComplete) truncatedRecords += 1
         val text = Utf8.decodeOrNull(bytes.copyOf(bytes.size - 1)).takeIf { isComplete }

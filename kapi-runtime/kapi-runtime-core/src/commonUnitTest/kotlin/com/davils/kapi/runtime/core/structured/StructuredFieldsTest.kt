@@ -37,24 +37,31 @@ private const val LARGEST: Long = 999_999_999_999_999L
 
 private const val TWO: Int = 2
 
+private const val LONG_TEXT: Int = 20
+
+private const val DICTIONARY: String =
+    """en="Applepie", da=:w4ZibGV0w6ZydGUK:, a=?0, b, c;foo=9, rating=1.5, inner=(1 2)"""
+
+private fun quoted(text: String): String = "\"$text\""
+
 private val roundTrips: List<String> = listOf(
     "sugar, tea, rum",
-    "(\"foo\" \"bar\"), (\"baz\"), (\"bat\" \"one\"), ()",
-    "(\"foo\";a=1;b=2);lvl=5, (\"bar\" \"baz\");lvl=1",
+    """("foo" "bar"), ("baz"), ("bat" "one"), ()""",
+    """("foo";a=1;b=2);lvl=5, ("bar" "baz");lvl=1""",
     "abc;a=1;b=2;cde_456, (ghi;jk=4 l);q=\"9\";r=w",
     "1;a;b=?0",
     "-12.345, 0.0, 999999999999.999, -999999999999999",
     ":cHJldGVuZCB0aGlzIGlzIGJpbmFyeSBjb250ZW50Lg==:",
     "@1659578233",
     "%\"This is intended for display to %c3%bc%c3%bcsers.\"",
-    "\"hello \\\"world\\\" \\\\ \"",
+    """"hello \"world\" \\ """",
     "*foo, text/html, a:b",
 )
 
 private val badLists: List<String> = listOf(
-    "a,", "a,,b", ",a", "a b", "((1))", "(1 2", "(1)(2)", "a;", "a;A=1", "a;=1", "\"unclosed", "\"a\\x\"",
-    "\"tab\tin\"", "1234567890123456", "1234567890123.5", "1.2345", "1.", "-", "--1", ":not base64:", ":YQ",
-    "?2", "?", "@1.5", "%\"%C3%BC\"", "%\"%c3\"", "%\"%zz\"", "%nope", "Ä", "#x", "a=",
+    "a,", "a,,b", ",a", "a b", "((1))", "(1 2", "(1)(2)", "a;", "a;A=1", "a;=1", """"unclosed""", """"a\x"""",
+    quoted("tab\tin"), "1234567890123456", "1234567890123.5", "1.2345", "1.", "-", "--1", ":not base64:", ":YQ",
+    "?2", "?", "@1.5", "%" + quoted("%C3%BC"), "%" + quoted("%c3"), "%" + quoted("%zz"), "%nope", "Ä", "#x", "a=",
 )
 
 private fun list(text: String): List<Member> = StructuredFields.parseListOrNull(text).shouldNotBeNull()
@@ -76,12 +83,13 @@ class StructuredFieldsTest : FunSpec({
         }
 
         test("read a dictionary with byte sequences, flags and inner lists") {
-            val dictionary = StructuredFields.parseDictionaryOrNull(
-                "en=\"Applepie\", da=:w4ZibGV0w6ZydGUK:, a=?0, b, c;foo=9, rating=1.5, inner=(1 2)",
-            ).shouldNotBeNull()
+            val dictionary = StructuredFields.parseDictionaryOrNull(DICTIONARY).shouldNotBeNull()
 
             dictionary["en"] shouldBe Item(BareItem.Text("Applepie"))
-            dictionary["da"].shouldBeInstanceOf<Item>().value.shouldBeInstanceOf<BareItem.Bytes>()
+            dictionary["da"]
+                .shouldBeInstanceOf<Item>()
+                .value
+                .shouldBeInstanceOf<BareItem.Bytes>()
                 .value shouldBe "Æbletærte\n".encodeToByteString()
             dictionary["b"] shouldBe Item(BareItem.Flag(true))
             dictionary["inner"].shouldBeInstanceOf<InnerList>().items.size shouldBe TWO
@@ -141,7 +149,7 @@ class StructuredFieldsTest : FunSpec({
             StructuredFields.parseItemOrNull("a;b;c", limits).shouldNotBeNull()
             StructuredFields.parseItemOrNull("a;b;c;d", limits).shouldBeNull()
             StructuredFields.parseDictionaryOrNull("a, b, c, d", limits).shouldBeNull()
-            StructuredFields.parseListOrNull("\"" + "x".repeat(20) + "\"", limits).shouldBeNull()
+            StructuredFields.parseListOrNull(quoted("x".repeat(LONG_TEXT)), limits).shouldBeNull()
         }
     }
 
@@ -156,7 +164,12 @@ class StructuredFieldsTest : FunSpec({
             shouldThrow<IllegalArgumentException> { BareItem.Date(-LARGEST - 1) }
             shouldThrow<IllegalArgumentException> { BareItem.DisplayText("\uD800") }
             shouldThrow<IllegalArgumentException> { Parameters.of("A" to BareItem.Flag(true)) }
-            shouldThrow<IllegalArgumentException> { Parameters.of("a" to BareItem.Flag(true), "a" to BareItem.Flag(false)) }
+            shouldThrow<IllegalArgumentException> {
+                Parameters.of(
+                    "a" to BareItem.Flag(true),
+                    "a" to BareItem.Flag(false),
+                )
+            }
             shouldThrow<IllegalArgumentException> { Dictionary(listOf("" to Item(BareItem.Flag(true)))) }
             shouldThrow<IllegalArgumentException> {
                 Dictionary(listOf("a" to Item(BareItem.Flag(true)), "a" to Item(BareItem.Flag(true))))
@@ -175,8 +188,14 @@ class StructuredFieldsTest : FunSpec({
 
         test("are equal by their values") {
             val values: List<BareItem> = listOf(
-                BareItem.Integer(1L), BareItem.Decimal(1L), BareItem.Text("a"), BareItem.Token("a"),
-                BareItem.Bytes(ByteString()), BareItem.Flag(true), BareItem.Date(1L), BareItem.DisplayText("a"),
+                BareItem.Integer(1L),
+                BareItem.Decimal(1L),
+                BareItem.Text("a"),
+                BareItem.Token("a"),
+                BareItem.Bytes(ByteString()),
+                BareItem.Flag(true),
+                BareItem.Date(1L),
+                BareItem.DisplayText("a"),
             )
             values.forEach { value ->
                 value shouldBe value

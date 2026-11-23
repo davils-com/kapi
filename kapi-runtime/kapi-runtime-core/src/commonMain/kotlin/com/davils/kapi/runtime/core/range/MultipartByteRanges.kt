@@ -44,7 +44,7 @@ public object MultipartByteRanges {
      * @since 1.0.0
      */
     public fun contentType(boundary: Boundary): MediaType =
-        MediaType.MultipartByteRanges.withParameter("boundary", boundary.value)
+        MediaType.MultipartByteRanges.withParameter(name = "boundary", value = boundary.value)
 
     /**
      * Writes the body of the parts.

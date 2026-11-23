@@ -136,12 +136,12 @@ class HeadersTest : FunSpec({
         }
 
         test("is nothing when it is no such value or absent") {
-            single("many").int(COUNT).shouldBeNull()
-            single("9000000000").int(COUNT).shouldBeNull()
-            single("4.2").long(COUNT).shouldBeNull()
-            single("half").double(COUNT).shouldBeNull()
-            single("half").float(COUNT).shouldBeNull()
-            single("yes").flag(COUNT).shouldBeNull()
+            single("many").int(COUNT) shouldBe null
+            single("9000000000").int(COUNT) shouldBe null
+            single("4.2").long(COUNT) shouldBe null
+            single("half").double(COUNT) shouldBe null
+            single("half").float(COUNT) shouldBe null
+            single("yes").flag(COUNT) shouldBe null
             Headers.Empty.int(COUNT).shouldBeNull()
             Headers.Empty.long(COUNT).shouldBeNull()
             Headers.Empty.double(COUNT).shouldBeNull()

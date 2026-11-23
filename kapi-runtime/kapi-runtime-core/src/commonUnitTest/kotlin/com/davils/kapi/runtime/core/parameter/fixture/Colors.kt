@@ -43,9 +43,14 @@ internal fun format(
     style: ParameterStyle,
     isExploded: Boolean = false,
     isReservedAllowed: Boolean = false,
-): ParameterFormat = ParameterFormat(COLOR, style, isExploded, isReservedAllowed)
+): ParameterFormat = ParameterFormat(
+    name = COLOR,
+    style = style,
+    isExploded = isExploded,
+    isReservedAllowed = isReservedAllowed,
+)
 
 internal fun entry(value: String, name: String = COLOR): ParameterEntry = ParameterEntry(name, value)
 
 internal fun query(entries: List<ParameterEntry>): Map<String, List<String>> =
-    entries.groupBy(ParameterEntry::name, ParameterEntry::value)
+    entries.groupBy(keySelector = ParameterEntry::name, valueTransform = ParameterEntry::value)

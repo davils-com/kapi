@@ -53,13 +53,13 @@ public class RateLimitPolicy(
      * @since 1.0.0
      */
     public val item: Item = Item(
-            BareItem.Text(name),
-            Parameters(
-                listOfNotNull(
-                    "q" to BareItem.Integer(quota),
-                    ("qu" to BareItem.Text(unit.value)).takeIf { unit != QuotaUnit.Requests },
-                    window?.let { seconds -> "w" to BareItem.Integer(seconds) },
-                    partitionKey?.let { key -> "pk" to BareItem.Bytes(key) },
+        BareItem.Text(name),
+        Parameters(
+            listOfNotNull(
+                "q" to BareItem.Integer(quota),
+                ("qu" to BareItem.Text(unit.value)).takeIf { unit != QuotaUnit.Requests },
+                window?.let { seconds -> "w" to BareItem.Integer(seconds) },
+                partitionKey?.let { key -> "pk" to BareItem.Bytes(key) },
             ),
         ),
     )

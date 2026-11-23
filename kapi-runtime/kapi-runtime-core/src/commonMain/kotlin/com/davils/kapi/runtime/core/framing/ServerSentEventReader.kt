@@ -69,13 +69,6 @@ public class ServerSentEventReader(private val limits: FramingLimits = FramingLi
 
     private var failure: FramingFailure? = null
 
-    private val handlers: Map<String, (String, Int) -> Unit> = mapOf(
-        "event" to { value, _ -> eventType = value },
-        "data" to ::appendData,
-        "id" to { value, _ -> if (NUL !in value) lastEventId = value },
-        "retry" to { value, _ -> retryOf(value)?.let { milliseconds -> retry = milliseconds } },
-    )
-
     /**
      * The last event ID of the stream, empty until an `id` field sets one.
      *
@@ -91,6 +84,13 @@ public class ServerSentEventReader(private val limits: FramingLimits = FramingLi
      */
     public var retry: Long? = null
         private set
+
+    private val handlers: Map<String, (String, Int) -> Unit> = mapOf(
+        "event" to { value, _ -> eventType = value },
+        "data" to ::appendData,
+        "id" to { value, _ -> if (NUL !in value) lastEventId = value },
+        "retry" to { value, _ -> retryOf(value)?.let { milliseconds -> retry = milliseconds } },
+    )
 
     /**
      * Whether a line or an event is pending, which [finish] discards.
@@ -126,10 +126,11 @@ public class ServerSentEventReader(private val limits: FramingLimits = FramingLi
     }
 
     private fun line(bytes: ByteArray, events: MutableList<ServerSentEvent>) {
-        val isMarked = isFirstLine && bytes.size >= byteOrderMark.size &&
+        val isMarked = isFirstLine &&
+            bytes.size >= byteOrderMark.size &&
             bytes.copyOf(byteOrderMark.size).contentEquals(byteOrderMark)
         isFirstLine = false
-        val content = bytes.copyOfRange(byteOrderMark.size.takeIf { isMarked } ?: 0, bytes.size)
+        val content = bytes.copyOfRange(fromIndex = byteOrderMark.size.takeIf { isMarked } ?: 0, toIndex = bytes.size)
         val text = content.decodeToString()
         if (text.isEmpty()) dispatch(events)
         if (text.isNotEmpty() && text.first() != COMMENT) field(text, content.size)
@@ -159,6 +160,13 @@ public class ServerSentEventReader(private val limits: FramingLimits = FramingLi
         data.clear()
         dataBytes = 0L
         eventType = ""
-        if (isDispatched) events += ServerSentEvent(text, type, lastEventId.ifEmpty { null }, retry)
+        if (isDispatched) {
+            events += ServerSentEvent(
+                data = text,
+                type = type,
+                id = lastEventId.ifEmpty { null },
+                retry = retry,
+            )
+        }
     }
 }

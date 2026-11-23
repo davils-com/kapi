@@ -128,15 +128,15 @@ public sealed interface BareItem {
     /**
      * A Boolean of §3.3.6, written as `?1` or `?0`.
      *
-     * @property value the flag.
+     * @property isTrue the flag.
      * @since 1.0.0
      */
-    public class Flag(public val value: Boolean) : BareItem {
-        override fun equals(other: Any?): Boolean = other is Flag && value == other.value
+    public class Flag(public val isTrue: Boolean) : BareItem {
+        override fun equals(other: Any?): Boolean = other is Flag && isTrue == other.isTrue
 
-        override fun hashCode(): Int = value.hashCode()
+        override fun hashCode(): Int = isTrue.hashCode()
 
-        override fun toString(): String = "?1".takeIf { value } ?: "?0"
+        override fun toString(): String = "?1".takeIf { isTrue } ?: "?0"
     }
 
     /**

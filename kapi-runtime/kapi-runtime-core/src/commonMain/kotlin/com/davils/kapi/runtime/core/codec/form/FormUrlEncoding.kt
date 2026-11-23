@@ -103,7 +103,7 @@ public object FormUrlEncoding {
             var start = 0
             while (failure == null && start <= text.length) {
                 val end = text.indexOf(SEPARATOR, start).takeIf { index -> index >= 0 } ?: text.length
-                if (end > start) field(text.substring(start, end))
+                if (end > start) field(text.substring(startIndex = start, endIndex = end))
                 start = end + 1
             }
             val refused = failure?.let { reason -> Outcome.Failure(reason) }

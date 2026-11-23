@@ -88,7 +88,7 @@ internal object Calendar {
         val month = (shiftedMonth + FROM_MARCH).takeIf { shiftedMonth < MONTHS_FROM_MARCH }
             ?: (shiftedMonth - FROM_JANUARY)
         val year = yearOfEra + era * YEARS_PER_ERA + (1L.takeIf { month <= FEBRUARY } ?: 0L)
-        return Triple(year.toInt(), month.toInt(), day.toInt())
+        return Triple(first = year.toInt(), second = month.toInt(), third = day.toInt())
     }
 
     fun weekday(days: Long): Int = (days + THURSDAY).mod(WEEK).toInt()

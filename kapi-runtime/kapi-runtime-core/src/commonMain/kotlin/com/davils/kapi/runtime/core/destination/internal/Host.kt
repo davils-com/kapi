@@ -21,7 +21,7 @@ import com.davils.kapi.runtime.core.destination.IpAddress
 internal sealed interface Host {
     object Invalid : Host
 
-    class Address(val address: IpAddress) : Host
+    data class Address(val address: IpAddress) : Host
 
-    class Name(val name: String) : Host
+    data class Name(val name: String) : Host
 }

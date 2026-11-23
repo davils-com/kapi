@@ -19,9 +19,16 @@ package com.davils.kapi.runtime.core.destination
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+
+private const val QUAD: String = "1.2.3.4"
+
+private const val IPV4_BYTES: Int = 4
+
+private const val IPV6_BYTES: Int = 16
+
+private val QUAD_BYTES: ByteArray = byteArrayOf(1, 2, 3, IPV4_BYTES.toByte())
 
 private val canonical: Map<String, String> = mapOf(
     "2001:0db8:0000:0000:0000:0000:0002:0001" to "2001:db8::2:1",
@@ -69,18 +76,20 @@ class IpAddressTest : FunSpec({
     context("an address") {
         test("is equal by its bytes and has the size of its family") {
             IpAddress.parse("::ffff:1.2.3.4") shouldBe IpAddress.parse("0:0:0:0:0:ffff:102:304")
-            IpAddress.parse("1.2.3.4") shouldNotBe IpAddress.parse("::ffff:1.2.3.4")
-            IpAddress.parse("1.2.3.4").hashCode() shouldBe IpAddress.parse("1.2.3.4").hashCode()
-            IpAddress.parse("1.2.3.4").isIpv4 shouldBe true
+            val address = IpAddress.parse(QUAD)
+
+            address shouldNotBe IpAddress.parse("::ffff:1.2.3.4")
+            address.hashCode() shouldBe IpAddress.parse(QUAD).hashCode()
+            address.isIpv4 shouldBe true
             IpAddress.parse("::1").isIpv4 shouldBe false
-            IpAddress.parse("1.2.3.4").toByteArray().size shouldBe 4
-            IpAddress.parse("1.2.3.4").equals("1.2.3.4") shouldBe false
+            address.toByteArray().size shouldBe IPV4_BYTES
+            address.equals(QUAD) shouldBe false
         }
 
         test("is made of 4 or 16 bytes and nothing else") {
-            IpAddress.fromByteArrayOrNull(byteArrayOf(1, 2, 3, 4)).shouldNotBeNull().toString() shouldBe "1.2.3.4"
-            IpAddress.fromByteArrayOrNull(ByteArray(16)).shouldNotBeNull().toString() shouldBe "::"
-            IpAddress.fromByteArrayOrNull(ByteArray(5)).shouldBeNull()
+            IpAddress.fromByteArrayOrNull(QUAD_BYTES) shouldBe IpAddress.parse(QUAD)
+            IpAddress.fromByteArrayOrNull(ByteArray(IPV6_BYTES)) shouldBe IpAddress.parse("::")
+            IpAddress.fromByteArrayOrNull(ByteArray(IPV4_BYTES + 1)).shouldBeNull()
         }
 
         test("is public only in the global ranges") {

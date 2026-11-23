@@ -25,6 +25,8 @@ private const val RFC_EXAMPLE: String = "Sun, 06 Nov 1994 08:49:37 GMT"
 
 private const val RFC_SECONDS: Long = 784_111_777L
 
+private const val RFC_YEAR: Int = 1_994
+
 private const val NOW_SECONDS: Long = 1_795_000_000L
 
 private const val YEAR_ONE: Long = -62_135_596_800L
@@ -63,7 +65,7 @@ class HttpDateTest : FunSpec({
 
             date.epochSeconds shouldBe RFC_SECONDS
             date.toString() shouldBe RFC_EXAMPLE
-            date.year shouldBe RFC_SECONDS.let { HttpDate(it).year }
+            date.year shouldBe RFC_YEAR
         }
 
         test("reads the obsolete asctime format") {

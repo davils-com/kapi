@@ -67,6 +67,6 @@ internal object Addresses {
     private fun embedded(address: ByteArray): ByteArray? {
         val offset = TAIL_OFFSET.takeIf { mapped.contains(address) || translated.contains(address) }
             ?: SIX_TO_FOUR_OFFSET.takeIf { sixToFour.contains(address) }
-        return offset?.let { start -> address.copyOfRange(start, start + IPV4_BYTES) }
+        return offset?.let { start -> address.copyOfRange(fromIndex = start, toIndex = start + IPV4_BYTES) }
     }
 }

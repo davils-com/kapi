@@ -55,8 +55,8 @@ internal object Urls {
     private fun fromAuthority(scheme: String, authority: String): Outcome<Destination, DestinationRefusal> {
         if (AT in authority) return Outcome.Failure(DestinationRefusal.UserInfo)
         val portStart = portStartOf(authority)
-        val host = authority.substring(0, portStart)
-        val portText = authority.substring(minOf(portStart + 1, authority.length))
+        val host = authority.substring(startIndex = 0, endIndex = portStart)
+        val portText = authority.substring(minOf(a = portStart + 1, b = authority.length))
         val hasPort = portStart < authority.length
         val port = portText.takeIf { text -> hasPort && text.isNotEmpty() }?.let(::portOf)
         val isPortValid = !hasPort || portText.isEmpty() || port != null
@@ -66,7 +66,7 @@ internal object Urls {
 
     private fun portStartOf(authority: String): Int {
         val searchFrom = authority.indexOf(CLOSE).takeIf { authority.startsWith(OPEN) } ?: 0
-        val colon = authority.indexOf(COLON, maxOf(searchFrom, 0))
+        val colon = authority.indexOf(COLON, maxOf(a = searchFrom, b = 0))
         return colon.takeIf { index -> index >= 0 } ?: authority.length
     }
 

@@ -101,7 +101,7 @@ internal class CborReader(private val bytes: ByteArray, private val maxDepth: In
 
     private fun key(): String {
         val head = head()
-        if (head.major != CborMajor.Text) return failed("A CBOR map key is not a text string", "")
+        if (head.major != CborMajor.Text) return failed(reason = "A CBOR map key is not a text string", fallback = "")
         return text(head)
     }
 
@@ -116,7 +116,7 @@ internal class CborReader(private val bytes: ByteArray, private val maxDepth: In
     }
 
     private fun text(head: CborHead): String =
-        Utf8.decodeOrNull(binary(head)) ?: failed("A CBOR text string is no UTF-8", "")
+        Utf8.decodeOrNull(binary(head)) ?: failed(reason = "A CBOR text string is no UTF-8", fallback = "")
 
     private fun binary(head: CborHead): ByteArray {
         if (head.info != CborFormat.INDEFINITE) return take(length(argument(head.info), 1))
@@ -181,7 +181,7 @@ internal class CborReader(private val bytes: ByteArray, private val maxDepth: In
 
     private fun take(count: Int): ByteArray {
         if (count > bytes.size - position) return failed(ENDS_EARLY, empty)
-        val chunk = bytes.copyOfRange(position, position + count)
+        val chunk = bytes.copyOfRange(fromIndex = position, toIndex = position + count)
         position += count
         return chunk
     }

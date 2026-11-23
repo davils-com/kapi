@@ -34,6 +34,12 @@ private const val CEILING: Long = 2_147_483_648L
 
 private const val SET_COOKIE: String = "set-cookie"
 
+private const val TEN: Long = 10L
+
+private const val FIVE: Long = 5L
+
+private fun quoted(text: String): String = "\"$text\""
+
 private fun control(text: String): CacheControl = CacheControl.parseOrNull(text).shouldNotBeNull()
 
 class CacheControlTest : FunSpec({
@@ -84,14 +90,14 @@ class CacheControlTest : FunSpec({
 
     context("reading") {
         test("takes the first of repeated directives and names without case") {
-            control("Max-Age=10, max-age=20").maxAge shouldBe 10L
+            control("Max-Age=10, max-age=20").maxAge shouldBe TEN
             ("MAX-AGE" in control("max-age=1")) shouldBe true
         }
 
         test("caps a delta above 2^31 and ignores a malformed one") {
             control("max-age=99999999999999999999999").maxAge shouldBe CEILING
             control("max-age=2147483647").maxAge shouldBe CEILING - 1
-            control("max-age=0000000000000005").maxAge shouldBe 5L
+            control("max-age=0000000000000005").maxAge shouldBe FIVE
             control("max-age=\"-1\"").maxAge.shouldBeNull()
             control("max-age=1.5").maxAge.shouldBeNull()
             CacheControl.parseOrNull("max-age=").shouldBeNull()
@@ -104,7 +110,7 @@ class CacheControlTest : FunSpec({
         }
 
         test("refuses malformed values and values above the limits") {
-            listOf("max-age=1=2", "max age", "=1", "a=\"open", "a=\"x\ny\"", "a; b").forEach { text ->
+            listOf("max-age=1=2", "max age", "=1", """a="open""", "a=" + quoted("x\ny"), "a; b").forEach { text ->
                 CacheControl.parseOrNull(text).shouldBeNull()
             }
             CacheControl.parseOrNull("a, b", fieldLimits { maxMembers = 2 }).shouldNotBeNull()
@@ -133,7 +139,12 @@ class CacheControlTest : FunSpec({
         }
 
         test("refuses what would inject a line break or is no delta") {
-            shouldThrow<IllegalArgumentException> { CacheDirective("max-age", "1\r\nSet-Cookie: a=b") }
+            shouldThrow<IllegalArgumentException> {
+                CacheDirective(
+                    name = "max-age",
+                    argument = "1\r\nSet-Cookie: a=b",
+                )
+            }
             shouldThrow<IllegalArgumentException> { CacheDirective("max age") }
             shouldThrow<IllegalArgumentException> { CacheDirective.maxAge(-1L) }
             shouldThrow<IllegalArgumentException> { CacheDirective.noCache(listOf("a b")) }
@@ -141,9 +152,9 @@ class CacheControlTest : FunSpec({
         }
 
         test("compares directives and controls by value") {
-            CacheDirective("A", "1") shouldBe CacheDirective("a", "1")
+            CacheDirective(name = "A", argument = "1") shouldBe CacheDirective(name = "a", argument = "1")
             CacheDirective("a").hashCode() shouldBe CacheDirective("A").hashCode()
-            CacheDirective("a") shouldNotBe CacheDirective("a", "1")
+            CacheDirective("a") shouldNotBe CacheDirective(name = "a", argument = "1")
             control("a").hashCode() shouldBe control("a").hashCode()
             control("a")["b"].shouldBeNull()
         }

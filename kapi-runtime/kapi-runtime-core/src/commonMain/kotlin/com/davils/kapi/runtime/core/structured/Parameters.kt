@@ -47,6 +47,13 @@ public class Parameters(entries: List<Pair<String, BareItem>>) {
     }
 
     /**
+     * Whether there are no parameters.
+     *
+     * @since 1.0.0
+     */
+    public val isEmpty: Boolean get() = entries.isEmpty()
+
+    /**
      * Returns the value of [key].
      *
      * @param key the key.
@@ -54,13 +61,6 @@ public class Parameters(entries: List<Pair<String, BareItem>>) {
      * @since 1.0.0
      */
     public operator fun get(key: String): BareItem? = entries.firstOrNull { (candidate, _) -> candidate == key }?.second
-
-    /**
-     * Whether there are no parameters.
-     *
-     * @since 1.0.0
-     */
-    public val isEmpty: Boolean get() = entries.isEmpty()
 
     override fun equals(other: Any?): Boolean = other is Parameters && entries == other.entries
 

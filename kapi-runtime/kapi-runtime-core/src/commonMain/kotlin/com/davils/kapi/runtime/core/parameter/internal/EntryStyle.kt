@@ -29,7 +29,7 @@ private const val CLOSE: Char = ']'
 
 internal object EntryStyle {
     fun entries(format: ParameterFormat, value: ParameterValue): List<ParameterEntry> = when (value) {
-        is ParameterValue.Text -> listOf(ParameterEntry(format.name, value.value))
+        is ParameterValue.Text -> listOf(ParameterEntry(name = format.name, value = value.value))
         is ParameterValue.Items -> items(format, value.values)
         is ParameterValue.Fields -> fields(format, value)
     }
@@ -46,14 +46,14 @@ internal object EntryStyle {
     }
 
     private fun items(format: ParameterFormat, values: List<String>): List<ParameterEntry> {
-        if (format.isExploded) return values.map { item -> ParameterEntry(format.name, item) }
+        if (format.isExploded) return values.map { item -> ParameterEntry(name = format.name, value = item) }
         return joined(format, values)
     }
 
     private fun fields(format: ParameterFormat, value: ParameterValue.Fields): List<ParameterEntry> {
         val isDeep = format.style == ParameterStyle.DeepObject
         if (!isDeep && !format.isExploded) return joined(format, Delimited.parts(value, isExploded = false))
-        return value.values.map { (key, item) -> ParameterEntry(keyOf(format, key, isDeep), item) }
+        return value.values.map { (key, item) -> ParameterEntry(name = keyOf(format, key, isDeep), value = item) }
     }
 
     private fun keyOf(format: ParameterFormat, key: String, isDeep: Boolean): String {
@@ -63,7 +63,7 @@ internal object EntryStyle {
 
     private fun joined(format: ParameterFormat, parts: List<String>): List<ParameterEntry> {
         if (parts.isEmpty()) return emptyList()
-        return listOf(ParameterEntry(format.name, parts.joinToString(separator(format.style))))
+        return listOf(ParameterEntry(name = format.name, value = parts.joinToString(separator(format.style))))
     }
 
     private fun separator(style: ParameterStyle): String = when (style) {
@@ -121,7 +121,7 @@ internal object EntryStyle {
         if (!isDeep) return entries.filterKeys { key -> key in names }
         val prefix = format.name + OPEN
         val deep = entries.filterKeys { key -> key.startsWith(prefix) && key.endsWith(CLOSE) }
-        return deep.mapKeys { (key, _) -> key.substring(prefix.length, key.length - 1) }
+        return deep.mapKeys { (key, _) -> key.substring(startIndex = prefix.length, endIndex = key.length - 1) }
     }
 
     private fun spread(members: Map<String, List<String>>): ParameterReading {

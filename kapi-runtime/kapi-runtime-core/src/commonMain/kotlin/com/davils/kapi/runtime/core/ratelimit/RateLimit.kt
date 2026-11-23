@@ -51,12 +51,12 @@ public class RateLimit(
      * @since 1.0.0
      */
     public val item: Item = Item(
-            BareItem.Text(name),
-            Parameters(
-                listOfNotNull(
-                    "r" to BareItem.Integer(remaining),
-                    reset?.let { seconds -> "t" to BareItem.Integer(seconds) },
-                    partitionKey?.let { key -> "pk" to BareItem.Bytes(key) },
+        BareItem.Text(name),
+        Parameters(
+            listOfNotNull(
+                "r" to BareItem.Integer(remaining),
+                reset?.let { seconds -> "t" to BareItem.Integer(seconds) },
+                partitionKey?.let { key -> "pk" to BareItem.Bytes(key) },
             ),
         ),
     )

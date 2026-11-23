@@ -81,24 +81,30 @@ public object RateLimits {
         val item = member as? Item
         val name = (item?.value as? BareItem.Text)?.value
         val quota = item?.let { found -> number(found, "q") }
-        val unitText = item?.parameters?.get("qu")
+        val unitText = item?.run { parameters["qu"] }
         val unit = unitOf(unitText)
-        val window = item?.parameters?.get("w")
+        val window = item?.run { parameters["w"] }
         val windowSeconds = item?.let { found -> number(found, "w") }
-        val isValid = (window == null || windowSeconds != null) && isKeyValid(item)
-        if (name == null || quota == null || unit == null || !isValid) return null
-        return RateLimitPolicy(name, quota, unit, windowSeconds, keyOf(item))
+        val isValid = (window == null || windowSeconds != null) && isKeyValid(item) && quota != null
+        if (name == null || unit == null || !isValid) return null
+        return RateLimitPolicy(
+            name = name,
+            quota = quota,
+            unit = unit,
+            window = windowSeconds,
+            partitionKey = keyOf(item),
+        )
     }
 
     private fun limitOf(member: Member): RateLimit? {
         val item = member as? Item
         val name = (item?.value as? BareItem.Text)?.value
         val remaining = item?.let { found -> number(found, "r") }
-        val reset = item?.parameters?.get("t")
+        val reset = item?.run { parameters["t"] }
         val resetSeconds = item?.let { found -> number(found, "t") }
         val isValid = (reset == null || resetSeconds != null) && isKeyValid(item)
         if (name == null || remaining == null || !isValid) return null
-        return RateLimit(name, remaining, resetSeconds, keyOf(item))
+        return RateLimit(name = name, remaining = remaining, reset = resetSeconds, partitionKey = keyOf(item))
     }
 
     private fun number(item: Item, key: String): Long? {
@@ -113,9 +119,9 @@ public object RateLimits {
     }
 
     private fun isKeyValid(item: Item?): Boolean {
-        val key = item?.parameters?.get("pk")
+        val key = item?.run { parameters["pk"] }
         return key == null || key is BareItem.Bytes
     }
 
-    private fun keyOf(item: Item?): ByteString? = (item?.parameters?.get("pk") as? BareItem.Bytes)?.value
+    private fun keyOf(item: Item?): ByteString? = (item?.run { parameters["pk"] } as? BareItem.Bytes)?.value
 }

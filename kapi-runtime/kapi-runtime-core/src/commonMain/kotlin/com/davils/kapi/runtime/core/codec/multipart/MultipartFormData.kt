@@ -48,7 +48,7 @@ public object MultipartFormData {
      * @since 1.0.0
      */
     public fun contentType(boundary: Boundary): MediaType =
-        MediaType.MultipartFormData.withParameter(BOUNDARY, boundary.value)
+        MediaType.MultipartFormData.withParameter(name = BOUNDARY, value = boundary.value)
 
     /**
      * Returns the boundary [mediaType] names.
@@ -112,14 +112,11 @@ public object MultipartFormData {
         var headers: List<Pair<String, String>> = emptyList()
         var content = ByteStringBuilder()
         events.forEach { event ->
-            when (event) {
-                is MultipartEvent.Started -> headers = event.part.headers
-                is MultipartEvent.Content -> content.append(event.bytes.toByteArray())
-                MultipartEvent.Ended -> {
-                    parts += MultipartPart(headers, content.toByteString())
-                    content = ByteStringBuilder()
-                }
-                MultipartEvent.Finished -> Unit
+            (event as? MultipartEvent.Started)?.let { started -> headers = started.part.headers }
+            (event as? MultipartEvent.Content)?.let { piece -> content.append(piece.bytes.toByteArray()) }
+            if (event == MultipartEvent.Ended) {
+                parts += MultipartPart(headers, content.toByteString())
+                content = ByteStringBuilder()
             }
         }
         return parts

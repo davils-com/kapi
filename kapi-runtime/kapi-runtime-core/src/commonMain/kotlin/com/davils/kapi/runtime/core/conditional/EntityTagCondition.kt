@@ -49,13 +49,13 @@ public sealed interface EntityTagCondition {
          *
          * @since 1.0.0
          */
-        public val tags: List<EntityTag> = tags.toList()
+        public val entityTags: List<EntityTag> = tags.toList()
 
-        override fun equals(other: kotlin.Any?): Boolean = other is Tags && tags == other.tags
+        override fun equals(other: kotlin.Any?): Boolean = other is Tags && entityTags == other.entityTags
 
-        override fun hashCode(): Int = tags.hashCode()
+        override fun hashCode(): Int = entityTags.hashCode()
 
-        override fun toString(): String = tags.joinToString(", ")
+        override fun toString(): String = entityTags.joinToString(", ")
     }
 
     /**
@@ -75,7 +75,12 @@ public sealed interface EntityTagCondition {
          */
         public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): EntityTagCondition? {
             if (FieldGrammar.trimmed(text) == ANY) return Any
-            val tags = FieldLists.read(text, limits.maxFieldLength, limits.maxMembers, EntityTag::read)
+            val tags = FieldLists.read(
+                text = text,
+                maxLength = limits.maxFieldLength,
+                maxMembers = limits.maxMembers,
+                element = EntityTag::read,
+            )
             return tags?.let(::Tags)
         }
     }

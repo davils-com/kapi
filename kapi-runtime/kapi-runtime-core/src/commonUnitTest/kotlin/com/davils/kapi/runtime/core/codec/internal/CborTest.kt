@@ -129,7 +129,8 @@ class CborTest : FunSpec({
         }
 
         test("keeps the depth the codecs are configured with") {
-            val codec = codecs { maxDepth = 2 }.codecFor(CBOR).shouldNotBeNull()
+            val shallow = codecs { maxDepth = 2 }
+            val codec = shallow.codecFor(CBOR).shouldNotBeNull()
             val decoding = codec.decode(Pet.serializer(), ByteString("81818100".hexToByteArray()))
 
             decoding.shouldBeInstanceOf<Decoding.Failed>().reason shouldContain "deeper than 2"

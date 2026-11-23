@@ -144,7 +144,11 @@ public class Problem(
          */
         public fun invalid(report: ValidationReport): Problem {
             val violations = report.violations.map { violation ->
-                ProblemViolation(violation.path.toString(), violation.code.value, violation.message)
+                ProblemViolation(
+                    path = violation.path.toString(),
+                    code = violation.code.value,
+                    message = violation.message,
+                )
             }
             return Problem(
                 title = "The request is invalid",

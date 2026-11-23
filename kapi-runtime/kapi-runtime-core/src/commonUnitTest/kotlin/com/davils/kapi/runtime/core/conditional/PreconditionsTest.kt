@@ -36,6 +36,18 @@ private const val NEWER: String = "Mon, 07 Nov 1994 08:49:37 GMT"
 
 private const val MODIFIED: Long = 784_111_777L
 
+private const val LONGEST_TAG: Int = 8_192
+
+private const val CRLF: String = "\r\n"
+
+private const val WEAK_TAG: String = "W/$TAG"
+
+private const val LIST: String = """"a", W/"b""""
+
+private fun quoted(text: String): String = "\"$text\""
+
+private fun ifRange(text: String): IfRange = IfRange.parseOrNull(text).shouldNotBeNull()
+
 private val current: EntityTag = EntityTag("xyzzy")
 
 private val state: RepresentationState = RepresentationState(current, HttpDate(MODIFIED))
@@ -68,10 +80,18 @@ class PreconditionsTest : FunSpec({
         }
 
         test("refuses what is no entity tag and what a field cannot carry") {
-            listOf("xyzzy", "\"open", "w/\"a\"", "\"a\"b", "\"a b\"", "\"é\"", "\"a\"\r\n").forEach { text ->
+            listOf(
+                "xyzzy",
+                """"open""",
+                """w/"a"""",
+                """"a"b""",
+                """"a b"""",
+                """"é"""",
+                quoted("a") + CRLF,
+            ).forEach { text ->
                 EntityTag.parseOrNull(text).shouldBeNull()
             }
-            EntityTag.parseOrNull("\"" + "a".repeat(8_192) + "\"").shouldBeNull()
+            EntityTag.parseOrNull(quoted("a".repeat(LONGEST_TAG))).shouldBeNull()
             shouldThrow<IllegalArgumentException> { EntityTag("a\"b") }
             shouldThrow<IllegalArgumentException> { EntityTag("a\r\nb") }
             shouldThrow<IllegalArgumentException> { EntityTag.parse("x") }
@@ -81,9 +101,11 @@ class PreconditionsTest : FunSpec({
     context("a list of entity tags") {
         test("is read with any and with tags") {
             EntityTagCondition.parseOrNull(" * ") shouldBe EntityTagCondition.Any
-            EntityTagCondition.parseOrNull("\"a\", W/\"b\",,") shouldBe
+            EntityTagCondition.parseOrNull("$LIST,,") shouldBe
                 EntityTagCondition.Tags(listOf(EntityTag("a"), EntityTag("b", isWeak = true)))
-            EntityTagCondition.parseOrNull("\"a\", W/\"b\"").toString() shouldBe "\"a\", W/\"b\""
+            val listed = EntityTagCondition.parseOrNull(LIST).shouldNotBeNull()
+
+            listed.toString() shouldBe LIST
             EntityTagCondition.Any.toString() shouldBe "*"
         }
 
@@ -92,8 +114,8 @@ class PreconditionsTest : FunSpec({
 
             EntityTagCondition.parseOrNull("\"a\", *").shouldBeNull()
             EntityTagCondition.parseOrNull("a").shouldBeNull()
-            EntityTagCondition.parseOrNull("\"a\", \"b\"", limits).shouldNotBeNull()
-            EntityTagCondition.parseOrNull("\"a\", \"b\", \"c\"", limits).shouldBeNull()
+            EntityTagCondition.parseOrNull(""""a", "b"""", limits).shouldNotBeNull()
+            EntityTagCondition.parseOrNull(""""a", "b", "c"""", limits).shouldBeNull()
         }
     }
 
@@ -104,7 +126,7 @@ class PreconditionsTest : FunSpec({
 
         test("fails If-Match that does not match strongly") {
             decide(PUT) { Preconditions.read(ifMatch = TAG) } shouldBe PreconditionDecision.Proceed
-            decide(PUT) { Preconditions.read(ifMatch = "W/$TAG") } shouldBe PreconditionDecision.PreconditionFailed
+            decide(PUT) { Preconditions.read(ifMatch = WEAK_TAG) } shouldBe PreconditionDecision.PreconditionFailed
             decide(PUT) { Preconditions.read(ifMatch = "*") } shouldBe PreconditionDecision.Proceed
             decide(PUT, RepresentationState(isPresent = false)) { Preconditions.read(ifMatch = "*") } shouldBe
                 PreconditionDecision.PreconditionFailed
@@ -118,7 +140,7 @@ class PreconditionsTest : FunSpec({
         }
 
         test("answers a matching If-None-Match with 304 for reads and 412 for writes") {
-            decide { Preconditions.read(ifNoneMatch = "W/$TAG") } shouldBe PreconditionDecision.NotModified
+            decide { Preconditions.read(ifNoneMatch = WEAK_TAG) } shouldBe PreconditionDecision.NotModified
             decide(PUT) { Preconditions.read(ifNoneMatch = "*") } shouldBe PreconditionDecision.PreconditionFailed
             decide(PUT, RepresentationState(isPresent = false)) { Preconditions.read(ifNoneMatch = "*") } shouldBe
                 PreconditionDecision.Proceed
@@ -126,7 +148,9 @@ class PreconditionsTest : FunSpec({
         }
 
         test("evaluates If-Unmodified-Since only without If-Match") {
-            decide(PUT) { Preconditions.read(ifUnmodifiedSince = OLDER) } shouldBe PreconditionDecision.PreconditionFailed
+            decide(
+                PUT,
+            ) { Preconditions.read(ifUnmodifiedSince = OLDER) } shouldBe PreconditionDecision.PreconditionFailed
             decide(PUT) { Preconditions.read(ifUnmodifiedSince = NEWER) } shouldBe PreconditionDecision.Proceed
             decide(PUT) { Preconditions.read(ifMatch = TAG, ifUnmodifiedSince = OLDER) } shouldBe
                 PreconditionDecision.Proceed
@@ -147,7 +171,7 @@ class PreconditionsTest : FunSpec({
             Preconditions.read(ifMatch = TAG) shouldBe Preconditions(ifMatch = EntityTagCondition.Tags(listOf(current)))
             Preconditions().hashCode() shouldBe Preconditions().hashCode()
             Preconditions().toString() shouldBe
-                "Preconditions(ifMatch=null, ifNoneMatch=null, ifModifiedSince=null, ifUnmodifiedSince=null)"
+                "Preconditions(ifMatch=none, ifNoneMatch=none, ifModifiedSince=none, ifUnmodifiedSince=none)"
             state shouldBe RepresentationState(current, HttpDate(MODIFIED))
             state.hashCode() shouldBe RepresentationState(current, HttpDate(MODIFIED)).hashCode()
             state.toString() shouldBe
@@ -157,12 +181,12 @@ class PreconditionsTest : FunSpec({
 
     context("If-Range") {
         test("matches a strong tag and an exact date only") {
-            IfRange.parseOrNull(TAG).shouldNotBeNull().matches(state) shouldBe true
-            IfRange.parseOrNull("W/$TAG").shouldNotBeNull().matches(state) shouldBe false
-            IfRange.parseOrNull("\"old\"").shouldNotBeNull().matches(state) shouldBe false
-            IfRange.parseOrNull(TAG).shouldNotBeNull().matches(RepresentationState()) shouldBe false
-            IfRange.parseOrNull(state.lastModified.toString()).shouldNotBeNull().matches(state) shouldBe true
-            IfRange.parseOrNull(NEWER).shouldNotBeNull().matches(state) shouldBe false
+            ifRange(TAG).matches(state) shouldBe true
+            ifRange(WEAK_TAG).matches(state) shouldBe false
+            ifRange(quoted("old")).matches(state) shouldBe false
+            ifRange(TAG).matches(RepresentationState()) shouldBe false
+            ifRange(HttpDate(MODIFIED).toString()).matches(state) shouldBe true
+            ifRange(NEWER).matches(state) shouldBe false
             IfRange.parseOrNull("tomorrow").shouldBeNull()
         }
 

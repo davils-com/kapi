@@ -23,6 +23,8 @@ import com.davils.kore.core.text.SafeText
 
 private const val MESSAGE: String = "message"
 
+private const val NONE: String = "none"
+
 /**
  * An event of a `text/event-stream` of the WHATWG HTML standard §9.2.
  *
@@ -51,14 +53,19 @@ public class ServerSentEvent(
         require(retry == null || retry >= 0) { "A reconnection time is not negative" }
     }
 
-    override fun equals(other: Any?): Boolean = other is ServerSentEvent && data == other.data &&
-        type == other.type && id == other.id && retry == other.retry
+    override fun equals(other: Any?): Boolean = other is ServerSentEvent &&
+        data == other.data &&
+        type == other.type &&
+        id == other.id &&
+        retry == other.retry
 
     override fun hashCode(): Int = listOf(data, type, id, retry).hashCode()
 
     override fun toString(): String {
-        val shownId = id?.let(SafeText::text)
-        return "ServerSentEvent(type=${SafeText.text(type)}, id=$shownId, retry=$retry, data=${SafeText.text(data)})"
+        val shownId = id?.let(SafeText::text) ?: NONE
+        val shownRetry = retry?.toString() ?: NONE
+        return "ServerSentEvent(type=${SafeText.text(type)}, id=$shownId, retry=$shownRetry, " +
+            "data=${SafeText.text(data)})"
     }
 
     internal companion object {

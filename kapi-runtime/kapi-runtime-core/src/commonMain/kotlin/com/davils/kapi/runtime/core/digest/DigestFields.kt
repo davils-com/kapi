@@ -77,7 +77,8 @@ public object DigestFields {
     public fun parsePreferences(text: String, limits: FieldLimits = FieldLimits.Default): List<Pair<String, Int>>? {
         val dictionary = StructuredFields.parseDictionaryOrNull(text, limits) ?: return null
         return dictionary.entries.mapNotNull { (key, member) ->
-            val weight = ((member as? Item)?.value as? BareItem.Integer)?.value?.takeIf { value -> value in 0..MOST_WEIGHT }
+            val number = ((member as? Item)?.value as? BareItem.Integer)?.value
+            val weight = number?.takeIf { value -> value in 0..MOST_WEIGHT }
             weight?.let { value -> key to value.toInt() }
         }
     }
@@ -92,7 +93,9 @@ public object DigestFields {
      */
     public fun formatPreferences(preferences: List<Pair<String, Int>>): String {
         require(preferences.all { (_, weight) -> weight in 0..MOST_WEIGHT }) { "A weight lies between 0 and 10" }
-        return Dictionary(preferences.map { (key, weight) -> key to Item(BareItem.Integer(weight.toLong())) }).toString()
+        return Dictionary(
+            preferences.map { (key, weight) -> key to Item(BareItem.Integer(weight.toLong())) },
+        ).toString()
     }
 
     /**
@@ -103,8 +106,12 @@ public object DigestFields {
      * @since 1.0.0
      */
     public fun strongest(digests: List<Pair<String, ByteString>>): Pair<DigestAlgorithm, ByteString>? {
-        val known = digests.mapNotNull { (key, value) -> DigestAlgorithm.of(key)?.let { algorithm -> algorithm to value } }
-        return known.filter { (algorithm, _) -> algorithm.isActive }.minByOrNull { (algorithm, _) -> algorithm.ordinal }
+        val known = digests.mapNotNull { (key, value) ->
+            val algorithm = DigestAlgorithm.of(key)
+            algorithm?.let { found -> found to value }
+        }
+        val active = known.filter { (algorithm, _) -> algorithm.isActive }
+        return active.minByOrNull { (algorithm, _) -> algorithm.ordinal }
     }
 
     /**

@@ -81,8 +81,11 @@ public object Links {
      * @return the links in order, or `null` if a link is malformed or the value exceeds a limit.
      * @since 1.0.0
      */
-    public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): List<LinkValue>? =
-        FieldLists.read(text, limits.maxFieldLength, limits.maxMembers) { scanner -> link(scanner, limits) }
+    public fun parseOrNull(text: String, limits: FieldLimits = FieldLimits.Default): List<LinkValue>? = FieldLists.read(
+        text = text,
+        maxLength = limits.maxFieldLength,
+        maxMembers = limits.maxMembers,
+    ) { scanner -> link(scanner, limits) }
 
     /**
      * Writes [links] as the value of a `Link` field.

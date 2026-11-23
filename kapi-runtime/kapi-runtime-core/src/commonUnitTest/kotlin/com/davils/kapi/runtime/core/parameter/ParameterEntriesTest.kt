@@ -38,12 +38,18 @@ private const val DEEP_RED: String = "color[R]"
 
 private const val MANY: Int = 1_025
 
-private val spread: List<ParameterEntry> = listOf(entry("100", "R"), entry("200", "G"), entry("150", "B"))
+private const val FORM_QUERY: String = "a=1&b=2"
+
+private val spread: List<ParameterEntry> = listOf(
+    entry(value = "100", name = "R"),
+    entry(value = "200", name = "G"),
+    entry(value = "150", name = "B"),
+)
 
 private val deep: List<ParameterEntry> = listOf(
-    entry("100", DEEP_RED),
-    entry("200", "color[G]"),
-    entry("150", "color[B]"),
+    entry(value = "100", name = DEEP_RED),
+    entry(value = "200", name = "color[G]"),
+    entry(value = "150", name = "color[B]"),
 )
 
 private val joinedStyles: Map<ParameterStyle, String> = mapOf(
@@ -62,8 +68,8 @@ class ParameterEntriesTest : FunSpec({
             test("joins a list and an object as $style") {
                 val format = format(style)
 
-                format.entries(items) shouldBe listOf(entry(LISTED.replace(",", separator)))
-                format.entries(fields) shouldBe listOf(entry(FLAT.replace(",", separator)))
+                format.entries(items) shouldBe listOf(entry(LISTED.replace(oldValue = ",", newValue = separator)))
+                format.entries(fields) shouldBe listOf(entry(FLAT.replace(oldValue = ",", newValue = separator)))
             }
         }
 
@@ -145,16 +151,20 @@ class ParameterEntriesTest : FunSpec({
 
         test("reads the named fields of an exploded object and the fields of a deep object") {
             format(ParameterStyle.Form, isExploded = true)
-                .readEntries(query(spread + entry("1", "page")), ParameterShape.Fields, fieldNames) shouldBe
+                .readEntries(
+                    query(spread + entry(value = "1", name = "page")),
+                    ParameterShape.Fields,
+                    fieldNames,
+                ) shouldBe
                 ParameterReading.Present(fields)
             format(ParameterStyle.DeepObject, isExploded = true)
-                .readEntries(query(deep + entry("1", "page")), ParameterShape.Fields) shouldBe
+                .readEntries(query(deep + entry(value = "1", name = "page")), ParameterShape.Fields) shouldBe
                 ParameterReading.Present(fields)
         }
 
         test("is absent when nothing carries the parameter") {
             val absent = ParameterReading.Absent
-            val entries = query(listOf(entry("1", "page")))
+            val entries = query(listOf(entry(value = "1", name = "page")))
 
             format(ParameterStyle.Form).readEntries(entries, ParameterShape.Text) shouldBe absent
             format(ParameterStyle.Form, isExploded = true).readEntries(entries, ParameterShape.Items) shouldBe absent
@@ -166,13 +176,15 @@ class ParameterEntriesTest : FunSpec({
             format(ParameterStyle.DeepObject).readEntries(entries, ParameterShape.Fields) shouldBe absent
             format(
                 ParameterStyle.DeepObject,
-            ).readEntries(query(listOf(entry("1", "color[R"))), ParameterShape.Fields) shouldBe
+            ).readEntries(query(listOf(entry(value = "1", name = "color[R"))), ParameterShape.Fields) shouldBe
                 absent
         }
 
         test("is malformed when a single value is given more than once or a deep object nests or repeats a field") {
             val malformed = ParameterReading.Malformed
-            val entries = query(listOf(entry(BLUE), entry("black"), entry("1", "R"), entry("2", "R")))
+            val entries = query(
+                listOf(entry(BLUE), entry("black"), entry(value = "1", name = "R"), entry(value = "2", name = "R")),
+            )
             val deepObject = format(ParameterStyle.DeepObject)
 
             format(ParameterStyle.Form).readEntries(entries, ParameterShape.Text) shouldBe malformed
@@ -182,9 +194,12 @@ class ParameterEntriesTest : FunSpec({
                 isExploded = true,
             ).readEntries(entries, ParameterShape.Fields, fieldNames) shouldBe
                 malformed
-            deepObject.readEntries(query(listOf(entry("1", "color[R][x]"))), ParameterShape.Fields) shouldBe malformed
             deepObject.readEntries(
-                query(listOf(entry("1", DEEP_RED), entry("2", DEEP_RED))),
+                query(listOf(entry(value = "1", name = "color[R][x]"))),
+                ParameterShape.Fields,
+            ) shouldBe malformed
+            deepObject.readEntries(
+                query(listOf(entry(value = "1", name = DEEP_RED), entry(value = "2", name = DEEP_RED))),
                 ParameterShape.Fields,
             ) shouldBe
                 malformed
@@ -250,7 +265,9 @@ class ParameterEntriesTest : FunSpec({
             listOf("a b", "a;b", "a\"b", "a\\b", "a\r\nb", "é").forEach { value ->
                 cookie.cookieTextOrNull(ParameterValue.Text(value)).shouldBeNull()
             }
-            ParameterFormat("a b", ParameterStyle.Cookie, isExploded = false).cookieTextOrNull(text).shouldBeNull()
+            val spaced = ParameterFormat(name = "a b", style = ParameterStyle.Cookie, isExploded = false)
+
+            spaced.cookieTextOrNull(text).shouldBeNull()
         }
 
         test("are read from a Cookie field in every shape") {
@@ -281,13 +298,13 @@ class ParameterEntriesTest : FunSpec({
 
     context("querystring") {
         test("keeps a form as it is and encodes every other media type as a whole") {
-            QueryString.encode("a=1&b=2", MediaType.FormUrlEncoded) shouldBe "a=1&b=2"
+            QueryString.encode(FORM_QUERY, MediaType.FormUrlEncoded) shouldBe FORM_QUERY
             QueryString.encode("""{"a":[1, 2]}""", MediaType.Json) shouldBe "%7B%22a%22%3A%5B1%2C%202%5D%7D"
         }
 
         test("reads the raw query back as one value") {
-            QueryString.read("a=1&b=2", MediaType.FormUrlEncoded) shouldBe
-                ParameterReading.Present(ParameterValue.Text("a=1&b=2"))
+            QueryString.read(FORM_QUERY, MediaType.FormUrlEncoded) shouldBe
+                ParameterReading.Present(ParameterValue.Text(FORM_QUERY))
             QueryString.read("%7B%22a%22%3A1%7D", MediaType.Json) shouldBe
                 ParameterReading.Present(ParameterValue.Text("""{"a":1}"""))
             QueryString.read(null, MediaType.Json) shouldBe ParameterReading.Absent
@@ -304,8 +321,11 @@ class ParameterEntriesTest : FunSpec({
             ParameterValue.Text("a\nb").toString() shouldNotContain "\n"
             ParameterValue.Items(listOf("a\nb")).toString() shouldNotContain "\n"
             ParameterValue.Fields(mapOf("a\n" to "b")).toString() shouldNotContain "\n"
-            ParameterEntry("a\n", "b").toString() shouldNotContain "\n"
-            ParameterEntry("a", "b").hashCode() shouldBe ParameterEntry("a", "b").hashCode()
+            ParameterEntry(name = "a\n", value = "b").toString() shouldNotContain "\n"
+            ParameterEntry(
+                name = "a",
+                value = "b",
+            ).hashCode() shouldBe ParameterEntry(name = "a", value = "b").hashCode()
             format(ParameterStyle.Form) shouldBe format(ParameterStyle.Form)
             format(ParameterStyle.Form).hashCode() shouldBe format(ParameterStyle.Form).hashCode()
             format(ParameterStyle.Form) shouldNotBe format(ParameterStyle.Form, isReservedAllowed = true)
@@ -317,7 +337,7 @@ class ParameterEntriesTest : FunSpec({
             ParameterReading.Present(text).toString() shouldBe "Present(Text(blue))"
             listOf(
                 ParameterValue.Text("a"),
-                ParameterEntry("a", "b"),
+                ParameterEntry(name = "a", value = "b"),
                 ParameterReading.Present(text),
             ).forEach { value ->
                 value.equals("a") shouldBe false

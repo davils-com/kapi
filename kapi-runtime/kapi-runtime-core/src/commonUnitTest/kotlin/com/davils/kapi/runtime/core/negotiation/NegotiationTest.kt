@@ -23,10 +23,20 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
+private const val TOO_HIGH: Int = 1_001
+
+private const val LONG_SUBTYPE: Int = 40
+
+private const val IDENTITY: String = "identity"
+
+private const val GZIP: String = "gzip"
+
+private const val HTML: String = "text/html"
+
 private const val RFC_ACCEPT: String = "text/*;q=0.3, text/plain;q=0.7, text/plain;format=flowed, " +
     "text/plain;format=fixed;q=0.4, */*;q=0.5"
 
-private val html: MediaType = MediaType.parse("text/html")
+private val html: MediaType = MediaType.parse(HTML)
 
 private val json: MediaType = MediaType.Json
 
@@ -35,7 +45,9 @@ private fun accept(text: String): List<Weighted<MediaRange>> = AcceptFields.pars
 class NegotiationTest : FunSpec({
     context("a quality") {
         test("reads the qvalues of RFC 9110 and writes them shortest") {
-            listOf("1", "1.", "1.000", "0", "0.5", "0.125", "0.10").map(Quality::parse).map(Quality::toString) shouldBe
+            val qualities = listOf("1", "1.", "1.000", "0", "0.5", "0.125", "0.10").map(Quality::parse)
+
+            qualities.map(Quality::toString) shouldBe
                 listOf("1", "1", "1", "0", "0.5", "0.125", "0.1")
             Quality.parse("0.001").thousandths shouldBe 1
             Quality.NotAcceptable.isAcceptable shouldBe false
@@ -45,7 +57,7 @@ class NegotiationTest : FunSpec({
             listOf("", "2", "1.5", "1.001", "0.1234", "-0", ".5", "0,5", "0.a").forEach { text ->
                 Quality.parseOrNull(text).shouldBeNull()
             }
-            shouldThrow<IllegalArgumentException> { Quality(1_001) }
+            shouldThrow<IllegalArgumentException> { Quality(TOO_HIGH) }
             shouldThrow<IllegalArgumentException> { Quality.parse("x") }
         }
     }
@@ -56,7 +68,7 @@ class NegotiationTest : FunSpec({
             val expected = mapOf(
                 "text/plain;format=flowed" to "1",
                 "text/plain" to "0.7",
-                "text/html" to "0.3",
+                HTML to "0.3",
                 "image/jpeg" to "0.5",
                 "text/plain;format=fixed" to "0.4",
                 "text/html;level=3" to "0.3",
@@ -78,7 +90,7 @@ class NegotiationTest : FunSpec({
         test("skips empty members and ignores the extensions after the weight") {
             val accepted = accept(" , text/html;q=0.5;ext=1 ,, ")
 
-            accepted shouldBe listOf(Weighted(MediaRange.of("text/html"), Quality.parse("0.5")))
+            accepted shouldBe listOf(Weighted(MediaRange.of(HTML), Quality.parse("0.5")))
             accepted.single().toString() shouldBe "text/html;q=0.5"
             accept("") shouldBe emptyList()
         }
@@ -94,7 +106,7 @@ class NegotiationTest : FunSpec({
             }
             AcceptFields.parseAccept("a/a, b/b", limits).shouldNotBeNull()
             AcceptFields.parseAccept("a/a, b/b, c/c", limits).shouldBeNull()
-            AcceptFields.parseAccept("a/" + "a".repeat(40), limits).shouldBeNull()
+            AcceptFields.parseAccept("a/" + "a".repeat(LONG_SUBTYPE), limits).shouldBeNull()
             AcceptFields.parseAccept("a/a;x=1", limits).shouldNotBeNull()
             AcceptFields.parseAccept("a/a;x=1;y=2", limits).shouldBeNull()
         }
@@ -104,7 +116,7 @@ class NegotiationTest : FunSpec({
         test("chooses a coding by RFC 9110 §12.5.3") {
             val accepted = AcceptFields.parseAcceptEncoding("gzip;q=1.0, identity; q=0.5, *;q=0").shouldNotBeNull()
 
-            Negotiation.chooseEncoding(accepted, listOf("br", "identity", "gzip")) shouldBe "gzip"
+            Negotiation.chooseEncoding(accepted, listOf("br", IDENTITY, GZIP)) shouldBe GZIP
             Negotiation.qualityOfEncoding(accepted, "br") shouldBe Quality.NotAcceptable
             Negotiation.qualityOfEncoding(accepted, "IDENTITY").toString() shouldBe "0.5"
         }
@@ -113,8 +125,8 @@ class NegotiationTest : FunSpec({
             val empty = AcceptFields.parseAcceptEncoding("").shouldNotBeNull()
             val noIdentity = AcceptFields.parseAcceptEncoding("*;q=0").shouldNotBeNull()
 
-            Negotiation.chooseEncoding(empty, listOf("gzip", "identity")) shouldBe "identity"
-            Negotiation.chooseEncoding(noIdentity, listOf("identity")).shouldBeNull()
+            Negotiation.chooseEncoding(empty, listOf("gzip", IDENTITY)) shouldBe IDENTITY
+            Negotiation.chooseEncoding(noIdentity, listOf(IDENTITY)).shouldBeNull()
             Negotiation.chooseEncoding(null, listOf("gzip")) shouldBe "gzip"
         }
 

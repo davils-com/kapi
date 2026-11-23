@@ -64,7 +64,10 @@ public fun ParameterFormat.entries(value: ParameterValue): List<ParameterEntry> 
  * @since 1.0.0
  */
 public fun ParameterFormat.queryEntries(value: ParameterValue): List<ParameterEntry> = entries(value).map { entry ->
-    ParameterEntry(UriEncoding.encode(entry.name), UriEncoding.encodeQuery(entry.value, isReservedAllowed))
+    ParameterEntry(
+        name = UriEncoding.encode(entry.name),
+        value = UriEncoding.encodeQuery(entry.value, isReservedAllowed),
+    )
 }
 
 /**

@@ -46,6 +46,18 @@ private const val SECOND_HALF: Long = 999L
 
 private const val SUFFIX: Long = 9_500L
 
+private const val EXAMPLE_FIRST: Long = 42L
+
+private const val EXAMPLE_LAST: Long = 1_233L
+
+private const val EXAMPLE_LENGTH: Long = 1_234L
+
+private const val FIRST_TWO: String = "bytes=0-1"
+
+private const val UNIT: String = "bytes="
+
+private const val CRLF: String = "\r\n"
+
 private const val ETAG: String = "\"v1\""
 
 private fun request(text: String): RangeRequest = RangeRequest.parseOrNull(text).shouldNotBeNull()
@@ -58,28 +70,38 @@ private fun partial(vararg ranges: ResolvedRange, length: Long = LENGTH): RangeR
 class RangeRequestTest : FunSpec({
     context("the examples of RFC 9110 §14.1.2") {
         test("resolve against a representation of 10000 bytes") {
-            resolved("bytes=0-499") shouldBe partial(ResolvedRange(0L, FIRST_HALF))
-            resolved("bytes=500-999") shouldBe partial(ResolvedRange(FIRST_HALF + 1, SECOND_HALF))
-            resolved("bytes=-500") shouldBe partial(ResolvedRange(SUFFIX, LAST_BYTE))
-            resolved("bytes=9500-") shouldBe partial(ResolvedRange(SUFFIX, LAST_BYTE))
+            resolved("bytes=0-499") shouldBe partial(ResolvedRange(first = 0L, last = FIRST_HALF))
+            resolved("bytes=500-999") shouldBe partial(ResolvedRange(first = FIRST_HALF + 1, last = SECOND_HALF))
+            resolved("bytes=-500") shouldBe partial(ResolvedRange(first = SUFFIX, last = LAST_BYTE))
+            resolved("bytes=9500-") shouldBe partial(ResolvedRange(first = SUFFIX, last = LAST_BYTE))
             resolved("bytes=0-0,-1") shouldBe partial(ResolvedRange(0L, 0L), ResolvedRange(LAST_BYTE, LAST_BYTE))
         }
 
         test("write the content ranges of RFC 9110 §14.4") {
-            ContentRange.Satisfied(ResolvedRange(42L, 1_233L), 1_234L).toString() shouldBe "bytes 42-1233/1234"
-            ContentRange.Satisfied(ResolvedRange(42L, 1_233L)).toString() shouldBe "bytes 42-1233/*"
-            ContentRange.Unsatisfied(1_234L).toString() shouldBe "bytes */1234"
+            val range = ResolvedRange(first = EXAMPLE_FIRST, last = EXAMPLE_LAST)
+
+            ContentRange.Satisfied(range, EXAMPLE_LENGTH).toString() shouldBe "bytes 42-1233/1234"
+            ContentRange.Satisfied(range).toString() shouldBe "bytes 42-1233/*"
+            ContentRange.Unsatisfied(EXAMPLE_LENGTH).toString() shouldBe "bytes */1234"
             listOf("bytes 42-1233/1234", "bytes 42-1233/*", "bytes */1234").forEach { text ->
-                ContentRange.parseOrNull(text).toString() shouldBe text
+                val range = ContentRange.parseOrNull(text).shouldNotBeNull()
+
+                range.toString() shouldBe text
             }
         }
     }
 
     context("resolve") {
         test("clamps the last byte, drops ranges outside and answers 416 when none is left") {
-            resolved("bytes=40-100", SMALL) shouldBe partial(ResolvedRange(40L, SMALL - 1), length = SMALL)
-            resolved("bytes=40-, 60-70", SMALL) shouldBe partial(ResolvedRange(40L, SMALL - 1), length = SMALL)
-            resolved("bytes=-100", SMALL) shouldBe partial(ResolvedRange(0L, SMALL - 1), length = SMALL)
+            resolved(
+                "bytes=40-100",
+                SMALL,
+            ) shouldBe partial(ResolvedRange(first = 40L, last = SMALL - 1), length = SMALL)
+            resolved(
+                "bytes=40-, 60-70",
+                SMALL,
+            ) shouldBe partial(ResolvedRange(first = 40L, last = SMALL - 1), length = SMALL)
+            resolved("bytes=-100", SMALL) shouldBe partial(ResolvedRange(first = 0L, last = SMALL - 1), length = SMALL)
             resolved("bytes=60-70", SMALL) shouldBe RangeResolution.Unsatisfiable(SMALL)
             resolved("bytes=-0", SMALL) shouldBe RangeResolution.Unsatisfiable(SMALL)
             resolved("bytes=0-", 0L) shouldBe RangeResolution.Unsatisfiable(0L)
@@ -87,14 +109,16 @@ class RangeRequestTest : FunSpec({
         }
 
         test("coalesces ranges that overlap or touch into ascending order") {
-            resolved("bytes=20-30, 0-10, 5-19") shouldBe partial(ResolvedRange(0L, 30L))
-            resolved("bytes=40-45, 0-10") shouldBe partial(ResolvedRange(40L, 45L), ResolvedRange(0L, 10L))
-            resolved("bytes=0-1, 0-1, 0-1") shouldBe partial(ResolvedRange(0L, 1L))
+            resolved("bytes=20-30, 0-10, 5-19") shouldBe partial(ResolvedRange(first = 0L, last = 30L))
+            resolved(
+                "bytes=40-45, 0-10",
+            ) shouldBe partial(ResolvedRange(first = 40L, last = 45L), ResolvedRange(first = 0L, last = 10L))
+            resolved("bytes=0-1, 0-1, 0-1") shouldBe partial(ResolvedRange(first = 0L, last = 1L))
         }
 
         test("sends the whole representation when If-Range does not match") {
             val state = RepresentationState(EntityTag("v1"))
-            val single = request("bytes=0-1")
+            val single = request(FIRST_TWO)
 
             single.resolve(LENGTH, IfRange.parseOrNull(ETAG), state).shouldBeInstanceOf<RangeResolution.Partial>()
             single.resolve(LENGTH, IfRange.parseOrNull("\"v2\""), state) shouldBe RangeResolution.Full
@@ -105,16 +129,16 @@ class RangeRequestTest : FunSpec({
             val single = resolved("bytes=0-499").shouldBeInstanceOf<RangeResolution.Partial>()
             val multiple = resolved("bytes=0-1,5-6").shouldBeInstanceOf<RangeResolution.Partial>()
 
-            single.contentRange.toString() shouldBe "bytes 0-499/10000"
+            single.contentRange.shouldNotBeNull().toString() shouldBe "bytes 0-499/10000"
             multiple.contentRange.shouldBeNull()
-            shouldThrow<IllegalArgumentException> { request("bytes=0-1").resolve(-1L) }
+            shouldThrow<IllegalArgumentException> { request(FIRST_TWO).resolve(-1L) }
         }
     }
 
     context("parsing") {
         test("refuses another unit, malformed ranges and numbers that do not fit") {
             val refused = listOf(
-                "", "bytes", "bytes=", "items=0-1", "bytes=a-b", "bytes=500-100", "bytes=-", "bytes=1", "bytes=1-2-3",
+                "", "bytes", UNIT, "items=0-1", "bytes=a-b", "bytes=500-100", "bytes=-", "bytes=1", "bytes=1-2-3",
                 "bytes=0-1;x", "bytes=1234567890123456789-", "bytes = 0-1", "bytes=0-1\r\nX: y",
             )
             refused.forEach { text -> RangeRequest.parseOrNull(text).shouldBeNull() }
@@ -122,46 +146,62 @@ class RangeRequestTest : FunSpec({
 
         test("reads the unit without case and blanks around commas") {
             request("BYTES=0-1 ,\t2-3,,") shouldBe
-                RangeRequest(listOf(ByteRangeSpec.FromTo(0L, 1L), ByteRangeSpec.FromTo(2L, 3L)))
+                RangeRequest(
+                    listOf(ByteRangeSpec.FromTo(first = 0L, last = 1L), ByteRangeSpec.FromTo(first = 2L, last = 3L)),
+                )
             request("bytes=0-1,-5,7-").toString() shouldBe "bytes=0-1,-5,7-"
         }
 
         test("reads as many ranges as the limit allows and refuses one more") {
             val ranges = List(TOO_MANY) { index -> "$index-$index" }
 
-            RangeRequest.parseOrNull("bytes=" + ranges.dropLast(1).joinToString(",")).shouldNotBeNull()
-            RangeRequest.parseOrNull("bytes=" + ranges.joinToString(",")).shouldBeNull()
+            RangeRequest.parseOrNull(UNIT + ranges.dropLast(1).joinToString(",")).shouldNotBeNull()
+            RangeRequest.parseOrNull(UNIT + ranges.joinToString(",")).shouldBeNull()
             RangeRequest.parseOrNull("bytes=0-1,2-3", fieldLimits { maxRanges = 1 }).shouldBeNull()
         }
 
         test("refuses a content range that is malformed or outside its length") {
-            listOf("bytes 5-1/10", "bytes 0-10/10", "items 0-1/2", "bytes 0-1", "bytes */*", "bytes -1/2").forEach { text ->
+            listOf(
+                "bytes 5-1/10",
+                "bytes 0-10/10",
+                "items 0-1/2",
+                "bytes 0-1",
+                "bytes */*",
+                "bytes -1/2",
+            ).forEach { text ->
                 ContentRange.parseOrNull(text).shouldBeNull()
             }
-            shouldThrow<IllegalArgumentException> { ContentRange.Satisfied(ResolvedRange(0L, SMALL), SMALL) }
+            shouldThrow<IllegalArgumentException> {
+                ContentRange.Satisfied(
+                    ResolvedRange(first = 0L, last = SMALL),
+                    SMALL,
+                )
+            }
             shouldThrow<IllegalArgumentException> { ContentRange.Unsatisfied(-1L) }
         }
     }
 
     context("the types") {
         test("refuse ranges that run backwards") {
-            shouldThrow<IllegalArgumentException> { ByteRangeSpec.FromTo(SMALL, 1L) }
+            shouldThrow<IllegalArgumentException> { ByteRangeSpec.FromTo(first = SMALL, last = 1L) }
             shouldThrow<IllegalArgumentException> { ByteRangeSpec.Suffix(-1L) }
-            shouldThrow<IllegalArgumentException> { ResolvedRange(SMALL, 1L) }
+            shouldThrow<IllegalArgumentException> { ResolvedRange(first = SMALL, last = 1L) }
             shouldThrow<IllegalArgumentException> { RangeRequest(emptyList()) }
         }
 
         test("are equal by their values") {
-            ResolvedRange(0L, 1L).length shouldBe 2L
-            ResolvedRange(0L, 1L).hashCode() shouldBe ResolvedRange(0L, 1L).hashCode()
+            ResolvedRange(first = 0L, last = 1L).length shouldBe 2L
+            ResolvedRange(first = 0L, last = 1L).hashCode() shouldBe ResolvedRange(first = 0L, last = 1L).hashCode()
             ByteRangeSpec.FromTo(0L).hashCode() shouldBe ByteRangeSpec.FromTo(0L).hashCode()
             ByteRangeSpec.Suffix(1L).hashCode() shouldBe ByteRangeSpec.Suffix(1L).hashCode()
-            request("bytes=0-1").hashCode() shouldBe request("bytes=0-1").hashCode()
-            partial(ResolvedRange(0L, 1L)).hashCode() shouldBe partial(ResolvedRange(0L, 1L)).hashCode()
+            request(FIRST_TWO).hashCode() shouldBe request(FIRST_TWO).hashCode()
+            partial(
+                ResolvedRange(first = 0L, last = 1L),
+            ).hashCode() shouldBe partial(ResolvedRange(first = 0L, last = 1L)).hashCode()
             RangeResolution.Unsatisfiable(1L).hashCode() shouldBe RangeResolution.Unsatisfiable(1L).hashCode()
             ContentRange.Unsatisfied(1L).hashCode() shouldBe ContentRange.Unsatisfied(1L).hashCode()
             RangeResolution.Full.toString() shouldBe "Full"
-            partial(ResolvedRange(0L, 1L)).toString() shouldBe "Partial([0-1] of 10000)"
+            partial(ResolvedRange(first = 0L, last = 1L)).toString() shouldBe "Partial([0-1] of 10000)"
             RangeResolution.Unsatisfiable(1L).toString() shouldBe "Unsatisfiable(1)"
         }
     }
@@ -174,17 +214,27 @@ class RangeRequestTest : FunSpec({
                 contentType = MediaType.parse("application/pdf"),
                 completeLength = LENGTH,
                 parts = listOf(
-                    ResolvedRange(0L, 1L) to "ab".encodeToByteString(),
+                    ResolvedRange(first = 0L, last = 1L) to "ab".encodeToByteString(),
                     ResolvedRange(LAST_BYTE, LAST_BYTE) to "z".encodeToByteString(),
                 ),
             )
 
             MultipartByteRanges.contentType(boundary).toString() shouldBe
                 "multipart/byteranges; boundary=THIS_STRING_SEPARATES"
-            body.decodeToString() shouldBe "--THIS_STRING_SEPARATES\r\nContent-Type: application/pdf\r\n" +
-                "Content-Range: bytes 0-1/10000\r\n\r\nab\r\n--THIS_STRING_SEPARATES\r\n" +
-                "Content-Type: application/pdf\r\nContent-Range: bytes 9999-9999/10000\r\n\r\nz\r\n" +
-                "--THIS_STRING_SEPARATES--\r\n"
+            body.decodeToString() shouldBe listOf(
+                "--THIS_STRING_SEPARATES",
+                "Content-Type: application/pdf",
+                "Content-Range: bytes 0-1/10000",
+                "",
+                "ab",
+                "--THIS_STRING_SEPARATES",
+                "Content-Type: application/pdf",
+                "Content-Range: bytes 9999-9999/10000",
+                "",
+                "z",
+                "--THIS_STRING_SEPARATES--",
+                "",
+            ).joinToString(CRLF)
         }
 
         test("refuses parts that do not fit their ranges") {
@@ -192,13 +242,28 @@ class RangeRequestTest : FunSpec({
             val boundary = Boundary.random()
 
             shouldThrow<IllegalArgumentException> {
-                MultipartByteRanges.encode(boundary, type, LENGTH, emptyList())
+                MultipartByteRanges.encode(
+                    boundary = boundary,
+                    contentType = type,
+                    completeLength = LENGTH,
+                    parts = emptyList(),
+                )
             }
             shouldThrow<IllegalArgumentException> {
-                MultipartByteRanges.encode(boundary, type, LENGTH, listOf(ResolvedRange(0L, 1L) to ByteString()))
+                MultipartByteRanges.encode(
+                    boundary = boundary,
+                    contentType = type,
+                    completeLength = LENGTH,
+                    parts = listOf(ResolvedRange(first = 0L, last = 1L) to ByteString()),
+                )
             }
             shouldThrow<IllegalArgumentException> {
-                MultipartByteRanges.encode(boundary, type, 1L, listOf(ResolvedRange(0L, 1L) to "ab".encodeToByteString()))
+                MultipartByteRanges.encode(
+                    boundary = boundary,
+                    contentType = type,
+                    completeLength = 1L,
+                    parts = listOf(ResolvedRange(first = 0L, last = 1L) to "ab".encodeToByteString()),
+                )
             }
         }
     }

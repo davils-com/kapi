@@ -85,7 +85,7 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
     private fun ipv6Text(): String {
         val isMapped = (0 until MAPPED_PREFIX).all { index -> bytes[index].toInt() == 0 } &&
             (MAPPED_PREFIX until MAPPED_BYTES).all { index -> bytes[index].toInt() and BYTE_MASK == BYTE_MASK }
-        if (isMapped) return "::ffff:" + quad(bytes.copyOfRange(MAPPED_BYTES, IPV6_BYTES))
+        if (isMapped) return "::ffff:" + quad(bytes.copyOfRange(fromIndex = MAPPED_BYTES, toIndex = IPV6_BYTES))
         val words = (0 until IPV6_BYTES / 2).map { index ->
             ((bytes[index * 2].toInt() and BYTE_MASK) shl BYTE_BITS) or (bytes[index * 2 + 1].toInt() and BYTE_MASK)
         }
@@ -96,8 +96,8 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
         val run = longestZeroRun(words)
         val texts = words.map { word -> word.toString(RADIX) }
         if (run == null) return texts.joinToString(":")
-        val head = texts.subList(0, run.first).joinToString(":")
-        val tail = texts.subList(run.last + 1, texts.size).joinToString(":")
+        val head = texts.subList(fromIndex = 0, toIndex = run.first).joinToString(":")
+        val tail = texts.subList(fromIndex = run.last + 1, toIndex = texts.size).joinToString(":")
         return "$head::$tail"
     }
 
@@ -108,7 +108,7 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
             val end = runEnd(words, index)
             val size = end - index
             if (size > 1 && size > (best?.let { found -> found.last - found.first + 1 } ?: 0)) best = index until end
-            index = maxOf(end, index + 1)
+            index = maxOf(a = end, b = index + 1)
         }
         return best
     }

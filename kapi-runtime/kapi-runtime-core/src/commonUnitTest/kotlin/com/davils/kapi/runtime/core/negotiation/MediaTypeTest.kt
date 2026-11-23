@@ -28,6 +28,14 @@ private const val PROBLEM: String = "application/problem+json"
 
 private const val JSON: String = "application/json"
 
+private const val TOO_LONG: Int = 5_000
+
+private const val TEXT_FAMILY: String = "text/*"
+
+private const val TEXT_PLAIN: String = "text/plain"
+
+private const val QUOTED_BOUNDARY: String = """multipart/form-data; boundary="a b\"c""""
+
 private const val MANY_PARAMETERS: Int = 65
 
 class MediaTypeTest : FunSpec({
@@ -51,41 +59,46 @@ class MediaTypeTest : FunSpec({
         }
 
         test("writes a value that is no token as a quoted string") {
-            MediaType.parse("multipart/form-data; boundary=\"a b\\\"c\"").toString() shouldBe
-                "multipart/form-data; boundary=\"a b\\\"c\""
+            MediaType.parse(QUOTED_BOUNDARY).toString() shouldBe QUOTED_BOUNDARY
         }
 
         test("is equal by its parts and changes only into a copy") {
             val type = MediaType.parse(JSON)
-            val withCharset = type.withParameter("Charset", "UTF-8")
+            val withCharset = type.withParameter(name = "Charset", value = "UTF-8")
 
             withCharset shouldBe MediaType.parse("application/json; charset=utf-8")
             withCharset.hashCode() shouldBe MediaType.parse("application/json;charset=utf-8").hashCode()
             withCharset.withoutParameters() shouldBe type
             type shouldNotBe withCharset
             type.equals(JSON) shouldBe false
-            MediaType.of("Application", "JSON") shouldBe type
+            MediaType.of(type = "Application", subtype = "JSON") shouldBe type
         }
 
         test("refuses what is no media type") {
             val refused = listOf(
-                "", "json", "application/", "/json", "a b/c", "*/*", "text/*", "text/plain; a",
+                "", "json", "application/", "/json", "a b/c", "*/*", TEXT_FAMILY, "text/plain; a",
                 "text/plain; a=\"open", "text/plain; a=1; A=2", "text/plain; a=\"é\"", "text/plain extra",
                 "text/plain; a=b\r\nX: y",
             )
             refused.forEach { text -> MediaType.parseOrNull(text).shouldBeNull() }
             MediaType.parseOrNull("text/plain;").shouldNotBeNull()
-            MediaType.parseOrNull("x/" + "a".repeat(5_000)).shouldBeNull()
+            MediaType.parseOrNull("x/" + "a".repeat(TOO_LONG)).shouldBeNull()
             MediaType.parseOrNull("a/b" + ";p=1".repeat(MANY_PARAMETERS)).shouldBeNull()
             MediaType.parseOrNull("a/b" + ";p=1".repeat(1)).shouldNotBeNull()
             shouldThrow<IllegalArgumentException> { MediaType.parse("json") }.message shouldContain "no media type"
         }
 
         test("refuses parts and values it could not write") {
-            shouldThrow<IllegalArgumentException> { MediaType.of("text", "*") }
-            shouldThrow<IllegalArgumentException> { MediaType.of("text", "plain", listOf("a" to "1", "A" to "2")) }
-            shouldThrow<IllegalArgumentException> { MediaType.parse(JSON).withParameter("a", "x\r\ny") }
-            shouldThrow<IllegalArgumentException> { MediaType.parse(JSON).withParameter("a b", "x") }
+            shouldThrow<IllegalArgumentException> { MediaType.of(type = "text", subtype = "*") }
+            shouldThrow<IllegalArgumentException> {
+                MediaType.of(
+                    type = "text",
+                    subtype = "plain",
+                    parameters = listOf("a" to "1", "A" to "2"),
+                )
+            }
+            shouldThrow<IllegalArgumentException> { MediaType.parse(JSON).withParameter(name = "a", value = "x\r\ny") }
+            shouldThrow<IllegalArgumentException> { MediaType.parse(JSON).withParameter(name = "a b", value = "x") }
         }
     }
 
@@ -103,8 +116,10 @@ class MediaTypeTest : FunSpec({
         }
 
         test("matches a family") {
-            MediaRange.of("text/*").matches("text/plain") shouldBe true
-            MediaRange.of("text/*").matches("image/png") shouldBe false
+            val text = MediaRange.of(TEXT_FAMILY)
+
+            text.matches(TEXT_PLAIN) shouldBe true
+            text.matches("image/png") shouldBe false
         }
 
         test("matches a structured suffix") {
@@ -125,12 +140,12 @@ class MediaTypeTest : FunSpec({
             val range = MediaRange.of("text/plain; format=flowed")
 
             range.includes(MediaType.parse("text/plain; format=flowed; charset=utf-8")) shouldBe true
-            range.includes(MediaType.parse("text/plain")) shouldBe false
-            MediaRange.of(MediaType.parse("text/plain")) shouldBe MediaRange.of("text/plain")
+            range.includes(MediaType.parse(TEXT_PLAIN)) shouldBe false
+            MediaRange.of(MediaType.parse(TEXT_PLAIN)) shouldBe MediaRange.of(TEXT_PLAIN)
         }
 
         test("ranks the more specific range first") {
-            val ranges = listOf("*/*", "text/*", "application/*+json", "text/plain", "text/plain; a=1")
+            val ranges = listOf("*/*", TEXT_FAMILY, "application/*+json", TEXT_PLAIN, "text/plain; a=1")
             val ranks = ranges.map { text -> MediaRange.of(text).specificity }
 
             ranks shouldBe ranks.sorted()
@@ -143,8 +158,8 @@ class MediaTypeTest : FunSpec({
 
                 failure.message shouldContain "is no media range"
             }
-            MediaRange.of("text/*").hashCode() shouldBe MediaRange.of("TEXT/*").hashCode()
-            MediaRange.of("text/*").equals("text/*") shouldBe false
+            MediaRange.of(TEXT_FAMILY).hashCode() shouldBe MediaRange.of("TEXT/*").hashCode()
+            MediaRange.of(TEXT_FAMILY).equals(TEXT_FAMILY) shouldBe false
         }
     }
 })

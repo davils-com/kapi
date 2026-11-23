@@ -52,6 +52,8 @@ private const val INVALID_BYTE: Int = 0xFF
 
 private const val DEEP: Int = 100
 
+private const val ANSWER: Int = 42
+
 private val rex: Pet = Pet("Rex")
 
 private fun decoded(text: String): Decoding<Pet> {
@@ -106,20 +108,18 @@ class CodecsTest : FunSpec({
             val codecs = codecs { maxDepth = 2 }
             val codec = codecs.codecFor(JSON).shouldNotBeNull()
 
-            codec
-                .decode(
-                    JsonElement.serializer(),
-                    "[[1]]".encodeToByteString(),
-                ).shouldBeInstanceOf<Decoding.Decoded<*>>()
+            val shallow = codec.decode(JsonElement.serializer(), "[[1]]".encodeToByteString())
+
+            shallow.shouldBeInstanceOf<Decoding.Decoded<*>>()
             codec.decode(JsonElement.serializer(), "[[[1]]]".encodeToByteString()) shouldBe
                 Decoding.Failed("The content nests deeper than 2 levels")
-            codec
-                .decode(JsonElement.serializer(), "[\"[[[[\"]".encodeToByteString())
-                .shouldBeInstanceOf<Decoding.Decoded<*>>()
-            codec.decode(String.serializer(), "\"\\\"[[[\"".encodeToByteString()) shouldBe Decoding.Decoded("\"[[[")
-            Codecs.Default
-                .codecFor(JSON)
-                .shouldNotBeNull()
+            val inString = codec.decode(JsonElement.serializer(), """["[[[["]""".encodeToByteString())
+
+            inString.shouldBeInstanceOf<Decoding.Decoded<*>>()
+            codec.decode(String.serializer(), """"\"[[["""".encodeToByteString()) shouldBe Decoding.Decoded(""""[[[""")
+            val defaults = Codecs.Default.codecFor(JSON).shouldNotBeNull()
+
+            defaults
                 .decode(JsonElement.serializer(), "[".repeat(DEEP).encodeToByteString())
                 .shouldBeInstanceOf<Decoding.Failed>()
         }
@@ -167,7 +167,7 @@ class CodecsTest : FunSpec({
             val codec = Codecs.Default.codecFor(TEXT).shouldNotBeNull()
 
             codec.encode(String.serializer(), "grüß").decodeToString() shouldBe "grüß"
-            codec.encode(Int.serializer(), 42).decodeToString() shouldBe "42"
+            codec.encode(Int.serializer(), ANSWER).decodeToString() shouldBe "42"
             shouldThrow<IllegalArgumentException> { codec.encode(Pet.serializer(), rex) }
         }
 
@@ -183,8 +183,9 @@ class CodecsTest : FunSpec({
             codecs.decode(String.serializer(), latin, TEXT) shouldBe Decoding.Failed("The content is no utf-8")
             codecs.decode(String.serializer(), latin, "text/plain; charset=utf-16") shouldBe
                 Decoding.Failed("The charset utf-16 is not supported")
-            codecs.codecFor(TEXT).shouldNotBeNull().decode(String.serializer(), "x".encodeToByteString()) shouldBe
-                Decoding.Decoded("x")
+            val text = codecs.codecFor(TEXT).shouldNotBeNull()
+
+            text.decode(String.serializer(), "x".encodeToByteString()) shouldBe Decoding.Decoded("x")
         }
     }
 
@@ -205,7 +206,8 @@ class CodecsTest : FunSpec({
         }
 
         test("refuses a nested object and a malformed or oversized form") {
-            val small = codecs { formLimits = formLimits { maxFields = 1 } }.codecFor(FORM).shouldNotBeNull()
+            val limited = codecs { formLimits = formLimits { maxFields = 1 } }
+            val small = limited.codecFor(FORM).shouldNotBeNull()
 
             shouldThrow<IllegalArgumentException> { codec.encode(Nested.serializer(), Nested(Order("x"))) }
             codec.decode(Order.serializer(), "item=%zz".encodeToByteString()).shouldBeInstanceOf<Decoding.Failed>()

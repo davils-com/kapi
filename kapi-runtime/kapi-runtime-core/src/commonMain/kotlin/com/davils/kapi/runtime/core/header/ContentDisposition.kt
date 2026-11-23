@@ -22,7 +22,6 @@ import com.davils.kapi.runtime.core.internal.ExtValue
 import com.davils.kapi.runtime.core.internal.FieldGrammar
 import com.davils.kapi.runtime.core.internal.FieldScanner
 import com.davils.kore.core.annotation.DavilsInternal
-import com.davils.kore.core.text.SafeText
 
 private const val FILENAME: String = "filename"
 
@@ -108,8 +107,8 @@ public class ContentDisposition(type: String, parameters: List<Pair<String, Stri
      */
     public val safeFilename: String?
         get() {
-            val last = filename?.substringAfterLast(SLASH)?.substringAfterLast(BACKSLASH)
-            val clean = last?.filterNot(Char::isISOControl)?.trim()
+            val last = filename?.run { substringAfterLast(SLASH).substringAfterLast(BACKSLASH) }
+            val clean = last?.run { filterNot(Char::isISOControl).trim() }
             return clean?.takeIf { candidate -> candidate !in reserved }
         }
 
