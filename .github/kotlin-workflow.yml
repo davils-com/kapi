@@ -27,14 +27,17 @@ check:
       - ":kapi-spec:kapi-spec-core:clean"
       - ":kapi-spec:kapi-spec-schema:clean"
       - ":kapi-spec:kapi-spec-openapi:clean"
+      - ":kapi-runtime:kapi-runtime-core:clean"
     tasks:
       - ":kapi-spec:kapi-spec-core:jvmJar"
       - ":kapi-spec:kapi-spec-schema:jvmJar"
       - ":kapi-spec:kapi-spec-openapi:jvmJar"
+      - ":kapi-runtime:kapi-runtime-core:jvmJar"
     artifacts:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
       - "kapi-spec/kapi-spec-schema/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
 
 policy:
   # Line breaks, paths and timers differ on Windows, and kapi reads documents from files and serves real sockets in
@@ -66,6 +69,7 @@ publish:
     - ":kapi-spec:kapi-spec-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-spec:kapi-spec-schema:publishAllPublicationsToDavilsRepository"
     - ":kapi-spec:kapi-spec-openapi:publishAllPublicationsToDavilsRepository"
+    - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
 
 snapshot:
   # kapi's own build makes every build without a release tag a snapshot.
@@ -103,6 +107,15 @@ release:
       - path: com/davils/kapi-spec-openapi
         artifact: kapi-spec-openapi
         task: ":kapi-spec:kapi-spec-openapi:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-core-jvm
+        artifact: kapi-runtime-core-jvm
+        task: ":kapi-runtime:kapi-runtime-core:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-core-wasm-js
+        artifact: kapi-runtime-core-wasm-js
+        task: ":kapi-runtime:kapi-runtime-core:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-core
+        artifact: kapi-runtime-core
+        task: ":kapi-runtime:kapi-runtime-core:publishKotlinMultiplatformPublicationToDavilsRepository"
   attest:
     subjects:
       - "kapi-spec/kapi-spec-core/build/libs/*.jar"
@@ -111,6 +124,8 @@ release:
       - "kapi-spec/kapi-spec-schema/build/libs/*.klib"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.jar"
       - "kapi-spec/kapi-spec-openapi/build/libs/*.klib"
+      - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-core/build/libs/*.klib"
   github-release:
     enabled: false
 
