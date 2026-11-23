@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi
 
 import com.davils.kapi.spec.asyncapi.model.channel.Channel
@@ -22,11 +24,13 @@ import com.davils.kapi.spec.asyncapi.model.info.Info
 import com.davils.kapi.spec.asyncapi.model.info.InfoBuilder
 import com.davils.kapi.spec.asyncapi.model.operation.Operation
 import com.davils.kapi.spec.asyncapi.model.server.Server
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Target
 import com.davils.kore.core.annotation.DavilsDsl
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The builder of [Document]: collects its fields while a reader of kapi reads it.
@@ -72,7 +76,7 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
             field = value
         }
 
-    internal val servers: MutableMap<String, Referable<Server>> = linkedMapOf()
+    internal val servers: MutableMap<String, Referable<Server>> = KeyedMap()
 
     /**
      * The content type of every message that names none, such as `application/json`.
@@ -85,9 +89,9 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
             field = value
         }
 
-    internal val channels: MutableMap<String, Referable<Channel>> = linkedMapOf()
+    internal val channels: MutableMap<String, Referable<Channel>> = KeyedMap()
 
-    internal val operations: MutableMap<String, Referable<Operation>> = linkedMapOf()
+    internal val operations: MutableMap<String, Referable<Operation>> = KeyedMap()
 
     /**
      * The reusable objects of the document.
@@ -100,7 +104,7 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
             field = value
         }
 
-    internal val targets: MutableMap<Target, Element> = linkedMapOf()
+    internal val targets: MutableMap<Target, Element> = KeyedMap()
 
     override fun assemble(): Document = Document(this)
 }

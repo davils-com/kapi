@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.diagnostic.shown
 import com.davils.kapi.spec.asyncapi.model.security.OAuth2Scheme
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 internal object SecurityRules {
     fun check(scope: RuleScope) {
@@ -28,7 +32,7 @@ internal object SecurityRules {
     private fun scopes(scope: RuleScope, scheme: OAuth2Scheme) {
         val flows = scheme.flows
         val declared = listOfNotNull(flows.implicit, flows.password, flows.clientCredentials, flows.authorizationCode)
-        val available = declared.flatMap { flow -> flow.availableScopes.keys }.toSet()
+        val available = OrderedSet(declared.flatMap { flow -> flow.availableScopes.keys })
         scheme.scopes.filterNot { name -> name in available }.forEach { name ->
             val message = "The security scheme requires the scope ${shown(name)}, which none of its flows offers"
             scope.report(DiagnosticCodes.SECURITY_SCOPES, message, scheme)

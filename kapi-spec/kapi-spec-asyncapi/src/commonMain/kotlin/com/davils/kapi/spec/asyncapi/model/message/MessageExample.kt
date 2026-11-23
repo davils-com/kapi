@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.message
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.Value
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * An example of a message, with its headers, its payload or both.
@@ -31,7 +35,7 @@ public class MessageExample internal constructor(builder: MessageExampleBuilder)
      *
      * @since 1.0.0
      */
-    public val headers: Map<String, Value> = builder.headers.toMap()
+    public val headers: Map<String, Value> = builder.headers.frozen()
 
     /**
      * The payload of the example.

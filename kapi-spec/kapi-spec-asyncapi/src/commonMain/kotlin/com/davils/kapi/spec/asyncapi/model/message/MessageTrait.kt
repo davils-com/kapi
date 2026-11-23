@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.message
 
 import com.davils.kapi.spec.asyncapi.model.binding.MessageBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A trait of a message: fields a message takes over unless it declares them itself.
@@ -84,7 +88,7 @@ public class MessageTrait internal constructor(builder: MessageTraitBuilder) : E
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.
@@ -105,7 +109,7 @@ public class MessageTrait internal constructor(builder: MessageTraitBuilder) : E
      *
      * @since 1.0.0
      */
-    public val examples: List<MessageExample> = builder.examples.toList()
+    public val examples: List<MessageExample> = builder.examples.frozen()
 
     override val identity: List<Any?>
         get() = listOf(

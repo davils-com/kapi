@@ -73,3 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   components, properties, extensions and the targets of references, in balanced trees through `KeyedMap`, group,
   deduplicate and filter what a document names without hashing it, and hold every public map, list and set as an
   immutable copy; `PathTemplate` and `ResponseStatus` are `Comparable`.
+- **The AsyncAPI model and reader** keep every map keyed by document input, such as servers, channels, operations,
+  messages, components, parameters, bindings, extensions and the targets of references, in balanced trees through
+  `KeyedMap`, and hold every public map and list as an immutable copy.

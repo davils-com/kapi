@@ -23,6 +23,7 @@ import com.davils.kapi.spec.asyncapi.read.reference.ReferenceKind
 import com.davils.kapi.spec.asyncapi.read.shape.Fields
 import com.davils.kapi.spec.asyncapi.read.shape.ObjectShape
 import com.davils.kapi.spec.asyncapi.read.shape.ShapeCheck
+import com.davils.kapi.spec.core.collection.toKeyedMap
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.ElementBuilder
 import com.davils.kapi.spec.core.model.Referable
@@ -52,7 +53,7 @@ internal fun <T : Element> List<Entry>.referables(
     inline: (Cursor) -> T?,
 ): Map<String, Referable<T>> {
     val read = mapNotNull { entry -> entry.value.referable(kind, inline)?.let { found -> entry.key to found } }
-    return read.toMap()
+    return read.toKeyedMap()
 }
 
 internal fun <T : Element> List<Cursor>.referables(kind: ReferenceKind, inline: (Cursor) -> T?): List<Referable<T>> =

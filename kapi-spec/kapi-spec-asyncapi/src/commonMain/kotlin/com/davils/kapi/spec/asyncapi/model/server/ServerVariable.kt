@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.server
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A variable of the host or the path of a server.
@@ -30,7 +34,7 @@ public class ServerVariable internal constructor(builder: ServerVariableBuilder)
      *
      * @since 1.0.0
      */
-    public val enumeration: List<String> = builder.enumeration.toList()
+    public val enumeration: List<String> = builder.enumeration.frozen()
 
     /**
      * The value used when a client supplies none.
@@ -51,7 +55,7 @@ public class ServerVariable internal constructor(builder: ServerVariableBuilder)
      *
      * @since 1.0.0
      */
-    public val examples: List<String> = builder.examples.toList()
+    public val examples: List<String> = builder.examples.frozen()
 
     override val identity: List<Any?> get() = listOf(enumeration, default, description, examples)
 }

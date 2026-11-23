@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.validation
 
 import com.davils.kapi.spec.asyncapi.DiagnosticCodes
@@ -21,6 +23,8 @@ import com.davils.kapi.spec.asyncapi.diagnostic.shown
 import com.davils.kapi.spec.asyncapi.model.channel.Channel
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.OrderedSet
 
 private const val SERVERS: String = "servers"
 
@@ -39,14 +43,14 @@ internal object ChannelRules {
             val message = "The address ${shown(address)} is no valid template, every { needs a name and a closing }"
             scope.report(DiagnosticCodes.CHANNEL_ADDRESS_TEMPLATE, message, channel)
         }
-        val names = named.orEmpty().toSet()
+        val names = OrderedSet(named.orEmpty())
         names.filterNot { name -> name in channel.parameters }.forEach { name ->
             val message = "The address of the channel names the parameter ${shown(
                 name,
             )}, which the channel does not declare"
             scope.report(DiagnosticCodes.CHANNEL_PARAMETER_UNDECLARED, message, channel)
         }
-        val unused = channel.parameters.filterKeys { name -> name !in names }
+        val unused = channel.parameters.entries.filter { (name, _) -> name !in names }
         unused.forEach { (name, parameter) ->
             val message = "The channel declares the parameter ${shown(name)}, which its address does not name"
             scope.report(DiagnosticCodes.CHANNEL_PARAMETER_UNUSED, message, parameter)

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.operation
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Reference
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * The reply to an operation: where it is sent to and which messages it may be.
@@ -46,7 +50,7 @@ public class OperationReply internal constructor(builder: OperationReplyBuilder)
      *
      * @since 1.0.0
      */
-    public val messages: List<Reference> = builder.messages.toList()
+    public val messages: List<Reference> = builder.messages.frozen()
 
     override val identity: List<Any?> get() = listOf(address, channel, messages)
 }

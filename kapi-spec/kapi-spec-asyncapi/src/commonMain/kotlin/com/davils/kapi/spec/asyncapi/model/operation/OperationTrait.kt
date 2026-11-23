@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.operation
 
 import com.davils.kapi.spec.asyncapi.model.binding.OperationBindings
 import com.davils.kapi.spec.asyncapi.model.info.ExternalDocs
 import com.davils.kapi.spec.asyncapi.model.info.Tag
 import com.davils.kapi.spec.asyncapi.model.security.SecurityScheme
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A trait of an operation: fields an operation takes over unless it declares them itself.
@@ -56,14 +60,14 @@ public class OperationTrait internal constructor(builder: OperationTraitBuilder)
      *
      * @since 1.0.0
      */
-    public val security: List<Referable<SecurityScheme>> = builder.security.toList()
+    public val security: List<Referable<SecurityScheme>> = builder.security.frozen()
 
     /**
      * The tags, each written inline or as a reference.
      *
      * @since 1.0.0
      */
-    public val tags: List<Referable<Tag>> = builder.tags.toList()
+    public val tags: List<Referable<Tag>> = builder.tags.frozen()
 
     /**
      * Further documentation, written inline or as a reference.

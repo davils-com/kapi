@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.asyncapi.model.channel
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.model.Element
+import com.davils.kore.core.annotation.DavilsInternal
 
 /**
  * A parameter of the address of a channel.
@@ -30,7 +34,7 @@ public class Parameter internal constructor(builder: ParameterBuilder) : Element
      *
      * @since 1.0.0
      */
-    public val enumeration: List<String> = builder.enumeration.toList()
+    public val enumeration: List<String> = builder.enumeration.frozen()
 
     /**
      * The value used when none is supplied.
@@ -51,7 +55,7 @@ public class Parameter internal constructor(builder: ParameterBuilder) : Element
      *
      * @since 1.0.0
      */
-    public val examples: List<String> = builder.examples.toList()
+    public val examples: List<String> = builder.examples.frozen()
 
     /**
      * The `location` of the parameter: the runtime expression that names where in a message the value is found, such as
