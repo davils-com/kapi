@@ -19,3 +19,11 @@ plugins {
     `java-gradle-plugin`
     id("kapi.jvm-library")
 }
+
+kreate {
+    assurance {
+        inspection {
+            configurations = setOf("runtimeClasspath")
+        }
+    }
+}

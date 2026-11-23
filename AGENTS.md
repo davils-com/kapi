@@ -186,7 +186,7 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
   | `kapi.changelog` | The changelog check |
   | `kapi.license-header` | The license header check |
   | `kapi.serialization` | The kotlinx.serialization compiler plugin, composed by `kapi.serialization-library` and `kapi.jvm-serialization-library` |
-  | `kapi.gradle-plugin` | `java-gradle-plugin` on top of `kapi.jvm-library`, for `kapi-codegen-gradle` |
+  | `kapi.gradle-plugin` | `java-gradle-plugin` on top of `kapi.jvm-library`, for `kapi-codegen-gradle`; its content inspection covers only `runtimeClasspath`, what the plugin ships, because the Kotlin Gradle plugin it compiles and tests against is never shipped (advisories, trust and confusion still cover every class path) |
   | `kapi.bom` | The Java platform of the BOM and its publication |
 
 - Dependencies are declared in `gradle/libs.versions.toml`. Libraries of JetBrains (Ktor and kotlinx included) and of
