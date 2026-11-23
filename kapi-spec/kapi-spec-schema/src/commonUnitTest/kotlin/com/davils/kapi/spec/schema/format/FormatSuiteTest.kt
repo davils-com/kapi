@@ -886,7 +886,7 @@ private val uriCases: List<Pair<String, Boolean>> = listOf(
     VALUE_35 to true,
     "http://223.255.255.254" to true,
     "ftp://ftp.is.co.za/rfc/rfc1808.txt" to true,
-    "http://www.ietf.org/rfc/rfc2396.txt" to true,
+    "http://www.ietf.org/rfc/rfc3986.txt" to true,
     "ldap://[2001:db8::7]/c=GB?objectClass?one" to true,
     "mailto:John.Doe@example.com" to true,
     "news:comp.infosystems.www.servers.unix" to true,

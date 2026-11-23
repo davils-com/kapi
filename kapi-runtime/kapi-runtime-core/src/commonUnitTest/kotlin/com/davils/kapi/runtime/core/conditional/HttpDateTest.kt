@@ -72,7 +72,7 @@ class HttpDateTest : FunSpec({
             HttpDate.parse("Sun Nov  6 08:49:37 1994").epochSeconds shouldBe RFC_SECONDS
         }
 
-        test("reads the obsolete RFC 850 format only relative to the present") {
+        test("reads the obsolete rfc850-date format only relative to the present") {
             HttpDate.parse("Sunday, 06-Nov-94 08:49:37 GMT", now).epochSeconds shouldBe RFC_SECONDS
             HttpDate.parseOrNull("Sunday, 06-Nov-94 08:49:37 GMT").shouldBeNull()
             HttpDate.parse("Tuesday, 29-Feb-00 00:00:00 GMT", now).epochSeconds shouldBe LEAP_DAY

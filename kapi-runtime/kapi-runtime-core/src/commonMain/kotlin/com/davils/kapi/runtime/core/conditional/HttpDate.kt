@@ -42,7 +42,7 @@ private const val YEAR_DIGITS: Int = 4
  * An HTTP-date of RFC 9110 §5.6.7: a moment in whole seconds, written as an IMF-fixdate such as
  * `Sun, 06 Nov 1994 08:49:37 GMT`.
  *
- * It is read from the IMF-fixdate and from the two obsolete formats every recipient must accept: the RFC 850 date
+ * It is read from the IMF-fixdate and from the two obsolete formats every recipient must accept: the rfc850-date
  * `Sunday, 06-Nov-94 08:49:37 GMT` and the asctime date `Sun Nov  6 08:49:37 1994`. A day name that does not belong
  * to the date, a day the month does not have and an hour, a minute or a second out of range are refused, as is text
  * longer than 40 characters. A date lies between the years 1 and 9999.
@@ -89,12 +89,12 @@ public value class HttpDate(public val epochSeconds: Long) : Comparable<HttpDate
         /**
          * Reads [text] as an HTTP-date in one of the three formats of RFC 9110 §5.6.7.
          *
-         * An RFC 850 date carries two digits of its year, which RFC 9110 reads relative to the present: it is read
+         * An rfc850-date carries two digits of its year, which RFC 9110 reads relative to the present: it is read
          * only when [now] is given, as the year with these digits that lies at most 50 years after [now]. Without
          * [now] such a date is refused rather than guessed.
          *
          * @param text the text, which may come from an attacker.
-         * @param now the present, to read a two-digit year; `null` to refuse RFC 850 dates.
+         * @param now the present, to read a two-digit year; `null` to refuse every rfc850-date.
          * @return the date, or `null` if [text] is no HTTP-date.
          * @since 1.0.0
          */

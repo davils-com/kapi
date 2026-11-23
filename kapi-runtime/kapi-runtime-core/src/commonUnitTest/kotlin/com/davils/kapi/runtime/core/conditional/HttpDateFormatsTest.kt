@@ -64,9 +64,9 @@ private val refusedImf: List<String> = listOf(
 )
 
 class HttpDateFormatsTest : FunSpec({
-    context("the obsolete RFC 850 format") {
+    context("the obsolete rfc850-date format") {
         refusedRfc850.forEach { text ->
-            test("refuses the RFC 850 date '$text'") {
+            test("refuses the rfc850-date '$text'") {
                 HttpDate.parseOrNull(text, present).shouldBeNull()
             }
         }

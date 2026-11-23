@@ -2,6 +2,94 @@
     "schemaVersion": 1,
     "standards": [
         {
+            "id": "draft:draft-bhutton-json-schema",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Schema: A Media Type for Describing JSON Documents",
+                "status": "Expired",
+                "revision": "01",
+                "published": "2022-12-12",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "draft:draft-bhutton-json-schema-validation",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Schema Validation: A Vocabulary for Structural Validation of JSON",
+                "status": "Expired",
+                "revision": "01",
+                "published": "2022-12-12",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "draft:draft-ietf-httpapi-idempotency-key-header",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The Idempotency-Key HTTP Header Field",
+                "status": "Active",
+                "revision": "09",
+                "published": "2026-11-21",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "draft:draft-ietf-httpapi-ratelimit-headers",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "RateLimit header fields for HTTP",
+                "status": "Active",
+                "revision": "12",
+                "published": "2026-11-20",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "github:asyncapi/spec",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "asyncapi/spec",
+                "revision": "v3.1.0",
+                "published": "2026-01-31",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "github:json-schema-org/json-schema-test-suite",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "json-schema-org/json-schema-test-suite",
+                "revision": "23.1.0",
+                "published": "2023-05-12",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
             "id": "github:oai/openapi-specification",
             "reviewedOn": "2026-11-23",
             "note": "Reviewed the published OpenAPI versions of the 3.0, 3.1 and 3.2 lines for kapi-openapi.",
@@ -16,12 +104,1303 @@
             }
         },
         {
+            "id": "github:oai/overlay-specification",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "oai/overlay-specification",
+                "revision": "1.2.0",
+                "published": "2026-09-22",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "iso:8601",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Data elements and interchange formats — Information interchange — Representation of dates and times",
+                "status": "95.99",
+                "revision": "ISO 8601:2004",
+                "published": "2004-12-03",
+                "withdrawn": true,
+                "replacedBy": [
+                    "ISO deliverable 70907",
+                    "ISO deliverable 70908"
+                ],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:1123",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Requirements for Internet Hosts - Application and Support",
+                "status": "INTERNET STANDARD",
+                "published": "October 1989",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC1349",
+                    "RFC2181",
+                    "RFC5321",
+                    "RFC5966",
+                    "RFC7766",
+                    "RFC9210"
+                ],
+                "errata": {
+                    "1081": "REJECTED",
+                    "1353": "REJECTED",
+                    "1354": "VERIFIED",
+                    "2464": "REJECTED",
+                    "5456": "VERIFIED",
+                    "558": "VERIFIED",
+                    "584": "VERIFIED",
+                    "6134": "REJECTED",
+                    "6474": "VERIFIED",
+                    "6475": "VERIFIED",
+                    "8148": "VERIFIED",
+                    "8194": "VERIFIED",
+                    "8727": "REJECTED",
+                    "9207": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:2046",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types",
+                "status": "DRAFT STANDARD",
+                "published": "November 1996",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC2646",
+                    "RFC3798",
+                    "RFC5147",
+                    "RFC6657",
+                    "RFC8098"
+                ],
+                "errata": {
+                    "4609": "HELD",
+                    "507": "VERIFIED",
+                    "508": "VERIFIED",
+                    "509": "VERIFIED",
+                    "510": "VERIFIED",
+                    "511": "VERIFIED",
+                    "588": "VERIFIED",
+                    "589": "VERIFIED",
+                    "6582": "VERIFIED",
+                    "6583": "REJECTED",
+                    "6776": "HELD",
+                    "6800": "VERIFIED",
+                    "7341": "VERIFIED",
+                    "8667": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:3339",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Date and Time on the Internet: Timestamps",
+                "status": "PROPOSED STANDARD",
+                "published": "July 2002",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC9557"
+                ],
+                "errata": {
+                    "1584": "VERIFIED",
+                    "293": "VERIFIED",
+                    "3710": "VERIFIED",
+                    "4110": "VERIFIED",
+                    "5624": "HELD",
+                    "5783": "HELD",
+                    "6533": "HELD"
+                }
+            }
+        },
+        {
+            "id": "rfc:3492",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Punycode: A Bootstring encoding of Unicode for Internationalized Domain Names in Applications (IDNA)",
+                "status": "PROPOSED STANDARD",
+                "published": "March 2003",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC5891"
+                ],
+                "errata": {
+                    "265": "VERIFIED",
+                    "3026": "HELD",
+                    "9167": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:3986",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Uniform Resource Identifier (URI): Generic Syntax",
+                "status": "INTERNET STANDARD",
+                "published": "January 2005",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC7320",
+                    "RFC8820"
+                ],
+                "errata": {
+                    "1783": "REJECTED",
+                    "2033": "HELD",
+                    "2525": "VERIFIED",
+                    "2624": "HELD",
+                    "2717": "REJECTED",
+                    "2933": "HELD",
+                    "3330": "REJECTED",
+                    "4293": "REJECTED",
+                    "4393": "REJECTED",
+                    "4394": "REJECTED",
+                    "4547": "HELD",
+                    "4789": "HELD",
+                    "4942": "HELD",
+                    "5428": "HELD",
+                    "7019": "REJECTED",
+                    "7590": "VERIFIED",
+                    "8442": "REJECTED",
+                    "9147": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:3987",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Internationalized Resource Identifiers (IRIs)",
+                "status": "PROPOSED STANDARD",
+                "published": "January 2005",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3163": "HELD",
+                    "3297": "HELD",
+                    "629": "VERIFIED",
+                    "631": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:4291",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "IP Version 6 Addressing Architecture",
+                "status": "DRAFT STANDARD",
+                "published": "February 2006",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC5952",
+                    "RFC6052",
+                    "RFC7136",
+                    "RFC7346",
+                    "RFC7371",
+                    "RFC8064"
+                ],
+                "errata": {
+                    "1627": "HELD",
+                    "2466": "REJECTED",
+                    "2702": "REJECTED",
+                    "2735": "REJECTED",
+                    "3480": "VERIFIED",
+                    "4406": "REJECTED",
+                    "5716": "REPORTED",
+                    "6596": "HELD",
+                    "6848": "VERIFIED",
+                    "8373": "REPORTED",
+                    "863": "REJECTED",
+                    "864": "REJECTED",
+                    "865": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:4647",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Matching of Language Tags",
+                "status": "BEST CURRENT PRACTICE",
+                "published": "September 2006",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8253": "HELD",
+                    "8287": "REPORTED",
+                    "8838": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:4648",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The Base16, Base32, and Base64 Data Encodings",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2006",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "2837": "VERIFIED",
+                    "4889": "REPORTED",
+                    "5855": "VERIFIED",
+                    "7514": "VERIFIED",
+                    "8669": "REPORTED",
+                    "9030": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5321",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Simple Mail Transfer Protocol",
+                "status": "DRAFT STANDARD",
+                "published": "October 2008",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC7504"
+                ],
+                "errata": {
+                    "1543": "HELD",
+                    "1683": "VERIFIED",
+                    "1820": "REJECTED",
+                    "1851": "HELD",
+                    "2467": "REJECTED",
+                    "2578": "VERIFIED",
+                    "3447": "HELD",
+                    "4055": "REJECTED",
+                    "4079": "REJECTED",
+                    "4198": "VERIFIED",
+                    "4265": "REJECTED",
+                    "4315": "HELD",
+                    "5414": "HELD",
+                    "5711": "HELD",
+                    "6561": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5322",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Internet Message Format",
+                "status": "DRAFT STANDARD",
+                "published": "October 2008",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC6854"
+                ],
+                "errata": {
+                    "1766": "VERIFIED",
+                    "1905": "VERIFIED",
+                    "1906": "HELD",
+                    "1908": "VERIFIED",
+                    "2104": "REJECTED",
+                    "2515": "VERIFIED",
+                    "2579": "VERIFIED",
+                    "2619": "REJECTED",
+                    "2620": "REJECTED",
+                    "2726": "HELD",
+                    "2816": "REJECTED",
+                    "2950": "HELD",
+                    "3048": "HELD",
+                    "3088": "REJECTED",
+                    "3134": "REJECTED",
+                    "3135": "HELD",
+                    "3400": "REJECTED",
+                    "3675": "REJECTED",
+                    "3979": "VERIFIED",
+                    "4692": "HELD",
+                    "5035": "REJECTED",
+                    "5712": "REJECTED",
+                    "5867": "HELD",
+                    "5905": "HELD",
+                    "5918": "HELD",
+                    "6639": "VERIFIED",
+                    "6920": "VERIFIED",
+                    "6921": "HELD",
+                    "7382": "REJECTED",
+                    "8453": "REJECTED",
+                    "8464": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5861",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP Cache-Control Extensions for Stale Content",
+                "status": "INFORMATIONAL",
+                "published": "May 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "2255": "VERIFIED",
+                    "2256": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5890",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Internationalized Domain Names for Applications (IDNA): Definitions and Document Framework",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4695": "VERIFIED",
+                    "4696": "VERIFIED",
+                    "4823": "HELD",
+                    "4824": "HELD",
+                    "5484": "HELD",
+                    "7291": "VERIFIED",
+                    "9026": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5891",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Internationalized Domain Names in Applications (IDNA): Protocol",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3969": "HELD"
+                }
+            }
+        },
+        {
+            "id": "rfc:5892",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The Unicode Code Points and Internationalized Domain Names for Applications (IDNA)",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC8753"
+                ],
+                "errata": {
+                    "3312": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:5893",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Right-to-Left Scripts for Internationalized Domain Names for Applications (IDNA)",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:5952",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "A Recommendation for IPv6 Address Text Representation",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2010",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "2498": "VERIFIED",
+                    "2656": "REJECTED",
+                    "2872": "REJECTED",
+                    "3218": "HELD",
+                    "3219": "HELD",
+                    "3884": "REJECTED",
+                    "4483": "REJECTED",
+                    "4900": "REJECTED",
+                    "4985": "REJECTED",
+                    "4986": "REJECTED",
+                    "6272": "HELD",
+                    "8554": "HELD"
+                }
+            }
+        },
+        {
+            "id": "rfc:6265",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP State Management Mechanism",
+                "status": "PROPOSED STANDARD",
+                "published": "April 2011",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3430": "REJECTED",
+                    "3444": "VERIFIED",
+                    "3663": "HELD",
+                    "3765": "REJECTED",
+                    "3931": "REJECTED",
+                    "4043": "REJECTED",
+                    "4044": "REJECTED",
+                    "4148": "VERIFIED",
+                    "5518": "VERIFIED",
+                    "6093": "VERIFIED",
+                    "6719": "REJECTED",
+                    "7604": "VERIFIED",
+                    "8242": "HELD",
+                    "8877": "REPORTED",
+                    "9249": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6266",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Use of the Content-Disposition Header Field in the Hypertext Transfer Protocol (HTTP)",
+                "status": "PROPOSED STANDARD",
+                "published": "June 2011",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3325": "REJECTED",
+                    "3475": "VERIFIED",
+                    "5383": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6454",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The Web Origin Concept",
+                "status": "PROPOSED STANDARD",
+                "published": "December 2011",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3249": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6455",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The WebSocket Protocol",
+                "status": "PROPOSED STANDARD",
+                "published": "December 2011",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC7936",
+                    "RFC8307",
+                    "RFC8441"
+                ],
+                "errata": {
+                    "3150": "VERIFIED",
+                    "3215": "REJECTED",
+                    "3227": "HELD",
+                    "3432": "HELD",
+                    "3433": "VERIFIED",
+                    "3473": "VERIFIED",
+                    "3912": "REJECTED",
+                    "4184": "REJECTED",
+                    "4398": "HELD",
+                    "4672": "REPORTED",
+                    "4919": "REPORTED",
+                    "5288": "REPORTED",
+                    "5453": "REJECTED",
+                    "5498": "HELD",
+                    "6997": "REPORTED",
+                    "7262": "REPORTED",
+                    "7608": "REPORTED",
+                    "8491": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6531",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "SMTP Extension for Internationalized Email",
+                "status": "PROPOSED STANDARD",
+                "published": "February 2012",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4996": "HELD",
+                    "7580": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6570",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "URI Template",
+                "status": "PROPOSED STANDARD",
+                "published": "March 2012",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3733": "REJECTED",
+                    "6937": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6749",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The OAuth 2.0 Authorization Framework",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2012",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC8252",
+                    "RFC8996",
+                    "RFC9700"
+                ],
+                "errata": {
+                    "3446": "VERIFIED",
+                    "3500": "VERIFIED",
+                    "3780": "HELD",
+                    "3880": "REJECTED",
+                    "3904": "VERIFIED",
+                    "4206": "HELD",
+                    "4679": "REPORTED",
+                    "4697": "REPORTED",
+                    "4745": "REPORTED",
+                    "4749": "REPORTED",
+                    "4819": "REPORTED",
+                    "4945": "REPORTED",
+                    "5234": "REPORTED",
+                    "5332": "REPORTED",
+                    "5379": "REPORTED",
+                    "5708": "VERIFIED",
+                    "5793": "REPORTED",
+                    "5873": "REPORTED",
+                    "6017": "REPORTED",
+                    "6613": "VERIFIED",
+                    "6614": "REPORTED",
+                    "6615": "REPORTED",
+                    "7429": "REPORTED",
+                    "7631": "REPORTED",
+                    "7642": "REPORTED",
+                    "7715": "REPORTED",
+                    "7716": "REPORTED",
+                    "7823": "REPORTED",
+                    "8722": "REPORTED",
+                    "8790": "REPORTED",
+                    "8791": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6750",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The OAuth 2.0 Authorization Framework: Bearer Token Usage",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2012",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC8996",
+                    "RFC9700"
+                ],
+                "errata": {
+                    "5335": "REPORTED",
+                    "6161": "REPORTED",
+                    "9053": "REPORTED",
+                    "9054": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6838",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Media Type Specifications and Registration Procedures",
+                "status": "BEST CURRENT PRACTICE",
+                "published": "January 2013",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC9694"
+                ],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:6890",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Special-Purpose IP Address Registries",
+                "status": "BEST CURRENT PRACTICE",
+                "published": "April 2013",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC8190"
+                ],
+                "errata": {
+                    "3873": "REJECTED",
+                    "3879": "REJECTED",
+                    "3921": "VERIFIED",
+                    "6404": "VERIFIED",
+                    "6416": "REJECTED",
+                    "6881": "VERIFIED",
+                    "6882": "VERIFIED",
+                    "6956": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:6901",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JavaScript Object Notation (JSON) Pointer",
+                "status": "PROPOSED STANDARD",
+                "published": "April 2013",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "3981": "REJECTED",
+                    "5745": "REPORTED",
+                    "8314": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7009",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Token Revocation",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2013",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "6663": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7396",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Merge Patch",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2014",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:7464",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JavaScript Object Notation (JSON) Text Sequences",
+                "status": "PROPOSED STANDARD",
+                "published": "February 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "5860": "VERIFIED",
+                    "5998": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7517",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Web Key (JWK)",
+                "status": "PROPOSED STANDARD",
+                "published": "May 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "6907": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7519",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Web Token (JWT)",
+                "status": "PROPOSED STANDARD",
+                "published": "May 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC7797",
+                    "RFC8725"
+                ],
+                "errata": {
+                    "5648": "REJECTED",
+                    "5906": "REPORTED",
+                    "6622": "REJECTED",
+                    "7720": "REPORTED",
+                    "8060": "VERIFIED",
+                    "8225": "REPORTED",
+                    "8388": "VERIFIED",
+                    "9212": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7523",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants",
+                "status": "PROPOSED STANDARD",
+                "published": "May 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [
+                    "RFC10070"
+                ],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:7578",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Returning Values from Forms: multipart/form-data",
+                "status": "PROPOSED STANDARD",
+                "published": "July 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4676": "VERIFIED",
+                    "5616": "REPORTED",
+                    "7385": "REPORTED",
+                    "9032": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7617",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The 'Basic' HTTP Authentication Scheme",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "9174": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7636",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Proof Key for Code Exchange by OAuth Public Clients",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "5687": "VERIFIED",
+                    "6179": "REPORTED",
+                    "6471": "REPORTED",
+                    "8457": "REJECTED",
+                    "8458": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7662",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Token Introspection",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4764": "VERIFIED",
+                    "7607": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:7692",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Compression Extensions for WebSocket",
+                "status": "PROPOSED STANDARD",
+                "published": "December 2015",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4982": "REPORTED",
+                    "8099": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8187",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Indicating Character Encoding and Language for HTTP Header Field Parameters",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2017",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:8246",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP Immutable Responses",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2017",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:8259",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "The JavaScript Object Notation (JSON) Data Interchange Format",
+                "status": "INTERNET STANDARD",
+                "published": "December 2017",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "5210": "VERIFIED",
+                    "5218": "REJECTED",
+                    "5318": "VERIFIED",
+                    "5853": "REJECTED",
+                    "6208": "REJECTED",
+                    "7307": "REJECTED",
+                    "7383": "VERIFIED",
+                    "7600": "VERIFIED",
+                    "7603": "VERIFIED",
+                    "7617": "REJECTED",
+                    "7650": "HELD",
+                    "7673": "REJECTED",
+                    "8438": "HELD",
+                    "8622": "REJECTED",
+                    "8874": "REJECTED",
+                    "9095": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8288",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Web Linking",
+                "status": "PROPOSED STANDARD",
+                "published": "October 2017",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "5168": "REPORTED",
+                    "5169": "REPORTED",
+                    "5319": "VERIFIED",
+                    "5878": "VERIFIED",
+                    "9024": "REJECTED",
+                    "9091": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8414",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Authorization Server Metadata",
+                "status": "PROPOSED STANDARD",
+                "published": "June 2018",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7793": "REPORTED",
+                    "8696": "REJECTED",
+                    "9178": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8628",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Device Authorization Grant",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2019",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "5840": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8693",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Token Exchange",
+                "status": "PROPOSED STANDARD",
+                "published": "January 2020",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7511": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:8725",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSON Web Token Best Current Practices",
+                "status": "BEST CURRENT PRACTICE",
+                "published": "February 2020",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "rfc:8949",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Concise Binary Object Representation (CBOR)",
+                "status": "INTERNET STANDARD",
+                "published": "December 2020",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8589": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9110",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP Semantics",
+                "status": "INTERNET STANDARD",
+                "published": "June 2022",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7105": "VERIFIED",
+                    "7107": "REJECTED",
+                    "7109": "VERIFIED",
+                    "7138": "VERIFIED",
+                    "7306": "VERIFIED",
+                    "7419": "VERIFIED",
+                    "7530": "REJECTED",
+                    "7599": "REJECTED",
+                    "7870": "REJECTED",
+                    "8138": "REJECTED",
+                    "8268": "VERIFIED",
+                    "8459": "REJECTED",
+                    "9162": "REJECTED",
+                    "9164": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9111",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP Caching",
+                "status": "INTERNET STANDARD",
+                "published": "June 2022",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7695": "REJECTED",
+                    "9004": "REJECTED",
+                    "9166": "HELD",
+                    "9185": "REJECTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9421",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "HTTP Message Signatures",
+                "status": "PROPOSED STANDARD",
+                "published": "February 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8102": "VERIFIED",
+                    "8103": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9449",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "OAuth 2.0 Demonstrating Proof of Possession (DPoP)",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2023",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7646": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9457",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Problem Details for HTTP APIs",
+                "status": "PROPOSED STANDARD",
+                "published": "August 2023",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7731": "HELD",
+                    "8858": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9525",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Service Identity in TLS",
+                "status": "PROPOSED STANDARD",
+                "published": "November 2023",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8173": "HELD"
+                }
+            }
+        },
+        {
+            "id": "rfc:9530",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Digest Fields",
+                "status": "PROPOSED STANDARD",
+                "published": "February 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8158": "VERIFIED",
+                    "8273": "VERIFIED",
+                    "8890": "REPORTED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9535",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "JSONPath: Query Expressions for JSON",
+                "status": "PROPOSED STANDARD",
+                "published": "February 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8343": "HELD",
+                    "8352": "HELD",
+                    "8353": "HELD",
+                    "8354": "HELD",
+                    "8779": "HELD"
+                }
+            }
+        },
+        {
+            "id": "rfc:9562",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Universally Unique IDentifiers (UUIDs)",
+                "status": "PROPOSED STANDARD",
+                "published": "May 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7929": "VERIFIED",
+                    "7931": "REPORTED",
+                    "7955": "VERIFIED",
+                    "7958": "VERIFIED",
+                    "8288": "VERIFIED",
+                    "8695": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "rfc:9651",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "Structured Field Values for HTTP",
+                "status": "PROPOSED STANDARD",
+                "published": "September 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "8869": "VERIFIED"
+                }
+            }
+        },
+        {
             "id": "unicode:ucd",
             "reviewedOn": "2026-11-23",
             "note": "Reviewed the Unicode Character Database release SafeText relies on.",
             "snapshot": {
                 "title": "Unicode Character Database",
                 "revision": "18.0.0",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "whatwg:html",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "snapshot": {
+                "title": "WHATWG HTML Living Standard",
                 "withdrawn": false,
                 "replacedBy": [],
                 "updatedBy": [],
