@@ -33,7 +33,7 @@ internal object MediaTypeReader {
 
     fun parse(text: String): MediaTypeParts? {
         if (text.length > MAX_LENGTH) return null
-        val scanner = FieldScanner(text.trim())
+        val scanner = FieldScanner(FieldGrammar.trimmed(text))
         return read(scanner, MAX_PARAMETERS)?.takeIf { scanner.isAtEnd }
     }
 
