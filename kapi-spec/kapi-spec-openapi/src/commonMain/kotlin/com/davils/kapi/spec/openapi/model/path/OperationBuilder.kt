@@ -44,6 +44,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var operationId: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `summary`, the summary of the operation.
@@ -51,6 +55,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the operation.
@@ -58,6 +66,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val tags: MutableList<String> = mutableListOf()
 
@@ -67,6 +79,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var externalDocs: ExternalDocs? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val parameters: MutableList<Referable<Parameter>> = mutableListOf()
 
@@ -76,6 +92,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var requestBody: Referable<RequestBody>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `responses`, the responses of the operation; without any response until it is set.
@@ -83,6 +103,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var responses: Responses = ResponsesBuilder().build()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val callbacks: MutableMap<String, Referable<Callback>> = linkedMapOf()
 
@@ -92,6 +116,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var isDeprecated: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `security`, the security requirements of the operation; `null` to take over those of the document.
@@ -99,6 +127,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var security: List<SecurityRequirement>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val servers: MutableList<Server> = mutableListOf()
 

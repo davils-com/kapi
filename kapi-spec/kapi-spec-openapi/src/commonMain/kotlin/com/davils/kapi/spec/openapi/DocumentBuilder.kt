@@ -47,6 +47,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var version: Version = Version.Latest
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The URI reference the document names itself by, written from OpenAPI 3.2 on.
@@ -54,6 +58,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var self: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `info` of the document.
@@ -61,6 +69,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var info: Info = InfoBuilder().build()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `jsonSchemaDialect` of the document, from OpenAPI 3.1 on.
@@ -68,6 +80,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var jsonSchemaDialect: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val servers: MutableList<Server> = mutableListOf()
 
@@ -77,6 +93,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var paths: Paths? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val webhooks: MutableMap<String, PathItem> = linkedMapOf()
 
@@ -86,6 +106,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var components: Components? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val security: MutableList<SecurityRequirement> = mutableListOf()
 
@@ -97,6 +121,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var externalDocs: ExternalDocs? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val targets: MutableMap<Target, Element> = linkedMapOf()
 

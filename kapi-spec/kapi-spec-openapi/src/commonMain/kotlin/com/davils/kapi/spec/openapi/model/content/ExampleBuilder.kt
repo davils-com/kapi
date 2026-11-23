@@ -37,6 +37,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the example.
@@ -44,6 +48,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `value`, the example itself.
@@ -51,6 +59,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var value: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `externalValue`, the URL of an example kept elsewhere.
@@ -58,6 +70,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var externalValue: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `dataValue`, the example as data that the schema validates, written from OpenAPI 3.2 on.
@@ -65,6 +81,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var dataValue: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `serializedValue`, the example as it is serialized on the wire, written from OpenAPI 3.2 on.
@@ -72,6 +92,10 @@ public class ExampleBuilder internal constructor() : ElementBuilder<Example>() {
      * @since 1.0.0
      */
     public var serializedValue: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Example = Example(this)
 }

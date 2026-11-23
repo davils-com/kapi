@@ -41,6 +41,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `required`, whether the header must be present.
@@ -48,6 +52,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var isRequired: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `deprecated`, whether the header should no longer be used.
@@ -55,6 +63,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var isDeprecated: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `style`, the style the value is serialized in.
@@ -62,6 +74,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var style: ParameterStyle? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `explode`; `null` to take the default.
@@ -69,6 +85,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var isExploded: Boolean? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `schema`, the schema of the value.
@@ -76,6 +96,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var schema: Schema? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
@@ -85,6 +109,10 @@ public class HeaderBuilder internal constructor() : ElementBuilder<Header>() {
      * @since 1.0.0
      */
     public var example: Value? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
 

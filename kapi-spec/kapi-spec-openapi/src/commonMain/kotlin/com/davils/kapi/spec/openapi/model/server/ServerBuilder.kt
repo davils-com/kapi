@@ -36,6 +36,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var url: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the server.
@@ -43,6 +47,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `name`, a short name of the server, written from OpenAPI 3.2 on.
@@ -51,6 +59,10 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
      * @since 1.0.0
      */
     public var name: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val variables: MutableMap<String, ServerVariable> = linkedMapOf()
 

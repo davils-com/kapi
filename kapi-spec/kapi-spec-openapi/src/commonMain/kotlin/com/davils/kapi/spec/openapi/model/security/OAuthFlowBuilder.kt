@@ -36,6 +36,10 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
      * @since 1.0.0
      */
     public var authorizationUrl: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `deviceAuthorizationUrl`, the device authorization endpoint, written from OpenAPI 3.2 on.
@@ -43,6 +47,10 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
      * @since 1.0.0
      */
     public var deviceAuthorizationUrl: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `tokenUrl`, the token endpoint.
@@ -50,6 +58,10 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
      * @since 1.0.0
      */
     public var tokenUrl: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `refreshUrl`, the endpoint that refreshes a token.
@@ -57,6 +69,10 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
      * @since 1.0.0
      */
     public var refreshUrl: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val scopes: MutableMap<String, String> = linkedMapOf()
 

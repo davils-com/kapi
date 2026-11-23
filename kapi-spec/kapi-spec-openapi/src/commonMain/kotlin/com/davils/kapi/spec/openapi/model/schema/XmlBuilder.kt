@@ -36,6 +36,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var name: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `namespace`, the namespace of the element or attribute.
@@ -43,6 +47,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var namespace: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `prefix`, the prefix of the namespace.
@@ -50,6 +58,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var prefix: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `attribute`, whether the property is an attribute.
@@ -57,6 +69,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var isAttribute: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `wrapped`, whether the items of an array are wrapped.
@@ -64,6 +80,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var isWrapped: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `nodeType`, the kind of node the schema maps to, written from OpenAPI 3.2 on.
@@ -71,6 +91,10 @@ public class XmlBuilder internal constructor() : ElementBuilder<Xml>() {
      * @since 1.0.0
      */
     public var nodeType: XmlNodeType? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Xml = Xml(this)
 }

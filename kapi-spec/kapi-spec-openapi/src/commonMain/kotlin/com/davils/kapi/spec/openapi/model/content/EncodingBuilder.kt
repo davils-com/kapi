@@ -39,6 +39,10 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
      * @since 1.0.0
      */
     public var contentType: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
 
@@ -48,6 +52,10 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
      * @since 1.0.0
      */
     public var style: ParameterStyle? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `explode`; `null` to take the default of the style.
@@ -55,6 +63,10 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
      * @since 1.0.0
      */
     public var isExploded: Boolean? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `allowReserved`, whether reserved characters stay unencoded.
@@ -62,6 +74,10 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
      * @since 1.0.0
      */
     public var isReservedAllowed: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val encoding: MutableMap<String, Encoding> = linkedMapOf()
 
@@ -74,6 +90,10 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
      * @since 1.0.0
      */
     public var itemEncoding: Encoding? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Encoding = Encoding(this)
 }

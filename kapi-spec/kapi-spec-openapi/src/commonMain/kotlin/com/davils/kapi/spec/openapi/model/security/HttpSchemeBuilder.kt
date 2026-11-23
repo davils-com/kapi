@@ -36,6 +36,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `deprecated`, whether the scheme should no longer be used, written from OpenAPI 3.2 on.
@@ -43,6 +47,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var isDeprecated: Boolean = false
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `scheme`, the HTTP authentication scheme; empty until it is set.
@@ -50,6 +58,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var scheme: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `bearerFormat`, a hint how a bearer token is formatted.
@@ -57,6 +69,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var bearerFormat: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): HttpScheme = HttpScheme(this)
 }

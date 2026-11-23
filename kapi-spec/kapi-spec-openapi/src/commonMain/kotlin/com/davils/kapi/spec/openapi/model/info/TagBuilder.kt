@@ -36,6 +36,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `summary`, a short summary of the tag, written from OpenAPI 3.2 on.
@@ -43,6 +47,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `description`, the description of the tag.
@@ -50,6 +58,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `externalDocs`, the external documentation of the tag.
@@ -57,6 +69,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var externalDocs: ExternalDocs? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `parent`, the name of the tag this tag is nested in, written from OpenAPI 3.2 on.
@@ -64,6 +80,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var parent: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The value of `kind`, what the tag is for, such as `nav`, written from OpenAPI 3.2 on.
@@ -71,6 +91,10 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
      * @since 1.0.0
      */
     public var kind: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Tag = Tag(this)
 }
