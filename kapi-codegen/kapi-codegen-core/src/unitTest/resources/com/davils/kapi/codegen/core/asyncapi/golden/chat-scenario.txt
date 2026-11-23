@@ -9,6 +9,7 @@ import com.davils.kapi.runtime.core.security.credentials
 import com.davils.kapi.runtime.server.Kapi
 import com.davils.kapi.runtime.server.channel.channelLimits
 import com.davils.kapi.runtime.server.mount
+import com.davils.kapi.runtime.server.request.Request
 import com.davils.kapi.runtime.server.security.Authorization
 import com.davils.kapi.runtime.server.security.AuthorizationAttempt
 import com.davils.kapi.runtime.server.security.Authorizer
@@ -78,9 +79,17 @@ public object Scenario {
             HttpClient(ClientEngine) {
                 followRedirects = false
                 install(ClientWebSockets)
-            }.use { http -> talk(clientOf(http, port, "t1")) + talk(clientOf(http, port, "wrong")).take(1) }
+            }.use { http -> talk(clientOf(http, port, "t1")) + talk(clientOf(http, port, "wrong")).take(1) + admitted() }
         } finally {
             server.stop(gracePeriodMillis = 0, timeoutMillis = 0)
+        }
+    }
+
+    private suspend fun admitted(): List<String> {
+        val endpoint = ChatRoutes(Room()).channels.first()
+        return listOf("since=7", "nick=ann&since=nope", "nick=ann&since=7").map { query ->
+            val request = Request.of(operation = "room", method = "GET", path = "/rooms/lobby") { rawQuery = query }
+            "admission " + endpoint.admission(request)?.status
         }
     }
 

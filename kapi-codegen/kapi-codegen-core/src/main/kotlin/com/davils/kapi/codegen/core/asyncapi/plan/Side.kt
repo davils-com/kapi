@@ -27,6 +27,8 @@ internal enum class Side(val label: String) {
             Server -> Client
         }
 
+    fun requestsOf(plan: ChannelPlan): List<RequestPlan> = plan.requests.filter { request -> request.sender == this }
+
     fun of(plan: ChannelPlan): DirectionPlan = when (this) {
         Client -> plan.upstream
         Server -> plan.downstream

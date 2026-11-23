@@ -723,6 +723,8 @@ import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.operation.Routes
 import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.request.Request
 import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.chat.channel.ChatRoomClientMessage
 import com.example.chat.channel.ChatRoomClientMessageSerializer
@@ -733,7 +735,7 @@ import kotlin.collections.List
 /**
  * The WebSocket channels `room`, mounted with `routing { mount(routes) }` below the path of the server.
  *
- * Every handshake is authorized by the security requirement of its channel before the WebSocket opens. Its parameters are read after it opened: a handshake that lacks a required one or carries one that is invalid closes the channel with 1008 before the service sees it.
+ * Every handshake is authorized by the security requirement of its channel and its parameters are checked before the WebSocket opens: a handshake that lacks a required one or carries one that is invalid is refused with a problem with status 400 and never reaches the service.
  *
  * @param chatRoomService serves the channel `room`.
  * @param limits the limits of every channel.
@@ -757,6 +759,7 @@ public class ChatRoutes(
             protocols = listOf("chat.v1"),
             security = listOf(listOf(SchemeUse("token", CredentialSource.Bearer, setOf()))),
             limits = limits,
+            admission = { request -> admitChatRoom(request) },
             handler = { serveChatRoom(this) },
         ),
     )
@@ -770,6 +773,14 @@ public class ChatRoutes(
         val xClient = request.headers["X-Client"]
         if (nick == null || sinceText != null && since == null) return session.close(ChannelSession.POLICY_VIOLATION, "The handshake lacks a parameter or carries an invalid one")
         chatRoomService.serve(ChatRoomServerSession(session = session, roomId = roomId, nick = nick, since = since, xClient = xClient))
+    }
+
+    private fun admitChatRoom(request: Request): Reply? {
+        val nick = request.query.firstOrNull { entry -> entry.first == "nick" }?.second
+        val sinceText = request.query.firstOrNull { entry -> entry.first == "since" }?.second
+        val since = sinceText?.toLongOrNull()
+        if (nick == null || sinceText != null && since == null) return request.input().refused()
+        return null
     }
 }
 ===== META-INF/kapi/asyncapi/chat.provenance.json
@@ -840,7 +851,7 @@ public class ChatRoutes(
     },
     {
       "name": "com/example/chat/server/ChatRoutes.kt",
-      "digest": "sha256:f91b461e7cda1f123beb916b2886380c52943f59d98d5254a3ca872078721aa0"
+      "digest": "sha256:c2851b20448ec302d137320cd558228f36cff5ff50930c6ec0634b795ae9ce14"
     }
   ]
 }

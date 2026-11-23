@@ -80,3 +80,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parts of a multipart body and the fields of a form with `Input.part`, `Input.partItems` and `Input.field`, so every
   value is decoded by the codecs of the server, validated and reported under `body.<name>`; repeated parts of numbers
   or flags are served instead of refused.
+- **Generated WebSocket channels** check the parameters of a handshake in the `admission` of their
+  `ChannelEndpoint` and refuse an invalid one with a problem with status 400 before the upgrade; a request the server
+  sends with a reply and correlation ids becomes `request<Operation>` on the server session over
+  `ChannelSession.request` and the `correlation` of the endpoint, and clients pair their requests with
+  `Correlation.json`, reading each id from the JSON of a message by its discriminator, so ids inside union payloads
+  are found on every platform. The correlation object of a channel moved to the `channel` package.
