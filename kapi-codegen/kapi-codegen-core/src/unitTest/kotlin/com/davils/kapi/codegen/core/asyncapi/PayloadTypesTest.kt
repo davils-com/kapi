@@ -32,9 +32,19 @@ private const val SENT: String = "): Boolean = session.send(message)"
 
 private const val INT: String = "Int"
 
+private const val TEXT: String = "String"
+
 private const val LONG: String = "Long"
 
 private const val ANYTHING: String = "JsonElement"
+
+private val DEEP: String = "{type: array, items: ".repeat(DEPTH) + "{type: string}" + "}".repeat(DEPTH)
+
+private const val DEPTH: Int = 17
+
+private const val REFUSED: String = "refused [codegen.schema.unsupported]"
+
+private const val UNSUPPORTED: String = "refused [codegen.asyncapi.payload.unsupported]"
 
 private const val SCHEMAS: String = "{Id: {type: string}, Alias: {$REF: '#/components/schemas/Count'}, " +
     "Count: {type: integer, format: int32}, M: {type: object, properties: {a: {type: string}}}}"
@@ -60,7 +70,7 @@ private suspend fun sentOf(payload: String): String {
 }
 
 private val payloads: List<Pair<String, String>> = listOf(
-    "{type: string}" to "String",
+    "{type: string}" to TEXT,
     "{type: integer}" to LONG,
     "{type: integer, format: int32}" to INT,
     "{type: integer, format: int64}" to LONG,
@@ -68,15 +78,21 @@ private val payloads: List<Pair<String, String>> = listOf(
     "{type: boolean}" to "Boolean",
     "{}" to ANYTHING,
     "true" to ANYTHING,
-    "false" to "refused [codegen.schema.unsupported]",
+    "false" to REFUSED,
     "{type: array, items: {type: integer, format: int32}}" to "List<Int>",
     "{type: array, items: {type: array, items: {type: boolean}}}" to "List<List<Boolean>>",
-    "{type: array}" to "refused [codegen.asyncapi.payload.unsupported]",
-    "{type: [string, integer]}" to "refused [codegen.schema.unsupported]",
-    "{$REF: '#/components/schemas/Id'}" to "String",
+    "{type: array}" to UNSUPPORTED,
+    "{type: [string, integer]}" to REFUSED,
+    "{$REF: '#/components/schemas/Id'}" to TEXT,
     "{$REF: '#/components/schemas/Alias'}" to INT,
     "{type: array, items: {$REF: '#/components/schemas/M'}}" to "List<TM>",
     "{type: array, items: {$REF: '#/components/schemas/Id'}}" to "List<String>",
+    "{type: array, items: true}" to "List<$ANYTHING>",
+    "{type: array, items: false}" to REFUSED,
+    "{type: object}" to UNSUPPORTED,
+    "{type: 'null'}" to UNSUPPORTED,
+    "{type: string, format: uuid}" to TEXT,
+    DEEP to UNSUPPORTED,
 )
 
 class PayloadTypesTest : FunSpec({
