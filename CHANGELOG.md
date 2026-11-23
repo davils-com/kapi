@@ -46,3 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   form, encoded strictly, `ChannelSettings.toBuilder`, `Correlation.json` over the JSON of messages, DPoP proofs on
   WebSocket handshakes, `CallFailure.Unsent` for an interceptor that hands back a trip that was never sent, and
   `RangeOutcome.Ranges.parts` with the parts of a `multipart/byteranges` answer.
+- **The test support** calls the operations of generated server routes without Ktor on the JVM: `Routes.call` with a
+  request of `Request.of` or one it builds, and `Reply.content`, `Reply.text`, `Reply.mediaType` and `Reply.decoded`
+  to read the reply.

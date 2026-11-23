@@ -16,7 +16,8 @@
 /**
  * The test support of kapi: fake credentials and a fake OAuth 2 authorization server, a deterministic clock and
  * entropy, a mock HTTP API on the Ktor mock engine and contract assertions of recorded exchanges against OpenAPI
- * documents. It is never on a production class path.
+ * documents, and on the JVM calls of the operations of generated servers without Ktor. It is never on a production
+ * class path.
  */
 @SuppressWarnings({"module", "requires-automatic", "requires-transitive-automatic"})
 module com.davils.kapi.runtime.testing {
@@ -31,6 +32,7 @@ module com.davils.kapi.runtime.testing {
     requires transitive com.davils.krypt.primitive;
     requires transitive com.davils.kapi.runtime.core;
     requires transitive com.davils.kapi.runtime.client;
+    requires transitive com.davils.kapi.runtime.server;
     requires transitive com.davils.kapi.spec.core;
     requires transitive com.davils.kapi.spec.openapi;
     requires transitive com.davils.kapi.spec.schema;
@@ -45,4 +47,5 @@ module com.davils.kapi.runtime.testing {
     exports com.davils.kapi.runtime.testing.fake;
     exports com.davils.kapi.runtime.testing.mock;
     exports com.davils.kapi.runtime.testing.oauth;
+    exports com.davils.kapi.runtime.testing.server;
 }

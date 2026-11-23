@@ -339,3 +339,19 @@ public final class com/davils/kapi/runtime/testing/oauth/FakeAuthorizationServer
 	public static synthetic fun fakeAuthorizationServer$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/testing/oauth/FakeAuthorizationServer;
 }
 
+public final class com/davils/kapi/runtime/testing/server/ReplyContentKt {
+	public static final fun content (Lcom/davils/kapi/runtime/server/reply/Reply;Lcom/davils/kapi/runtime/core/codec/Codecs;)Lkotlinx/io/bytestring/ByteString;
+	public static synthetic fun content$default (Lcom/davils/kapi/runtime/server/reply/Reply;Lcom/davils/kapi/runtime/core/codec/Codecs;ILjava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
+	public static final fun decoded (Lcom/davils/kapi/runtime/server/reply/Reply;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/codec/Codecs;)Ljava/lang/Object;
+	public static synthetic fun decoded$default (Lcom/davils/kapi/runtime/server/reply/Reply;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/codec/Codecs;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun getMediaType (Lcom/davils/kapi/runtime/server/reply/Reply;)Lcom/davils/kapi/runtime/core/negotiation/MediaType;
+	public static final fun text (Lcom/davils/kapi/runtime/server/reply/Reply;Lcom/davils/kapi/runtime/core/codec/Codecs;)Ljava/lang/String;
+	public static synthetic fun text$default (Lcom/davils/kapi/runtime/server/reply/Reply;Lcom/davils/kapi/runtime/core/codec/Codecs;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/testing/server/RouteCallsKt {
+	public static final fun call (Lcom/davils/kapi/runtime/server/operation/Routes;Ljava/lang/String;Lcom/davils/kapi/runtime/server/request/Request;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/davils/kapi/runtime/server/operation/Routes;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun call$default (Lcom/davils/kapi/runtime/server/operation/Routes;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
