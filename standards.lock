@@ -1,0 +1,32 @@
+{
+    "schemaVersion": 1,
+    "standards": [
+        {
+            "id": "github:oai/openapi-specification",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed the published OpenAPI versions of the 3.0, 3.1 and 3.2 lines for kapi-openapi.",
+            "snapshot": {
+                "title": "oai/openapi-specification",
+                "revision": "3.2.1",
+                "published": "2026-09-10",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        },
+        {
+            "id": "unicode:ucd",
+            "reviewedOn": "2026-11-23",
+            "note": "Reviewed the Unicode Character Database release SafeText relies on.",
+            "snapshot": {
+                "title": "Unicode Character Database",
+                "revision": "18.0.0",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        }
+    ]
+}
