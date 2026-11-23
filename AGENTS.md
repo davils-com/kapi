@@ -15,20 +15,26 @@ and critical infrastructure, with security and correctness first.
 
 | Module | Artifact | Purpose |
 |---|---|---|
-| `kapi-document` | `com.davils:kapi-document` | What every API document shares: sources, loading through kaml within limits, `$ref` resolution with confinement, resolvers, located diagnostics, the severity policy, overlays and writing |
-| `kapi-schema` | `com.davils:kapi-schema` | JSON Schema 2020-12 with the dialects of OpenAPI 3.0 and 3.1: a bounded validator over YAML nodes and JSON elements, a linear pattern matcher and format assertions |
-| `kapi-openapi` | `com.davils:kapi-openapi` | OpenAPI 3.0, 3.1 and 3.2: the model, the strict reader, the upgrade of Swagger 2.0, the rules, the structure check against the official schemas and the comparison of two versions |
-| `kapi-asyncapi` | `com.davils:kapi-asyncapi` | AsyncAPI 3: the model, the strict reader and the rules, with the WebSocket binding |
-| `kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation, problem details, HTTP semantics and the destination policy |
-| `kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the Ktor `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
-| `kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
-| `kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Test support for generated code: fake credentials, mock engines and contract assertions |
-| `kapi-generator` | `com.davils:kapi-generator` | The generator, for the JVM only: audits a document, names what it declares and emits Kotlin with KotlinPoet, with the provenance of every file |
-| `kapi-gradle-plugin` | `com.davils:kapi-gradle-plugin` | The Gradle plugin `com.davils.kapi`: specifications, generation in an isolated worker, lint, compatibility checks and reports |
+| `kapi-spec/kapi-spec-core` | `com.davils:kapi-spec-core` | What every API document shares: sources, loading through kaml within limits, `$ref` resolution with confinement, resolvers, located diagnostics, the severity policy, overlays and writing |
+| `kapi-spec/kapi-spec-schema` | `com.davils:kapi-spec-schema` | JSON Schema 2020-12 with the dialects of OpenAPI 3.0 and 3.1: a bounded validator over YAML nodes and JSON elements, a linear pattern matcher and format assertions |
+| `kapi-spec/kapi-spec-openapi` | `com.davils:kapi-spec-openapi` | OpenAPI 3.0, 3.1 and 3.2: the model, the strict reader, the upgrade of Swagger 2.0, the rules, the structure check against the official schemas and the comparison of two versions |
+| `kapi-spec/kapi-spec-asyncapi` | `com.davils:kapi-spec-asyncapi` | AsyncAPI 3: the model, the strict reader and the rules, with the WebSocket binding |
+| `kapi-runtime/kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation, problem details, HTTP semantics and the destination policy |
+| `kapi-runtime/kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the Ktor `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
+| `kapi-runtime/kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
+| `kapi-runtime/kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Test support for generated code: fake credentials, mock engines and contract assertions |
+| `kapi-codegen/kapi-codegen-core` | `com.davils:kapi-codegen-core` | The generator, for the JVM only: audits a document, names what it declares and emits Kotlin with KotlinPoet, with the provenance of every file |
+| `kapi-codegen/kapi-codegen-gradle` | `com.davils:kapi-codegen-gradle` | The Gradle plugin `com.davils.kapi`: specifications, generation in an isolated worker, lint, compatibility checks and reports |
 | `kapi-bom` | `com.davils:kapi-bom` | The bill of materials of every module |
 | `build-logic` | - | One convention plugin per concern, composed by `kapi.kotlin-library` for a library module, `kapi.jvm-library` for a module only the JVM offers, `kapi.gradle-plugin` for the Gradle plugin, `kapi.bom` for the BOM and `kapi.root` for the root project; they hold nothing but `plugins { }` and `kreate { }` |
 
 The code is ported from the OpenAPI stack of an internal Davils project and hardened and extended on the way.
+
+The modules are grouped by role: `kapi-spec` reads and checks documents, `kapi-runtime` is what applications and
+generated code depend on, and `kapi-codegen` turns documents into Kotlin. Every module carries the name of its group,
+and its Gradle path is `:<group>:<module>`, such as `:kapi-runtime:kapi-runtime-client`. Types carry no prefix of the
+specification they belong to: the package says where they come from, such as `com.davils.kapi.spec.openapi.model.path.Operation`.
+Each specification has exactly one entry point, such as `OpenApi`, `AsyncApi` and `JsonSchema`.
 
 The package of a module is `com.davils.kapi.<module>` with every dash a dot, such as `com.davils.kapi.runtime.client`,
 and its Java module has the same name. It is declared in `src/jvmMain/java/module-info.java` of a multiplatform module
@@ -37,9 +43,9 @@ and in `src/main/java/module-info.java` of a JVM module, which exports only pack
 
 ## Targets
 
-`kapi-document`, `kapi-schema`, `kapi-openapi`, `kapi-asyncapi`, `kapi-runtime-core`, `kapi-runtime-client` and
-`kapi-runtime-testing` are Kotlin Multiplatform with two targets: `jvm` and `wasmJs`. The Wasm tests run under
-Node.js. `kapi-runtime-server`, `kapi-generator` and `kapi-gradle-plugin` are for the JVM only.
+Every module of `kapi-spec` and `kapi-runtime-core`, `kapi-runtime-client` and `kapi-runtime-testing` are Kotlin
+Multiplatform with two targets: `jvm` and `wasmJs`. The Wasm tests run under Node.js. `kapi-runtime-server` and the
+modules of `kapi-codegen` are for the JVM only.
 
 - Code lives in `src/commonMain/kotlin`. What differs per platform hides behind an `internal expect fun` in
   `<Role>.kt` with its `actual` in `<Role>.jvm.kt` and `<Role>.wasmJs.kt`, and a parity test proves that both targets
@@ -98,7 +104,7 @@ baseline, for main and test sources alike. Build scripts and `build-logic` follo
 
 - **No network and no file system in the library.** Documents are read through suspending resolvers the caller
   implements. A remote reference is refused unless the caller configures a resolver for it; the file resolver lives in
-  the JVM generator and stays confined to its root.
+  the JVM generator of `kapi-codegen-core` and stays confined to its root.
 - **Every finding is located.** A diagnostic names its code, its severity, the source, the JSON Pointer and the line
   and column, and shows untrusted text through `SafeText`. Codes are stable API.
 - **Nothing is guessed.** What a document leaves open, kapi reports instead of assuming; what the generator cannot
@@ -179,7 +185,7 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
 
 - Dependencies are declared in `gradle/libs.versions.toml`. Libraries of JetBrains (Ktor and kotlinx included) and of
   Davils (Kore, kaml, konfetti, kollect, kontinuity, krypt) may be added when they are needed; every other dependency
-  needs the approval of a maintainer. Approved: KotlinPoet, in `kapi-generator` only.
+  needs the approval of a maintainer. Approved: KotlinPoet, in `kapi-codegen-core` only.
 - Only `repo.davils.com` serves `com.davils`, through `exclusiveContent`; nothing is resolved from `mavenLocal()`.
 - After a dependency changes, refresh the locks and the verification metadata in one run and review what changed:
 
