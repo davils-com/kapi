@@ -52,6 +52,7 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         val self = types.model(plan.name)
         val builder = TypeSpec.classBuilder(plan.name)
         builder.addModifiers(visibility)
+        Docs.on(builder, plan.description)
         builder.addAnnotation(Kotlin.serializable)
         if (plan.properties.any(PropertyPlan::isPatch)) builder.addAnnotation(Annotations.experimentalSerialization())
         builder.addAnnotation(Annotations.generated(plan.origin))
@@ -83,6 +84,7 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
     private fun property(property: PropertyPlan): PropertySpec {
         val builder = PropertySpec.builder(property.name, typeOf(property), visibility)
         builder.initializer("%N", property.name)
+        Docs.on(builder, property.description)
         builder.addAnnotation(Annotations.serialName(property.jsonName))
         if (property.isPatch) builder.addAnnotation(Annotations.neverDefault())
         return builder.build()

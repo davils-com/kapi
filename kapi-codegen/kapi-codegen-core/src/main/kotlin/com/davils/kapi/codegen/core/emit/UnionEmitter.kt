@@ -41,6 +41,7 @@ internal class UnionEmitter(private val types: TypeNames, private val visibility
     private fun union(plan: ModelPlan.UnionPlan): TypeSpec {
         val builder = TypeSpec.interfaceBuilder(plan.name)
         builder.addModifiers(visibility, KModifier.SEALED)
+        Docs.on(builder, plan.description)
         builder.addAnnotation(Annotations.serializedWith(types.model(plan.name + SUFFIX)))
         builder.addAnnotation(Annotations.generated(plan.origin))
         builder.addSuperinterface(Kotlin.validatable)

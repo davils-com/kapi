@@ -42,6 +42,8 @@ private const val STATUS: String = "Status: {type: string, enum: [open, closed]}
 
 private const val STRING: String = "a: {type: string}"
 
+private const val LINE: String = "\n"
+
 private const val TEXT: String = "public val a: String? = null"
 
 private const val ANY: String = "public val a: JsonElement? = null"
@@ -272,6 +274,28 @@ class ModelPlannerTest : FunSpec({
             kotlin shouldContain "internal val a: String? = null"
             kotlin shouldContain "internal value class PetstorePetB("
             kotlin shouldNotContain "public "
+        }
+    }
+
+    context("the KDoc") {
+        test("describes a model, its properties and an enum with their title and description") {
+            val lines = listOf(
+                "Pet: {title: Pet, description: 'A pet */ /*', type: object, properties: " +
+                    """{a: {type: string, description: 'The @name'}, b: {description: "Kind \u202E", enum: [x]}}}""",
+            )
+
+            val model = listOf("/**", " * Pet", " *", " * A pet *&#47; &#47;*", " */")
+            val property = listOf("    /**", "     * The &#64;name", "     */")
+
+            kotlinOf(lines) shouldContain model.joinToString(LINE)
+            kotlinOf(lines) shouldContain property.joinToString(LINE)
+            kotlinOf(lines, "PetstorePetB") shouldContain """ * Kind \u202e"""
+        }
+
+        test("is left out where the schema describes nothing, so only copy has one") {
+            val kotlin = kotlinOf(pet(STRING))
+
+            kotlin.split("/**").size shouldBe 2
         }
     }
 

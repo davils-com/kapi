@@ -21,10 +21,15 @@ info:
 components:
   schemas:
     Pet:
+      title: A pet
+      description: |-
+        A pet of the store, with its owner.
+        Its name is written in lower case.
       type: object
       required: [id, name, status]
       properties:
         id:
+          description: The id the store gave the pet.
           type: integer
           format: int64
           minimum: 1
@@ -73,12 +78,14 @@ components:
           type: string
           enum: [a, b-c]
     Status:
+      description: Whether the pet can still be sold.
       type: string
       enum: [available, sold-out]
     Level:
       type: integer
       enum: [1, -2]
     Animal:
+      description: A cat or a dog, told apart by their kind.
       oneOf:
         - $ref: '#/components/schemas/Cat'
         - $ref: '#/components/schemas/Dog'

@@ -81,6 +81,9 @@ import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.davils.kore.core.validation.Validatable
 import kotlinx.serialization.Serializable
 
+/**
+ * A cat or a dog, told apart by their kind.
+ */
 @Serializable(with = PetstoreAnimalSerializer::class)
 @DavilsGenerated(
     by = "kapi",
@@ -409,12 +412,21 @@ import kotlinx.serialization.Serializable
 
 private val NAME_PATTERN: Pattern = Pattern.compileOrThrow("^[a-z]+${'$'}")
 
+/**
+ * A pet
+ *
+ * A pet of the store, with its owner.
+ * Its name is written in lower case.
+ */
 @Serializable
 @DavilsGenerated(
     by = "kapi",
     from = "models.yaml#/components/schemas/Pet",
 )
 public class PetstorePet(
+    /**
+     * The id the store gave the pet.
+     */
     @SerialName("id")
     public val id: Long,
     @SerialName("name")
@@ -580,6 +592,9 @@ import kotlin.collections.List
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.Serializable
 
+/**
+ * Whether the pet can still be sold.
+ */
 @Serializable
 @JvmInline
 @DavilsGenerated(

@@ -112,6 +112,8 @@ internal class OperationPlanner(
             origin = operation.location,
             isDelivery = site.isDelivery,
             upgrade = upgrade,
+            summary = operation.summary,
+            description = operation.description,
         )
     }
 

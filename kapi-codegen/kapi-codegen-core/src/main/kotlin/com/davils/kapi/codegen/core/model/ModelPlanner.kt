@@ -87,6 +87,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
             origin = scope.originOf(definition),
             properties = properties,
             dependencies = dependencies,
+            description = SchemaKinds.describe(definition),
         )
     }
 
@@ -131,6 +132,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
             isOptional = isOptional,
             isSensitive = flag(schema, isSensitive = true),
             access = accessOf(schema),
+            description = (schema as? SchemaDefinition)?.let(SchemaKinds::describe),
         )
     }
 

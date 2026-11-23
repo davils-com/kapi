@@ -68,3 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   private `Pattern` of its file and checks it with `Constraints.matches`, never a `Regex` of the platform, and a
   pattern the engine refuses is refused at generation with a located `codegen.schema.unsupported`; the samples of
   mocks match patterns with the engine as well.
+- **Generated KDoc** describes models, their properties, enums and unions with the `title` and `description` of their
+  schemas and the functions of operations in clients, senders and services with their `summary` and `description`,
+  escaped for KDoc: no `*/` or `/*`, no tags, invisible and bidirectional characters as escapes.

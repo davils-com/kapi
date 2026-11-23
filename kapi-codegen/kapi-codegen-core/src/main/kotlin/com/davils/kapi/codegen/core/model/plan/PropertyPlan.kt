@@ -24,4 +24,5 @@ internal data class PropertyPlan(
     val isSensitive: Boolean,
     val access: PropertyAccess = PropertyAccess.Both,
     val isPatch: Boolean = false,
+    val description: String? = null,
 )

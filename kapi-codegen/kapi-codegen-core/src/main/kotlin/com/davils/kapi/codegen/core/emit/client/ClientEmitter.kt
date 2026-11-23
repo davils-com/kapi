@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.emit.Annotations
 import com.davils.kapi.codegen.core.emit.Conditionals
+import com.davils.kapi.codegen.core.emit.Docs
 import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
@@ -117,6 +118,7 @@ internal class ClientEmitter(
         val result = resultOf(operation)
         val function = FunSpec.builder(operation.name)
         function.addModifiers(visibility, KModifier.SUSPEND)
+        Docs.on(function, operation.summary, operation.description)
         if (operation.isDelivery) function.addParameter(CallCode.DESTINATION, STRING)
         signatures.taken(operation).forEach { (name, type) ->
             function.addParameter(signatures.parameter(name, type))

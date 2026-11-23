@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Docs
 import com.davils.kapi.codegen.core.emit.Kotlin
 import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
@@ -111,6 +112,7 @@ internal class ServerEmitter(
             val function = FunSpec.builder(operation.name)
             function.addModifiers(listOf(KModifier.PUBLIC).filter { open -> open == visibility })
             function.addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
+            Docs.on(function, operation.summary, operation.description)
             function.addParameters(signatures.parameters(operation))
             function.returns(responseOf(operation))
             builder.addFunction(function.build())

@@ -761,6 +761,11 @@ public class PetstorePetsClient(
         }
     }
 
+    /**
+     * Lists the pets.
+     *
+     * Lists the pets of the store, filtered by status and tag.
+     */
     public suspend fun listPets(
         status: PetstoreStatus? = null,
         tag: List<String>? = null,
@@ -2154,6 +2159,11 @@ public interface PetstorePetsService {
 
     public suspend fun getPet(petId: Long): PetstoreGetPetResponse
 
+    /**
+     * Lists the pets.
+     *
+     * Lists the pets of the store, filtered by status and tag.
+     */
     public suspend fun listPets(
         status: PetstoreStatus?,
         tag: List<String>?,

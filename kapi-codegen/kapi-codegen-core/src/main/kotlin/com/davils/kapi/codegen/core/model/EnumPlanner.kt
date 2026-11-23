@@ -50,6 +50,7 @@ internal class EnumPlanner(private val scope: PlanScope) {
             origin = scope.originOf(definition),
             base = baseOf(definition, isNumbered),
             entries = entries(definition, literals, isNumbered),
+            description = SchemaKinds.describe(definition),
         )
     }
 

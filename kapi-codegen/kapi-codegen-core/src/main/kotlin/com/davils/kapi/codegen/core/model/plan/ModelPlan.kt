@@ -21,12 +21,15 @@ internal sealed interface ModelPlan {
 
     val origin: String
 
+    val description: String?
+
     data class ObjectPlan(
         override val name: String,
         override val origin: String,
         val properties: List<PropertyPlan>,
         val dependencies: List<DependencyPlan> = emptyList(),
         val unions: List<String> = emptyList(),
+        override val description: String? = null,
     ) : ModelPlan
 
     data class EnumPlan(
@@ -34,6 +37,7 @@ internal sealed interface ModelPlan {
         override val origin: String,
         val base: ScalarKind,
         val entries: List<EnumEntryPlan>,
+        override val description: String? = null,
     ) : ModelPlan
 
     data class UnionPlan(
@@ -42,5 +46,6 @@ internal sealed interface ModelPlan {
         val discriminator: String?,
         val members: List<UnionMemberPlan>,
         val isExclusive: Boolean,
+        override val description: String? = null,
     ) : ModelPlan
 }

@@ -36,6 +36,7 @@ internal class UnionPlanner(private val scope: PlanScope, private val compositio
             discriminator = definition.discriminator?.propertyName,
             members = members(definition, shapes.toMap()),
             isExclusive = definition.oneOf.isNotEmpty(),
+            description = SchemaKinds.describe(definition),
         )
     }
 

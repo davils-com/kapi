@@ -17,6 +17,9 @@ import kotlinx.serialization.Serializable
 
 private val IT_PATTERN: Pattern = Pattern.compileOrThrow("\\${'$'}\\{pwned\\}|\"\"\"")
 
+/**
+ * *&#47; fun pwned() {} &#47;*
+ */
 @Serializable
 @DavilsGenerated(
     by = "kapi",
@@ -198,6 +201,11 @@ public class PetstoreObjectClient(
         200 to ::classOk,
     )
 
+    /**
+     * *&#47; val pwned = 1 &#47;*
+     *
+     * """ ${pwned} \u0041 \u2066
+     */
     public suspend fun `class`(
         id: String,
         xValPwned: String? = null,
@@ -488,6 +496,11 @@ import kotlin.String
     from = "hostile.yaml",
 )
 public interface PetstoreObjectService {
+    /**
+     * *&#47; val pwned = 1 &#47;*
+     *
+     * """ ${pwned} \u0041 \u2066
+     */
     public suspend fun `class`(
         id: String,
         xValPwned: String?,
