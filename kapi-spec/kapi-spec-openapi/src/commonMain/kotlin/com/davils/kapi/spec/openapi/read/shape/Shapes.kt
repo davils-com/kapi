@@ -71,6 +71,7 @@ internal object Shapes {
         fields = listOf(
             FieldRule(Keys.URL, FieldKind.Text, isRequired = true),
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
+            FieldRule(Keys.NAME, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.VARIABLES, FieldKind.Mapping),
         ),
     )
@@ -218,7 +219,8 @@ internal object Shapes {
     val response: ObjectShape = ObjectShape(
         subject = "A response",
         fields = listOf(
-            FieldRule(Keys.DESCRIPTION, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.SUMMARY, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.DESCRIPTION, FieldKind.Text, isRequired = true, optionalSince = VersionFamily.V32),
             FieldRule(Keys.HEADERS, FieldKind.Mapping),
             FieldRule(Keys.CONTENT, FieldKind.Mapping),
             FieldRule(Keys.LINKS, FieldKind.Mapping),

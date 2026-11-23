@@ -23,6 +23,12 @@ internal class FieldRule(
     val kind: FieldKind,
     val isRequired: Boolean = false,
     val since: VersionFamily = VersionFamily.V30,
+    val optionalSince: VersionFamily? = null,
 ) {
     fun isIn(family: VersionFamily): Boolean = family.isAtLeast(since)
+
+    fun isRequiredIn(family: VersionFamily): Boolean {
+        val isOptional = optionalSince?.let(family::isAtLeast) == true
+        return isRequired && !isOptional
+    }
 }

@@ -27,6 +27,13 @@ public class ServerBuilder internal constructor() : ElementBuilder<Server>() {
 
     public var description: String? = null
 
+    /**
+     * A short name of the server, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var name: String? = null
+
     internal val variables: MutableMap<String, ServerVariable> = linkedMapOf()
 
     override fun assemble(): Server = Server(this)

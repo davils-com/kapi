@@ -22,7 +22,20 @@ import com.davils.kapi.spec.openapi.model.parameter.Header
 
 public class Response internal constructor(builder: ResponseBuilder) :
     Element(builder) {
-    public val description: String = builder.description
+    /**
+     * A short summary of the response; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val summary: String? = builder.summary
+
+    /**
+     * The description of the response; `null` when the document leaves it out, which OpenAPI allows from 3.2 on and
+     * a reading of an older document reports.
+     *
+     * @since 1.0.0
+     */
+    public val description: String? = builder.description
 
     public val headers: Map<String, Referable<Header>> = builder.headers.toMap()
 
@@ -30,5 +43,5 @@ public class Response internal constructor(builder: ResponseBuilder) :
 
     public val links: Map<String, Referable<Link>> = builder.links.toMap()
 
-    override val identity: List<Any?> get() = listOf(description, headers, content, links)
+    override val identity: List<Any?> get() = listOf(summary, description, headers, content, links)
 }

@@ -64,6 +64,7 @@ internal class InfoWriter(family: VersionFamily) {
         val out = Out()
         out.text(Keys.URL, server.url)
         out.text(Keys.DESCRIPTION, server.description)
+        out.text(Keys.NAME, server.name?.takeIf { isCurrent })
         out.map(Keys.VARIABLES, server.variables, ::variable)
         return out.build(server)
     }

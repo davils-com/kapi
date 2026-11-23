@@ -23,7 +23,14 @@ public class Server internal constructor(builder: ServerBuilder) : Element(build
 
     public val description: String? = builder.description
 
+    /**
+     * A short name of the server, such as `production`; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val name: String? = builder.name
+
     public val variables: Map<String, ServerVariable> = builder.variables.toMap()
 
-    override val identity: List<Any?> get() = listOf(url, description, variables)
+    override val identity: List<Any?> get() = listOf(url, description, name, variables)
 }

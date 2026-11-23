@@ -25,7 +25,19 @@ import com.davils.kore.core.annotation.DavilsDsl
 public class ResponseBuilder internal constructor() : ElementBuilder<Response>() {
     override val subject: String get() = "openapi response"
 
-    public var description: String = ""
+    /**
+     * A short summary of the response, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var summary: String? = null
+
+    /**
+     * The description of the response, which OpenAPI requires before 3.2.
+     *
+     * @since 1.0.0
+     */
+    public var description: String? = null
 
     internal val headers: MutableMap<String, Referable<Header>> = linkedMapOf()
 

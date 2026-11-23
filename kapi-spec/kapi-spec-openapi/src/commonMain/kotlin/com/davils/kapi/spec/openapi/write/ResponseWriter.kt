@@ -40,6 +40,7 @@ internal class ResponseWriter(
 
     fun response(response: Response): YamlNode {
         val out = Out()
+        out.text(Keys.SUMMARY, response.summary?.takeIf { isCurrent })
         out.text(Keys.DESCRIPTION, response.description)
         out.map(Keys.HEADERS, response.headers, ReferenceWriter.referables(content::header))
         out.map(Keys.CONTENT, response.content, ReferenceWriter.referables(content::mediaType))
