@@ -21,7 +21,7 @@ import com.davils.kapi.spec.openapi.fixture.Resources
 import com.davils.kapi.spec.openapi.fixture.head31
 import com.davils.kapi.spec.openapi.fixture.petstoreUri
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kapi.spec.openapi.testing.Corpus
+import com.davils.kapi.spec.testing.Corpus
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -59,14 +59,14 @@ private suspend fun rewritten(source: Source.Text): Pair<Document, Document> {
 class WritingTest : FunSpec({
     context("a written document") {
         test("starts with its version") {
-            val document = documentOf(Corpus.source("petstore"))
+            val document = documentOf(Corpus.openApi("petstore"))
 
             OpenApi.write(document) shouldStartWith "openapi: 3.1.0"
         }
 
         test("reads back as the document it was written from, for every document of the corpus") {
-            Corpus.names.forEach { name ->
-                val (first, second) = rewritten(Corpus.source(name))
+            Corpus.openApiNames.forEach { name ->
+                val (first, second) = rewritten(Corpus.openApi(name))
 
                 val differing = name.takeIf { second != first }
 
@@ -85,7 +85,7 @@ class WritingTest : FunSpec({
         }
 
         test("keeps every field of OpenAPI 3.2 and reads back as the document it was written from") {
-            val (first, second) = rewritten(Corpus.source("openapi-32"))
+            val (first, second) = rewritten(Corpus.openApi("openapi-32"))
             val written = OpenApi.write(first)
             val fields = listOf(
                 "\$self:",

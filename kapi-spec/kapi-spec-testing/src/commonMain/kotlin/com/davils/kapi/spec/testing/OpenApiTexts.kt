@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.testing
+package com.davils.kapi.spec.testing
 
 private val additionalProperties: String = """# A schema that names some of its properties and admits others.
 #
@@ -3451,7 +3451,7 @@ components:
       deprecated: true
 """
 
-internal val corpusTexts: Map<String, String> = mapOf(
+internal val openApiTexts: Map<String, String> = mapOf(
     "additional-properties" to additionalProperties,
     "callbacks-and-webhooks" to callbacksAndWebhooks,
     "content-negotiation-request" to contentNegotiationRequest,

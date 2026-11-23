@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.testing
+package com.davils.kapi.spec.testing
 
 private const val LINE_END: String = "\n"
 
@@ -22,8 +22,21 @@ private const val WIDTH: Int = 9
 
 private val head: List<String> = listOf("openapi: 3.1.0", "info:", "  title: Hostile", "  version: 1.0.0", "paths: {}")
 
-internal object HostileDocuments {
-    fun aliasBomb(levels: Int): String {
+/**
+ * OpenAPI documents built to probe the limits of a reader: alias bombs, deep nesting, many unknown fields and long
+ * chains of references, each sized by the caller.
+ *
+ * @since 1.0.0
+ */
+public object HostileDocuments {
+    /**
+     * Returns a document whose aliases expand to nine to the power of [levels] nodes.
+     *
+     * @param levels the levels of aliases.
+     * @return the YAML text.
+     * @since 1.0.0
+     */
+    public fun aliasBomb(levels: Int): String {
         val first = "x-level0: &level0 [${List(WIDTH) { "boom" }.joinToString()}]"
         val next = (1..levels).map { level ->
             val previous = "*level${level - 1}"
@@ -32,11 +45,32 @@ internal object HostileDocuments {
         return document(listOf(first) + next)
     }
 
-    fun deepNesting(depth: Int): String = document(listOf("x-deep: " + "[".repeat(depth) + "]".repeat(depth)))
+    /**
+     * Returns a document with an extension of sequences nested [depth] deep.
+     *
+     * @param depth the depth of the nesting.
+     * @return the YAML text.
+     * @since 1.0.0
+     */
+    public fun deepNesting(depth: Int): String = document(listOf("x-deep: " + "[".repeat(depth) + "]".repeat(depth)))
 
-    fun unknownFields(count: Int): String = document((1..count).map { index -> "unknown$index: $index" })
+    /**
+     * Returns a document with [count] fields the specification does not know.
+     *
+     * @param count the number of fields.
+     * @return the YAML text.
+     * @since 1.0.0
+     */
+    public fun unknownFields(count: Int): String = document((1..count).map { index -> "unknown$index: $index" })
 
-    fun referenceChain(length: Int): String {
+    /**
+     * Returns a document with a chain of [length] responses that each refer to the next.
+     *
+     * @param length the length of the chain.
+     * @return the YAML text.
+     * @since 1.0.0
+     */
+    public fun referenceChain(length: Int): String {
         val links = (1..length).map { index -> "    R$index: {\$ref: '#/components/responses/R${index + 1}'}" }
         val end = "    R${length + 1}: {description: The end}"
         return document(listOf("components:", "  responses:") + links + end)

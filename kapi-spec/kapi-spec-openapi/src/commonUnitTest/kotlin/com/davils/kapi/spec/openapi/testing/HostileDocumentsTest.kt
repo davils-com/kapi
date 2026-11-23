@@ -27,6 +27,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import com.davils.kapi.spec.testing.HostileDocuments
+import com.davils.kapi.spec.testing.Corpus
 
 private const val BOMB_LEVELS: Int = 12
 
@@ -77,8 +79,8 @@ class HostileDocumentsTest : FunSpec({
             val text = HostileDocuments.unknownFields(LONG)
 
             reading(text) shouldBe reading(text)
-            Corpus.names.forEach { name ->
-                val source = Corpus.source(name)
+            Corpus.openApiNames.forEach { name ->
+                val source = Corpus.openApi(name)
                 val reader = OpenApi.reader()
 
                 reader.read(source) shouldBe reader.read(source)

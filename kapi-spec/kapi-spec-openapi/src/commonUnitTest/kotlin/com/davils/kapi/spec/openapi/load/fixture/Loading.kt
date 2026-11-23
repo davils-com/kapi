@@ -27,7 +27,7 @@ import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.configuration
 import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.openapi.load.loaderOf
-import com.davils.kapi.spec.openapi.testing.MemoryResolver
+import com.davils.kapi.spec.testing.MemoryResolver
 import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kore.core.annotation.DavilsInternal
 

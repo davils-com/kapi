@@ -24,7 +24,7 @@ import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.core.source.Source
-import com.davils.kapi.codegen.core.fixture.MemoryResolver
+import com.davils.kapi.spec.testing.MemoryResolver
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.Generator
 import com.davils.kapi.codegen.core.Codegen

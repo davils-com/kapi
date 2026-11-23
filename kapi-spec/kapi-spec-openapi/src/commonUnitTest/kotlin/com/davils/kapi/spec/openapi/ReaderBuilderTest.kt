@@ -24,7 +24,7 @@ import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.core.policy.ReferencePolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.openapi.StructureCheck
-import com.davils.kapi.spec.openapi.testing.MemoryResolver
+import com.davils.kapi.spec.testing.MemoryResolver
 import com.davils.kore.core.validation.report.ValidationException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec

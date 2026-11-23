@@ -92,6 +92,7 @@ kreate {
                 ":kapi-spec:kapi-spec-schema",
                 ":kapi-spec:kapi-spec-openapi",
                 ":kapi-spec:kapi-spec-asyncapi",
+                ":kapi-spec:kapi-spec-testing",
                 ":kapi-runtime:kapi-runtime-core",
                 ":kapi-runtime:kapi-runtime-client",
                 ":kapi-runtime:kapi-runtime-server",

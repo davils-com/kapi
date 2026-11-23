@@ -23,7 +23,7 @@ import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.ReaderBuilder
 import com.davils.kapi.spec.openapi.Reading
-import com.davils.kapi.spec.openapi.testing.MemoryResolver
+import com.davils.kapi.spec.testing.MemoryResolver
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.matchers.types.shouldBeInstanceOf
 

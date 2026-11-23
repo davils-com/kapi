@@ -32,3 +32,7 @@ dependencies {
     implementation(libs.kotlinpoet)
     implementation(libs.kotlinx.serialization.json)
 }
+
+configurations.matching { configuration -> configuration.name == "unitTestImplementation" }.configureEach {
+    dependencies.add(project.dependencies.project(":kapi-spec:kapi-spec-testing"))
+}

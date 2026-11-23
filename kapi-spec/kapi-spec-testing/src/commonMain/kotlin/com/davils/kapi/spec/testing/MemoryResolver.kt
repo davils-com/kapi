@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.testing
+package com.davils.kapi.spec.testing
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Resolver
 import kotlinx.io.bytestring.encodeToByteString
 
-internal class MemoryResolver(
+/**
+ * A resolver of documents held in memory, for tests: it answers with the text of a document, with a chosen answer, or
+ * with [Resolution.Missing], and records which documents were requested.
+ *
+ * It is not safe to share between threads, because it records the requests.
+ *
+ * @param documents the documents by their URI.
+ * @param answers the answers for URIs that are no document, such as a refusal.
+ * @since 1.0.0
+ */
+public class MemoryResolver(
     documents: Map<DocumentUri, String>,
     answers: Map<DocumentUri, Resolution> = emptyMap(),
 ) : Resolver {
@@ -31,7 +41,12 @@ internal class MemoryResolver(
 
     private val asked: MutableList<DocumentUri> = mutableListOf()
 
-    val requested: List<DocumentUri> get() = asked.toList()
+    /**
+     * The URIs that were requested, in order.
+     *
+     * @since 1.0.0
+     */
+    public val requested: List<DocumentUri> get() = asked.toList()
 
     override suspend fun resolve(uri: DocumentUri): Resolution {
         asked += uri

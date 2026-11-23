@@ -24,6 +24,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import com.davils.kapi.spec.testing.Corpus
 
 private const val UNDECLARED_LINK: String = "response-links"
 
@@ -35,8 +36,8 @@ class CorpusTest : FunSpec({
     context("the corpus") {
         test("is read without a finding, but for two documents that break a rule on purpose") {
             val reader = OpenApi.reader()
-            val findings = Corpus.names.associateWith { name ->
-                val reading = reader.read(Corpus.source(name))
+            val findings = Corpus.openApiNames.associateWith { name ->
+                val reading = reader.read(Corpus.openApi(name))
                 reading.diagnostics.map(Diagnostic::toString)
             }
 
@@ -50,17 +51,17 @@ class CorpusTest : FunSpec({
         }
 
         test("names every document once and places it under its own scheme") {
-            val petstore = Corpus.source("petstore")
+            val petstore = Corpus.openApi("petstore")
 
-            Corpus.names.shouldNotContainDuplicates()
+            Corpus.openApiNames.shouldNotContainDuplicates()
             petstore.uri shouldBe DocumentUri("corpus:/petstore.yaml")
             petstore.text shouldContain "openapi: 3.1.0"
         }
 
         test("refuses to hand out a document it does not hold") {
-            val failure = shouldThrow<IllegalArgumentException> { Corpus.text("missing") }
+            val failure = shouldThrow<IllegalArgumentException> { Corpus.openApiText("missing") }
 
-            failure.message shouldContain "holds no document named missing"
+            failure.message shouldContain "holds no OpenAPI document named missing"
         }
     }
 })

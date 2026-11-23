@@ -30,7 +30,7 @@ import com.davils.kapi.spec.openapi.fixture.petstoreUri
 import com.davils.kapi.spec.openapi.fixture.yamlOf
 import com.davils.kapi.spec.openapi.overlay.fixture.overlayHead
 import com.davils.kapi.spec.openapi.overlay.fixture.overlayUri
-import com.davils.kapi.spec.openapi.testing.MemoryResolver
+import com.davils.kapi.spec.testing.MemoryResolver
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
