@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.gradle
 
 import org.gradle.api.provider.Property

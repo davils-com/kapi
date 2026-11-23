@@ -29,3 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The launch contract** of the generator for the Gradle plugin: a run reads an OpenAPI or an AsyncAPI document,
   chosen by `LaunchKind`, through a resolver confined to its root, and `Launcher.lint` audits a document exactly as a
   generation does but writes only the JSON report and the SARIF log, with the outcome `Audited`.
+- **The Gradle plugin** `com.davils.kapi` (`kapi-codegen-gradle`): `kapi { openApi("petstore") { } }` and
+  `asyncApi("chat") { }` register `kapiGenerate<Name>`, which generates in a process-isolated worker into
+  `commonMain` and `jvmMain` of a multiplatform project or `main` of a JVM project and adds the runtimes, and
+  `kapiLint<Name>`, which audits without writing code; `kapiLint` and `kapiCheck`, which `check` runs, aggregate
+  them. Both tasks are cacheable and relocatable, write a JSON report and a SARIF log, and fail on every error, every
+  unacknowledged warning and every acknowledgement without a reason or a matching warning. `generatorClasspath` and
+  `runtimes { enabled = false }` let a build bring its own generator and runtimes.
