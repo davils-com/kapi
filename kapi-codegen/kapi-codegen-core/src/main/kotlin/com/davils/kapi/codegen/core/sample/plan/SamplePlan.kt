@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample.plan
 
 internal data class SamplePlan(val model: String, val name: String, val value: SampleValue)

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.mock
 
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
-import com.davils.kapi.codegen.core.emit.client.SignatureCode
 import com.davils.kapi.codegen.core.emit.server.ServerNames
+import com.davils.kapi.codegen.core.emit.server.ServerSignature
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.options.Visibility
@@ -38,7 +38,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-private const val INDENT: String = "    "
 private const val MOCK_SUFFIX: String = "MockService"
 private const val SAMPLES_SUFFIX: String = "Samples"
 
@@ -68,7 +67,7 @@ internal class MockEmitter(
         options.typePrefix + options.apiName + SAMPLES_SUFFIX,
     )
 
-    private val signatures: SignatureCode = SignatureCode(types)
+    private val signatures: ServerSignature = ServerSignature(types)
 
     private val own: SampleCode = SampleCode(types) { model -> CodeBlock.of("%N", samples.nameOf(model)) }
 
@@ -115,8 +114,7 @@ internal class MockEmitter(
         val variant = CodeBlock.of("%T", response.nestedClass(answer.response.name))
         val function = FunSpec.builder(operation.name)
         function.addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
-        val taken = signatures.taken(operation)
-        taken.forEach { (name, type) -> function.addParameter(name, types.of(type)) }
+        function.addParameters(signatures.parameters(operation))
         function.returns(response)
         function.addStatement("return %L", answered(variant, answer))
         return function.build()
@@ -128,13 +126,12 @@ internal class MockEmitter(
     }
 
     private fun file(name: String, type: TypeSpec): GeneratedFile {
-        val file = FileSpec.builder(testingPackage, name)
-        file.indent(INDENT)
+        val file = FileSpec.builder(packageName = testingPackage, fileName = name)
         file.addType(type)
         return GeneratedFile(
-            path = testingPackage.replace('.', '/') + "/" + name + ".kt",
+            path = testingPackage.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,
-            content = file.build().toString(),
+            content = Sources.of(file),
             platform = GeneratedPlatform.Jvm,
         )
     }

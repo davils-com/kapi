@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 internal class SampleComponents(private val edges: Map<String, List<String>>) {
@@ -28,7 +27,7 @@ internal class SampleComponents(private val edges: Map<String, List<String>>) {
 
     private fun reversed(): Map<String, List<String>> {
         val pairs = edges.flatMap { (from, targets) -> targets.map { target -> target to from } }
-        return pairs.groupBy({ (target, _) -> target }, { (_, from) -> from })
+        return pairs.groupBy(keySelector = { (target, _) -> target }, valueTransform = { (_, from) -> from })
     }
 
     private fun spread(root: String, reversed: Map<String, List<String>>, component: MutableMap<String, Int>) {

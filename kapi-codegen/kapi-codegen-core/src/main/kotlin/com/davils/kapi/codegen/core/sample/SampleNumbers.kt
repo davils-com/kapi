@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
+import com.davils.kapi.codegen.core.model.toBigDecimal
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
 import java.math.BigDecimal
 import java.math.RoundingMode
-import com.davils.kapi.codegen.core.model.toBigDecimal
 
 private val two: BigDecimal = BigDecimal(2)
 

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.pipeline
 
-import com.davils.kore.core.validation.violation.Severity
-import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kore.core.validation.violation.Severity
+import com.davils.kore.core.validation.violation.ViolationCode
 
 private const val NOWHERE: Int = -1
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
@@ -24,7 +23,9 @@ internal class SampleEnums(models: List<ModelPlan>) {
     private val enums: List<ModelPlan.EnumPlan> = models.filterIsInstance<ModelPlan.EnumPlan>()
 
     private val literals: Map<String, Map<String, SampleValue>> = enums.associate { plan ->
-        plan.name to plan.entries.associate { entry -> entry.literal to SampleValue.Entry(plan.name, entry.name) }
+        plan.name to plan.entries.associate { entry ->
+            entry.literal to SampleValue.Entry(type = plan.name, name = entry.name)
+        }
     }
 
     fun entriesOf(name: String): Map<String, SampleValue> = literals[name].orEmpty()

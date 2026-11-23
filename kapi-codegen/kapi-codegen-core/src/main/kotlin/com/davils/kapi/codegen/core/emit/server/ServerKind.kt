@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.server
 
 internal enum class ServerKind(val packageName: String, val service: String) {

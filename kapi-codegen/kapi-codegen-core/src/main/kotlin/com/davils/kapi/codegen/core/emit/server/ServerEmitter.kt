@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.server
 
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.GeneratedFileKind
 import com.davils.kapi.codegen.core.GeneratedPlatform
 import com.davils.kapi.codegen.core.emit.Annotations
+import com.davils.kapi.codegen.core.emit.Kotlin
+import com.davils.kapi.codegen.core.emit.Sources
 import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.emit.client.SerializerCode
-import com.davils.kapi.codegen.core.emit.client.SignatureCode
+import com.davils.kapi.codegen.core.operation.plan.BodyKind
+import com.davils.kapi.codegen.core.operation.plan.FieldKind
+import com.davils.kapi.codegen.core.operation.plan.FieldPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
 import com.davils.kapi.codegen.core.options.GeneratorOptions
@@ -33,17 +36,22 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STRING
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
-private const val INDENT: String = "    "
-
 private const val SERVICE: String = "service"
 
-private const val SERVER: String = "server"
+private const val OPERATIONS: String = "operations"
 
 private const val ROUTES_SUFFIX: String = "Routes"
+
+private const val FORM_SUFFIX: String = "Form"
 
 private val modifiers: Map<Visibility, KModifier> = mapOf(
     Visibility.Public to KModifier.PUBLIC,
@@ -53,6 +61,7 @@ private val modifiers: Map<Visibility, KModifier> = mapOf(
 internal class ServerEmitter(
     options: GeneratorOptions,
     private val origin: String,
+    fields: Map<String, List<String>>,
     private val kind: ServerKind = ServerKind.Server,
 ) {
     private val serverPackage: String = options.packageName + "." + kind.packageName
@@ -65,33 +74,29 @@ internal class ServerEmitter(
 
     private val serializers: SerializerCode = SerializerCode(types)
 
-    private val signatures: SignatureCode = SignatureCode(types)
+    private val signatures: ServerSignature = ServerSignature(types)
 
     private val responses: ResponseEmitter = ResponseEmitter(types, visibility)
 
-    private val inputs: InputCode = InputCode(serializers)
+    private val inputs: InputCode = InputCode(serializers, fields)
 
     private val replies: ReplyCode = ReplyCode(serializers)
 
     fun emit(operations: List<OperationPlan>): List<GeneratedFile> {
         val groups = operations.groupBy(OperationPlan::group).toSortedMap()
         val services = groups.map { (group, members) ->
-            file(
-                serverPackage,
-                group + kind.service,
-                service(group, members),
-            )
+            file(packageName = serverPackage, name = group + kind.service, type = service(group, members))
         }
         val routes = groups.map { (group, members) ->
-            file(
-                serverPackage,
-                group + ROUTES_SUFFIX,
-                routes(group, members),
-            )
+            file(packageName = serverPackage, name = group + ROUTES_SUFFIX, type = routes(group, members))
         }
         val answers = operations.sortedBy(OperationPlan::result).map { operation ->
             val response = responseOf(operation)
-            file(operationPackage, response.simpleName, responses.type(operation, response, origin))
+            file(
+                packageName = operationPackage,
+                name = response.simpleName,
+                type = responses.type(operation, response, origin),
+            )
         }
         return (routes + services).sortedBy(GeneratedFile::path) + answers
     }
@@ -106,9 +111,7 @@ internal class ServerEmitter(
             val function = FunSpec.builder(operation.name)
             function.addModifiers(listOf(KModifier.PUBLIC).filter { open -> open == visibility })
             function.addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
-            signatures.taken(operation).forEach { (name, type) ->
-                function.addParameter(signatures.parameter(name, type))
-            }
+            function.addParameters(signatures.parameters(operation))
             function.returns(responseOf(operation))
             builder.addFunction(function.build())
         }
@@ -116,42 +119,54 @@ internal class ServerEmitter(
     }
 
     private fun routes(group: String, operations: List<OperationPlan>): TypeSpec {
+        val name = group + ROUTES_SUFFIX
         val service = ClassName(serverPackage, group + kind.service)
+        val self = ClassName(serverPackage, name)
         val sorted = operations.sortedBy(OperationPlan::name)
         val constructor = FunSpec.constructorBuilder()
         constructor.addParameter(SERVICE, service)
-        constructor.addParameter(SERVER, ServerTypes.server)
-        val builder = TypeSpec.classBuilder(group + ROUTES_SUFFIX)
+        val builder = TypeSpec.classBuilder(name)
         builder.addModifiers(visibility)
         builder.addAnnotation(Annotations.generated(origin))
+        builder.addSuperinterface(ServerTypes.routes)
         builder.primaryConstructor(constructor.build())
-        builder.addProperty(held(SERVICE, service))
-        builder.addProperty(held(SERVER, ServerTypes.server))
-        builder.addFunction(install(sorted))
-        sorted.forEach { operation -> builder.addFunction(handler(operation)) }
+        builder.addProperty(held(service))
+        builder.addProperty(operations(sorted))
+        sorted.forEach { operation ->
+            val form = formOf(self, operation)
+            builder.addFunction(handler(operation, form))
+            if (form != null) builder.addType(form(form, operation))
+        }
         return builder.build()
     }
 
-    private fun held(name: String, type: ClassName): PropertySpec {
-        val property = PropertySpec.builder(name, type, KModifier.PRIVATE)
-        property.initializer("%N", name)
+    private fun held(type: ClassName): PropertySpec {
+        val property = PropertySpec.builder(SERVICE, type, KModifier.PRIVATE)
+        property.initializer("%N", SERVICE)
         return property.build()
     }
 
-    private fun install(operations: List<OperationPlan>): FunSpec {
-        val function = FunSpec.builder("install")
-        function.addModifiers(visibility)
-        function.addParameter("route", ServerTypes.route)
-        operations.forEach { operation ->
-            function.addCode("route.%M(server, %T(\n⇥", ServerTypes.bind, ServerTypes.operation)
-            function.addCode("name = %S,\n", operation.name)
-            function.addCode("method = %S,\n", operation.method)
-            function.addCode("path = %S,\n", operation.path)
-            function.addCode("security = listOf(%L),\n", operation.security.map(::alternative).joinToCode(", "))
-            if (operation.isDelivery) function.addCode("isDelivery = true,\n")
-            function.addCode("handler = ::%N,\n⇤))\n", operation.name)
-        }
-        return function.build()
+    private fun operations(operations: List<OperationPlan>): PropertySpec {
+        val code = CodeBlock.builder()
+        code.add("listOf(\n⇤")
+        operations.forEach { operation -> code.add("%L,\n", operation(operation)) }
+        code.add("⇤)⇥⇥")
+        val property = PropertySpec.builder(OPERATIONS, LIST.parameterizedBy(ServerTypes.operation))
+        property.addModifiers(KModifier.OVERRIDE)
+        property.initializer(code.build())
+        return property.build()
+    }
+
+    private fun operation(operation: OperationPlan): CodeBlock {
+        val code = CodeBlock.builder()
+        code.add("%T(\n⇥", ServerTypes.operation)
+        code.add("name = %S,\n", operation.name)
+        code.add("method = %S,\n", operation.method)
+        code.add("path = %S,\n", operation.path)
+        code.add("security = listOf(%L),\n", operation.security.map(::alternative).joinToCode(", "))
+        if (operation.isDelivery) code.add("isDelivery = true,\n")
+        code.add("handler = ::%N,\n⇤)", operation.name)
+        return code.build()
     }
 
     private fun alternative(uses: List<SecurityPlan>): CodeBlock =
@@ -168,25 +183,57 @@ internal class ServerEmitter(
         return CodeBlock.of("%T.%L(%S)", ServerTypes.source, plan.placement, name)
     }
 
-    private fun handler(operation: OperationPlan): FunSpec {
-        val names = signatures.taken(operation).map { (name, _) -> CodeBlock.of("%N = %N", name, name) }
+    private fun formOf(self: ClassName, operation: OperationPlan): ClassName? {
+        val isForm = operation.body?.kind == BodyKind.Form
+        return self.nestedClass(ServerNames.form(operation.name) + FORM_SUFFIX).takeIf { isForm }
+    }
+
+    private fun form(name: ClassName, operation: OperationPlan): TypeSpec {
+        val fields = operation.body?.fields.orEmpty()
+        val constructor = FunSpec.constructorBuilder()
+        fields.forEach { field -> constructor.addParameter(parameter(field)) }
+        val builder = TypeSpec.classBuilder(name)
+        builder.addModifiers(KModifier.PRIVATE)
+        builder.addAnnotation(Kotlin.serializable)
+        builder.primaryConstructor(constructor.build())
+        fields.forEach { field ->
+            val property = PropertySpec.builder(field.name, formType(field))
+            property.initializer("%N", field.name)
+            property.addAnnotation(Annotations.serialName(field.wireName))
+            builder.addProperty(property.build())
+        }
+        return builder.build()
+    }
+
+    private fun formType(field: FieldPlan): TypeName {
+        if (field.kind != FieldKind.Json) return types.of(field.type)
+        return STRING.copy(nullable = field.type.isNullable)
+    }
+
+    private fun parameter(field: FieldPlan): ParameterSpec {
+        val parameter = ParameterSpec.builder(field.name, formType(field))
+        if (field.type.isNullable) parameter.defaultValue("null")
+        return parameter.build()
+    }
+
+    private fun handler(operation: OperationPlan, form: ClassName?): FunSpec {
+        val reading = inputs.of(operation, form)
         val function = FunSpec.builder(operation.name)
         function.addModifiers(KModifier.PRIVATE, KModifier.SUSPEND)
         function.addParameter("request", ServerTypes.request)
         function.returns(ServerTypes.reply)
-        function.addCode(inputs.of(operation))
-        function.addCode(replies.of(operation, responseOf(operation), names.joinToCode(", ")))
+        function.addCode(reading.code)
+        function.addCode(replies.of(operation, responseOf(operation), reading.arguments))
         return function.build()
     }
 
     private fun file(packageName: String, name: String, type: TypeSpec): GeneratedFile {
-        val file = FileSpec.builder(packageName, name)
-        file.indent(INDENT)
+        val file = FileSpec.builder(packageName = packageName, fileName = name)
         file.addType(type)
         return GeneratedFile(
-            path = packageName.replace('.', '/') + "/" + name + ".kt",
+            path = packageName.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,
-            content = file.build().toString(),
+            content = Sources.of(file),
             platform = GeneratedPlatform.Jvm,
         )
     }

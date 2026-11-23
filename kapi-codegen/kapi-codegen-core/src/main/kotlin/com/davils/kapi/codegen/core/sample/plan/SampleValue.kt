@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample.plan
 
 import com.davils.kapi.codegen.core.model.plan.RulePlan
@@ -62,4 +61,6 @@ internal sealed interface SampleValue {
     }
 
     data class Built(val type: String, val arguments: Map<String, SampleValue>) : SampleValue
+
+    data class Stream(val values: List<SampleValue>) : SampleValue
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.mock
 
 import com.davils.kapi.codegen.core.emit.Kotlin
@@ -22,6 +21,7 @@ import com.davils.kapi.codegen.core.emit.TypeNames
 import com.davils.kapi.codegen.core.model.plan.ScalarKind
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.joinToCode
 import java.math.BigDecimal
 
@@ -32,6 +32,8 @@ private val literals: Map<ScalarKind, (BigDecimal) -> String> = mapOf(
     ScalarKind.Float to { value -> value.toFloat().toString() + "f" },
     ScalarKind.Double to { value -> value.toDouble().toString() },
 )
+
+private val flowOf: MemberName = MemberName(packageName = "kotlinx.coroutines.flow", simpleName = "flowOf")
 
 internal class SampleCode(private val types: TypeNames, private val reference: (String) -> CodeBlock) {
     fun of(value: SampleValue): CodeBlock = when (value) {
@@ -47,6 +49,7 @@ internal class SampleCode(private val types: TypeNames, private val reference: (
         is SampleValue.Items -> items(value)
         is SampleValue.Entries -> entries(value)
         is SampleValue.Built -> called(CodeBlock.of("%T", types.model(value.type)), value.arguments)
+        is SampleValue.Stream -> CodeBlock.of("%M(%L)", flowOf, value.values.map(::of).joinToCode(", "))
     }
 
     fun called(callee: CodeBlock, arguments: Map<String, SampleValue>): CodeBlock {

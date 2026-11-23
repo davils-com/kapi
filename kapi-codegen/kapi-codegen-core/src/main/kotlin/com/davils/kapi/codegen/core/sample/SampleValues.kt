@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.sample
 
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.model.plan.LimitKind
 import com.davils.kapi.codegen.core.model.plan.RulePlan
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.sample.plan.SampleSpan
 import com.davils.kapi.codegen.core.sample.plan.SampleValue
+import com.davils.kapi.spec.core.value.Value
 
 private const val KEY: String = "key"
 
@@ -56,14 +55,14 @@ internal class SampleValues(
     }
 
     private fun items(shape: TypeShape.Items, rules: List<RulePlan>, isHard: Boolean): SampleValue? {
-        val span = SampleSpan.of(rules, LimitKind.MinItems, LimitKind.MaxItems)
+        val span = SampleSpan.of(rules = rules, least = LimitKind.MinItems, most = LimitKind.MaxItems)
         val item = listOfNotNull(of(shape.item, isHard && span.least > 0))
         val sample = SampleValue.Items(item.flatMap { value -> List(amount(span)) { value } })
         return sample.takeIf { items -> items.meets(rules) }
     }
 
     private fun entries(shape: TypeShape.Entries, rules: List<RulePlan>, isHard: Boolean): SampleValue? {
-        val span = SampleSpan.of(rules, LimitKind.MinProperties, LimitKind.MaxProperties)
+        val span = SampleSpan.of(rules = rules, least = LimitKind.MinProperties, most = LimitKind.MaxProperties)
         val value = listOfNotNull(of(shape.value, isHard && span.least > 0))
         val names = (1..amount(span)).map { index -> KEY + index }
         val keys = value.flatMap { entry -> names.map { name -> name to entry } }
@@ -71,5 +70,5 @@ internal class SampleValues(
         return sample.takeIf { entries -> entries.meets(rules) }
     }
 
-    private fun amount(span: SampleSpan): Int = maxOf(span.least, 1).coerceAtMost(span.most)
+    private fun amount(span: SampleSpan): Int = maxOf(a = span.least, b = 1).coerceAtMost(span.most)
 }
