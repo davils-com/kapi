@@ -18,6 +18,7 @@ package com.davils.kapi.spec.core.value
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -28,6 +29,8 @@ private const val ANSWER: Long = 42L
 private const val HALF_OF_FIVE: Double = 2.5
 
 private const val SEVEN: Long = 7L
+
+private const val TWELVE_HUNDRED: Long = 1200L
 
 private fun number(text: String): NumberValue = checkNotNull(NumberValue.parseOrNull(text))
 
@@ -41,7 +44,11 @@ class NumberValueTest : FunSpec({
         }
 
         test("refuses what JSON does not call a number") {
-            listOf("", "01", "+1", ".5", "1.", "0x1F", "0o17", ".inf", ".nan", "1_000", "one", " 1").forEach { text ->
+            val others = listOf(
+                "", "01", "+1", ".5", "1.", "0x1F", "0o17", ".inf", ".nan", "1_000", "one", " 1", "-", "1e", "1e+",
+                "1E-", "1.5e", "00", "-01", "1 ", "1e1.5",
+            )
+            others.forEach { text ->
                 NumberValue.parseOrNull(text) shouldBe null
             }
         }
@@ -52,12 +59,22 @@ class NumberValueTest : FunSpec({
             NumberValue.parseOrNull("1e-5000") shouldBe null
             number("1e4000").isIntegral shouldBe true
         }
+
+        test("reads an exponent of every form") {
+            number("1e000") shouldBe number("1")
+            number("0e999999") shouldBe number("0")
+            number("1E+2") shouldBe number("100")
+            number("25e-2") shouldBe number("0.25")
+            number("-0.0e0").literal shouldBe "-0.0e0"
+        }
     }
 
     context("a number") {
         test("compares by its value and not by how it was written") {
             number("1.0") shouldBe number("1")
             number("1.0").hashCode() shouldBe number("1").hashCode()
+            number("0.00").hashCode() shouldBe number("0").hashCode()
+            number("-0e5").hashCode() shouldBe number("0").hashCode()
             number("1e2") shouldBe number("100")
             number("1") shouldNotBe number("1.5")
             number("2") shouldBeGreaterThan number("1.5")
@@ -68,6 +85,8 @@ class NumberValueTest : FunSpec({
             number("3").isIntegral shouldBe true
             number("3.00").isIntegral shouldBe true
             number("3.5").isIntegral shouldBe false
+            number("0.0").isIntegral shouldBe true
+            number("0e-3").isIntegral shouldBe true
         }
 
         test("converts to a long only when it is one") {
@@ -77,6 +96,10 @@ class NumberValueTest : FunSpec({
             number("9223372036854775808").toLongOrNull() shouldBe null
             number("-9223372036854775809").toLongOrNull() shouldBe null
             number("0.5").toLongOrNull() shouldBe null
+            number("1e30").toLongOrNull() shouldBe null
+            number("0").toLongOrNull() shouldBe 0L
+            number("-0.0").toLongOrNull() shouldBe 0L
+            number("-12e2").toLongOrNull() shouldBe -TWELVE_HUNDRED
         }
 
         test("converts to an int only when it is one") {
@@ -90,12 +113,29 @@ class NumberValueTest : FunSpec({
             number("2.5").toDouble() shouldBe HALF_OF_FIVE
             number("2.50").literal shouldBe "2.50"
         }
+
+        test("converts to an infinity of its sign when it is too large for a double") {
+            number("1e400").toDouble() shouldBe Double.POSITIVE_INFINITY
+            number("-1e400").toDouble() shouldBe Double.NEGATIVE_INFINITY
+        }
+
+        test("orders by sign, then by magnitude, then by digits") {
+            number("0") shouldBe number("-0.0")
+            number("-1") shouldBeLessThan number("0")
+            number("10") shouldBeGreaterThan number("9.99")
+            number("-10") shouldBeLessThan number("-9.99")
+            number("1.25") shouldBeGreaterThan number("1.2")
+            number("0.001") shouldBeLessThan number("0.01")
+        }
     }
 
     context("of") {
         test("wraps a long") {
             NumberValue.of(SEVEN) shouldBe number("7")
             NumberValue.of(-SEVEN).literal shouldBe "-7"
+            NumberValue.of(0L) shouldBe number("0")
+            NumberValue.of(Long.MIN_VALUE).toLongOrNull() shouldBe Long.MIN_VALUE
+            NumberValue.of(Long.MAX_VALUE).toLongOrNull() shouldBe Long.MAX_VALUE
         }
     }
 })

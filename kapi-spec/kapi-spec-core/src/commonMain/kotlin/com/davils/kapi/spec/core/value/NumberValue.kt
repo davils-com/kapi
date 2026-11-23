@@ -161,7 +161,8 @@ public class NumberValue private constructor(
         ): NumberValue? {
             val all = (integer + fraction).trimStart('0')
             val significand = all.trimEnd('0')
-            val power = exponent - fraction.length + (all.length - significand.length)
+            val scale = exponent - fraction.length + (all.length - significand.length)
+            val power = scale.takeIf { significand.isNotEmpty() } ?: 0
             val negative = (-1).takeIf { isNegative } ?: 1
             val value = NumberValue(
                 literal = literal,
