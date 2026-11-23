@@ -45,6 +45,10 @@ public abstract class ElementBuilder<T : Validatable> protected constructor() :
      */
     @DavilsInternal
     public var location: Location? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The extensions declared so far.
@@ -62,6 +66,7 @@ public abstract class ElementBuilder<T : Validatable> protected constructor() :
      * @since 1.0.0
      */
     public fun extension(name: ExtensionName, value: Value) {
+        checkOpen()
         declared[name] = value
     }
 
@@ -73,6 +78,7 @@ public abstract class ElementBuilder<T : Validatable> protected constructor() :
      */
     @DavilsInternal
     public fun adopt(extensions: Extensions) {
+        checkOpen()
         declared.putAll(extensions.entries)
     }
 }
