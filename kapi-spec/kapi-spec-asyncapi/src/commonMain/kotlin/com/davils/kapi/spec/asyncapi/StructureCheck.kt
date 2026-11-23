@@ -37,9 +37,11 @@ public enum class StructureCheck {
      * `schemas/3.0.0-without-$id.json`, embedded unchanged: it bundles every definition, the schemas of the bindings
      * and the JSON Schema draft-07 of the Schema Object. A break is reported as [DiagnosticCodes.STRUCTURE_SCHEMA] at
      * the deepest place the schema names, and only where the reader has not reported a finding at that place, below
-     * it, above it or beside it already. A Reference Object and a boolean Schema Object are never reported: the reader
-     * resolves a reference and checks its target, while the official schema lets a reference match both alternatives
-     * of a `oneOf` of a schema and a reference, and refuses the boolean schemas AsyncAPI allows. The validation runs
+     * it, above it or beside it already. A Reference Object, a boolean Schema Object and a schema of another format
+     * than AsyncAPI, JSON Schema and OpenAPI, such as Avro, are never reported: the reader resolves a reference and
+     * checks its target, the official schema lets a reference match both alternatives of a `oneOf` of a schema and a
+     * reference and refuses the boolean schemas AsyncAPI allows, and kapi keeps a schema of another format as it was
+     * written. The validation runs
      * within the limits of the reading; a document beyond them is reported as one finding of the same code instead of
      * being checked in part. Only the root document of a reading is validated.
      *

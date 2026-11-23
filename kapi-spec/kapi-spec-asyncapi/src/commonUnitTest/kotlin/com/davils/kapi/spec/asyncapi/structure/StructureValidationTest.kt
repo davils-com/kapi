@@ -108,7 +108,7 @@ class StructureValidationTest : FunSpec({
             readingOf("channels:\n  chat:\n    address: chat").diagnostics.shouldBeEmpty()
         }
 
-        test("leaves references and boolean schemas to the reader") {
+        test("leaves references, boolean schemas and schemas of other formats to the reader") {
             val reading = readingOf(
                 """
                     |channels:
@@ -126,6 +126,9 @@ class StructureValidationTest : FunSpec({
                     |        token:
                     |          type: string
                     |    Anything: true
+                    |    Avro:
+                    |      schemaFormat: application/vnd.apache.avro;version=1.9.0
+                    |      schema: {}
                 """.trimMargin(),
             )
 

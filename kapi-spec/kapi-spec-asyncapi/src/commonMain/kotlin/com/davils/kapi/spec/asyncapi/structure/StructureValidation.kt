@@ -27,6 +27,7 @@ import com.davils.kapi.spec.asyncapi.DiagnosticCodes
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.diagnostic.Findings
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
+import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
 import com.davils.kapi.spec.core.diagnostic.PointerTree
 import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.value.Value
@@ -39,12 +40,16 @@ private const val SOURCE: String = "The schema of AsyncAPI 3.0"
 
 private const val REFERENCE: String = "\$ref"
 
+private val interpreted: Set<SchemaFormat> = setOf(SchemaFormat.AsyncApi, SchemaFormat.JsonSchema, SchemaFormat.OpenApi)
+
 internal class StructureValidation(
     private val findings: Findings,
     private val document: LoadedDocument,
     model: Document,
 ) {
-    private val booleans: OrderedSet<String> = OrderedSet(booleanSchemasOf(model))
+    private val booleans: OrderedSet<String> = OrderedSet(placesOf(model) { schema -> schema.definition is Value.Flag })
+
+    private val opaque: OrderedSet<String> = OrderedSet(placesOf(model) { schema -> schema.format !in interpreted })
 
     suspend fun check(schema: OfficialSchema) {
         val compiled = schema.get()
@@ -69,13 +74,18 @@ internal class StructureValidation(
         val pointer = error.instanceLocation
         val node = document.root.at(pointer) as? YamlNode.Mapping
         val isReference = node?.get(REFERENCE)?.string() != null
-        return isReference || pointer.text in booleans
+        return isReference || pointer.text in booleans || isOpaque(pointer)
     }
 
-    private fun booleanSchemasOf(model: Document): List<String> {
+    private fun isOpaque(pointer: JsonPointer): Boolean {
+        val prefixes = pointer.tokens.runningFold(JsonPointer.ROOT) { prefix, token -> prefix.child(token) }
+        return prefixes.any { prefix -> prefix.text in opaque }
+    }
+
+    private fun placesOf(model: Document, isLeftOut: (Schema) -> Boolean): List<String> {
         val schemas = model.walk().filterIsInstance<Schema>()
-        val booleans = schemas.filter { schema -> schema.definition is Value.Flag }
-        val locations = booleans.mapNotNull(Schema::location)
+        val leftOut = schemas.filter(isLeftOut)
+        val locations = leftOut.mapNotNull(Schema::location)
         val inRoot = locations.filter { location -> location.document == document.uri }
         return inRoot.map { location -> location.pointer.text }.toList()
     }

@@ -39,8 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The structure check of AsyncAPI**: `StructureCheck.ReaderAndOfficialSchema`, the default of `AsyncApi.reader {
   structure = ... }`, validates the root document against the official JSON Schema of AsyncAPI 3.0.0
   (`asyncapi/spec-json-schemas` 6.11.1, embedded unchanged and recorded in `NOTICE`) and reports
-  `asyncapi.structure.schema` only where the reader has not reported yet, leaving references and boolean schemas to
-  the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
+  `asyncapi.structure.schema` only where the reader has not reported yet, leaving references, boolean schemas and
+  schemas of other formats, such as Avro, to the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
   `operations` and `asyncapi.security.reference-placement` for a security requirement that refers outside
   `components/securitySchemes`.
 
