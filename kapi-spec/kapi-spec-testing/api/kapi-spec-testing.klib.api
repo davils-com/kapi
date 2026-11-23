@@ -1,0 +1,31 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kapi-spec-testing>
+final class com.davils.kapi.spec.testing/MemoryResolver : com.davils.kapi.spec.core.source/Resolver { // com.davils.kapi.spec.testing/MemoryResolver|null[0]
+    constructor <init>(kotlin.collections/Map<com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/String>, kotlin.collections/Map<com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kapi.spec.core.source/Resolution> = ...) // com.davils.kapi.spec.testing/MemoryResolver.<init>|<init>(kotlin.collections.Map<com.davils.kapi.spec.core.diagnostic.DocumentUri,kotlin.String>;kotlin.collections.Map<com.davils.kapi.spec.core.diagnostic.DocumentUri,com.davils.kapi.spec.core.source.Resolution>){}[0]
+
+    final val requested // com.davils.kapi.spec.testing/MemoryResolver.requested|{}requested[0]
+        final fun <get-requested>(): kotlin.collections/List<com.davils.kapi.spec.core.diagnostic/DocumentUri> // com.davils.kapi.spec.testing/MemoryResolver.requested.<get-requested>|<get-requested>(){}[0]
+
+    final suspend fun resolve(com.davils.kapi.spec.core.diagnostic/DocumentUri): com.davils.kapi.spec.core.source/Resolution // com.davils.kapi.spec.testing/MemoryResolver.resolve|resolve(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
+}
+
+final object com.davils.kapi.spec.testing/Corpus { // com.davils.kapi.spec.testing/Corpus|null[0]
+    final val openApiNames // com.davils.kapi.spec.testing/Corpus.openApiNames|{}openApiNames[0]
+        final fun <get-openApiNames>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.spec.testing/Corpus.openApiNames.<get-openApiNames>|<get-openApiNames>(){}[0]
+
+    final fun openApi(kotlin/String): com.davils.kapi.spec.core.source/Source.Text // com.davils.kapi.spec.testing/Corpus.openApi|openApi(kotlin.String){}[0]
+    final fun openApiText(kotlin/String): kotlin/String // com.davils.kapi.spec.testing/Corpus.openApiText|openApiText(kotlin.String){}[0]
+}
+
+final object com.davils.kapi.spec.testing/HostileDocuments { // com.davils.kapi.spec.testing/HostileDocuments|null[0]
+    final fun aliasBomb(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.aliasBomb|aliasBomb(kotlin.Int){}[0]
+    final fun deepNesting(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.deepNesting|deepNesting(kotlin.Int){}[0]
+    final fun referenceChain(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.referenceChain|referenceChain(kotlin.Int){}[0]
+    final fun unknownFields(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.unknownFields|unknownFields(kotlin.Int){}[0]
+}
