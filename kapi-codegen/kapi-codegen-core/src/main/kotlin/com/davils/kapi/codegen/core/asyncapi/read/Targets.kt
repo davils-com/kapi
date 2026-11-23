@@ -104,22 +104,17 @@ internal class Targets(private val document: Document) {
     private fun decoded(fragment: String): String? {
         val bytes = ArrayList<Byte>(fragment.length)
         var index = 0
-        var isValid = true
-        while (index < fragment.length && isValid) {
+        while (index < fragment.length) {
             val isEscape = fragment[index] == PERCENT
-            val octet = octetAt(fragment, index, isEscape)
-            isValid = octet != null
-            octet?.let { found -> bytes.add(found.toByte()) }
+            bytes.add(octetAt(fragment, index, isEscape).toByte())
             index += ESCAPE_WIDTH.takeIf { isEscape } ?: 1
         }
-        return bytes.takeIf { isValid }?.let { found -> strict(found.toByteArray()) }
+        return strict(bytes.toByteArray())
     }
 
-    private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int? {
+    private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int {
         if (!isEscape) return fragment[index].code
-        val end = minOf(a = index + ESCAPE_WIDTH, b = fragment.length)
-        val escape = fragment.substring(startIndex = index + 1, endIndex = end)
-        return escape.takeIf { text -> text.length == 2 }?.toIntOrNull(HEX_RADIX)
+        return fragment.substring(startIndex = index + 1, endIndex = index + ESCAPE_WIDTH).toInt(HEX_RADIX)
     }
 
     private fun strict(bytes: ByteArray): String? = try {
