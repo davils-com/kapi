@@ -220,6 +220,20 @@ public object DiagnosticCodes {
      */
     public val PARAMETER_QUERYSTRING_WITH_QUERY: ViolationCode = code("parameter.querystring-with-query")
 
+    /**
+     * The parent of a tag names no tag of the document.
+     *
+     * @since 1.0.0
+     */
+    public val TAG_PARENT_UNKNOWN: ViolationCode = code("tag.parent-unknown")
+
+    /**
+     * The parents of a tag lead back to the tag, so the tags form no hierarchy.
+     *
+     * @since 1.0.0
+     */
+    public val TAG_PARENT_CYCLE: ViolationCode = code("tag.parent-cycle")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -301,6 +315,8 @@ public object DiagnosticCodes {
         PARAMETER_QUERYSTRING,
         PARAMETER_QUERYSTRING_REPEATED,
         PARAMETER_QUERYSTRING_WITH_QUERY,
+        TAG_PARENT_UNKNOWN,
+        TAG_PARENT_CYCLE,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

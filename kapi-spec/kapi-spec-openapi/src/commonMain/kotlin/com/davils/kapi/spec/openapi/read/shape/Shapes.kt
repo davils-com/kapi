@@ -96,8 +96,11 @@ internal object Shapes {
         subject = "A tag",
         fields = listOf(
             FieldRule(Keys.NAME, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.SUMMARY, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
             FieldRule(Keys.EXTERNAL_DOCS, FieldKind.Mapping),
+            FieldRule(Keys.PARENT, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.KIND, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 

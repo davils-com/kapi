@@ -38,6 +38,7 @@ internal object DocumentRules {
         PatternRules::check,
         ServerRules::check,
         ContentRules::check,
+        TagRules::check,
         ComponentRules::check,
     )
 

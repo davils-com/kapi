@@ -52,8 +52,11 @@ internal class InfoWriter(family: VersionFamily) {
     fun tag(tag: Tag): YamlNode {
         val out = Out()
         out.text(Keys.NAME, tag.name)
+        out.text(Keys.SUMMARY, tag.summary?.takeIf { isCurrent })
         out.text(Keys.DESCRIPTION, tag.description)
         out.node(Keys.EXTERNAL_DOCS, tag.externalDocs?.let(::externalDocs))
+        out.text(Keys.PARENT, tag.parent?.takeIf { isCurrent })
+        out.text(Keys.KIND, tag.kind?.takeIf { isCurrent })
         return out.build(tag)
     }
 

@@ -21,9 +21,32 @@ import com.davils.kapi.spec.core.model.Element
 public class Tag internal constructor(builder: TagBuilder) : Element(builder) {
     public val name: String = builder.name
 
+    /**
+     * A short summary of the tag; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val summary: String? = builder.summary
+
     public val description: String? = builder.description
 
     public val externalDocs: ExternalDocs? = builder.externalDocs
 
-    override val identity: List<Any?> get() = listOf(name, description, externalDocs)
+    /**
+     * The name of the tag this tag is nested in; `null` for a tag at the top and before OpenAPI 3.2.
+     *
+     * A reading reports a parent that names no tag of the document and parents that lead back to the tag.
+     *
+     * @since 1.0.0
+     */
+    public val parent: String? = builder.parent
+
+    /**
+     * What the tag is for, such as `nav`, `badge` or `audience`; free text, `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val kind: String? = builder.kind
+
+    override val identity: List<Any?> get() = listOf(name, summary, description, externalDocs, parent, kind)
 }
