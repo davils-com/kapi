@@ -8,11 +8,14 @@ import com.davils.kapi.runtime.server.mount
 import com.davils.kore.core.principal.currentPrincipal
 import com.example.petstore.client.PetstoreAdminClient
 import com.example.petstore.client.PetstorePetsClient
+import com.example.petstore.model.PetstoreFilter
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstorePetPatch
 import com.example.petstore.model.PetstorePetWrite
 import com.example.petstore.model.PetstoreProblem
 import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.operation.PetstoreCopyPetResponse
+import com.example.petstore.operation.PetstoreCopyPetResult
 import com.example.petstore.operation.PetstoreCreatePetResponse
 import com.example.petstore.operation.PetstoreCreatePetResult
 import com.example.petstore.operation.PetstoreDeletePetResponse
@@ -25,6 +28,8 @@ import com.example.petstore.operation.PetstoreListPetsResponse
 import com.example.petstore.operation.PetstoreListPetsResult
 import com.example.petstore.operation.PetstoreRenamePetResponse
 import com.example.petstore.operation.PetstoreRenamePetResult
+import com.example.petstore.operation.PetstoreSearchPetsResponse
+import com.example.petstore.operation.PetstoreSearchPetsResult
 import com.example.petstore.operation.PetstoreSetAvatarResponse
 import com.example.petstore.operation.PetstoreSetAvatarResult
 import com.example.petstore.server.PetstoreAdminRoutes
@@ -62,6 +67,11 @@ public class Scenario(client: ApiClient, base: String) {
         pictured(pets.getAvatar(2)),
         deleted(admin.deletePet(2)),
         deleted(admin.deletePet(2)),
+        searched(pets.searchPets(PetstoreFilter(name = "Rexy"))),
+        searched(pets.searchPets(PetstoreFilter(name = "a&b=c #d+e"))),
+        searched(pets.searchPets()),
+        copied(pets.copyPet(1)),
+        copied(pets.copyPet(9)),
     )
 
     private fun shown(pet: PetstorePet): String = "${pet.id}:${pet.name}:${pet.status}"
@@ -112,6 +122,21 @@ public class Scenario(client: ApiClient, base: String) {
         is PetstoreGetAvatarResult.Unexpected -> "unexpected ${result.status}"
         is PetstoreGetAvatarResult.Malformed -> "malformed ${result.status}"
         is PetstoreGetAvatarResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun searched(result: PetstoreSearchPetsResult): String = when (result) {
+        is PetstoreSearchPetsResult.Ok -> "searched " + result.body.joinToString(transform = ::shown)
+        is PetstoreSearchPetsResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreSearchPetsResult.Malformed -> "malformed ${result.status}"
+        is PetstoreSearchPetsResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun copied(result: PetstoreCopyPetResult): String = when (result) {
+        is PetstoreCopyPetResult.Created -> "copied " + shown(result.body)
+        is PetstoreCopyPetResult.NotFound -> "not found"
+        is PetstoreCopyPetResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreCopyPetResult.Malformed -> "malformed ${result.status}"
+        is PetstoreCopyPetResult.Failed -> "failed ${result.failure}"
     }
 
     private fun deleted(result: PetstoreDeletePetResult): String = when (result) {
@@ -186,6 +211,19 @@ private class PetsService(private val store: Store) : PetstorePetsService {
     override suspend fun getAvatar(petId: Long): PetstoreGetAvatarResponse {
         val avatar = store.avatars[petId] ?: return PetstoreGetAvatarResponse.NotFound
         return PetstoreGetAvatarResponse.Ok(avatar)
+    }
+
+    override suspend fun searchPets(filter: PetstoreFilter?): PetstoreSearchPetsResponse {
+        check(filter == null || filter.name == "Rexy" || filter.name == "a&b=c #d+e")
+        val found = store.pets.values.filter { pet -> filter?.name == null || pet.name == filter.name }
+        return PetstoreSearchPetsResponse.Ok(found)
+    }
+
+    override suspend fun copyPet(petId: Long): PetstoreCopyPetResponse {
+        val pet = store.pets[petId] ?: return PetstoreCopyPetResponse.NotFound
+        val copy = PetstorePet(id = store.pets.keys.max() + 1, name = pet.name, status = pet.status)
+        store.pets[copy.id ?: 0L] = copy
+        return PetstoreCopyPetResponse.Created(copy)
     }
 }
 

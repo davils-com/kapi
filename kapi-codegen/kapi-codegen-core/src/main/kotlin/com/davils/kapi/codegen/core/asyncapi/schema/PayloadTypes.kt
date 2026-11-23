@@ -21,7 +21,7 @@ import com.davils.kapi.codegen.core.asyncapi.GenerationCodes
 import com.davils.kapi.codegen.core.asyncapi.Report
 import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
-import com.davils.kapi.codegen.core.asyncapi.read.shown
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.value.Value
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName

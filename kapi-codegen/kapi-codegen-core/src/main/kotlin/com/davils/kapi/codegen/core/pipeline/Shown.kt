@@ -16,7 +16,7 @@
 
 @file:OptIn(DavilsInternal::class)
 
-package com.davils.kapi.codegen.core.asyncapi.read
+package com.davils.kapi.codegen.core.pipeline
 
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText

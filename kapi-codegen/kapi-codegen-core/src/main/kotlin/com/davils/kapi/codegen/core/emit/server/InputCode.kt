@@ -218,7 +218,7 @@ internal class InputCode(private val serializers: SerializerCode, private val fi
     private fun queryString(parameter: ParameterPlan): CodeBlock = CodeBlock.of(
         "%N.queryString(%L, %L, %L)",
         INPUT,
-        ServerTypes.mediaType(FORM_TYPE),
+        ServerTypes.mediaType(parameter.mediaType ?: FORM_TYPE),
         serializer(parameter.type),
         !parameter.type.isNullable,
     )

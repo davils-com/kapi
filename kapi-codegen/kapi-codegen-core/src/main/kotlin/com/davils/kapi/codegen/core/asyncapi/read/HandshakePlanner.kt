@@ -22,6 +22,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.Handshake
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakeField
 import com.davils.kapi.codegen.core.asyncapi.plan.HandshakePlace
 import com.davils.kapi.codegen.core.asyncapi.plan.ScalarType
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.binding.WebSocketChannelBinding
 import com.davils.kapi.spec.asyncapi.model.schema.Schema

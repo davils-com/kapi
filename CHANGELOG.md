@@ -71,3 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Generated KDoc** describes models, their properties, enums and unions with the `title` and `description` of their
   schemas and the functions of operations in clients, senders and services with their `summary` and `description`,
   escaped for KDoc: no `*/` or `/*`, no tags, invisible and bidirectional characters as escapes.
+- **OpenAPI 3.2 in the generator**: a `querystring` parameter of JSON, `application/json` or a `+json` type, is sent
+  with `CallBuilder.queryString` and read with `Input.queryString` of its media type, beside the form it already
+  supported; the operations of `additionalOperations` are generated for clients, senders and servers with their
+  method as the document names it, and a key that is no method token in upper case is refused with a located
+  `codegen.operation.unsupported`.

@@ -61,6 +61,10 @@ private const val RENAME_FORBIDDEN: String = """unexpected 403 {"type":"about:bl
 private const val RENAME_DENIED: String = """unexpected 401 {"type":"about:blank","title":"The request carries """ +
     """no valid credentials","status":401,"code":"kapi.server.unauthenticated","violations":[]}"""
 
+private const val NOTHING_FOUND: String = "searched "
+
+private const val SEARCHED: String = "searched 1:Rexy:null"
+
 private const val FOUND: String = "found 1:Rex:open as \"v1\""
 
 private val granted: Map<String, Set<String>> = mapOf(WRITER to setOf(READ, WRITE), "reader" to setOf(READ))
@@ -86,20 +90,26 @@ private val served: List<String> = listOf(
     MISSING,
     "deleted",
     MISSING,
+    SEARCHED,
+    NOTHING_FOUND,
+    SEARCHED,
+    "copied 2:Rexy:null",
+    MISSING,
 )
 
 private val reading: List<String> = List(4) { FORBIDDEN } +
     listOf(EMPTY, EMPTY, BAD_LIMIT, MISSING, MISSING, MISSING, MISSING) +
     List(4) { RENAME_FORBIDDEN } +
-    listOf(FORBIDDEN, MISSING, MISSING, FORBIDDEN, FORBIDDEN)
+    listOf(FORBIDDEN, MISSING, MISSING, FORBIDDEN, FORBIDDEN, NOTHING_FOUND, NOTHING_FOUND, NOTHING_FOUND) +
+    List(2) { FORBIDDEN }
 
 private val unknown: List<String> = List(4) { UNAUTHENTICATED } +
     listOf(DENIED, DENIED, DENIED, MISSING, MISSING, MISSING, MISSING) +
     List(4) { RENAME_DENIED } +
-    List(5) { UNAUTHENTICATED }
+    List(10) { UNAUTHENTICATED }
 
 private val anonymous: List<String> =
-    List(7) { NO_CREDENTIALS } + List(4) { MISSING } + List(9) { NO_CREDENTIALS }
+    List(7) { NO_CREDENTIALS } + List(4) { MISSING } + List(14) { NO_CREDENTIALS }
 
 private fun authorizer(asked: MutableList<String>): Authorizer = Authorizer { attempt ->
     asked += attempt.scheme + " " + attempt.scopes.sorted()

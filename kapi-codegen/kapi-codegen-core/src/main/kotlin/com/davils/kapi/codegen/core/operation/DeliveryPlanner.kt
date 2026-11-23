@@ -22,7 +22,6 @@ import com.davils.kapi.codegen.core.operation.plan.TimeoutPlan
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.core.value.Value
-import com.davils.kapi.spec.openapi.model.path.Method
 import com.davils.kapi.spec.openapi.model.path.Operation
 import kotlin.time.Duration
 
@@ -31,15 +30,15 @@ private const val REQUEST: String = "request"
 private val repeatable: Set<String> = setOf("get", "head", "put", "delete", "options")
 
 internal object DeliveryPlanner {
-    fun plan(method: Method, operation: Operation, path: Element): DeliveryPlan {
+    fun plan(method: String, operation: Operation, path: Element): DeliveryPlan {
         val declared = listOf(operation, path).mapNotNull { element -> element.extensions[Keywords.TIMEOUT] }
         val timeouts = declared.map(::timeout)
         return DeliveryPlan(timeouts.firstOrNull(), isIdempotent(method, operation))
     }
 
-    private fun isIdempotent(method: Method, operation: Operation): Boolean {
+    private fun isIdempotent(method: String, operation: Operation): Boolean {
         val declared = operation.extensions.flag(Keywords.IDEMPOTENT) as? ExtensionReading.Present
-            ?: return method.keyword in repeatable
+            ?: return method.lowercase() in repeatable
         return declared.value
     }
 

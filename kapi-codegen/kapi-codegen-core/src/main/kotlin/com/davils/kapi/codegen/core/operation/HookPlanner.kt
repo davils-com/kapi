@@ -54,9 +54,7 @@ internal class HookPlanner(
         val items = paths?.items.orEmpty()
         val sorted = items.entries.sortedBy { (template, _) -> template.value }
         return sorted.flatMap { (template, item) ->
-            val kept = item.operations.filterValues { operation -> !planner.isIgnored(operation) }
-            val ordered = kept.entries.sortedBy { (method, _) -> method.ordinal }
-            ordered.flatMap { (method, operation) ->
+            planner.methodsOf(item).flatMap { (method, operation) ->
                 callbacksOf(planner.nameOf(method, template.value, operation), operation)
             }
         }
@@ -82,11 +80,9 @@ internal class HookPlanner(
         return items.flatMap { item -> deliveries(item, prefix + CALLBACKS, label) }
     }
 
-    private fun deliveries(item: PathItem, group: String, label: String): List<OperationPlan> {
-        val kept = item.operations.filterValues { operation -> !planner.isIgnored(operation) }
-        val sorted = kept.entries.sortedBy { (method, _) -> method.ordinal }
-        return sorted.map { (method, operation) ->
-            val declared = planner.declaredName(operation) ?: label + SEPARATOR + method.keyword
+    private fun deliveries(item: PathItem, group: String, label: String): List<OperationPlan> =
+        planner.methodsOf(item).map { (method, operation) ->
+            val declared = planner.declaredName(operation) ?: label + SEPARATOR + method.lowercase()
             val site = OperationSite(
                 name = Identifiers.member(declared),
                 group = group,
@@ -98,7 +94,6 @@ internal class HookPlanner(
             )
             planner.planned(site)
         }
-    }
 
     private fun audit(plan: OperationPlan) {
         val segments = plan.parameters.filter { parameter -> parameter.placement == ParameterPlace.Path }

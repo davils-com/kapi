@@ -43,6 +43,10 @@ private val places: Map<ParameterPlacement, ParameterPlace> = mapOf(
 
 private const val FORM: String = "application/x-www-form-urlencoded"
 
+private const val JSON: String = "application/json"
+
+private const val JSON_SUFFIX: String = "+json"
+
 private val owned: Set<String> = setOf("accept", "content-type", "authorization")
 
 internal class ParameterPlanner(private val scope: PlanScope, private val models: ModelPlanner) {
@@ -68,17 +72,21 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
 
     private fun queryString(context: String, parameter: Parameter): ParameterPlan? {
         val content = scope.contentOf(parameter.content).entries.singleOrNull()
-        val essence = content?.run { key.substringBefore(';') }
-        val isForm = essence?.run { trim().lowercase() } == FORM
-        val schema = content?.value?.schema?.takeIf { isForm }
+        val declared = content?.run { key.trim() }
+        val bare = declared?.substringBefore(';')
+        val essence = bare?.run { trimEnd().lowercase() }
+        val isForm = essence == FORM
+        val isJson = essence != null && (essence == JSON || essence.endsWith(JSON_SUFFIX))
+        val schema = content?.value?.schema?.takeIf { isForm || isJson }
         val name = nameOf(parameter)
         val use = schema?.let { found -> models.typeOf(found, context + Identifiers.type(name)) }
-        val type = use?.takeIf { found -> types.isFields(found.shape) && found.shape !is TypeShape.Entries }
+        val isFields = use != null && types.isFields(use.shape) && use.shape !is TypeShape.Entries
+        val type = use?.takeIf { isJson || isFields }
         if (type == null) {
             scope.findings.error(
                 CodegenCodes.OPERATION_UNSUPPORTED,
                 "The parameter ${parameter.name} takes the whole query string, which the generator supports only " +
-                    "as an object in $FORM",
+                    "as an object in $FORM or as a value in JSON",
                 parameter.location,
             )
             return null
@@ -92,6 +100,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
             isExploded = true,
             type = type.copy(isNullable = type.isNullable || !parameter.isRequired),
             isQuoted = false,
+            mediaType = declared?.takeIf { isJson } ?: FORM,
         )
     }
 

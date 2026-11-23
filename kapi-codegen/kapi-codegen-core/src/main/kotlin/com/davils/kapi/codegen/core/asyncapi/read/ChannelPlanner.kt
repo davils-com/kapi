@@ -26,6 +26,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.OperationFlow
 import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.plan.RequestPlan
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
 import com.davils.kapi.spec.asyncapi.model.binding.WebSocketChannelBinding
