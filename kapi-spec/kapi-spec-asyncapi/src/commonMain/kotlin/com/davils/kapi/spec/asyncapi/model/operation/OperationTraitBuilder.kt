@@ -41,6 +41,10 @@ public class OperationTraitBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var title: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A short summary of what it is about.
@@ -48,6 +52,10 @@ public class OperationTraitBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -55,6 +63,10 @@ public class OperationTraitBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val security: MutableList<Referable<SecurityScheme>> = mutableListOf()
 
@@ -66,6 +78,10 @@ public class OperationTraitBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The protocol-specific details the trait gives an operation.
@@ -73,6 +89,10 @@ public class OperationTraitBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var bindings: Referable<OperationBindings>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): OperationTrait = OperationTrait(this)
 }

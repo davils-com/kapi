@@ -36,6 +36,10 @@ public class CorrelationIdBuilder internal constructor() : ElementBuilder<Correl
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The `location` of the id: the runtime expression that names where in the message the id is found, such as
@@ -44,6 +48,10 @@ public class CorrelationIdBuilder internal constructor() : ElementBuilder<Correl
      * @since 1.0.0
      */
     public var expression: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): CorrelationId = CorrelationId(this)
 }

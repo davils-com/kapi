@@ -45,6 +45,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var version: Version = Version.Latest
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The identifier of the application, an absolute URI such as `urn:example:chat`.
@@ -52,6 +56,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var id: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The info of the application.
@@ -59,6 +67,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var info: Info = InfoBuilder().build()
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val servers: MutableMap<String, Referable<Server>> = linkedMapOf()
 
@@ -68,6 +80,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var defaultContentType: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val channels: MutableMap<String, Referable<Channel>> = linkedMapOf()
 
@@ -79,6 +95,10 @@ public class DocumentBuilder internal constructor() : ElementBuilder<Document>()
      * @since 1.0.0
      */
     public var components: Components? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val targets: MutableMap<Target, Element> = linkedMapOf()
 

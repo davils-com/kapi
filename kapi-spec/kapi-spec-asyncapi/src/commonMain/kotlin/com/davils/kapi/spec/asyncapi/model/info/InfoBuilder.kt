@@ -37,6 +37,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var title: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The version of the application, not of AsyncAPI.
@@ -44,6 +48,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var version: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -51,6 +59,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The address of the terms of service.
@@ -58,6 +70,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var termsOfService: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * Who to contact about the application.
@@ -65,6 +81,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var contact: Contact? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The license of the application.
@@ -72,6 +92,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var license: License? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val tags: MutableList<Referable<Tag>> = mutableListOf()
 
@@ -81,6 +105,10 @@ public class InfoBuilder internal constructor() : ElementBuilder<Info>() {
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Info = Info(this)
 }

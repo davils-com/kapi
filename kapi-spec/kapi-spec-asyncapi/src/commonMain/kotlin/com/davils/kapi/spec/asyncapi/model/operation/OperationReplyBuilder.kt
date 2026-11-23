@@ -38,6 +38,10 @@ public class OperationReplyBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var address: Referable<ReplyAddress>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The reference to the channel of the reply.
@@ -45,6 +49,10 @@ public class OperationReplyBuilder internal constructor() : ElementBuilder<Opera
      * @since 1.0.0
      */
     public var channel: Reference? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val messages: MutableList<Reference> = mutableListOf()
 

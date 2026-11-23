@@ -36,6 +36,10 @@ public class LicenseBuilder internal constructor() : ElementBuilder<License>() {
      * @since 1.0.0
      */
     public var name: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The address of the license.
@@ -43,6 +47,10 @@ public class LicenseBuilder internal constructor() : ElementBuilder<License>() {
      * @since 1.0.0
      */
     public var url: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): License = License(this)
 }

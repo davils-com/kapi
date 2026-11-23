@@ -36,6 +36,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The name of the HTTP authentication scheme, such as `bearer`.
@@ -43,6 +47,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var scheme: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * How a bearer token is formatted, such as `JWT`.
@@ -50,6 +58,10 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
      * @since 1.0.0
      */
     public var bearerFormat: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): HttpScheme = HttpScheme(this)
 }

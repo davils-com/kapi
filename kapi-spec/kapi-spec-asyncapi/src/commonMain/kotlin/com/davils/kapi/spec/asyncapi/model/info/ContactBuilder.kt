@@ -36,6 +36,10 @@ public class ContactBuilder internal constructor() : ElementBuilder<Contact>() {
      * @since 1.0.0
      */
     public var name: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The address of the contact information.
@@ -43,6 +47,10 @@ public class ContactBuilder internal constructor() : ElementBuilder<Contact>() {
      * @since 1.0.0
      */
     public var url: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The email address of the contact.
@@ -50,6 +58,10 @@ public class ContactBuilder internal constructor() : ElementBuilder<Contact>() {
      * @since 1.0.0
      */
     public var email: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Contact = Contact(this)
 }

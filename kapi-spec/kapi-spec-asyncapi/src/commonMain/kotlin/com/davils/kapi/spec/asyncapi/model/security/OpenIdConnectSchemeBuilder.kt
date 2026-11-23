@@ -36,6 +36,10 @@ public class OpenIdConnectSchemeBuilder internal constructor() : ElementBuilder<
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The address of the OpenID Connect configuration; it is not checked when it is read, and a client fetches it only
@@ -44,6 +48,10 @@ public class OpenIdConnectSchemeBuilder internal constructor() : ElementBuilder<
      * @since 1.0.0
      */
     public var openIdConnectUrl: String = ""
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val scopes: MutableList<String> = mutableListOf()
 

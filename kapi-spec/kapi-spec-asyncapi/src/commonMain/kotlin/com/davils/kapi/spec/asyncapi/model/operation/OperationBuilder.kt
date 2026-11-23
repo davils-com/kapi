@@ -42,6 +42,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var action: OperationAction = OperationAction.Send
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The reference to the channel of the operation; `null` when the document misses it.
@@ -49,6 +53,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var channel: Reference? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A human-friendly title.
@@ -56,6 +64,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var title: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A short summary of what it is about.
@@ -63,6 +75,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var summary: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * A description, which may use CommonMark.
@@ -70,6 +86,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var description: String? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val security: MutableList<Referable<SecurityScheme>> = mutableListOf()
 
@@ -81,6 +101,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var externalDocs: Referable<ExternalDocs>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     /**
      * The protocol-specific details of the operation.
@@ -88,6 +112,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var bindings: Referable<OperationBindings>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     internal val traits: MutableList<Referable<OperationTrait>> = mutableListOf()
 
@@ -99,6 +127,10 @@ public class OperationBuilder internal constructor() : ElementBuilder<Operation>
      * @since 1.0.0
      */
     public var reply: Referable<OperationReply>? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
 
     override fun assemble(): Operation = Operation(this)
 }
