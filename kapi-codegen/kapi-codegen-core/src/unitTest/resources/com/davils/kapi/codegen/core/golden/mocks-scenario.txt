@@ -2,8 +2,8 @@ package com.example.petstore
 
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.validate
-import com.davils.kapi.runtime.client.Client
-import com.davils.kapi.runtime.server.Server
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.server.mount
 import com.example.petstore.client.PetstoreAdminClient
 import com.example.petstore.client.PetstorePetsClient
 import com.example.petstore.client.PetstoreZooClient
@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
-public class Scenario(client: Client) {
+public class Scenario(client: ApiClient, base: String) {
     private val pets: PetstorePetsClient = PetstorePetsClient(client)
 
     private val zoo: PetstoreZooClient = PetstoreZooClient(client)
@@ -152,10 +152,10 @@ public class Scenario(client: Client) {
 }
 
 public object Wiring {
-    public fun install(route: Route, server: Server) {
-        PetstorePetsRoutes(PetstorePetsMockService(), server).install(route)
-        PetstoreZooRoutes(PetstoreZooMockService(), server).install(route)
-        PetstoreAdminRoutes(AdminService(), server).install(route)
+    public fun install(route: Route) {
+        route.mount(PetstorePetsRoutes(PetstorePetsMockService()))
+        route.mount(PetstoreZooRoutes(PetstoreZooMockService()))
+        route.mount(PetstoreAdminRoutes(AdminService()))
     }
 }
 

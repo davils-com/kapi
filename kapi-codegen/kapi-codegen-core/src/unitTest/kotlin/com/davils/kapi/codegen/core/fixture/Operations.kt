@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.fixture
 
 import com.davils.kapi.codegen.core.Generation
@@ -47,10 +46,7 @@ internal fun parameters(vararg parameters: String): List<String> {
 
 internal fun responses(fields: String): List<String> = paths("/pets: {get: {$LIST_PETS, responses: {$fields}}}")
 
-internal suspend fun clientGenerationOf(
-    lines: List<String>,
-    configure: GeneratorBuilder.() -> Unit = {},
-): Generation {
+internal suspend fun clientGenerationOf(lines: List<String>, configure: GeneratorBuilder.() -> Unit = {}): Generation {
     val reading = read(lines)
     val generator = generator {
         artifacts = setOf(Artifact.Models, Artifact.Client)
@@ -69,10 +65,7 @@ internal suspend fun clientOf(lines: List<String>, name: String = DEFAULT_CLIENT
     return generated.files.first { file -> file.path.endsWith("/$name.kt") }.content
 }
 
-internal suspend fun serverGenerationOf(
-    lines: List<String>,
-    configure: GeneratorBuilder.() -> Unit = {},
-): Generation {
+internal suspend fun serverGenerationOf(lines: List<String>, configure: GeneratorBuilder.() -> Unit = {}): Generation {
     val reading = read(lines)
     val generator = generator {
         artifacts = setOf(Artifact.Models, Artifact.Server)

@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.fixture
 
-import com.davils.kore.core.validation.violation.ViolationCode
-import com.davils.kapi.spec.openapi.Document
-import com.davils.kapi.spec.openapi.Reading
-import com.davils.kapi.spec.core.diagnostic.Diagnostic
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.openapi.OpenApi
-import com.davils.kapi.spec.core.source.Source
-import com.davils.kapi.spec.testing.MemoryResolver
+import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.Generator
-import com.davils.kapi.codegen.core.Codegen
 import com.davils.kapi.codegen.core.options.GeneratorBuilder
+import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.source.Source
+import com.davils.kapi.spec.openapi.Document
+import com.davils.kapi.spec.openapi.OpenApi
+import com.davils.kapi.spec.openapi.Reading
+import com.davils.kapi.spec.testing.MemoryResolver
+import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 internal const val PACKAGE: String = "com.example.petstore"
@@ -61,12 +60,11 @@ internal fun schema(vararg lines: String): List<String> {
     return schemas(listOf("Pet:", "  type: string") + keywords)
 }
 
-internal fun generator(configure: GeneratorBuilder.() -> Unit = {}): Generator =
-    Codegen.openApi {
-        packageName = PACKAGE
-        apiName = API
-        configure()
-    }
+internal fun generator(configure: GeneratorBuilder.() -> Unit = {}): Generator = Codegen.openApi {
+    packageName = PACKAGE
+    apiName = API
+    configure()
+}
 
 internal suspend fun read(lines: List<String>): Reading.Read {
     val text = (head + lines).joinToString("\n", postfix = "\n")
@@ -81,10 +79,7 @@ internal suspend fun readAt(location: DocumentUri, lines: List<String>): Reading
     return reading.shouldBeInstanceOf<Reading.Read>()
 }
 
-internal suspend fun readWith(
-    documents: Map<DocumentUri, String>,
-    lines: List<String>,
-): Reading.Read {
+internal suspend fun readWith(documents: Map<DocumentUri, String>, lines: List<String>): Reading.Read {
     val text = (head + lines).joinToString("\n", postfix = "\n")
     val reader = OpenApi.reader { resolver = MemoryResolver(documents) }
     return reader.read(Source.Text(text, uri)).shouldBeInstanceOf<Reading.Read>()

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.fixture
 
 internal data class StyleToken(val type: Any?, val text: String, val depth: Int)

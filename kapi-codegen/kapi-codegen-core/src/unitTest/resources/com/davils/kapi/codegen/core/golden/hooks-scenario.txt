@@ -1,7 +1,7 @@
 package com.example.petstore
 
-import com.davils.kapi.runtime.client.Client
-import com.davils.kapi.runtime.server.Server
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.server.mount
 import com.example.petstore.model.PetstorePet
 import com.example.petstore.model.PetstoreReceipt
 import com.example.petstore.operation.PetstorePetAdoptedResponse
@@ -19,12 +19,12 @@ import com.example.petstore.webhook.PetstoreWebhooksSender
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
 
-public class Scenario(client: Client) {
+public class Scenario(client: ApiClient, base: String) {
     private val webhooks: PetstoreWebhooksSender = PetstoreWebhooksSender(client)
 
     private val callbacks: PetstoreCallbacksSender = PetstoreCallbacksSender(client)
 
-    private val hooks: String = client.settings.baseUrl + "/hooks"
+    private val hooks: String = "$base/hooks"
 
     private val pet: PetstorePet = PetstorePet(id = 7, name = "Rex")
 
@@ -63,10 +63,10 @@ public class Scenario(client: Client) {
 }
 
 public object Wiring {
-    public fun install(route: Route, server: Server) {
+    public fun install(route: Route) {
         route.route("/hooks") {
-            PetstoreWebhooksRoutes(Webhooks(), server).install(this)
-            PetstoreCallbacksRoutes(Callbacks(), server).install(this)
+            mount(PetstoreWebhooksRoutes(Webhooks()))
+            mount(PetstoreCallbacksRoutes(Callbacks()))
         }
     }
 }

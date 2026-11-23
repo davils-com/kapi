@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.fixture
 
 import com.davils.kapi.codegen.core.Generation
@@ -26,10 +25,7 @@ internal const val SAMPLES: String = "PetstoreSamples"
 internal const val DEFAULT_MOCK: String = "PetstoreDefaultMockService"
 internal const val UNMATCHED: String = "{type: string, pattern: '^[0-9]{4}\$'}"
 
-internal suspend fun mockGenerationOf(
-    lines: List<String>,
-    configure: GeneratorBuilder.() -> Unit = {},
-): Generation {
+internal suspend fun mockGenerationOf(lines: List<String>, configure: GeneratorBuilder.() -> Unit = {}): Generation {
     val reading = read(lines)
     val generator = generator {
         artifacts = Artifact.entries.toSet()

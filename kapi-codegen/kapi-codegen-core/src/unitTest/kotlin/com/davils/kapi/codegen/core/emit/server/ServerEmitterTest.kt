@@ -227,6 +227,23 @@ class ServerEmitterTest : FunSpec({
             kotlin shouldContain "f == null || (n != null && n !is Decoding.Decoded)"
         }
 
+        test("reads repeated parts as texts and a form whose fields are all optional") {
+            val tags = serverOf(get(LIST_PETS, "$MULTIPART{tags: {type: array, items: {type: string}}}}}}}"))
+            val form = "{type: object, properties: {a: {type: string}}}"
+            val optional = serverOf(
+                get(LIST_PETS, "requestBody: {content: {application/x-www-form-urlencoded: {schema: $form}}}"),
+            )
+
+            tags shouldContain "val tags = parts?.filter { part -> part.name == \"tags\" }?.map { part ->"
+            optional shouldContain "service.listPets(a = form.a)"
+        }
+
+        test("streams the bytes of a response as they come") {
+            val bytes = "'200': {description: ok, content: {application/x-tar: {x-kapi-stream: bytes}}}"
+
+            serverOf(responses(bytes)) shouldContain "stream(MediaType.parse(\"application/x-tar\"), response.items)"
+        }
+
         test("streams the items of a response") {
             val events = "'200': {description: ok, content: {text/event-stream: {schema: {type: string}}}}"
             val lines = "'200': {description: ok, content: {application/x-ndjson: {schema: {type: string}}}}"

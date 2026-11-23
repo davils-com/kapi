@@ -1,0 +1,115 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+openapi: 3.1.0
+info:
+  title: "Hostile */ \"\"\" ${pwned()} \\ \u202E"
+  version: 1.0.0
+  description: "*/ fun pwned() {} /*"
+security:
+  - key: ["scope\"\"\"${pwned}"]
+paths:
+  "/pets/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: "*/"
+        schema:
+          type: string
+          pattern: "^\"\"\"\\$\\{pwned\\}\\\\$"
+    get:
+      operationId: "class"
+      tags: ["object */ \u202E"]
+      summary: "*/ val pwned = 1 /*"
+      description: "\"\"\" ${pwned} \\u0041 \u2066"
+      parameters:
+        - name: "x\"); val pwned = (\""
+          in: query
+          schema:
+            type: string
+        - name: "fun"
+          in: header
+          schema:
+            type: string
+        - name: "\u202Eevil\u2066"
+          in: query
+          schema:
+            type: string
+        - name: "$pwned"
+          in: cookie
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "*/"
+          headers:
+            "X-$pwned'|`~":
+              schema:
+                type: string
+          content:
+            "application/json; x=\"*/\"":
+              schema:
+                $ref: "#/components/schemas/when"
+        default:
+          description: "\"\"\""
+    post:
+      operationId: "val"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                "file\"name":
+                  type: string
+                  format: binary
+                "${pwned}":
+                  type: string
+            encoding:
+              "file\"name":
+                contentType: "image/png; name=\"*/\""
+      responses:
+        "204":
+          description: done
+components:
+  securitySchemes:
+    key:
+      type: apiKey
+      name: "X-Key\"); pwned(); (\""
+      in: header
+  schemas:
+    when:
+      type: object
+      description: "*/ fun pwned() {} /*"
+      required: ["val"]
+      properties:
+        "val":
+          type: string
+          enum: ["\"\"\"", "${pwned}", "x*/y", "a\u202Eb", "c\\d", "fun", "VALUE"]
+        "it":
+          type: string
+          minLength: 1
+          pattern: "\\$\\{pwned\\}|\"\"\""
+        "\"pwned\"":
+          type: integer
+          const: 3
+        "a\\b":
+          type: string
+          x-kapi-sensitive: true
+        "class":
+          $ref: "#/components/schemas/when"

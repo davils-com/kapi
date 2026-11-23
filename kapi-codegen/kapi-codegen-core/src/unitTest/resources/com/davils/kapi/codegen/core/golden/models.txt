@@ -2,7 +2,6 @@
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -11,7 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Account",
 )
 public data class PetstoreAccount(
@@ -19,8 +18,7 @@ public data class PetstoreAccount(
     public val id: String,
     @SerialName("email")
     public val email: String,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 }
@@ -28,8 +26,6 @@ public data class PetstoreAccount(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
-import com.davils.kore.core.secret.Secret
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -38,7 +34,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Account",
 )
 public data class PetstoreAccountWrite(
@@ -46,27 +42,25 @@ public data class PetstoreAccountWrite(
     public val email: String,
     @SerialName("password")
     public val password: String? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
     }
 
-    override fun toString(): String = "PetstoreAccountWrite(" + "email=" + email + ", password=" + Secret.MASK + ")"
+    override fun toString(): String = "PetstoreAccountWrite(" + "email=" + email + ", password=" + "****" + ")"
 }
 ===== com/example/petstore/model/PetstoreAnimal.kt
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import kotlinx.serialization.Serializable
 
 @Serializable(with = PetstoreAnimalSerializer::class)
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Animal",
 )
-public sealed interface PetstoreAnimal : DataTransferObject, Validatable
+public sealed interface PetstoreAnimal : Validatable
 ===== com/example/petstore/model/PetstoreAnimalSerializer.kt
 package com.example.petstore.model
 
@@ -82,7 +76,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Animal",
 )
 internal object PetstoreAnimalSerializer : JsonContentPolymorphicSerializer<PetstoreAnimal>(PetstoreAnimal::class) {
@@ -101,12 +95,11 @@ internal object PetstoreAnimalSerializer : JsonContentPolymorphicSerializer<Pets
 ===== com/example/petstore/model/PetstoreCat.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.Constraints
-import com.davils.kapi.runtime.core.validation.ViolationCodes
 import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -114,7 +107,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Cat",
 )
 public data class PetstoreCat(
@@ -124,13 +117,12 @@ public data class PetstoreCat(
     public val kind: String,
     @SerialName("lives")
     public val lives: Int? = null,
-) : DataTransferObject,
-    Validatable,
+) : Validatable,
     PetstoreAnimal {
     override fun ValidationScope.validate() {
-        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ViolationCodes.MIN_LENGTH)
+        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
         if (lives != null) {
-            if (lives > 9L) fail(::lives, "must be at most 9", ViolationCodes.MAXIMUM)
+            if (lives > 9L) fail(::lives, "must be at most 9", ConstraintViolationCodes.MAXIMUM)
         }
     }
 }
@@ -138,16 +130,15 @@ public data class PetstoreCat(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import kotlinx.serialization.Serializable
 
 @Serializable(with = PetstoreCommandSerializer::class)
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Command",
 )
-public sealed interface PetstoreCommand : DataTransferObject, Validatable
+public sealed interface PetstoreCommand : Validatable
 ===== com/example/petstore/model/PetstoreCommandSerializer.kt
 package com.example.petstore.model
 
@@ -162,7 +153,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Command",
 )
 internal object PetstoreCommandSerializer : JsonContentPolymorphicSerializer<PetstoreCommand>(PetstoreCommand::class) {
@@ -182,7 +173,6 @@ internal object PetstoreCommandSerializer : JsonContentPolymorphicSerializer<Pet
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.String
@@ -191,7 +181,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Dog",
 )
 public data class PetstoreDog(
@@ -199,8 +189,7 @@ public data class PetstoreDog(
     public val kind: String,
     @SerialName("friend")
     public val friend: PetstoreAnimal? = null,
-) : DataTransferObject,
-    Validatable,
+) : Validatable,
     PetstoreAnimal {
     override fun ValidationScope.validate() {
         if (friend != null) {
@@ -212,7 +201,6 @@ public data class PetstoreDog(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
@@ -223,19 +211,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JvmInline
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Level",
 )
 public value class PetstoreLevel(
     public val `value`: Long,
-) : DataTransferObject {
+) {
     public val isKnown: Boolean
         get() = this in entries
 
     override fun toString(): String = `value`.toString()
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "models.yaml#/components/schemas/Level",
     )
     public companion object {
@@ -249,39 +237,36 @@ public value class PetstoreLevel(
 ===== com/example/petstore/model/PetstoreNamed.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.Constraints
-import com.davils.kapi.runtime.core.validation.ViolationCodes
 import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Named",
 )
 public data class PetstoreNamed(
     @SerialName("name")
     public val name: String,
-) : DataTransferObject,
-    Validatable,
+) : Validatable,
     PetstoreCommand {
     override fun ValidationScope.validate() {
-        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ViolationCodes.MIN_LENGTH)
+        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
     }
 }
 ===== com/example/petstore/model/PetstorePayment.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.ViolationCodes
 import kotlin.Int
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -289,7 +274,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Payment",
 )
 public data class PetstorePayment(
@@ -301,27 +286,25 @@ public data class PetstorePayment(
     public val expiry: String? = null,
     @SerialName("retries")
     public val retries: Int? = null,
-) : DataTransferObject,
-    Validatable,
+) : Validatable,
     PetstoreCommand {
     override fun ValidationScope.validate() {
-        if (method != "card") fail(::method, "must be card", ViolationCodes.CONST)
+        if (method != "card") fail(::method, "must be card", ConstraintViolationCodes.CONST)
         if (retries != null) {
-            if (retries.toLong() != 3L) fail(::retries, "must be 3", ViolationCodes.CONST)
+            if (retries.toLong() != 3L) fail(::retries, "must be 3", ConstraintViolationCodes.CONST)
         }
-        if (card != null && expiry == null) fail(::expiry, "is required when card is given", ViolationCodes.DEPENDENT_REQUIRED)
+        if (card != null && expiry == null) fail(::expiry, "is required when card is given", ConstraintViolationCodes.DEPENDENT_REQUIRED)
     }
 }
 ===== com/example/petstore/model/PetstorePet.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kapi.runtime.core.wire.Base64Serializer
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.Constraints
-import com.davils.kapi.runtime.core.validation.ViolationCodes
-import com.davils.kapi.runtime.core.wire.Base64Serializer
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -335,7 +318,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Pet",
 )
 public data class PetstorePet(
@@ -359,19 +342,18 @@ public data class PetstorePet(
     public val meta: Map<String, Int>? = null,
     @SerialName("class")
     public val `class`: PetstorePetClass? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
-        if (id < 1L) fail(::id, "must be at least 1", ViolationCodes.MINIMUM)
-        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ViolationCodes.MIN_LENGTH)
-        if (Constraints.length(name) > 40) fail(::name, "must have at most 40 characters", ViolationCodes.MAX_LENGTH)
-        if (!NAME_PATTERN.containsMatchIn(name)) fail(::name, "must match ^[a-z]+${'$'}", ViolationCodes.PATTERN)
-        if (!status.isKnown) fail(::status, "must be one of the values this API knows", ViolationCodes.ENUM)
+        if (id < 1L) fail(::id, "must be at least 1", ConstraintViolationCodes.MINIMUM)
+        if (Constraints.length(name) < 1) fail(::name, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
+        if (Constraints.length(name) > 40) fail(::name, "must have at most 40 characters", ConstraintViolationCodes.MAX_LENGTH)
+        if (!NAME_PATTERN.containsMatchIn(name)) fail(::name, "must match ^[a-z]+${'$'}", ConstraintViolationCodes.PATTERN)
+        if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         if (tags != null) {
-            if (tags.size > 5) fail(::tags, "must have at most 5 items", ViolationCodes.MAX_ITEMS)
-            if (!Constraints.isUnique(tags)) fail(::tags, "must not repeat an item", ViolationCodes.UNIQUE_ITEMS)
+            if (tags.size > 5) fail(::tags, "must have at most 5 items", ConstraintViolationCodes.MAX_ITEMS)
+            if (!Constraints.isUnique(tags)) fail(::tags, "must not repeat an item", ConstraintViolationCodes.UNIQUE_ITEMS)
             each(::tags, tags) { item ->
-                if (Constraints.length(item) < 2) fail("must have at least 2 characters", ViolationCodes.MIN_LENGTH)
+                if (Constraints.length(item) < 2) fail("must have at least 2 characters", ConstraintViolationCodes.MIN_LENGTH)
             }
         }
         if (owner != null) {
@@ -384,16 +366,16 @@ public data class PetstorePet(
         }
         if (meta != null) {
             each(::meta, meta) { item ->
-                if (!Constraints.isMultipleOf(item.toLong(), 2L)) fail("must be a multiple of 2", ViolationCodes.MULTIPLE_OF)
+                if (!Constraints.isMultipleOf(item.toLong(), 2L)) fail("must be a multiple of 2", ConstraintViolationCodes.MULTIPLE_OF)
             }
         }
         if (`class` != null) {
-            if (!`class`.isKnown) fail(::`class`, "must be one of the values this API knows", ViolationCodes.ENUM)
+            if (!`class`.isKnown) fail(::`class`, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
         }
     }
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "models.yaml#/components/schemas/Pet",
     )
     public companion object {
@@ -404,7 +386,6 @@ public data class PetstorePet(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
@@ -414,19 +395,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JvmInline
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Pet/properties/class",
 )
 public value class PetstorePetClass(
     public val `value`: String,
-) : DataTransferObject {
+) {
     public val isKnown: Boolean
         get() = this in entries
 
     override fun toString(): String = `value`
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "models.yaml#/components/schemas/Pet/properties/class",
     )
     public companion object {
@@ -440,13 +421,11 @@ public value class PetstorePetClass(
 ===== com/example/petstore/model/PetstorePetOwner.kt
 package com.example.petstore.model
 
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
-import com.davils.kore.core.secret.Secret
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
-import com.davils.kapi.runtime.core.validation.Constraints
-import com.davils.kapi.runtime.core.validation.ViolationCodes
 import kotlin.Double
 import kotlin.String
 import kotlinx.serialization.SerialName
@@ -454,7 +433,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Pet/properties/owner",
 )
 public data class PetstorePetOwner(
@@ -462,22 +441,20 @@ public data class PetstorePetOwner(
     public val email: String,
     @SerialName("score")
     public val score: Double? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         if (score != null) {
-            if (score >= 10.0) fail(::score, "must be less than 10", ViolationCodes.MAXIMUM)
-            if (!Constraints.isMultipleOf(score, 0.5)) fail(::score, "must be a multiple of 0.5", ViolationCodes.MULTIPLE_OF)
+            if (score >= 10.0) fail(::score, "must be less than 10", ConstraintViolationCodes.MAXIMUM)
+            if (!Constraints.isMultipleOf(score, 0.5)) fail(::score, "must be a multiple of 0.5", ConstraintViolationCodes.MULTIPLE_OF)
         }
     }
 
-    override fun toString(): String = "PetstorePetOwner(" + "email=" + Secret.MASK + ", score=" + score + ")"
+    override fun toString(): String = "PetstorePetOwner(" + "email=" + "****" + ", score=" + score + ")"
 }
 ===== com/example/petstore/model/PetstoreStatus.kt
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
@@ -487,19 +464,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JvmInline
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Status",
 )
 public value class PetstoreStatus(
     public val `value`: String,
-) : DataTransferObject {
+) {
     public val isKnown: Boolean
         get() = this in entries
 
     override fun toString(): String = `value`
 
     @DavilsGenerated(
-        by = "kide-common-openapi-generator",
+        by = "kapi",
         from = "models.yaml#/components/schemas/Status",
     )
     public companion object {
@@ -514,7 +491,6 @@ public value class PetstoreStatus(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.collections.List
@@ -523,14 +499,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Team",
 )
 public data class PetstoreTeam(
     @SerialName("members")
     public val members: List<PetstoreAccount>? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         if (members != null) {
             each(::members, members) { item ->
@@ -543,7 +518,6 @@ public data class PetstoreTeam(
 package com.example.petstore.model
 
 import com.davils.kore.core.`annotation`.DavilsGenerated
-import com.davils.kore.core.architecture.`data`.DataTransferObject
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlin.collections.List
@@ -552,14 +526,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @DavilsGenerated(
-    by = "kide-common-openapi-generator",
+    by = "kapi",
     from = "models.yaml#/components/schemas/Team",
 )
 public data class PetstoreTeamWrite(
     @SerialName("members")
     public val members: List<PetstoreAccountWrite>? = null,
-) : DataTransferObject,
-    Validatable {
+) : Validatable {
     override fun ValidationScope.validate() {
         if (members != null) {
             each(::members, members) { item ->
