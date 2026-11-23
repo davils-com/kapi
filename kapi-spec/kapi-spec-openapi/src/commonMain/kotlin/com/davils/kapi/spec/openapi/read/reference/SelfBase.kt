@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read.reference
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
@@ -22,6 +24,7 @@ import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal object SelfBase {
     fun adopt(root: Cursor) {

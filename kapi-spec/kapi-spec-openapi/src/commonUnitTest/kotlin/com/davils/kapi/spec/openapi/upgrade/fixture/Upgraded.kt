@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.upgrade.fixture
 
 import com.davils.kaml.core.YamlParseResult
@@ -22,12 +24,12 @@ import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.fixture.petstoreUri
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kapi.spec.openapi.load.YamlSettings
+import com.davils.kaml.core.Yaml
 import com.davils.kapi.spec.openapi.load.fixture.Loading
-import com.davils.kapi.spec.openapi.policy.ReadLimits
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.types.shouldBeInstanceOf
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal const val SWAGGER: String = "swagger: '2.0'"
 
@@ -51,7 +53,7 @@ internal suspend fun upgradedOf(lines: List<String>): Upgraded {
 internal fun nodeOf(vararg lines: String): YamlNode = nodeOfLines(lines.asList())
 
 internal fun nodeOfLines(lines: List<String>): YamlNode {
-    val yaml = YamlSettings.yamlOf(ReadLimits.Default, hasMergeKeys = false)
+    val yaml = Yaml.Default
     val parsed = yaml.parse(yamlOf(lines)).shouldBeInstanceOf<YamlParseResult.Parsed>()
     return parsed.stream.single
         ?.root

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read
 
 import com.davils.kaml.document.pointer.JsonPointer
@@ -23,14 +25,16 @@ import com.davils.kapi.spec.openapi.ReaderConfiguration
 import com.davils.kapi.spec.openapi.Reading
 import com.davils.kapi.spec.openapi.Version
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.openapi.load.DocumentLoader
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.DocumentLoader
+import com.davils.kapi.spec.openapi.load.loaderOf
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.overlay.OverlayAction
 import com.davils.kapi.spec.openapi.overlay.OverlayApplication
 import com.davils.kapi.spec.openapi.overlay.OverlayReader
 import com.davils.kapi.spec.openapi.read.reference.TargetResolver
 import com.davils.kapi.spec.openapi.validation.DocumentRules
 import com.davils.kapi.spec.openapi.validation.RuleScope
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class ReadSession(
     private val configuration: ReaderConfiguration,
@@ -39,7 +43,7 @@ internal class ReadSession(
 ) {
     private val findings: Findings = Findings(configuration.severities, configuration.limits.maximumDiagnostics)
 
-    private val loader: DocumentLoader = DocumentLoader(configuration, findings, source)
+    private val loader: DocumentLoader = loaderOf(configuration, findings, source)
 
     suspend fun run(): Reading {
         val root = loader.root()?.let { loaded -> overlaid(loaded) }

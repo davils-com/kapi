@@ -32,4 +32,5 @@ dependencies {
     commonMainApi(libs.kaml.document)
     commonMainApi(libs.kotlinx.coroutines.core)
     commonMainApi(libs.kotlinx.io.bytestring)
+    commonMainImplementation(libs.krypt.primitive)
 }

@@ -18,14 +18,17 @@ package com.davils.kapi.spec.openapi
 
 import com.davils.kore.core.validation.violation.ViolationCode
 
+/**
+ * The codes of the violations an OpenAPI reader configuration reports when it is built, next to the codes of
+ * [com.davils.kapi.spec.core.policy.PolicyCodes].
+ *
+ * @since 1.0.0
+ */
 public object ReaderViolationCodes {
-    public val NOT_POSITIVE: ViolationCode = ViolationCode("openapi.reader.not-positive")
-
-    public val ABOVE_HARD_LIMIT: ViolationCode = ViolationCode("openapi.reader.above-hard-limit")
-
+    /**
+     * A downgrade names a code that keeps its severity because it guards the reader itself.
+     *
+     * @since 1.0.0
+     */
     public val SEVERITY_FIXED: ViolationCode = ViolationCode("openapi.reader.severity-fixed")
-
-    public val REASON_MISSING: ViolationCode = ViolationCode("openapi.reader.reason-missing")
-
-    public val ROOT_NOT_DIRECTORY: ViolationCode = ViolationCode("openapi.reader.root-not-directory")
 }

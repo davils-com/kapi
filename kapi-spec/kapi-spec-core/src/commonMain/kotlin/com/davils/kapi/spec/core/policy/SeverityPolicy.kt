@@ -14,56 +14,85 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.policy
+package com.davils.kapi.spec.core.policy
 
-import com.davils.kapi.spec.openapi.ReaderViolationCodes
-import com.davils.kapi.spec.openapi.diagnostic.CodeRules
+import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import com.davils.kore.core.validation.violation.Severity
 import com.davils.kore.core.validation.violation.ViolationCode
 
+/**
+ * How severe the findings of a reading are: every warning may become an error, and chosen findings may become
+ * warnings, each with its reason.
+ *
+ * A policy is immutable and safe to share between threads.
+ *
+ * @param builder the builder whose values the policy takes over.
+ * @since 1.0.0
+ */
 public class SeverityPolicy internal constructor(
     builder: SeverityPolicyBuilder,
 ) : Validatable {
+    /**
+     * Whether every warning counts as an error.
+     *
+     * @since 1.0.0
+     */
     public val areWarningsErrors: Boolean = builder.areWarningsErrors
 
+    /**
+     * The codes whose findings are warnings, each with its reason.
+     *
+     * @since 1.0.0
+     */
     public val downgrades: Map<String, String> = builder.downgrades.toMap()
 
     override fun ValidationScope.validate() {
         each(::downgrades, downgrades) { reason ->
             if (reason.isBlank()) {
-                fail(
-                    "needs a reason that says why the finding is acceptable",
-                    ReaderViolationCodes.REASON_MISSING,
-                )
+                fail("needs a reason that says why the finding is acceptable", PolicyCodes.REASON_MISSING)
             }
-        }
-        val fixed = downgrades.keys.filterNot { code -> isAdjustable(code) }
-        fixed.forEach { code ->
-            fail(
-                ::downgrades,
-                "names $code, which keeps its severity because it guards the reader itself",
-                ReaderViolationCodes.SEVERITY_FIXED,
-            )
         }
     }
 
+    /**
+     * Whether the findings of [code] are downgraded to warnings.
+     *
+     * @param code the code.
+     * @return `true` if the policy downgrades it.
+     * @since 1.0.0
+     */
     public fun isDowngraded(code: ViolationCode): Boolean = code.value in downgrades
 
-    override fun toString(): String =
-        "SeverityPolicy(areWarningsErrors=$areWarningsErrors, downgrades=${downgrades.keys})"
-
-    internal fun severityOf(code: ViolationCode, base: Severity = CodeRules.severityOf(code)): Severity {
+    /**
+     * Returns the severity of a finding of [code] whose own severity is [base].
+     *
+     * @param code the code of the finding.
+     * @param base the severity of the finding without the policy.
+     * @return the severity under the policy.
+     * @since 1.0.0
+     */
+    @DavilsInternal
+    public fun severityOf(code: ViolationCode, base: Severity): Severity {
         val promoted = base.takeUnless { areWarningsErrors } ?: Severity.Error
         return Severity.Warning.takeIf { isDowngraded(code) } ?: promoted
     }
 
-    private fun isAdjustable(code: String): Boolean = CodeRules.adjustable.any { adjustable ->
-        adjustable.value == code
-    }
+    override fun toString(): String =
+        "SeverityPolicy(areWarningsErrors=$areWarningsErrors, downgrades=${downgrades.keys})"
 
+    /**
+     * Holds the default policy.
+     *
+     * @since 1.0.0
+     */
     public companion object {
+        /**
+         * Every finding keeps its own severity.
+         *
+         * @since 1.0.0
+         */
         public val Default: SeverityPolicy = SeverityPolicyBuilder().build()
     }
 }

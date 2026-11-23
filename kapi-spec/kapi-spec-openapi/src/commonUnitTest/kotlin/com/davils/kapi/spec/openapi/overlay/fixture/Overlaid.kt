@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.overlay.fixture
 
 import com.davils.kaml.core.node.YamlNode
@@ -22,14 +24,15 @@ import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.yamlOf
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.overlay.OverlayApplication
 import com.davils.kapi.spec.openapi.overlay.OverlayReader
-import com.davils.kapi.spec.openapi.policy.SeverityPolicy
+import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.openapi.upgrade.fixture.nodeOfLines
 import com.davils.kore.core.validation.violation.ViolationCode
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val MAXIMUM_DIAGNOSTICS: Int = 100
 

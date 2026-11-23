@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.overlay
 
 import com.davils.kaml.core.model.YamlTag
@@ -27,7 +29,8 @@ import com.davils.kaml.document.path.JsonPath
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class OverlayReader(
     document: LoadedDocument,

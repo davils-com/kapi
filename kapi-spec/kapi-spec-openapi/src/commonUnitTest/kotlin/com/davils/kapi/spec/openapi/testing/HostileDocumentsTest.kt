@@ -21,7 +21,7 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.Reading
-import com.davils.kapi.spec.openapi.policy.ReadLimitsBuilder
+import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
 import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain

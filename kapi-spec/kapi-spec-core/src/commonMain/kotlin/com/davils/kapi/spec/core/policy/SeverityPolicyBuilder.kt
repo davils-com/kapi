@@ -14,23 +14,42 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.policy
+package com.davils.kapi.spec.core.policy
 
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 import com.davils.kore.core.validation.violation.ViolationCode
 
+/**
+ * Builds a [SeverityPolicy].
+ *
+ * A builder is not safe to share between threads; the policy it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
-public class SeverityPolicyBuilder internal constructor() :
-    ValidatingBuilder<SeverityPolicy>() {
+public class SeverityPolicyBuilder : ValidatingBuilder<SeverityPolicy>() {
     private val declared: MutableMap<String, String> = linkedMapOf()
 
-    override val subject: String get() = "openapi severity policy"
+    override val subject: String get() = "severity policy"
 
+    /**
+     * Whether every warning counts as an error; `false` by default.
+     *
+     * @since 1.0.0
+     */
     public var areWarningsErrors: Boolean = false
 
     internal val downgrades: Map<String, String> get() = declared
 
+    /**
+     * Reports the findings of [code] as warnings, for [reason]. A reader refuses a downgrade of a code that guards the
+     * reading itself, such as a limit.
+     *
+     * @param code the code of the finding.
+     * @param reason why the finding is acceptable; it must not be blank.
+     * @since 1.0.0
+     */
     public fun downgrade(code: ViolationCode, reason: String) {
         declared[code.value] = reason
     }

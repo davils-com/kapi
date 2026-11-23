@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.overlay
 
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kore.core.validation.violation.ViolationCode
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class OverlayPlace(
     val document: LoadedDocument,

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read
 
 import com.davils.kaml.core.model.YamlTag
@@ -23,8 +25,9 @@ import com.davils.kaml.core.node.boolean
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kore.core.validation.violation.ViolationCode
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class Cursor(
     val scope: ReadScope,

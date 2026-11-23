@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.load.fixture
 
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
@@ -23,9 +25,11 @@ import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.ReaderBuilder
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.configuration
-import com.davils.kapi.spec.openapi.load.DocumentLoader
+import com.davils.kapi.spec.core.load.DocumentLoader
+import com.davils.kapi.spec.openapi.load.loaderOf
 import com.davils.kapi.spec.openapi.testing.MemoryResolver
 import com.davils.kore.core.validation.violation.ViolationCode
+import com.davils.kore.core.annotation.DavilsInternal
 
 internal class Loading(
     source: Source,
@@ -42,7 +46,7 @@ internal class Loading(
 
     private val findings: Findings = Findings(configuration.severities, configuration.limits.maximumDiagnostics)
 
-    val loader: DocumentLoader = DocumentLoader(configuration, findings, source)
+    val loader: DocumentLoader = loaderOf(configuration, findings, source)
 
     val diagnostics: List<Diagnostic> get() = findings.sorted(loader.order)
 

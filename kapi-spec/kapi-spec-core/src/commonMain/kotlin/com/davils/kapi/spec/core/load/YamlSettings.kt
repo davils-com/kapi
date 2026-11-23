@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.load
+package com.davils.kapi.spec.core.load
 
 import com.davils.kaml.core.Yaml
 import com.davils.kaml.core.YamlDuplicateKeys
@@ -22,7 +22,7 @@ import com.davils.kaml.core.YamlUnknownTags
 import com.davils.kaml.core.schema.YamlSchema
 import com.davils.kaml.core.schema.yamlSchema
 import com.davils.kaml.core.yaml
-import com.davils.kapi.spec.openapi.policy.ReadLimits
+import com.davils.kapi.spec.core.policy.ReadLimits
 
 internal object YamlSettings {
     fun yamlOf(limits: ReadLimits, hasMergeKeys: Boolean): Yaml {

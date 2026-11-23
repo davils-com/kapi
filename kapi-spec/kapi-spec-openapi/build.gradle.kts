@@ -28,5 +28,4 @@ kreate {
 
 dependencies {
     commonMainApi(project(":kapi-spec:kapi-spec-core"))
-    commonMainImplementation(libs.krypt.primitive)
 }

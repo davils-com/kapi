@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.read
 
 import com.davils.kaml.core.model.YamlTag
@@ -27,10 +29,11 @@ import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.diagnostic.Findings
 import com.davils.kapi.spec.openapi.fixture.configuration
 import com.davils.kapi.spec.openapi.fixture.petstoreUri
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.io.bytestring.ByteString
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val PHOTO: String = "aGVsbG8="
 

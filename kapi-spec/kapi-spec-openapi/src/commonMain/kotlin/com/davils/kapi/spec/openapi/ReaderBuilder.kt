@@ -17,12 +17,12 @@
 package com.davils.kapi.spec.openapi
 
 import com.davils.kapi.spec.core.source.Resolver
-import com.davils.kapi.spec.openapi.policy.ReadLimits
-import com.davils.kapi.spec.openapi.policy.ReadLimitsBuilder
-import com.davils.kapi.spec.openapi.policy.ReferencePolicy
-import com.davils.kapi.spec.openapi.policy.ReferencePolicyBuilder
-import com.davils.kapi.spec.openapi.policy.SeverityPolicy
-import com.davils.kapi.spec.openapi.policy.SeverityPolicyBuilder
+import com.davils.kapi.spec.core.policy.ReadLimits
+import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
+import com.davils.kapi.spec.core.policy.ReferencePolicy
+import com.davils.kapi.spec.core.policy.ReferencePolicyBuilder
+import com.davils.kapi.spec.core.policy.SeverityPolicy
+import com.davils.kapi.spec.core.policy.SeverityPolicyBuilder
 import com.davils.kapi.spec.openapi.policy.StructureCheck
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder

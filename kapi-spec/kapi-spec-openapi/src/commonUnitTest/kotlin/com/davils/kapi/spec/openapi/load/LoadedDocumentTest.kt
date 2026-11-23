@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.load
 
 import com.davils.kaml.core.node.get
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.fixture.yamlOf
@@ -28,6 +31,7 @@ import com.davils.kore.core.text.TextRange
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val INFO: String = "info"
 

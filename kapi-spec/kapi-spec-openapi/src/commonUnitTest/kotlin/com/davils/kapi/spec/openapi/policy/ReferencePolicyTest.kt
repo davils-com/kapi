@@ -17,11 +17,13 @@
 package com.davils.kapi.spec.openapi.policy
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.openapi.ReaderViolationCodes
+import com.davils.kapi.spec.core.policy.PolicyCodes
 import com.davils.kapi.spec.openapi.fixture.findings
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import com.davils.kapi.spec.core.policy.ReferencePolicyBuilder
+import com.davils.kapi.spec.core.policy.ReferencePolicy
 
 class ReferencePolicyTest : FunSpec({
     context("the default policy") {
@@ -51,7 +53,7 @@ class ReferencePolicyTest : FunSpec({
             val builder = ReferencePolicyBuilder()
             builder.root = DocumentUri("file:///api/petstore.yaml")
 
-            builder.validate().findings() shouldBe listOf("root" to ReaderViolationCodes.ROOT_NOT_DIRECTORY)
+            builder.validate().findings() shouldBe listOf("root" to PolicyCodes.ROOT_NOT_DIRECTORY)
         }
     }
 })

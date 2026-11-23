@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.load
+package com.davils.kapi.spec.core.load
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

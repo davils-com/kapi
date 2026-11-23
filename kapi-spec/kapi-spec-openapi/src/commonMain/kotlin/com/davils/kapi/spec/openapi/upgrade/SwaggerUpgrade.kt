@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.upgrade
 
 import com.davils.kaml.core.node.YamlNode
@@ -21,8 +23,9 @@ import com.davils.kaml.core.node.get
 import com.davils.kaml.core.node.string
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.openapi.diagnostic.Findings
-import com.davils.kapi.spec.openapi.load.LoadedDocument
+import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.openapi.read.shape.Keys
+import com.davils.kore.core.annotation.DavilsInternal
 
 private val consumed: Set<String> = setOf(
     Keys.SWAGGER,

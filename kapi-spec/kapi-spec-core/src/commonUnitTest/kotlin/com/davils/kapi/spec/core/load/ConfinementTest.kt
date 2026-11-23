@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.load
+package com.davils.kapi.spec.core.load
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.openapi.fixture.configuration
+import com.davils.kapi.spec.core.policy.ReferencePolicy
+import com.davils.kapi.spec.core.policy.ReferencePolicyBuilder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -27,7 +28,7 @@ private fun uri(text: String): DocumentUri = DocumentUri(text)
 
 class ConfinementTest : FunSpec({
     context("the default confinement") {
-        val confinement = Confinement.of(configuration().references, petstore)
+        val confinement = Confinement.of(ReferencePolicy.Default, petstore)
 
         test("contains the document itself and what lies in its folder or below") {
             confinement.contains(petstore) shouldBe true
@@ -61,8 +62,8 @@ class ConfinementTest : FunSpec({
 
     context("a configured root") {
         test("replaces the folder of the document") {
-            val wide = configuration { references { root = uri("file:///work/") } }
-            val confinement = Confinement.of(wide.references, petstore)
+            val wide = ReferencePolicyBuilder().apply { root = uri("file:///work/") }.build()
+            val confinement = Confinement.of(wide, petstore)
 
             confinement.contains(uri("file:///work/shared/errors.yaml")) shouldBe true
             confinement.contains(uri("file:///etc/passwd")) shouldBe false
@@ -71,8 +72,8 @@ class ConfinementTest : FunSpec({
 
     context("a reader that allows no other document") {
         test("contains the document alone") {
-            val alone = configuration { references { isExternalAllowed = false } }
-            val confinement = Confinement.of(alone.references, petstore)
+            val alone = ReferencePolicyBuilder().apply { isExternalAllowed = false }.build()
+            val confinement = Confinement.of(alone, petstore)
 
             confinement.contains(petstore) shouldBe true
             confinement.contains(uri("file:///work/api/models.yaml")) shouldBe false
@@ -81,7 +82,7 @@ class ConfinementTest : FunSpec({
 
     context("a document without a folder") {
         test("contains nothing but itself") {
-            val confinement = Confinement.of(configuration().references, uri("urn:petstore"))
+            val confinement = Confinement.of(ReferencePolicy.Default, uri("urn:petstore"))
 
             confinement.contains(uri("urn:petstore")) shouldBe true
             confinement.contains(uri("urn:models")) shouldBe false

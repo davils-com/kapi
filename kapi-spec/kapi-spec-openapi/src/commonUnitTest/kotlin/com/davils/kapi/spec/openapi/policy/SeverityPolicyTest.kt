@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.policy
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.openapi.ReaderViolationCodes
+import com.davils.kapi.spec.core.policy.PolicyCodes
+import com.davils.kapi.spec.openapi.diagnostic.CodeRules
 import com.davils.kapi.spec.openapi.fixture.findings
 import com.davils.kore.core.validation.violation.Severity
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import com.davils.kapi.spec.core.policy.SeverityPolicyBuilder
+import com.davils.kapi.spec.core.policy.SeverityPolicy
+import com.davils.kore.core.annotation.DavilsInternal
 
 private const val REASON: String = "The vendor document carries fields of its own."
 
@@ -39,8 +45,8 @@ class SeverityPolicyTest : FunSpec({
 
             policy.areWarningsErrors shouldBe false
             policy.downgrades shouldBe emptyMap()
-            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN) shouldBe Severity.Error
-            policy.severityOf(DiagnosticCodes.REFERENCE_SIBLING) shouldBe Severity.Warning
+            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN, CodeRules.severityOf(DiagnosticCodes.FIELD_UNKNOWN)) shouldBe Severity.Error
+            policy.severityOf(DiagnosticCodes.REFERENCE_SIBLING, CodeRules.severityOf(DiagnosticCodes.REFERENCE_SIBLING)) shouldBe Severity.Warning
         }
     }
 
@@ -48,8 +54,8 @@ class SeverityPolicyTest : FunSpec({
         test("turns every warning into an error") {
             val policy = policy { areWarningsErrors = true }
 
-            policy.severityOf(DiagnosticCodes.REFERENCE_SIBLING) shouldBe Severity.Error
-            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN) shouldBe Severity.Error
+            policy.severityOf(DiagnosticCodes.REFERENCE_SIBLING, CodeRules.severityOf(DiagnosticCodes.REFERENCE_SIBLING)) shouldBe Severity.Error
+            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN, CodeRules.severityOf(DiagnosticCodes.FIELD_UNKNOWN)) shouldBe Severity.Error
             policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN, Severity.Warning) shouldBe Severity.Error
         }
     }
@@ -61,7 +67,7 @@ class SeverityPolicyTest : FunSpec({
             policy.isDowngraded(DiagnosticCodes.FIELD_UNKNOWN) shouldBe true
             policy.isDowngraded(DiagnosticCodes.FIELD_VERSION) shouldBe false
             policy.downgrades shouldBe mapOf(DiagnosticCodes.FIELD_UNKNOWN.value to REASON)
-            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN) shouldBe Severity.Warning
+            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN, CodeRules.severityOf(DiagnosticCodes.FIELD_UNKNOWN)) shouldBe Severity.Warning
             policy.toString() shouldContain DiagnosticCodes.FIELD_UNKNOWN.value
         }
 
@@ -71,24 +77,16 @@ class SeverityPolicyTest : FunSpec({
                 downgrade(DiagnosticCodes.FIELD_UNKNOWN, REASON)
             }
 
-            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN) shouldBe Severity.Warning
+            policy.severityOf(DiagnosticCodes.FIELD_UNKNOWN, CodeRules.severityOf(DiagnosticCodes.FIELD_UNKNOWN)) shouldBe Severity.Warning
         }
 
-        test("is refused for a code that guards the reader itself") {
-            val builder = SeverityPolicyBuilder()
-            builder.downgrade(DiagnosticCodes.REFERENCE_OUTSIDE, REASON)
-            builder.downgrade(DiagnosticCodes.LIMIT_NODES, REASON)
-            val fixed = ReaderViolationCodes.SEVERITY_FIXED
-
-            builder.validate().findings() shouldBe listOf("downgrades" to fixed, "downgrades" to fixed)
-        }
 
         test("is refused without a reason") {
             val builder = SeverityPolicyBuilder()
             builder.downgrade(DiagnosticCodes.FIELD_UNKNOWN, " ")
             val path = "downgrades[\"${DiagnosticCodes.FIELD_UNKNOWN}\"]"
 
-            builder.validate().findings() shouldBe listOf(path to ReaderViolationCodes.REASON_MISSING)
+            builder.validate().findings() shouldBe listOf(path to PolicyCodes.REASON_MISSING)
         }
     }
 })

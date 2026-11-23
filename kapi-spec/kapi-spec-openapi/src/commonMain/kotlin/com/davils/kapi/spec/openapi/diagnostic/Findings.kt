@@ -14,84 +14,14 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.openapi.diagnostic
 
-import com.davils.kaml.document.pointer.JsonPointer
-import com.davils.kapi.spec.core.diagnostic.Diagnostic
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.openapi.DiagnosticCodes
-import com.davils.kapi.spec.openapi.policy.SeverityPolicy
-import com.davils.kore.core.text.TextSnippet
-import com.davils.kore.core.validation.violation.Severity
-import com.davils.kore.core.validation.violation.ViolationCode
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kapi.spec.core.read.Findings as SharedFindings
 
-private const val UNLOCATED: Int = -1
-
-internal class Findings(
-    private val policy: SeverityPolicy,
-    private val maximum: Int,
-) {
-    private val reported: MutableList<Diagnostic> = mutableListOf()
-
-    private val seen: MutableSet<Diagnostic> = hashSetOf()
-
-    private var dropped: Int = 0
-
-    val hasErrors: Boolean get() = dropped > 0 || reported.any(Diagnostic::isError)
-
-    fun report(code: ViolationCode, message: String, location: Location? = null, snippet: TextSnippet? = null) {
-        add(
-            Diagnostic(
-                code = code,
-                severity = policy.severityOf(code),
-                message = message,
-                location = location,
-                snippet = snippet,
-            ),
-        )
-    }
-
-    fun adopt(code: ViolationCode, base: Severity, message: String, location: Location, snippet: TextSnippet) {
-        add(
-            Diagnostic(
-                code = code,
-                severity = policy.severityOf(code, base),
-                message = message,
-                location = location,
-                snippet = snippet,
-            ),
-        )
-    }
-
-    fun pointersIn(document: DocumentUri): Set<JsonPointer> {
-        val locations = reported.mapNotNull(Diagnostic::location)
-        val inDocument = locations.filter { location -> location.document == document }
-        return inDocument.map(Location::pointer).toSet()
-    }
-
-    fun sorted(order: Map<DocumentUri, Int>): List<Diagnostic> {
-        val byPlace = compareBy<Diagnostic>(
-            { diagnostic -> order[diagnostic.location?.document] ?: UNLOCATED },
-            { diagnostic -> diagnostic.location?.range?.start ?: UNLOCATED },
-            { diagnostic -> diagnostic.code.value },
-            { diagnostic -> diagnostic.message },
-        )
-        return reported.sortedWith(byPlace) + overflow()
-    }
-
-    private fun add(diagnostic: Diagnostic) {
-        if (!seen.add(diagnostic)) return
-        if (reported.size >= maximum) {
-            dropped += 1
-            return
-        }
-        reported += diagnostic
-    }
-
-    private fun overflow(): List<Diagnostic> {
-        if (dropped == 0) return emptyList()
-        val message = "$dropped further findings were dropped, because a reading reports at most $maximum"
-        return listOf(Diagnostic(DiagnosticCodes.LIMIT_DIAGNOSTICS, Severity.Error, message))
-    }
-}
+internal class Findings(policy: SeverityPolicy, maximum: Int) :
+    SharedFindings(policy, maximum, DiagnosticCodes.LIMIT_DIAGNOSTICS, CodeRules::severityOf)

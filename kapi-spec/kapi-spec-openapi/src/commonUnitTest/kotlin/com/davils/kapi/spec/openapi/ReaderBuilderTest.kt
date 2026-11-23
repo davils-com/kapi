@@ -20,9 +20,9 @@ import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.source.Resolver
 import com.davils.kapi.spec.openapi.fixture.configuration
 import com.davils.kapi.spec.openapi.fixture.findings
-import com.davils.kapi.spec.openapi.policy.ReadLimits
-import com.davils.kapi.spec.openapi.policy.ReferencePolicy
-import com.davils.kapi.spec.openapi.policy.SeverityPolicy
+import com.davils.kapi.spec.core.policy.ReadLimits
+import com.davils.kapi.spec.core.policy.ReferencePolicy
+import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.openapi.policy.StructureCheck
 import com.davils.kapi.spec.openapi.testing.MemoryResolver
 import com.davils.kore.core.validation.report.ValidationException
@@ -30,6 +30,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import com.davils.kapi.spec.core.policy.PolicyCodes
 
 private const val REASON: String = "The vendor document carries fields of its own."
 
@@ -75,9 +76,9 @@ class ReaderBuilderTest : FunSpec({
             builder.severities { downgrade(DiagnosticCodes.LIMIT_NODES, REASON) }
 
             builder.validate().findings() shouldBe listOf(
-                "limits.maximumDocuments" to ReaderViolationCodes.NOT_POSITIVE,
-                "references.root" to ReaderViolationCodes.ROOT_NOT_DIRECTORY,
-                "severities.downgrades" to ReaderViolationCodes.SEVERITY_FIXED,
+                "limits.maximumDocuments" to PolicyCodes.NOT_POSITIVE,
+                "references.root" to PolicyCodes.ROOT_NOT_DIRECTORY,
+                "severities" to ReaderViolationCodes.SEVERITY_FIXED,
             )
         }
 

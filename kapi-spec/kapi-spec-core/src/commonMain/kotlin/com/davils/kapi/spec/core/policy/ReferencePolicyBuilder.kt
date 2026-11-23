@@ -14,19 +14,36 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.policy
+package com.davils.kapi.spec.core.policy
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 
+/**
+ * Builds a [ReferencePolicy].
+ *
+ * A builder is not safe to share between threads; the policy it builds is.
+ *
+ * @since 1.0.0
+ */
 @DavilsDsl
-public class ReferencePolicyBuilder internal constructor() :
-    ValidatingBuilder<ReferencePolicy>() {
-    override val subject: String get() = "openapi reference policy"
+public class ReferencePolicyBuilder : ValidatingBuilder<ReferencePolicy>() {
+    override val subject: String get() = "reference policy"
 
+    /**
+     * The folder every referenced document must lie in, ending with a slash, such as `file:///work/api/`; the folder
+     * of the root document when `null`.
+     *
+     * @since 1.0.0
+     */
     public var root: DocumentUri? = null
 
+    /**
+     * Whether references may lead to other documents at all; `true` by default.
+     *
+     * @since 1.0.0
+     */
     public var isExternalAllowed: Boolean = true
 
     override fun assemble(): ReferencePolicy = ReferencePolicy(this)

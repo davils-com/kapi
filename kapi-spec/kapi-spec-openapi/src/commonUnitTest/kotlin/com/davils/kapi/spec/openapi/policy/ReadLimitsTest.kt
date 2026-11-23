@@ -17,12 +17,14 @@
 package com.davils.kapi.spec.openapi.policy
 
 import com.davils.kaml.core.limit.YamlLimits
-import com.davils.kapi.spec.openapi.ReaderViolationCodes
+import com.davils.kapi.spec.core.policy.PolicyCodes
 import com.davils.kapi.spec.openapi.fixture.findings
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import com.davils.kapi.spec.core.policy.ReadLimitsBuilder
+import com.davils.kapi.spec.core.policy.ReadLimits
 
 class ReadLimitsTest : FunSpec({
     context("the default limits") {
@@ -75,7 +77,7 @@ class ReadLimitsTest : FunSpec({
             )
 
             builder.validate().findings() shouldBe
-                names.map { name -> name to ReaderViolationCodes.NOT_POSITIVE }
+                names.map { name -> name to PolicyCodes.NOT_POSITIVE }
         }
 
         test("refuses a depth the parser cannot nest safely") {
@@ -83,7 +85,7 @@ class ReadLimitsTest : FunSpec({
             builder.maximumDepth = YamlLimits.HARD_DEPTH + 1
 
             builder.validate().findings() shouldBe listOf(
-                "maximumDepth" to ReaderViolationCodes.ABOVE_HARD_LIMIT,
+                "maximumDepth" to PolicyCodes.ABOVE_HARD_LIMIT,
             )
         }
 

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.davils.kapi.spec.openapi.load
+package com.davils.kapi.spec.core.load
 
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.openapi.policy.ReferencePolicy
+import com.davils.kapi.spec.core.policy.ReferencePolicy
 
 private const val SEPARATOR: Char = '/'
 
-private val escapes: Regex = Regex("""(^|/)\.\.(/|$)|%2[eEfF]|%5[cC]|%00|\\""")
+private const val PARENT: String = ".."
+
+private val forbidden: List<String> = listOf("%2e", "%2f", "%5c", "%00", "\\")
 
 internal class Confinement(
     private val own: DocumentUri,
@@ -29,8 +31,16 @@ internal class Confinement(
     private val isExternalAllowed: Boolean,
 ) {
     fun contains(uri: DocumentUri): Boolean {
-        val isInside = isExternalAllowed && uri.value.startsWith(root) && !escapes.containsMatchIn(uri.value)
+        val text = uri.value
+        val isInside = isExternalAllowed && text.startsWith(root) && !isEscaping(text)
         return uri == own || isInside
+    }
+
+    private fun isEscaping(text: String): Boolean {
+        val lowered = text.lowercase()
+        val hasEncoded = forbidden.any { sequence -> sequence in lowered }
+        val hasParent = text.split(SEPARATOR).any { segment -> segment == PARENT }
+        return hasEncoded || hasParent
     }
 
     companion object {
