@@ -2,3 +2,11 @@ kapi
 Copyright 2026 Davils
 
 This product includes software developed by Davils (https://davils.com).
+
+This product bundles the meta-schemas of JSON Schema draft-04, draft-06, draft-07, 2019-09 and 2020-12
+(including the 2019-09 and 2020-12 vocabulary meta-schemas), Copyright (c) 2022 JSON Schema Specification
+Authors, https://json-schema.org, licensed under the BSD 3-Clause License or the Academic Free License 3.0.
+
+This product bundles the OpenAPI 3.1 base dialect and OAS base vocabulary meta-schemas
+(https://spec.openapis.org/oas/3.1/dialect/base, https://spec.openapis.org/oas/3.1/meta/base),
+Copyright The Linux Foundation / OpenAPI Initiative, licensed under the Apache License 2.0.
