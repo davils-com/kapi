@@ -127,6 +127,13 @@ class OpenApi32Test : FunSpec({
             message shouldNotContain "\u202E"
         }
 
+        test("is a required parameter of JSON when the document requires it") {
+            val text = searched("application/json")
+                .replace(oldValue = "in: querystring,", newValue = "in: querystring, required: true,")
+
+            kotlinOf(text = text, name = ROUTES) shouldContain "PetstoreSearchPetsCriteria.serializer(), true)"
+        }
+
         test("is refused for a query string that is neither a form nor JSON, which nothing would encode") {
             generationOf(searched("text/plain")).codes() shouldBe listOf(CodegenCodes.OPERATION_UNSUPPORTED)
         }
