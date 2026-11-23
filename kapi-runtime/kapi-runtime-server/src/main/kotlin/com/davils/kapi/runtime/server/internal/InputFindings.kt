@@ -20,7 +20,10 @@ import com.davils.kapi.runtime.core.codec.Decoding
 import com.davils.kapi.runtime.core.problem.ProblemViolation
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import com.davils.kore.core.validation.report.ValidationReport
 import com.davils.kore.core.validation.validate
+import com.davils.kore.core.validation.violation.ViolationPath
 
 private const val REQUIRED: String = "is required"
 
@@ -53,16 +56,39 @@ internal class InputFindings {
 
     fun <T : Any> checked(value: T, path: String): T {
         val validatable = value as? Validatable ?: return value
-        val report = validatable.validate(path)
-        found += report.errors.map { violation ->
-            ProblemViolation(path = "$path.${violation.path}", code = violation.code.value, message = violation.message)
-        }
+        record(validatable.validate(path), path)
         return value
     }
 
-    fun <T : Any> decoded(path: String, decoding: Decoding<T>): T? = when (decoding) {
-        is Decoding.Failed -> violated(path)
-        is Decoding.Decoded -> checked(decoding.value, path)
+    fun <T : Any> ruled(value: T, path: String, rule: (ValidationScope.(T) -> Unit)?): T {
+        val check = rule ?: return value
+        val ruled = object : Validatable {
+            override fun ValidationScope.validate() = check(value)
+        }
+        record(ruled.validate(path), path)
+        return value
+    }
+
+    fun <T : Any> decoded(path: String, decoding: Decoding<T>, rule: (ValidationScope.(T) -> Unit)? = null): T? =
+        when (decoding) {
+            is Decoding.Failed -> violated(path)
+            is Decoding.Decoded -> ruled(checked(decoding.value, path), path, rule)
+        }
+
+    private fun record(report: ValidationReport, path: String) {
+        found += report.errors.map { violation ->
+            ProblemViolation(
+                path = joined(path, violation.path),
+                code = violation.code.value,
+                message = violation.message,
+            )
+        }
+    }
+
+    private fun joined(path: String, below: ViolationPath): String {
+        val rendered = below.toString()
+        val separator = ".".takeUnless { rendered.isEmpty() || rendered.startsWith('[') }.orEmpty()
+        return path + separator + rendered
     }
 
     data class Refusal(val status: Int, val code: String, val headers: List<Pair<String, String>>)

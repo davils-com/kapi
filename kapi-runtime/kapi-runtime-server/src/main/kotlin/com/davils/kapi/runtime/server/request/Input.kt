@@ -40,6 +40,7 @@ import com.davils.kapi.runtime.server.reply.Reply
 import com.davils.kore.core.failure.contained
 import com.davils.kore.core.outcome.Outcome
 import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 import kotlinx.serialization.DeserializationStrategy
@@ -104,14 +105,23 @@ public class Input internal constructor(private val request: Request) {
      * @param format the name, the style, `explode` and `allowReserved` of the parameter.
      * @param type how the text becomes a value.
      * @param isRequired whether the parameter is required.
+     * @param rule the rules of the schema a decoded value must keep, such as `minimum` or `maxLength`, which report
+     * through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the value, or `null` if it is missing or malformed.
      * @since 1.0.0
      */
-    public fun <T : Any> value(place: Place, format: ParameterFormat, type: ParameterType<T>, isRequired: Boolean): T? {
+    public fun <T : Any> value(
+        place: Place,
+        format: ParameterFormat,
+        type: ParameterType<T>,
+        isRequired: Boolean,
+        rule: (ValidationScope.(T) -> Unit)? = null,
+    ): T? {
         val path = pathOf(place, format)
         val reading = reader.read(place = place, format = format, shape = ParameterShape.Text)
         val text = present(reading, path, isRequired) as? ParameterValue.Text ?: return null
-        return decoded(type, text.value) ?: findings.violated(path)
+        val value = decoded(type, text.value)
+        return value?.let { found -> findings.ruled(found, path, rule) } ?: findings.violated(path)
     }
 
     /**
@@ -122,6 +132,8 @@ public class Input internal constructor(private val request: Request) {
      * @param format the name, the style, `explode` and `allowReserved` of the parameter.
      * @param type how the text of an item becomes a value.
      * @param isRequired whether the parameter is required.
+     * @param rule the rules of the schema the items must keep, such as `minItems` or the rules of each item, which
+     * report through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the items, or `null` if the parameter is missing or an item is malformed.
      * @since 1.0.0
      */
@@ -130,12 +142,14 @@ public class Input internal constructor(private val request: Request) {
         format: ParameterFormat,
         type: ParameterType<T>,
         isRequired: Boolean,
+        rule: (ValidationScope.(List<T>) -> Unit)? = null,
     ): List<T>? {
         val path = pathOf(place, format)
         val reading = reader.read(place = place, format = format, shape = ParameterShape.Items)
         val items = present(reading, path, isRequired) as? ParameterValue.Items ?: return null
         val values = items.values.mapNotNull { text -> decoded(type, text) }
-        return values.takeIf { values.size == items.values.size } ?: findings.violated(path)
+        val complete = values.takeIf { values.size == items.values.size }
+        return complete?.let { found -> findings.ruled(found, path, rule) } ?: findings.violated(path)
     }
 
     /**
@@ -150,6 +164,8 @@ public class Input internal constructor(private val request: Request) {
      * @param deserializer the deserializer of the object.
      * @param isRequired whether the parameter is required.
      * @param fields the names of the properties, which an exploded form or cookie needs to find them.
+     * @param rule the rules of the schema a decoded value must keep, such as `minimum` or `maxLength`, which report
+     * through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the object, or `null` if it is missing or malformed.
      * @since 1.0.0
      */
@@ -159,13 +175,15 @@ public class Input internal constructor(private val request: Request) {
         deserializer: DeserializationStrategy<T>,
         isRequired: Boolean,
         fields: Set<String> = emptySet(),
+        rule: (ValidationScope.(T) -> Unit)? = null,
     ): T? {
         val path = pathOf(place, format)
         val reading = reader.read(place = place, format = format, shape = ParameterShape.Fields, fields = fields)
         val found = present(reading, path, isRequired) as? ParameterValue.Fields ?: return null
         val element = JsonObject(found.values.mapValues { (_, text) -> JsonPrimitive(text) })
         val value = contained { context.codecs.json.decodeFromJsonElement(deserializer, element) }.getOrNull()
-        return value ?: findings.violated(path)
+        val checked = value?.let { found -> findings.ruled(findings.checked(found, path), path, rule) }
+        return checked ?: findings.violated(path)
     }
 
     /**
@@ -175,6 +193,8 @@ public class Input internal constructor(private val request: Request) {
      * @param mediaType the media type of the parameter, such as `application/x-www-form-urlencoded`.
      * @param deserializer the deserializer of the value.
      * @param isRequired whether the parameter is required.
+     * @param rule the rules of the schema a decoded value must keep, such as `minimum` or `maxLength`, which report
+     * through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the value, or `null` if the query is missing or malformed.
      * @since 1.0.0
      */
@@ -182,12 +202,12 @@ public class Input internal constructor(private val request: Request) {
         mediaType: MediaType,
         deserializer: DeserializationStrategy<T>,
         isRequired: Boolean,
+        rule: (ValidationScope.(T) -> Unit)? = null,
     ): T? {
         val reading = QueryString.read(request.rawQuery?.takeIf(String::isNotEmpty), mediaType)
         val text = present(reading, QUERY, isRequired) as? ParameterValue.Text ?: return null
         val content = text.value.encodeToByteString()
-        val decoding = context.codecs.decode(deserializer, content, mediaType)
-        return (decoding as? Decoding.Decoded)?.value ?: findings.violated(QUERY)
+        return findings.decoded(QUERY, context.codecs.decode(deserializer, content, mediaType), rule)
     }
 
     /**
@@ -265,6 +285,8 @@ public class Input internal constructor(private val request: Request) {
      * @param deserializer the deserializer of the value.
      * @param isRequired whether the part is required.
      * @param mediaType the media type of a part that names none; `text/plain` by default.
+     * @param rule the rules of the schema a decoded value must keep, such as `minimum` or `maxLength`, which report
+     * through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the value, or `null` if the part is missing or malformed.
      * @since 1.0.0
      */
@@ -274,11 +296,13 @@ public class Input internal constructor(private val request: Request) {
         deserializer: DeserializationStrategy<T>,
         isRequired: Boolean,
         mediaType: MediaType = MediaType.TextPlain,
+        rule: (ValidationScope.(T) -> Unit)? = null,
     ): T? {
         val found = parts?.firstOrNull { part -> part.name == name }
         val path = pathOf(name)
         if (found == null) return findings.absent(path, isRequired && parts != null)
-        return decodedPart(part = found, path = path, deserializer = deserializer, mediaType = mediaType)
+        val type = found.contentType ?: mediaType
+        return findings.decoded(path, context.codecs.decode(deserializer, found.content, type), rule)
     }
 
     /**
@@ -289,6 +313,8 @@ public class Input internal constructor(private val request: Request) {
      * @param name the name of the parts in their `Content-Disposition`.
      * @param deserializer the deserializer of an item.
      * @param mediaType the media type of a part that names none; `text/plain` by default.
+     * @param rule the rules of the schema the items must keep, such as `minItems` or the rules of each item, which
+     * report through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the items, empty if there is no such part, or `null` if [parts] is `null` or a part is malformed.
      * @since 1.0.0
      */
@@ -297,13 +323,14 @@ public class Input internal constructor(private val request: Request) {
         name: String,
         deserializer: DeserializationStrategy<T>,
         mediaType: MediaType = MediaType.TextPlain,
+        rule: (ValidationScope.(List<T>) -> Unit)? = null,
     ): List<T>? {
         val named = parts?.filter { part -> part.name == name } ?: return null
         val path = pathOf(name)
         val values = named.mapNotNull { part ->
-            decodedPart(part = part, path = path, deserializer = deserializer, mediaType = mediaType)
+            findings.decoded(path, context.codecs.decode(deserializer, part.content, part.contentType ?: mediaType))
         }
-        return values.takeIf { values.size == named.size }
+        return values.takeIf { values.size == named.size }?.let { complete -> findings.ruled(complete, path, rule) }
     }
 
     /**
@@ -320,6 +347,8 @@ public class Input internal constructor(private val request: Request) {
      * @param deserializer the deserializer of the value.
      * @param isRequired whether the field is required.
      * @param mediaType the media type of the text; `application/json` by default.
+     * @param rule the rules of the schema a decoded value must keep, such as `minimum` or `maxLength`, which report
+     * through [ValidationScope.fail] under the path of the parameter; none by default.
      * @return the value, or `null` if the field is missing or malformed.
      * @since 1.0.0
      */
@@ -329,10 +358,11 @@ public class Input internal constructor(private val request: Request) {
         deserializer: DeserializationStrategy<T>,
         isRequired: Boolean,
         mediaType: MediaType = MediaType.Json,
+        rule: (ValidationScope.(T) -> Unit)? = null,
     ): T? {
         val path = pathOf(name)
         val content = text?.encodeToByteString() ?: return findings.absent(path, isRequired)
-        return findings.decoded(path, context.codecs.decode(deserializer, content, mediaType))
+        return findings.decoded(path, context.codecs.decode(deserializer, content, mediaType), rule)
     }
 
     /**
@@ -437,16 +467,6 @@ public class Input internal constructor(private val request: Request) {
             is BodyRead.Refused -> refused(read.refusal)
             is BodyRead.Read -> read.value.takeIf { bytes -> bytes.size > 0 } ?: findings.absent(BODY, isRequired)
         }
-
-    private fun <T : Any> decodedPart(
-        part: MultipartPart,
-        path: String,
-        deserializer: DeserializationStrategy<T>,
-        mediaType: MediaType,
-    ): T? {
-        val type = part.contentType ?: mediaType
-        return findings.decoded(path, context.codecs.decode(deserializer, part.content, type))
-    }
 
     private fun present(reading: ParameterReading, path: String, isRequired: Boolean): ParameterValue? =
         when (reading) {

@@ -476,24 +476,27 @@ public final class com/davils/kapi/runtime/server/request/Input {
 	public static synthetic fun body$default (Lcom/davils/kapi/runtime/server/request/Input;Lkotlinx/serialization/DeserializationStrategy;ZLjava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun bytes (ZLjava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun bytes$default (Lcom/davils/kapi/runtime/server/request/Input;ZLjava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun field (Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;)Ljava/lang/Object;
-	public static synthetic fun field$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun fields (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lkotlinx/serialization/DeserializationStrategy;ZLjava/util/Set;)Ljava/lang/Object;
-	public static synthetic fun fields$default (Lcom/davils/kapi/runtime/server/request/Input;Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lkotlinx/serialization/DeserializationStrategy;ZLjava/util/Set;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun field (Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun field$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun fields (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lkotlinx/serialization/DeserializationStrategy;ZLjava/util/Set;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun fields$default (Lcom/davils/kapi/runtime/server/request/Input;Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lkotlinx/serialization/DeserializationStrategy;ZLjava/util/Set;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun isValid ()Z
-	public final fun items (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;Z)Ljava/util/List;
+	public final fun items (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;ZLkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun items$default (Lcom/davils/kapi/runtime/server/request/Input;Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
 	public final fun multipart (Z)Lcom/davils/kapi/runtime/server/request/MultipartUpload;
-	public final fun part (Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;)Ljava/lang/Object;
-	public static synthetic fun part$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)Ljava/lang/Object;
-	public final fun partItems (Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Ljava/util/List;
-	public static synthetic fun partItems$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/negotiation/MediaType;ILjava/lang/Object;)Ljava/util/List;
+	public final fun part (Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun part$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;ZLcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun partItems (Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static synthetic fun partItems$default (Lcom/davils/kapi/runtime/server/request/Input;Ljava/util/List;Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/util/List;
 	public final fun parts (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun queryString (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/serialization/DeserializationStrategy;Z)Ljava/lang/Object;
+	public final fun queryString (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/serialization/DeserializationStrategy;ZLkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun queryString$default (Lcom/davils/kapi/runtime/server/request/Input;Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/serialization/DeserializationStrategy;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun refused ()Lcom/davils/kapi/runtime/server/reply/Reply;
 	public fun toString ()Ljava/lang/String;
 	public final fun upload (ZLjava/util/List;)Lcom/davils/kapi/runtime/server/request/Upload;
 	public static synthetic fun upload$default (Lcom/davils/kapi/runtime/server/request/Input;ZLjava/util/List;ILjava/lang/Object;)Lcom/davils/kapi/runtime/server/request/Upload;
-	public final fun value (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;Z)Ljava/lang/Object;
+	public final fun value (Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;ZLkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun value$default (Lcom/davils/kapi/runtime/server/request/Input;Lcom/davils/kapi/runtime/server/request/Place;Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/server/request/ParameterType;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/davils/kapi/runtime/server/request/MultipartUpload {

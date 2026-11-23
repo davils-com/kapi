@@ -66,6 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The rules of a schema for parameters, parts and form fields** in the server runtime: `Input.value`, `items`,
+  `fields`, `queryString`, `part`, `partItems` and `field` take an optional `rule: ValidationScope.(T) -> Unit` that
+  checks a decoded value, such as `minimum`, `maxLength` or `pattern`, and reports through `fail` under the path of
+  the parameter, such as `query.limit`; a violation at the root of a validated value is reported under that path
+  instead of one with a trailing dot, and one of an item without a dot before its index.
 - **Methods are case-sensitive** (RFC 9110 §9.1) in every runtime: `apiCall` sends the method exactly as written and
   refuses one that is no token with `CallFailure.ParameterRefused("method")`, `Operation` and `Request.of` serve any
   token as written, so a custom method `purge` of `additionalOperations` is no `PURGE`, and the mock API and the
