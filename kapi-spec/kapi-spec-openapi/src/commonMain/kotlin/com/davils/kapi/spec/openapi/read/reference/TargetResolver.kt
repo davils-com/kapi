@@ -16,6 +16,7 @@
 
 package com.davils.kapi.spec.openapi.read.reference
 
+import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kaml.document.pointer.at
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
@@ -66,6 +67,7 @@ internal class TargetResolver(
             pending.from.report(DiagnosticCodes.REFERENCE_UNRESOLVED, message)
         }
         if (document == null || node == null) return
+        SelfBase.adopt(Cursor(scope = scope, document = document, pointer = JsonPointer.ROOT, node = document.root))
         val cursor = Cursor(scope = scope, document = document, pointer = target.pointer, node = node)
         keep(target, TargetReaders.read(pending.kind, cursor))
     }

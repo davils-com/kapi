@@ -26,6 +26,13 @@ public class OpenIdConnectSchemeBuilder internal constructor() :
 
     public var description: String? = null
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var isDeprecated: Boolean = false
+
     public var openIdConnectUrl: String = ""
 
     override fun assemble(): OpenIdConnectScheme = OpenIdConnectScheme(this)

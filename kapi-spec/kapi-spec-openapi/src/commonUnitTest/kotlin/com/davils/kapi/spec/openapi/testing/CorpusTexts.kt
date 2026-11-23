@@ -3332,6 +3332,125 @@ components:
         count: { type: integer }
 """
 
+private val openapi32: String = """# Every field that OpenAPI 3.2 adds, in one catalog.
+#
+# The document names itself by `${'$'}self`, searches with the QUERY method, copies with a method of its own,
+# reads the whole query string as one parameter, streams items, nests its tags and signs in on devices.
+
+openapi: 3.2.0
+${'$'}self: https://api.example.com/catalog/openapi.yaml
+
+info:
+  title: catalog
+  version: 1.0.0
+
+servers:
+  - url: https://api.example.com
+    name: production
+    description: Live
+
+tags:
+  - name: catalog
+    summary: Catalog
+    kind: nav
+  - name: items
+    summary: Items
+    parent: catalog
+    kind: nav
+  - name: beta
+    kind: badge
+
+paths:
+  /items:
+    parameters:
+      - name: session
+        in: cookie
+        style: cookie
+        schema: { type: object, properties: { id: { type: string } } }
+    get:
+      operationId: listItems
+      tags: [items]
+      parameters:
+        - name: filter
+          in: querystring
+          content:
+            application/x-www-form-urlencoded:
+              schema: { type: object, properties: { name: { type: string } } }
+              examples:
+                byName:
+                  dataValue: { name: lamp }
+                  serializedValue: name=lamp
+      responses:
+        "200":
+          description: The items
+          content:
+            text/event-stream:
+              itemSchema: { type: object, properties: { data: { type: string } } }
+            multipart/mixed:
+              prefixEncoding:
+                - contentType: application/json
+              itemEncoding:
+                contentType: multipart/form-data
+                encoding:
+                  file: { contentType: image/png }
+    query:
+      operationId: searchItems
+      tags: [items, beta]
+      requestBody:
+        content:
+          application/json:
+            ${'$'}ref: "#/components/mediaTypes/Filter"
+      responses:
+        "200":
+          summary: Matching items
+          content:
+            application/jsonl:
+              itemSchema: { ${'$'}ref: "#/components/schemas/Item" }
+    additionalOperations:
+      COPY:
+        operationId: copyItems
+        security:
+          - device: [read]
+        responses:
+          "204":
+            summary: Copied
+
+components:
+  schemas:
+    Item:
+      type: object
+      discriminator:
+        propertyName: kind
+        mapping: { lamp: Lamp }
+        defaultMapping: Item
+      xml: { name: item, nodeType: element }
+      properties:
+        kind: { type: string }
+        id: { type: string, xml: { nodeType: attribute } }
+    Lamp:
+      type: object
+
+  mediaTypes:
+    Filter:
+      schema: { type: object, properties: { name: { type: string } } }
+
+  securitySchemes:
+    device:
+      type: oauth2
+      oauth2MetadataUrl: https://id.example.com/.well-known/oauth-authorization-server
+      flows:
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://id.example.com/device
+          tokenUrl: https://id.example.com/token
+          scopes:
+            read: Read the items
+    legacy:
+      type: apiKey
+      name: X-Key
+      in: header
+      deprecated: true
+"""
+
 internal val corpusTexts: Map<String, String> = mapOf(
     "additional-properties" to additionalProperties,
     "callbacks-and-webhooks" to callbacksAndWebhooks,
@@ -3342,6 +3461,7 @@ internal val corpusTexts: Map<String, String> = mapOf(
     "mail-routes" to mailRoutes,
     "mail" to mail,
     "neutral" to neutral,
+    "openapi-32" to openapi32,
     "openobject" to openobject,
     "outbound" to outbound,
     "parameters-constraints" to parametersConstraints,

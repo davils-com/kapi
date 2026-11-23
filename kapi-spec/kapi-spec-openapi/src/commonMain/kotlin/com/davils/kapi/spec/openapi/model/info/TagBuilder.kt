@@ -25,9 +25,30 @@ public class TagBuilder internal constructor() : ElementBuilder<Tag>() {
 
     public var name: String = ""
 
+    /**
+     * A short summary of the tag, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var summary: String? = null
+
     public var description: String? = null
 
     public var externalDocs: ExternalDocs? = null
+
+    /**
+     * The name of the tag this tag is nested in, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var parent: String? = null
+
+    /**
+     * What the tag is for, such as `nav`, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var kind: String? = null
 
     override fun assemble(): Tag = Tag(this)
 }

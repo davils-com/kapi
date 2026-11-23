@@ -23,6 +23,7 @@ internal object Shapes {
         subject = "The document",
         fields = listOf(
             FieldRule(Keys.OPENAPI, FieldKind.Value, isRequired = true),
+            FieldRule(Keys.SELF, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.INFO, FieldKind.Mapping, isRequired = true),
             FieldRule(Keys.SERVERS, FieldKind.Sequence),
             FieldRule(Keys.PATHS, FieldKind.Mapping),
@@ -71,6 +72,7 @@ internal object Shapes {
         fields = listOf(
             FieldRule(Keys.URL, FieldKind.Text, isRequired = true),
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
+            FieldRule(Keys.NAME, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.VARIABLES, FieldKind.Mapping),
         ),
     )
@@ -96,8 +98,11 @@ internal object Shapes {
         subject = "A tag",
         fields = listOf(
             FieldRule(Keys.NAME, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.SUMMARY, FieldKind.Text, since = VersionFamily.V32),
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
             FieldRule(Keys.EXTERNAL_DOCS, FieldKind.Mapping),
+            FieldRule(Keys.PARENT, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.KIND, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 
@@ -115,6 +120,8 @@ internal object Shapes {
             FieldRule(Keys.HEAD, FieldKind.Mapping),
             FieldRule(Keys.PATCH, FieldKind.Mapping),
             FieldRule(Keys.TRACE, FieldKind.Mapping),
+            FieldRule(Keys.QUERY, FieldKind.Mapping, since = VersionFamily.V32),
+            FieldRule(Keys.ADDITIONAL_OPERATIONS, FieldKind.Mapping, since = VersionFamily.V32),
             FieldRule(Keys.SERVERS, FieldKind.Sequence),
             FieldRule(Keys.PARAMETERS, FieldKind.Sequence),
         ),
@@ -187,9 +194,12 @@ internal object Shapes {
         subject = "A media type",
         fields = listOf(
             FieldRule(Keys.SCHEMA, FieldKind.Schema),
+            FieldRule(Keys.ITEM_SCHEMA, FieldKind.Schema, since = VersionFamily.V32),
             FieldRule(Keys.EXAMPLE, FieldKind.Value),
             FieldRule(Keys.EXAMPLES, FieldKind.Mapping),
             FieldRule(Keys.ENCODING, FieldKind.Mapping),
+            FieldRule(Keys.PREFIX_ENCODING, FieldKind.Sequence, since = VersionFamily.V32),
+            FieldRule(Keys.ITEM_ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -201,13 +211,17 @@ internal object Shapes {
             FieldRule(Keys.STYLE, FieldKind.Text),
             FieldRule(Keys.EXPLODE, FieldKind.Flag),
             FieldRule(Keys.ALLOW_RESERVED, FieldKind.Flag),
+            FieldRule(Keys.ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
+            FieldRule(Keys.PREFIX_ENCODING, FieldKind.Sequence, since = VersionFamily.V32),
+            FieldRule(Keys.ITEM_ENCODING, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
     val response: ObjectShape = ObjectShape(
         subject = "A response",
         fields = listOf(
-            FieldRule(Keys.DESCRIPTION, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.SUMMARY, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.DESCRIPTION, FieldKind.Text, isRequired = true, optionalSince = VersionFamily.V32),
             FieldRule(Keys.HEADERS, FieldKind.Mapping),
             FieldRule(Keys.CONTENT, FieldKind.Mapping),
             FieldRule(Keys.LINKS, FieldKind.Mapping),
@@ -221,6 +235,8 @@ internal object Shapes {
             FieldRule(Keys.DESCRIPTION, FieldKind.Text),
             FieldRule(Keys.VALUE, FieldKind.Value),
             FieldRule(Keys.EXTERNAL_VALUE, FieldKind.Text),
+            FieldRule(Keys.DATA_VALUE, FieldKind.Value, since = VersionFamily.V32),
+            FieldRule(Keys.SERIALIZED_VALUE, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 
@@ -249,6 +265,7 @@ internal object Shapes {
             FieldRule(Keys.LINKS, FieldKind.Mapping),
             FieldRule(Keys.CALLBACKS, FieldKind.Mapping),
             FieldRule(Keys.PATH_ITEMS, FieldKind.Mapping, since = VersionFamily.V31),
+            FieldRule(Keys.MEDIA_TYPES, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -263,6 +280,8 @@ internal object Shapes {
             FieldRule(Keys.BEARER_FORMAT, FieldKind.Text),
             FieldRule(Keys.FLOWS, FieldKind.Mapping),
             FieldRule(Keys.OPEN_ID_CONNECT_URL, FieldKind.Text),
+            FieldRule(Keys.OAUTH2_METADATA_URL, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.DEPRECATED, FieldKind.Flag, since = VersionFamily.V32),
         ),
     )
 
@@ -273,6 +292,7 @@ internal object Shapes {
             FieldRule(Keys.PASSWORD, FieldKind.Mapping),
             FieldRule(Keys.CLIENT_CREDENTIALS, FieldKind.Mapping),
             FieldRule(Keys.AUTHORIZATION_CODE, FieldKind.Mapping),
+            FieldRule(Keys.DEVICE_AUTHORIZATION, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -286,11 +306,22 @@ internal object Shapes {
         ),
     )
 
+    val deviceFlow: ObjectShape = ObjectShape(
+        subject = "A device authorization flow of a security scheme",
+        fields = listOf(
+            FieldRule(Keys.DEVICE_AUTHORIZATION_URL, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.TOKEN_URL, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.REFRESH_URL, FieldKind.Text),
+            FieldRule(Keys.SCOPES, FieldKind.Mapping),
+        ),
+    )
+
     val discriminator: ObjectShape = ObjectShape(
         subject = "A discriminator",
         fields = listOf(
             FieldRule(Keys.PROPERTY_NAME, FieldKind.Text, isRequired = true),
             FieldRule(Keys.MAPPING, FieldKind.Mapping),
+            FieldRule(Keys.DEFAULT_MAPPING, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 
@@ -302,6 +333,7 @@ internal object Shapes {
             FieldRule(Keys.PREFIX, FieldKind.Text),
             FieldRule(Keys.ATTRIBUTE, FieldKind.Flag),
             FieldRule(Keys.WRAPPED, FieldKind.Flag),
+            FieldRule(Keys.NODE_TYPE, FieldKind.Text, since = VersionFamily.V32),
         ),
     )
 

@@ -32,9 +32,21 @@ public class PathItem internal constructor(builder: PathItemBuilder) :
 
     public val operations: Map<Method, Operation> = builder.operations.toMap()
 
+    /**
+     * The operations of methods without a field of their own, such as `COPY`, keyed by the name of the method as it
+     * is sent in a request; empty before OpenAPI 3.2.
+     *
+     * A key is not checked when the path item is built; a reading reports a key that is no method token or that
+     * names a method with a field of its own, such as `GET`.
+     *
+     * @since 1.0.0
+     */
+    public val additionalOperations: Map<String, Operation> = builder.additionalOperations.toMap()
+
     public val servers: List<Server> = builder.servers.toList()
 
     public val parameters: List<Referable<Parameter>> = builder.parameters.toList()
 
-    override val identity: List<Any?> get() = listOf(reference, summary, description, operations, servers, parameters)
+    override val identity: List<Any?>
+        get() = listOf(reference, summary, description, operations, additionalOperations, servers, parameters)
 }

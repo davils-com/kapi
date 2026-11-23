@@ -20,9 +20,16 @@ public class HttpScheme internal constructor(builder: HttpSchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public override val isDeprecated: Boolean = builder.isDeprecated
+
     public val scheme: String = builder.scheme
 
     public val bearerFormat: String? = builder.bearerFormat
 
-    override val identity: List<Any?> get() = listOf(description, scheme, bearerFormat)
+    override val identity: List<Any?> get() = listOf(description, scheme, bearerFormat, isDeprecated)
 }

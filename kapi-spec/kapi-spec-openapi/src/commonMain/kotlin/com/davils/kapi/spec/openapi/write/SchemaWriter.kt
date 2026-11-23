@@ -26,7 +26,9 @@ import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
 import com.davils.kapi.spec.openapi.model.schema.Xml
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal class SchemaWriter(family: VersionFamily) {
+internal class SchemaWriter(family: VersionFamily, private val info: InfoWriter) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     private val keywords: SchemaKeywordWriter = SchemaKeywordWriter(family)
 
     fun schema(schema: Schema): YamlNode = when (schema) {
@@ -92,13 +94,14 @@ internal class SchemaWriter(family: VersionFamily) {
         out.text(Keys.CONTENT_MEDIA_TYPE, schema.contentMediaType)
         out.node(Keys.DISCRIMINATOR, schema.discriminator?.let(::discriminator))
         out.node(Keys.XML, schema.xml?.let(::xml))
-        out.node(Keys.EXTERNAL_DOCS, schema.externalDocs?.let(InfoWriter::externalDocs))
+        out.node(Keys.EXTERNAL_DOCS, schema.externalDocs?.let(info::externalDocs))
     }
 
     private fun discriminator(discriminator: Discriminator): YamlNode {
         val out = Out()
         out.text(Keys.PROPERTY_NAME, discriminator.propertyName)
         out.map(Keys.MAPPING, discriminator.mapping) { target -> yamlScalar(target) }
+        out.text(Keys.DEFAULT_MAPPING, discriminator.defaultMapping?.takeIf { isCurrent })
         return out.build(discriminator)
     }
 
@@ -109,6 +112,7 @@ internal class SchemaWriter(family: VersionFamily) {
         out.text(Keys.PREFIX, xml.prefix)
         out.flag(Keys.ATTRIBUTE, xml.isAttribute)
         out.flag(Keys.WRAPPED, xml.isWrapped)
+        out.text(Keys.NODE_TYPE, xml.nodeType?.takeIf { isCurrent }?.keyword)
         return out.build(xml)
     }
 }

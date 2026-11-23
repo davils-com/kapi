@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.info.Contact
 import com.davils.kapi.spec.openapi.model.info.ExternalDocs
 import com.davils.kapi.spec.openapi.model.info.Info
@@ -26,7 +27,9 @@ import com.davils.kapi.spec.openapi.model.server.Server
 import com.davils.kapi.spec.openapi.model.server.ServerVariable
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal object InfoWriter {
+internal class InfoWriter(family: VersionFamily) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun info(info: Info): YamlNode {
         val out = Out()
         out.text(Keys.TITLE, info.title)
@@ -49,8 +52,11 @@ internal object InfoWriter {
     fun tag(tag: Tag): YamlNode {
         val out = Out()
         out.text(Keys.NAME, tag.name)
+        out.text(Keys.SUMMARY, tag.summary?.takeIf { isCurrent })
         out.text(Keys.DESCRIPTION, tag.description)
         out.node(Keys.EXTERNAL_DOCS, tag.externalDocs?.let(::externalDocs))
+        out.text(Keys.PARENT, tag.parent?.takeIf { isCurrent })
+        out.text(Keys.KIND, tag.kind?.takeIf { isCurrent })
         return out.build(tag)
     }
 
@@ -58,6 +64,7 @@ internal object InfoWriter {
         val out = Out()
         out.text(Keys.URL, server.url)
         out.text(Keys.DESCRIPTION, server.description)
+        out.text(Keys.NAME, server.name?.takeIf { isCurrent })
         out.map(Keys.VARIABLES, server.variables, ::variable)
         return out.build(server)
     }

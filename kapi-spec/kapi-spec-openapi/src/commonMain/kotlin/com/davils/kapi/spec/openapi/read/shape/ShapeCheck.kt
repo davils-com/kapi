@@ -39,7 +39,7 @@ internal class ShapeCheck private constructor(
 
     private fun fields(cursor: Cursor): Fields {
         cursor.entries().forEach(::sort)
-        val missing = shape.required.filter { rule -> rule.name !in present }
+        val missing = shape.required.filter { rule -> rule.isRequiredIn(family) && rule.name !in present }
         missing.forEach { rule ->
             cursor.report(DiagnosticCodes.FIELD_MISSING, "${shape.subject} needs the field ${rule.name}")
         }

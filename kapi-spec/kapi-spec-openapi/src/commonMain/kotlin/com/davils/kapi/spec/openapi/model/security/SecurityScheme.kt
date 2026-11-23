@@ -23,4 +23,11 @@ public sealed class SecurityScheme(
     builder: ElementBuilder<*>,
 ) : Element(builder) {
     public abstract val description: String?
+
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public abstract val isDeprecated: Boolean
 }

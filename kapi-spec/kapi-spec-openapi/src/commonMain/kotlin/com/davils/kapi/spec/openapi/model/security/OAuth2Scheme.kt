@@ -20,7 +20,23 @@ public class OAuth2Scheme internal constructor(builder: OAuth2SchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public override val isDeprecated: Boolean = builder.isDeprecated
+
     public val flows: OAuthFlows = builder.flows
 
-    override val identity: List<Any?> get() = listOf(description, flows)
+    /**
+     * The address of the OAuth 2.0 authorization server metadata of RFC 8414; `null` before OpenAPI 3.2.
+     *
+     * The address is not checked when it is read; a client fetches it only through its destination policy.
+     *
+     * @since 1.0.0
+     */
+    public val oauth2MetadataUrl: String? = builder.oauth2MetadataUrl
+
+    override val identity: List<Any?> get() = listOf(description, flows, oauth2MetadataUrl, isDeprecated)
 }

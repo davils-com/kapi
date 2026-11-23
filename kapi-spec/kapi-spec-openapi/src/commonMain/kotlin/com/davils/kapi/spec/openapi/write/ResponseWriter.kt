@@ -17,12 +17,19 @@
 package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.content.Link
 import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.content.Responses
 import com.davils.kapi.spec.openapi.read.shape.Keys
 
-internal class ResponseWriter(private val content: ContentWriter) {
+internal class ResponseWriter(
+    private val content: ContentWriter,
+    private val info: InfoWriter,
+    family: VersionFamily,
+) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun responses(responses: Responses): YamlNode {
         val out = Out()
         responses.entries.forEach { (status, response) ->
@@ -33,9 +40,10 @@ internal class ResponseWriter(private val content: ContentWriter) {
 
     fun response(response: Response): YamlNode {
         val out = Out()
+        out.text(Keys.SUMMARY, response.summary?.takeIf { isCurrent })
         out.text(Keys.DESCRIPTION, response.description)
         out.map(Keys.HEADERS, response.headers, ReferenceWriter.referables(content::header))
-        out.map(Keys.CONTENT, response.content, content::mediaType)
+        out.map(Keys.CONTENT, response.content, ReferenceWriter.referables(content::mediaType))
         out.map(Keys.LINKS, response.links, ReferenceWriter.referables(::link))
         return out.build(response)
     }
@@ -47,7 +55,7 @@ internal class ResponseWriter(private val content: ContentWriter) {
         out.map(Keys.PARAMETERS, link.parameters, Nodes::of)
         out.node(Keys.REQUEST_BODY, link.requestBody?.let(Nodes::of))
         out.text(Keys.DESCRIPTION, link.description)
-        out.node(Keys.SERVER, link.server?.let(InfoWriter::server))
+        out.node(Keys.SERVER, link.server?.let(info::server))
         return out.build(link)
     }
 }

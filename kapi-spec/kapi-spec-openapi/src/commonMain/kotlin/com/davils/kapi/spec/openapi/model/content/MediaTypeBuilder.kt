@@ -28,11 +28,27 @@ public class MediaTypeBuilder internal constructor() : ElementBuilder<MediaType>
 
     public var schema: Schema? = null
 
+    /**
+     * The schema of each item of a sequential media type, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var itemSchema: Schema? = null
+
     public var example: Value? = null
 
     internal val examples: MutableMap<String, Referable<Example>> = linkedMapOf()
 
     internal val encoding: MutableMap<String, Encoding> = linkedMapOf()
+
+    internal val prefixEncoding: MutableList<Encoding> = mutableListOf()
+
+    /**
+     * The encoding of every item that the prefix encodings do not cover, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var itemEncoding: Encoding? = null
 
     override fun assemble(): MediaType = MediaType(this)
 }

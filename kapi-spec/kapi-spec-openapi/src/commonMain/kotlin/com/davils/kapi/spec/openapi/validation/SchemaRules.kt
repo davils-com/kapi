@@ -27,8 +27,6 @@ private const val SCHEMA_POINTER: String = "#/components/schemas/"
 internal object SchemaRules {
     private val nothing: NumberValue = NumberValue.of(0L)
 
-    private val local: Regex = Regex("[^#/]+")
-
     fun check(scope: RuleScope) {
         scope.all<SchemaDefinition>().forEach { schema ->
             constraints(scope, schema)
@@ -68,13 +66,20 @@ internal object SchemaRules {
         val known = components?.schemas.orEmpty().keys
         val values = schema.discriminator?.mapping.orEmpty()
         val names = values.mapValues { (_, target) -> target.removePrefix(SCHEMA_POINTER) }
-        val unknown = names.filterValues { name -> local.matches(name) && name !in known }
+        val unknown = names.filterValues { name -> isLocal(name) && name !in known }
         unknown.keys.forEach { value ->
             val target = values.getValue(value)
             val message = "The discriminator maps $value to $target, which is no schema of the components"
             scope.report(DiagnosticCodes.SCHEMA_DISCRIMINATOR_MAPPING, message, schema)
         }
+        val fallback = schema.discriminator?.defaultMapping ?: return
+        val name = fallback.removePrefix(SCHEMA_POINTER)
+        if (!isLocal(name) || name in known) return
+        val message = "The discriminator maps by default to $fallback, which is no schema of the components"
+        scope.report(DiagnosticCodes.SCHEMA_DISCRIMINATOR_MAPPING, message, schema)
     }
+
+    private fun isLocal(name: String): Boolean = name.isNotEmpty() && name.none { character -> character in "#/" }
 
     private fun cycle(scope: RuleScope, schema: SchemaDefinition) {
         val limit = scope.limits.maximumReferenceHops

@@ -43,9 +43,10 @@ internal object ResponseReader {
         cursor.keyed("The responses of an operation", ResponsesBuilder()) { entry -> status(this, entry) }
 
     fun response(cursor: Cursor): Response = cursor.read(Shapes.response, ResponseBuilder()) { fields ->
-        description = fields.text(Keys.DESCRIPTION).orEmpty()
+        summary = fields.text(Keys.SUMMARY)
+        description = fields.text(Keys.DESCRIPTION)
         headers.putAll(fields.entries(Keys.HEADERS).referables(ReferenceKind.Header, ParameterReader::header))
-        content.putAll(fields.entries(Keys.CONTENT).mapped(ContentReader::mediaType))
+        content.putAll(ContentReader.content(fields))
         links.putAll(fields.entries(Keys.LINKS).referables(ReferenceKind.Link, ::link))
     }
 

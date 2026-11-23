@@ -18,7 +18,9 @@ package com.davils.kapi.spec.openapi.write
 
 import com.davils.kaml.core.node.YamlNode
 import com.davils.kaml.core.node.yamlSequence
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.path.Callback
+import com.davils.kapi.spec.openapi.model.path.Method
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.Paths
@@ -27,7 +29,12 @@ import com.davils.kapi.spec.openapi.read.shape.Keys
 internal class PathWriter(
     private val content: ContentWriter,
     private val responses: ResponseWriter,
+    private val info: InfoWriter,
+    private val security: SecurityWriter,
+    family: VersionFamily,
 ) {
+    private val isCurrent: Boolean = family.isAtLeast(VersionFamily.V32)
+
     fun paths(paths: Paths): YamlNode {
         val out = Out()
         paths.items.forEach { (template, item) -> out.node(template.value, pathItem(item)) }
@@ -39,8 +46,11 @@ internal class PathWriter(
         out.text(Keys.REFERENCE, item.reference?.text)
         out.text(Keys.SUMMARY, item.summary)
         out.text(Keys.DESCRIPTION, item.description)
-        item.operations.forEach { (method, operation) -> out.node(method.keyword, operation(operation)) }
-        out.list(Keys.SERVERS, item.servers, InfoWriter::server)
+        val methods = item.operations.filterKeys { method -> method != Method.Query || isCurrent }
+        methods.forEach { (method, operation) -> out.node(method.keyword, operation(operation)) }
+        val additional = item.additionalOperations.takeIf { isCurrent }.orEmpty()
+        out.map(Keys.ADDITIONAL_OPERATIONS, additional, ::operation)
+        out.list(Keys.SERVERS, item.servers, info::server)
         out.list(Keys.PARAMETERS, item.parameters, ReferenceWriter.referables(content::parameter))
         return out.build(item)
     }
@@ -56,14 +66,14 @@ internal class PathWriter(
         out.texts(Keys.TAGS, operation.tags)
         out.text(Keys.SUMMARY, operation.summary)
         out.text(Keys.DESCRIPTION, operation.description)
-        out.node(Keys.EXTERNAL_DOCS, operation.externalDocs?.let(InfoWriter::externalDocs))
+        out.node(Keys.EXTERNAL_DOCS, operation.externalDocs?.let(info::externalDocs))
         out.text(Keys.OPERATION_ID, operation.operationId)
         out.list(Keys.PARAMETERS, operation.parameters, ReferenceWriter.referables(content::parameter))
         exchange(out, operation)
         out.flag(Keys.DEPRECATED, operation.isDeprecated)
-        val security = operation.security?.map(SecurityWriter::requirement)
-        out.node(Keys.SECURITY, security?.let { requirements -> yamlSequence(requirements) })
-        out.list(Keys.SERVERS, operation.servers, InfoWriter::server)
+        val requirements = operation.security?.map(security::requirement)
+        out.node(Keys.SECURITY, requirements?.let { written -> yamlSequence(written) })
+        out.list(Keys.SERVERS, operation.servers, info::server)
         return out.build(operation)
     }
 

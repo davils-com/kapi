@@ -22,6 +22,7 @@ import com.davils.kapi.spec.openapi.fixture.document
 import com.davils.kapi.spec.openapi.fixture.head31
 import com.davils.kapi.spec.openapi.fixture.reading
 import com.davils.kapi.spec.openapi.fixture.reading31
+import com.davils.kapi.spec.openapi.fixture.reading32
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -75,6 +76,26 @@ class SchemaAndPatternRulesTest : FunSpec({
 
             reading.codes() shouldBe listOf(code, code)
             reading.diagnostics.last().message shouldContain "maps dog to #/components/schemas/Dog"
+        }
+
+        test("names a schema of the components by default, by name or by pointer") {
+            val defaults = listOf("Cat", "'#/components/schemas/Cat'", "'other.yaml#/Bird'")
+            defaults.forEach { target ->
+                val pet = "    Pet: {discriminator: {propertyName: kind, defaultMapping: $target}}"
+                val reading = reading32(schemas + "    Cat: {type: object}" + pet)
+
+                reading.diagnostics.shouldBeEmpty()
+            }
+        }
+
+        test("is an error when it names a schema by default that does not exist") {
+            listOf("Dog", "'#/components/schemas/Dog'").forEach { target ->
+                val pet = "    Pet: {discriminator: {propertyName: kind, defaultMapping: $target}}"
+                val reading = reading32(schemas + pet)
+
+                reading.codes() shouldBe listOf(DiagnosticCodes.SCHEMA_DISCRIMINATOR_MAPPING)
+                reading.diagnostics.single().message shouldContain "maps by default to"
+            }
         }
     }
 

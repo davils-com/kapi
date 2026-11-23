@@ -49,8 +49,11 @@ internal object InfoReader {
 
     fun tag(cursor: Cursor): Tag = cursor.read(Shapes.tag, TagBuilder()) { fields ->
         name = fields.text(Keys.NAME).orEmpty()
+        summary = fields.text(Keys.SUMMARY)
         description = fields.text(Keys.DESCRIPTION)
         externalDocs = fields.cursor(Keys.EXTERNAL_DOCS)?.let(::externalDocs)
+        parent = fields.text(Keys.PARENT)
+        kind = fields.text(Keys.KIND)
     }
 
     private fun contact(cursor: Cursor): Contact = cursor.read(Shapes.contact, ContactBuilder()) { fields ->

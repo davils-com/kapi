@@ -25,11 +25,40 @@ public class MediaType internal constructor(builder: MediaTypeBuilder) :
     Element(builder) {
     public val schema: Schema? = builder.schema
 
+    /**
+     * The schema of each item of a sequential media type, such as an event of `text/event-stream` or a line of
+     * `application/jsonl`; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val itemSchema: Schema? = builder.itemSchema
+
     public val example: Value? = builder.example
 
     public val examples: Map<String, Referable<Example>> = builder.examples.toMap()
 
     public val encoding: Map<String, Encoding> = builder.encoding.toMap()
 
-    override val identity: List<Any?> get() = listOf(schema, example, examples, encoding)
+    /**
+     * The encodings of the leading items of a sequential or multipart media type, by position; empty before
+     * OpenAPI 3.2.
+     *
+     * A reading reports it beside [encoding].
+     *
+     * @since 1.0.0
+     */
+    public val prefixEncoding: List<Encoding> = builder.prefixEncoding.toList()
+
+    /**
+     * The encoding of every item of a sequential or multipart media type that [prefixEncoding] does not cover;
+     * `null` before OpenAPI 3.2.
+     *
+     * A reading reports it beside [encoding].
+     *
+     * @since 1.0.0
+     */
+    public val itemEncoding: Encoding? = builder.itemEncoding
+
+    override val identity: List<Any?>
+        get() = listOf(schema, itemSchema, example, examples, encoding, prefixEncoding, itemEncoding)
 }

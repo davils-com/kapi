@@ -30,6 +30,7 @@ internal object ServerReader {
     fun server(cursor: Cursor): Server = cursor.read(Shapes.server, ServerBuilder()) { fields ->
         url = fields.text(Keys.URL).orEmpty()
         description = fields.text(Keys.DESCRIPTION)
+        name = fields.text(Keys.NAME)
         variables.putAll(fields.entries(Keys.VARIABLES).mapped(::variable))
     }
 

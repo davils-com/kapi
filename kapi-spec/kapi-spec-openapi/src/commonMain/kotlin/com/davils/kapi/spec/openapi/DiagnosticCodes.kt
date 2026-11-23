@@ -181,6 +181,90 @@ public object DiagnosticCodes {
 
     public val COMPONENT_NAME: ViolationCode = code("component.name")
 
+    /**
+     * A key of additionalOperations of a path item is no HTTP method token as RFC 9110 defines it, which is one or more
+     * letters, digits and the special characters a token allows, such as `-` and `.`.
+     *
+     * @since 1.0.0
+     */
+    public val PATH_METHOD_TOKEN: ViolationCode = code("path.method-token")
+
+    /**
+     * A key of additionalOperations of a path item names a method that has a field of its own, such as GET or get,
+     * which the path item declares by that field.
+     *
+     * @since 1.0.0
+     */
+    public val PATH_METHOD_FIXED: ViolationCode = code("path.method-fixed")
+
+    /**
+     * A parameter in querystring has a schema, a style, explode or allowReserved, or a content without exactly one
+     * media type; the whole query string is described by the one media type of its content.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING: ViolationCode = code("parameter.querystring")
+
+    /**
+     * An operation has more than one parameter in querystring, counting those of its path item.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING_REPEATED: ViolationCode = code("parameter.querystring-repeated")
+
+    /**
+     * An operation has a parameter in querystring and a parameter in query, counting those of its path item; the query
+     * string is described either whole or by its parameters.
+     *
+     * @since 1.0.0
+     */
+    public val PARAMETER_QUERYSTRING_WITH_QUERY: ViolationCode = code("parameter.querystring-with-query")
+
+    /**
+     * The parent of a tag names no tag of the document.
+     *
+     * @since 1.0.0
+     */
+    public val TAG_PARENT_UNKNOWN: ViolationCode = code("tag.parent-unknown")
+
+    /**
+     * The parents of a tag lead back to the tag, so the tags form no hierarchy.
+     *
+     * @since 1.0.0
+     */
+    public val TAG_PARENT_CYCLE: ViolationCode = code("tag.parent-cycle")
+
+    /**
+     * A media type or an encoding has encoding beside prefixEncoding or itemEncoding; the properties of a part are
+     * encoded by name or its items by position, never both.
+     *
+     * @since 1.0.0
+     */
+    public val MEDIA_TYPE_ENCODING: ViolationCode = code("media-type.encoding")
+
+    /**
+     * The nodeType of the XML object of a schema is none of element, attribute, text, cdata and none.
+     *
+     * @since 1.0.0
+     */
+    public val SCHEMA_XML_NODE_TYPE: ViolationCode = code("schema.xml-node-type")
+
+    /**
+     * The XML object of a schema has attribute or wrapped beside nodeType; OpenAPI 3.2 deprecates both in favour of
+     * nodeType and forbids them beside it. A warning by default.
+     *
+     * @since 1.0.0
+     */
+    public val SCHEMA_XML_DEPRECATED: ViolationCode = code("schema.xml-deprecated")
+
+    /**
+     * The $self of a document is no URI reference without a fragment, or no absolute URI follows from it and the
+     * address the document was read from; its references then resolve against that address.
+     *
+     * @since 1.0.0
+     */
+    public val DOCUMENT_SELF: ViolationCode = code("document.self")
+
     public val all: List<ViolationCode> = listOf(
         SOURCE_ENCODING,
         SOURCE_MULTIPLE_DOCUMENTS,
@@ -257,6 +341,17 @@ public object DiagnosticCodes {
         EXAMPLE_SHAPE,
         MEDIA_TYPE_INVALID,
         COMPONENT_NAME,
+        PATH_METHOD_TOKEN,
+        PATH_METHOD_FIXED,
+        PARAMETER_QUERYSTRING,
+        PARAMETER_QUERYSTRING_REPEATED,
+        PARAMETER_QUERYSTRING_WITH_QUERY,
+        TAG_PARENT_UNKNOWN,
+        TAG_PARENT_CYCLE,
+        MEDIA_TYPE_ENCODING,
+        SCHEMA_XML_NODE_TYPE,
+        SCHEMA_XML_DEPRECATED,
+        DOCUMENT_SELF,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("openapi.$name")

@@ -67,7 +67,7 @@ class KeywordsTest : FunSpec({
     }
 
     context("a style") {
-        test("has a default for every placement") {
+        test("has a default for every placement but the query string") {
             val path = ParameterStyle.defaultFor(ParameterPlacement.Path)
             val query = ParameterStyle.defaultFor(ParameterPlacement.Query)
             val header = ParameterStyle.defaultFor(ParameterPlacement.Header)
@@ -79,6 +79,7 @@ class KeywordsTest : FunSpec({
                 ParameterStyle.Simple,
                 ParameterStyle.Form,
             )
+            ParameterStyle.defaultFor(ParameterPlacement.QueryString) shouldBe null
         }
 
         test("is allowed only where the specification allows it") {
@@ -87,6 +88,10 @@ class KeywordsTest : FunSpec({
             ParameterStyle.DeepObject.isAllowedIn(ParameterPlacement.Query) shouldBe true
             ParameterStyle.Form.isAllowedIn(ParameterPlacement.Header) shouldBe false
             ParameterStyle.Form.isAllowedIn(ParameterPlacement.Cookie) shouldBe true
+            ParameterStyle.Cookie.isAllowedIn(ParameterPlacement.Cookie) shouldBe true
+            ParameterStyle.Cookie.isAllowedIn(ParameterPlacement.Query) shouldBe false
+            ParameterStyle.entries.filter { style -> style.isAllowedIn(ParameterPlacement.QueryString) } shouldBe
+                emptyList()
         }
     }
 

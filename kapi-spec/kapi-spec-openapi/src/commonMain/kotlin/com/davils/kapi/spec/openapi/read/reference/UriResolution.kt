@@ -42,6 +42,14 @@ internal object UriResolution {
         return normalized?.let { resolved -> DocumentUri.parseOrNull(resolved.toString().substringBefore('#')) }
     }
 
+    fun selfOf(retrieval: DocumentUri, text: String): DocumentUri? {
+        val reference = parse(text)?.takeIf { parsed -> parsed.fragment == null }
+        val relative = reference?.takeUnless(UriReference::isAbsolute)
+        val absolute = reference?.takeIf(UriReference::isAbsolute)
+        val resolved = relative?.let { parsed -> documentOf(retrieval, parsed) }
+        return resolved ?: absolute?.let { parsed -> DocumentUri.parseOrNull(parsed.normalize().toString()) }
+    }
+
     fun pointerOf(reference: UriReference): JsonPointer? {
         val decoded = decode(reference.fragment.orEmpty()) ?: return null
         return JsonPointer.parseOrNull(decoded)

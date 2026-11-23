@@ -20,5 +20,12 @@ public class MutualTlsScheme internal constructor(builder: MutualTlsSchemeBuilde
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
-    override val identity: List<Any?> get() = listOf(description)
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public override val isDeprecated: Boolean = builder.isDeprecated
+
+    override val identity: List<Any?> get() = listOf(description, isDeprecated)
 }

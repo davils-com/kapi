@@ -24,6 +24,14 @@ public enum class ParameterStyle(public val keyword: String) {
     SpaceDelimited("spaceDelimited"),
     PipeDelimited("pipeDelimited"),
     DeepObject("deepObject"),
+
+    /**
+     * The form of the `Cookie` header, which joins the pairs of an object by `; `; a cookie parameter takes it from
+     * OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    Cookie("cookie"),
     ;
 
     public fun isAllowedIn(placement: ParameterPlacement): Boolean = this in allowed.getValue(placement)
@@ -40,10 +48,18 @@ public enum class ParameterStyle(public val keyword: String) {
             ParameterPlacement.Path to setOf(Matrix, Label, Simple),
             ParameterPlacement.Query to setOf(Form, SpaceDelimited, PipeDelimited, DeepObject),
             ParameterPlacement.Header to setOf(Simple),
-            ParameterPlacement.Cookie to setOf(Form),
+            ParameterPlacement.Cookie to setOf(Form, Cookie),
+            ParameterPlacement.QueryString to emptySet(),
         )
 
-        public fun defaultFor(placement: ParameterPlacement): ParameterStyle = defaults.getValue(placement)
+        /**
+         * The style a parameter in [placement] has when it names none.
+         *
+         * @param placement the place of the parameter.
+         * @return the style, or `null` for the query string, which has no style.
+         * @since 1.0.0
+         */
+        public fun defaultFor(placement: ParameterPlacement): ParameterStyle? = defaults[placement]
 
         public fun fromKeyword(keyword: String): ParameterStyle? = entries.firstOrNull { it.keyword == keyword }
     }

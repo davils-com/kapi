@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.model.content
 
 import com.davils.kapi.spec.core.model.ElementBuilder
+import com.davils.kapi.spec.core.model.Referable
 import com.davils.kore.core.annotation.DavilsDsl
 
 @DavilsDsl
@@ -26,7 +27,7 @@ public class RequestBodyBuilder internal constructor() :
 
     public var description: String? = null
 
-    internal val content: MutableMap<String, MediaType> = linkedMapOf()
+    internal val content: MutableMap<String, Referable<MediaType>> = linkedMapOf()
 
     public var isRequired: Boolean = false
 

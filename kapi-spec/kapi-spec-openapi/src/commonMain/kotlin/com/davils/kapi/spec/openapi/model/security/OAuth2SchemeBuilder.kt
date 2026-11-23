@@ -26,7 +26,21 @@ public class OAuth2SchemeBuilder internal constructor() :
 
     public var description: String? = null
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var isDeprecated: Boolean = false
+
     public var flows: OAuthFlows = OAuthFlowsBuilder().build()
+
+    /**
+     * The address of the authorization server metadata, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var oauth2MetadataUrl: String? = null
 
     override fun assemble(): OAuth2Scheme = OAuth2Scheme(this)
 }

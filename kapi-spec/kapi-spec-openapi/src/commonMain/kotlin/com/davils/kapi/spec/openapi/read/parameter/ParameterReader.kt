@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.openapi.read.parameter
 
 import com.davils.kapi.spec.openapi.DiagnosticCodes
+import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.model.parameter.HeaderBuilder
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
@@ -25,7 +26,6 @@ import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.content.ContentReader
-import com.davils.kapi.spec.openapi.read.mapped
 import com.davils.kapi.spec.openapi.read.read
 import com.davils.kapi.spec.openapi.read.schema.SchemaReader
 import com.davils.kapi.spec.openapi.read.shape.Fields
@@ -33,6 +33,11 @@ import com.davils.kapi.spec.openapi.read.shape.Keys
 import com.davils.kapi.spec.openapi.read.shape.Shapes
 
 internal object ParameterReader {
+    private val places: Map<Boolean, String> = mapOf(
+        false to "path, query, header or cookie",
+        true to "path, query, querystring, header or cookie",
+    )
+
     fun parameter(cursor: Cursor): Parameter = cursor.read(Shapes.parameter, ParameterBuilder()) { fields ->
         name = fields.text(Keys.NAME).orEmpty()
         placement = placementOf(fields) ?: placement
@@ -44,7 +49,7 @@ internal object ParameterReader {
         isExploded = fields.flagOrNull(Keys.EXPLODE)
         isReservedAllowed = fields.flag(Keys.ALLOW_RESERVED)
         schema = fields.cursor(Keys.SCHEMA)?.let(SchemaReader::read)
-        content.putAll(fields.entries(Keys.CONTENT).mapped(ContentReader::mediaType))
+        content.putAll(ContentReader.content(fields))
         example = fields.value(Keys.EXAMPLE)
         examples.putAll(ContentReader.examples(fields))
     }
@@ -56,14 +61,15 @@ internal object ParameterReader {
         style = styleOf(fields)
         isExploded = fields.flagOrNull(Keys.EXPLODE)
         schema = fields.cursor(Keys.SCHEMA)?.let(SchemaReader::read)
-        content.putAll(fields.entries(Keys.CONTENT).mapped(ContentReader::mediaType))
+        content.putAll(ContentReader.content(fields))
         example = fields.value(Keys.EXAMPLE)
         examples.putAll(ContentReader.examples(fields))
     }
 
     fun styleOf(fields: Fields): ParameterStyle? {
         val text = fields.text(Keys.STYLE) ?: return null
-        val style = ParameterStyle.fromKeyword(text)
+        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
+        val style = ParameterStyle.fromKeyword(text)?.takeIf { known -> known != ParameterStyle.Cookie || isCurrent }
         if (style == null) {
             fields.report(Keys.STYLE, DiagnosticCodes.PARAMETER_STYLE, "'$text' is no style of a parameter")
         }
@@ -72,11 +78,14 @@ internal object ParameterReader {
 
     private fun placementOf(fields: Fields): ParameterPlacement? {
         val text = fields.text(Keys.IN) ?: return null
+        val isCurrent = fields.cursor.scope.family.isAtLeast(VersionFamily.V32)
         val placement = ParameterPlacement.fromKeyword(text)
-        if (placement == null) {
-            val message = "'$text' is no place of a parameter, which is path, query, header or cookie"
+        val known = placement?.takeIf { found -> found != ParameterPlacement.QueryString || isCurrent }
+        if (known == null) {
+            val listed = places.getValue(isCurrent)
+            val message = "'$text' is no place of a parameter, which is $listed"
             fields.report(Keys.IN, DiagnosticCodes.PARAMETER_LOCATION, message)
         }
-        return placement
+        return known
     }
 }

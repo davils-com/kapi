@@ -35,6 +35,8 @@ public class PathItemBuilder internal constructor() : ElementBuilder<PathItem>()
 
     internal val operations: MutableMap<Method, Operation> = linkedMapOf()
 
+    internal val additionalOperations: MutableMap<String, Operation> = linkedMapOf()
+
     internal val servers: MutableList<Server> = mutableListOf()
 
     internal val parameters: MutableList<Referable<Parameter>> = mutableListOf()

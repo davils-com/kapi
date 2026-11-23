@@ -29,5 +29,14 @@ public class Xml internal constructor(builder: XmlBuilder) : Element(builder) {
 
     public val isWrapped: Boolean = builder.isWrapped
 
-    override val identity: List<Any?> get() = listOf(name, namespace, prefix, isAttribute, isWrapped)
+    /**
+     * The kind of node the schema maps to; `null` when the document leaves it out and before OpenAPI 3.2.
+     *
+     * A reading warns when [isAttribute] or [isWrapped] are written beside it, which OpenAPI 3.2 deprecates.
+     *
+     * @since 1.0.0
+     */
+    public val nodeType: XmlNodeType? = builder.nodeType
+
+    override val identity: List<Any?> get() = listOf(name, namespace, prefix, isAttribute, isWrapped, nodeType)
 }

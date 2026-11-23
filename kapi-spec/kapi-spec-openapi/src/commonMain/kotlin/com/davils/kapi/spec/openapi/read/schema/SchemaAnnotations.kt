@@ -16,11 +16,13 @@
 
 package com.davils.kapi.spec.openapi.read.schema
 
+import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.model.schema.Discriminator
 import com.davils.kapi.spec.openapi.model.schema.DiscriminatorBuilder
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinitionBuilder
 import com.davils.kapi.spec.openapi.model.schema.Xml
 import com.davils.kapi.spec.openapi.model.schema.XmlBuilder
+import com.davils.kapi.spec.openapi.model.schema.XmlNodeType
 import com.davils.kapi.spec.openapi.read.Cursor
 import com.davils.kapi.spec.openapi.read.Values
 import com.davils.kapi.spec.openapi.read.info.InfoReader
@@ -50,6 +52,7 @@ internal object SchemaAnnotations {
         cursor.read(Shapes.discriminator, DiscriminatorBuilder()) { fields ->
             propertyName = fields.text(Keys.PROPERTY_NAME).orEmpty()
             mapping.putAll(fields.textsByName(Keys.MAPPING))
+            defaultMapping = fields.text(Keys.DEFAULT_MAPPING)
         }
 
     private fun xml(cursor: Cursor): Xml = cursor.read(Shapes.xml, XmlBuilder()) { fields ->
@@ -58,5 +61,21 @@ internal object SchemaAnnotations {
         prefix = fields.text(Keys.PREFIX)
         isAttribute = fields.flag(Keys.ATTRIBUTE)
         isWrapped = fields.flag(Keys.WRAPPED)
+        nodeType = nodeTypeOf(fields)
+    }
+
+    private fun nodeTypeOf(fields: Fields): XmlNodeType? {
+        val text = fields.text(Keys.NODE_TYPE) ?: return null
+        val type = XmlNodeType.fromKeyword(text)
+        if (type == null) {
+            val message = "'$text' is no node type, which is element, attribute, text, cdata or none"
+            fields.report(Keys.NODE_TYPE, DiagnosticCodes.SCHEMA_XML_NODE_TYPE, message)
+        }
+        val legacy = listOf(Keys.ATTRIBUTE, Keys.WRAPPED).filter { name -> fields.cursor(name) != null }
+        legacy.forEach { name ->
+            val message = "$name is deprecated and stands beside nodeType, which replaces it"
+            fields.report(name, DiagnosticCodes.SCHEMA_XML_DEPRECATED, message)
+        }
+        return type
     }
 }

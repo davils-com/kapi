@@ -73,6 +73,28 @@ internal fun Reading.errors(): List<ViolationCode> {
 
 internal suspend fun reading30(lines: List<String>): Reading = reading(head30 + lines)
 
+internal val head32: List<String> = listOf("openapi: 3.2.0") + head31.drop(1)
+
+internal suspend fun reading32(vararg lines: String): Reading = reading32(lines.asList())
+
+internal suspend fun reading32(lines: List<String>): Reading {
+    val hasSection = lines.any { line -> sections.any(line::startsWith) }
+    val completion = listOf(EMPTY_PATHS).filterNot { hasSection }
+    return reading(head32 + lines + completion)
+}
+
+internal fun Reading.readable(): Document {
+    val read = (this as? Reading.Read)?.document
+    val partial = (this as? Reading.Invalid)?.partial
+    return checkNotNull(read ?: partial)
+}
+
+internal suspend fun Document.rewritten(): Document {
+    val text = OpenApi.write(this)
+    val reading = OpenApi.reader().read(Source.Text(text, petstoreUri))
+    return reading.readable()
+}
+
 internal fun Reading.codes(): List<ViolationCode> = diagnostics.map(Diagnostic::code)
 
 internal fun Reading.document(): Document {

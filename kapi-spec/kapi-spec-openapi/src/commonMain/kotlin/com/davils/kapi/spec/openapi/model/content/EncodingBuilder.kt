@@ -36,5 +36,17 @@ public class EncodingBuilder internal constructor() : ElementBuilder<Encoding>()
 
     public var isReservedAllowed: Boolean = false
 
+    internal val encoding: MutableMap<String, Encoding> = linkedMapOf()
+
+    internal val prefixEncoding: MutableList<Encoding> = mutableListOf()
+
+    /**
+     * The encoding of every item of a nested part that the prefix encodings do not cover, written from OpenAPI 3.2
+     * on.
+     *
+     * @since 1.0.0
+     */
+    public var itemEncoding: Encoding? = null
+
     override fun assemble(): Encoding = Encoding(this)
 }

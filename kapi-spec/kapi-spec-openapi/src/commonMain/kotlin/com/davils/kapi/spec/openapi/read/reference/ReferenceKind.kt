@@ -27,4 +27,5 @@ internal enum class ReferenceKind(val label: String) {
     Link("a link"),
     Callback("a callback"),
     PathItem("a path item"),
+    MediaType("a media type"),
 }

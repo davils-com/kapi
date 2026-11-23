@@ -61,5 +61,7 @@ internal object ComponentsReader {
         builder.headers.putAll(headers.referables(ReferenceKind.Header, ParameterReader::header))
         val schemes = fields.entries(Keys.SECURITY_SCHEMES)
         builder.securitySchemes.putAll(schemes.referables(ReferenceKind.SecurityScheme, SecuritySchemeReader::scheme))
+        val media = fields.entries(Keys.MEDIA_TYPES)
+        builder.mediaTypes.putAll(media.referables(ReferenceKind.MediaType, ContentReader::mediaType))
     }
 }

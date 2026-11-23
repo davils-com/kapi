@@ -24,5 +24,15 @@ public class Discriminator internal constructor(builder: DiscriminatorBuilder) :
 
     public val mapping: Map<String, String> = builder.mapping.toMap()
 
-    override val identity: List<Any?> get() = listOf(propertyName, mapping)
+    /**
+     * The schema, by name or by reference, of a value whose discriminating property is missing or maps to no schema;
+     * `null` before OpenAPI 3.2.
+     *
+     * A reading reports a name that is no schema of the components, as it does for [mapping].
+     *
+     * @since 1.0.0
+     */
+    public val defaultMapping: String? = builder.defaultMapping
+
+    override val identity: List<Any?> get() = listOf(propertyName, mapping, defaultMapping)
 }

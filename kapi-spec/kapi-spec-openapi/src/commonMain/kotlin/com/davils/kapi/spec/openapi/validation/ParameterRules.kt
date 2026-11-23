@@ -45,7 +45,8 @@ internal object ParameterRules {
     private fun parameter(scope: RuleScope, parameter: Parameter) {
         val hasSchema = parameter.schema != null
         val isOneOf = hasSchema != parameter.content.isNotEmpty()
-        if (!isOneOf || parameter.content.size > 1) {
+        val isWhole = parameter.placement == ParameterPlacement.QueryString
+        if (!isWhole && (!isOneOf || parameter.content.size > 1)) {
             val message = "The parameter ${parameter.name} needs either a schema or a content with one media type"
             scope.report(DiagnosticCodes.PARAMETER_SHAPE, message, parameter)
         }

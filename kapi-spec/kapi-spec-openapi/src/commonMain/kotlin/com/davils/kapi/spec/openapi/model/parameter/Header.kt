@@ -36,7 +36,7 @@ public class Header internal constructor(builder: HeaderBuilder) : Element(build
 
     public val schema: Schema? = builder.schema
 
-    public val content: Map<String, MediaType> = builder.content.toMap()
+    public val content: Map<String, Referable<MediaType>> = builder.content.toMap()
 
     public val example: Value? = builder.example
 
