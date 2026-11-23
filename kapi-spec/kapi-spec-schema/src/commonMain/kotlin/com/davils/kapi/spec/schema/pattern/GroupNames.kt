@@ -28,7 +28,7 @@ internal fun readGroupName(text: String, start: Int): Scanned<String>? {
     while (isValid && index < text.length && text[index] != '>') {
         val character = readNameCharacter(text, index)
         isValid = character != null && isNameCharacter(character.value, isFirst = name.isEmpty())
-        character?.let { name.appendCodePoint(it.value) }
+        character?.let { name.appendPoint(it.value) }
         index = character?.end ?: index
     }
     val isClosed = isValid && index < text.length && name.isNotEmpty()

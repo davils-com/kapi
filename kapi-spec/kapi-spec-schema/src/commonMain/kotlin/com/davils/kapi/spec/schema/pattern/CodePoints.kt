@@ -41,7 +41,7 @@ internal fun combine(high: Int, low: Int): Int {
     return SUPPLEMENTARY_START + highBits + (low - LOW_SURROGATE_START)
 }
 
-internal fun StringBuilder.appendCodePoint(codePoint: Int): StringBuilder {
+internal fun StringBuilder.appendPoint(codePoint: Int): StringBuilder {
     val isSupplementary = codePoint >= SUPPLEMENTARY_START
     if (!isSupplementary) return append(codePoint.toChar())
     val offset = codePoint - SUPPLEMENTARY_START

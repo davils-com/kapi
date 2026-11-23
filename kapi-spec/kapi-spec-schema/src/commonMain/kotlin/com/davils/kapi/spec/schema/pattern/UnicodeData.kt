@@ -31,13 +31,21 @@ internal object UnicodeData {
         "No", "Pc", "Pd", "Pe", "Pf", "Pi", "Po", "Ps", "Sc", "Sk", "Sm", "So", "Zl", "Zp", "Zs",
     )
 
+    val BIDI_CLASSES: List<String> = listOf(
+        "", "L", "R", "AL", "EN", "ES", "ET", "AN", "CS", "NSM", "BN", "B", "S",
+        "WS", "ON", "LRE", "LRO", "RLE", "RLO", "PDF", "LRI", "RLI", "FSI", "PDI",
+    )
+
     private val categories: UnicodeRuns by lazy { UnicodeRuns.valued(GENERAL_CATEGORY_RUNS, CATEGORY_WIDTH) }
+    private val bidiClasses: UnicodeRuns by lazy { UnicodeRuns.valued(BIDI_CLASS_RUNS, CATEGORY_WIDTH) }
     private val scripts: UnicodeRuns by lazy { UnicodeRuns.valued(SCRIPT_RUNS, SCRIPT_WIDTH) }
     private val scriptNames: List<List<String>> by lazy {
         SCRIPT_NAMES.split(' ').map { names -> names.split(',') }
     }
 
     fun categoryOf(codePoint: Int): String = CATEGORY_CODES[categories.valueOf(codePoint)]
+
+    fun bidiClassOf(codePoint: Int): String = BIDI_CLASSES[bidiClasses.valueOf(codePoint)]
 
     fun categorySet(codes: Set<String>): CodePointSet {
         val indices = codes.map { code -> CATEGORY_CODES.indexOf(code) }

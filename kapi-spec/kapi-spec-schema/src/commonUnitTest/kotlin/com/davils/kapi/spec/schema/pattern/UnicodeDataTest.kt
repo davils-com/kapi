@@ -68,6 +68,17 @@ class UnicodeDataTest : FunSpec({
         }
     }
 
+    context("the bidirectional classes") {
+        test("name the class of a code point") {
+            UnicodeData.bidiClassOf('A'.code) shouldBe "L"
+            UnicodeData.bidiClassOf('1'.code) shouldBe "EN"
+            UnicodeData.bidiClassOf('א'.code) shouldBe "R"
+            UnicodeData.bidiClassOf('ا'.code) shouldBe "AL"
+            UnicodeData.bidiClassOf('٠'.code) shouldBe "AN"
+            UnicodeData.bidiClassOf('́'.code) shouldBe "NSM"
+        }
+    }
+
     context("the binary properties") {
         test("compile by every name") {
             val refused = BinaryProperty.entries.flatMap { it.names }.filter { name ->
