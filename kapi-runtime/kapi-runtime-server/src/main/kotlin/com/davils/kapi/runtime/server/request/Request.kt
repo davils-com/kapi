@@ -193,11 +193,12 @@ public class Request internal constructor(
          * tools, never as a way around the checks of a mounted server.
          *
          * @param operation the name of the operation the request is for.
-         * @param method the method, a token in upper case, such as `GET` or `QUERY`.
+         * @param method the method, a token kept as written because methods are case-sensitive, such as `GET` or
+         * `QUERY`.
          * @param path the path as it was sent, without the query.
          * @param configure sets the query, the header fields, the body, the peer, the principal and the server.
          * @return the request.
-         * @throws IllegalArgumentException if [method] is no token in upper case, [path] does not start with `/`, a
+         * @throws IllegalArgumentException if [method] is no token, [path] does not start with `/`, a
          * header field is no field a request can carry, or the query is longer than the limits of the server allow,
          * has too many fields or is no percent-encoded UTF-8.
          * @throws com.davils.kore.core.validation.report.ValidationException if a setting of the server is invalid.
@@ -209,7 +210,7 @@ public class Request internal constructor(
             path: String,
             configure: RequestBuilder.() -> Unit = {},
         ): Request {
-            require(PathTemplates.isMethod(method)) { "The method of a request is a token in upper case" }
+            require(PathTemplates.isMethod(method)) { "The method of a request is a token" }
             require(path.startsWith('/')) { "The path of a request starts with /" }
             val builder = RequestBuilder()
             builder.configure()

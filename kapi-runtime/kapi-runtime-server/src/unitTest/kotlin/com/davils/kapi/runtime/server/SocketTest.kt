@@ -35,9 +35,12 @@ import com.davils.krypt.x509.Certificate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.ktor.server.application.Application
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
+
+private const val PETS: String = "/pets"
 
 private const val SELF: String = "GET /nodes/self"
 
@@ -98,15 +101,24 @@ class SocketTest : FunSpec({
         }
 
         test("serves the method QUERY and a method of its own as they came over the wire") {
-            val query = Operation(name = "search", method = "QUERY", path = "/pets") { reply(OK) }
-            val purge = Operation(name = "purge", method = "PURGE", path = "/pets") { reply(OK) }
+            val query = Operation(name = "search", method = "QUERY", path = PETS) { reply(OK) }
+            val purge = Operation(name = "purge", method = "PURGE", path = PETS) { reply(OK) }
 
             onCio(routes = {
                 operation(query)
                 operation(purge)
             }) { port ->
-                statusLineOf(port, request("QUERY /pets")) shouldContain "200"
-                statusLineOf(port, request("PURGE /pets")) shouldContain "200"
+                statusLineOf(port, request("QUERY $PETS")) shouldContain "200"
+                statusLineOf(port, request("PURGE $PETS")) shouldContain "200"
+            }
+        }
+
+        test("serves methods case-sensitively, so a method in lower case is a method of its own") {
+            val lower = Operation(name = "purgeLower", method = "purge", path = PETS) { reply(OK) }
+
+            onCio(routes = { operation(lower) }) { port ->
+                statusLineOf(port, request("purge $PETS")) shouldContain "200"
+                statusLineOf(port, request("PURGE $PETS")) shouldNotContain "200"
             }
         }
 

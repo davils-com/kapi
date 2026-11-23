@@ -30,7 +30,7 @@ internal class ExchangeCheck(document: Document, basePath: String, configure: Co
 
     suspend fun findings(index: Int, exchange: RecordedExchange): List<ContractFinding> {
         val request = exchange.request
-        val method = request.method.uppercase()
+        val method = request.method
         return when (val match = operations.match(method, request.path)) {
             OperationMatch.Unknown -> {
                 val findings = Findings(exchange = index, operation = "$method ${request.path}")

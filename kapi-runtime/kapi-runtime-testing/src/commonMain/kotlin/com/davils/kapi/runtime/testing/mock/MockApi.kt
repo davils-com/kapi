@@ -19,6 +19,7 @@
 package com.davils.kapi.runtime.testing.mock
 
 import com.davils.kapi.runtime.core.codec.Codecs
+import com.davils.kapi.runtime.core.header.FieldSyntax
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.problem.Problem
 import com.davils.kapi.runtime.testing.internal.PathMatch
@@ -139,13 +140,13 @@ public class MockApi internal constructor(builder: MockApiBuilder) : Validatable
     /**
      * Returns the exchanges that the route of [method] and [path] answered.
      *
-     * @param method the method, compared without case.
+     * @param method the method, compared exactly, because methods are case-sensitive.
      * @param path the path template of the route, such as `/pets/{id}`.
      * @return the exchanges, in order.
      * @since 1.0.0
      */
     public fun exchangesOf(method: String, path: String): List<RecordedExchange> = exchanges.filter { exchange ->
-        exchange.route == path && exchange.request.method.equals(method, ignoreCase = true)
+        exchange.route == path && exchange.request.method == method
     }
 
     /**
@@ -194,8 +195,7 @@ public class MockApi internal constructor(builder: MockApiBuilder) : Validatable
     private suspend fun exchangeOf(request: RecordedRequest): RecordedExchange {
         val path = relativeOf(request.path)
         val matches = path?.let { found -> matchesOf(found) }.orEmpty()
-        val method = request.method.uppercase()
-        val candidates = matches.filter { (route, _) -> route.method == method }
+        val candidates = matches.filter { (route, _) -> route.method == request.method }
         val chosen = candidates.maxByOrNull { (_, match) -> match.literals }
         val response = chosen?.let { (route, match) -> answered(route = route, match = match, request = request) }
         val unmatched = problemOf(status = NOT_ALLOWED, title = "No route of the mock API answers the method")
@@ -247,5 +247,5 @@ public class MockApi internal constructor(builder: MockApiBuilder) : Validatable
         return RecordedResponse(status = answer.status, headers = headers, body = answer.content)
     }
 
-    private fun isMethod(method: String): Boolean = method.isNotEmpty() && method.all { char -> char in 'A'..'Z' }
+    private fun isMethod(method: String): Boolean = FieldSyntax.isToken(method)
 }

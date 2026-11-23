@@ -129,7 +129,7 @@ class RequestFactoryTest : FunSpec({
         }
 
         test("refuses a method, a path, a header or a query the server would never read") {
-            shouldThrow<IllegalArgumentException> { Request.of(operation = OPERATION, method = "get", path = PATH) }
+            shouldThrow<IllegalArgumentException> { Request.of(operation = OPERATION, method = "G ET", path = PATH) }
             shouldThrow<IllegalArgumentException> { Request.of(operation = OPERATION, method = POST, path = "probe") }
             shouldThrow<IllegalArgumentException> { request { header(name = "a b", value = "1") } }
             shouldThrow<IllegalArgumentException> { request { header(name = "a", value = "1\r\nb: 2") } }

@@ -49,8 +49,8 @@ internal class Operations(document: Document, basePath: String) {
     }
 
     private fun found(method: String, match: PathMatch, item: PathItem): OperationMatch {
-        val operation = Method.fromKeyword(method.lowercase())?.let(item.operations::get)
-            ?: item.additionalOperations[method]
+        val standard = Method.fromKeyword(method.lowercase()).takeIf { method.none(Char::isLowerCase) }
+        val operation = standard?.let(item.operations::get) ?: item.additionalOperations[method]
         return operation?.let { declared ->
             OperationMatch.Found(
                 template = match.template,

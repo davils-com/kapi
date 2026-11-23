@@ -55,7 +55,8 @@ class InternalsTest : FunSpec({
     context("the grammar of path templates and methods") {
         test("accepts tokens and templates and refuses what a route cannot carry") {
             PathTemplates.isMethod("QUERY") shouldBe true
-            PathTemplates.isMethod("Query") shouldBe false
+            PathTemplates.isMethod("Query") shouldBe true
+            PathTemplates.isMethod("Q UERY") shouldBe false
             PathTemplates.isMethod("") shouldBe false
             FieldSyntax.isToken("a b") shouldBe false
             PathTemplates.isTemplate("/a/{b}-{c}.json") shouldBe true

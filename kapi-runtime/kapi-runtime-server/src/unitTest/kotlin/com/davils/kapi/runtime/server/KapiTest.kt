@@ -130,7 +130,7 @@ class KapiTest : FunSpec({
             shouldThrow<IllegalArgumentException> {
                 Operation(
                     name = "a",
-                    method = "get",
+                    method = "G ET",
                     path = "/a",
                 ) { reply(CREATED) }
             }

@@ -26,7 +26,7 @@ private const val NAME_SYMBOLS: String = "_-."
 private const val MOST_TEMPLATE_LENGTH: Int = 2_048
 
 internal object PathTemplates {
-    fun isMethod(text: String): Boolean = FieldSyntax.isToken(text) && text.none(Char::isLowerCase)
+    fun isMethod(text: String): Boolean = FieldSyntax.isToken(text)
 
     fun isTemplate(text: String): Boolean {
         val isShaped = text.startsWith('/') && text.length <= MOST_TEMPLATE_LENGTH && '?' !in text && '#' !in text

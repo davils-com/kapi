@@ -92,7 +92,7 @@ class CallBuilderTest : FunSpec({
     context("a call that is built") {
         test("has its path, its parameters, what it accepts, its body and its security in their order") {
             val body = "{}".encodeToByteString()
-            val call = apiCall(operation = GET_PET, method = "put") {
+            val call = apiCall(operation = GET_PET, method = "PUT") {
                 path("/pets/")
                 path(simple, text("a b"))
                 path("/notes")
@@ -114,6 +114,19 @@ class CallBuilderTest : FunSpec({
             call.body shouldBe Body(json, body)
             call.security shouldBe listOf(bearer)
             call.refusal shouldBe null
+        }
+
+        test("keeps its method as written, because methods are case-sensitive, and refuses one that is no token") {
+            val lower = apiCall(operation = GET_PET, method = "purge")
+            val upper = apiCall(operation = GET_PET, method = "PURGE")
+            val spaced = apiCall(operation = GET_PET, method = "G ET")
+            val empty = apiCall(operation = GET_PET, method = "")
+
+            lower.method shouldBe "purge"
+            upper.method shouldBe "PURGE"
+            lower.refusal shouldBe null
+            spaced.refusal shouldBe CallFailure.ParameterRefused("method")
+            empty.refusal shouldBe CallFailure.ParameterRefused("method")
         }
 
         test("is refused when a value would change its path, and names the first parameter that would") {

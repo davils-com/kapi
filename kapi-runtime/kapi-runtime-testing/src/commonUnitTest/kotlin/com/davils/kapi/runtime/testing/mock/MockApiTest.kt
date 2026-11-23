@@ -33,11 +33,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.http.headersOf
@@ -78,6 +80,10 @@ private const val PETS: String = "/pets"
 
 private const val PET: String = "/pets/{id}"
 
+private const val LOWER_PURGE: String = "purge"
+
+private const val UPPER_PURGE: String = "PURGE"
+
 private val rex: Pet = Pet(id = 1, name = "Rex")
 
 private suspend fun statusOf(http: HttpClient, url: String): String {
@@ -92,7 +98,7 @@ class MockApiTest : FunSpec({
         test("answer by method and path template, the most literal first") {
             val api = mockApi {
                 on(
-                    method = "get",
+                    method = "GET",
                     path = PET,
                 ) { respond(OK, Pet(id = pathParameters.getValue("id").toInt(), name = "Any")) }
                 get("/pets/mine") { respondText(OK, "mine") }
@@ -297,6 +303,22 @@ class MockApiTest : FunSpec({
     }
 
     context("the configuration") {
+        test("answer methods case-sensitively, so a method in lower case is a method of its own") {
+            val api = mockApi { on(method = LOWER_PURGE, path = PETS) { respondText(OK, "purged") } }
+            val url = HOST + PETS
+
+            val statuses = api.using { http ->
+                listOf(
+                    http.request(url) { method = HttpMethod(LOWER_PURGE) }.status.value,
+                    http.request(url) { method = HttpMethod(UPPER_PURGE) }.status.value,
+                )
+            }
+
+            statuses shouldBe listOf(OK, NOT_ALLOWED)
+            api.exchangesOf(method = LOWER_PURGE, path = PETS) shouldHaveSize 1
+            api.exchangesOf(method = UPPER_PURGE, path = PETS) shouldHaveSize 0
+        }
+
         test("refuses bad templates, methods, base paths and duplicates") {
             val failure = shouldThrow<ValidationException> {
                 mockApi {
@@ -306,7 +328,7 @@ class MockApiTest : FunSpec({
                     get("/a/{") { respond(status = OK) }
                     get("/a/{}") { respond(status = OK) }
                     get(PETS) { respond(status = OK) }
-                    on(method = "get", path = PETS) { respond(status = OK) }
+                    on(method = "GET", path = PETS) { respond(status = OK) }
                 }
             }
 

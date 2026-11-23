@@ -66,7 +66,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      * over `/pets/{id}`. A route runs contained: what it throws is recorded in [MockApi.failures] and answered with
      * `500`.
      *
-     * @param method the method, such as `GET`, compared without case.
+     * @param method the method, such as `GET`, compared exactly, because methods are case-sensitive.
      * @param path the path template, such as `/pets/{id}`, below [basePath].
      * @param answer the answer, which runs once per request.
      * @throws IllegalStateException if the mock API was built already.
@@ -74,7 +74,7 @@ public class MockApiBuilder internal constructor() : ValidatingBuilder<MockApi>(
      */
     public fun on(method: String, path: String, answer: suspend Responder.() -> Unit) {
         checkOpen()
-        added += Route(method = method.uppercase(), path = path, answer = answer)
+        added += Route(method = method, path = path, answer = answer)
     }
 
     /**

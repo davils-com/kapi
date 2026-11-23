@@ -37,8 +37,10 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
+import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import kotlinx.serialization.builtins.ListSerializer
 
@@ -65,6 +67,8 @@ private const val PETS: String = "/pets"
 private const val PET: String = "/pets/{id}"
 
 private const val ONE: String = "$BASE_URL/pets/1"
+
+private const val LOWER_GET: String = "get"
 
 private val rex: Pet = Pet(id = 1, name = "Rex")
 
@@ -121,6 +125,13 @@ class ContractCheckTest : FunSpec({
     }
 
     context("exchanges that break the contract") {
+        test("match the methods of the document case-sensitively, so get is no GET") {
+            val api = petstore { on(method = LOWER_GET, path = PETS) { respond(OK, listOf(rex)) } }
+                .calls { http -> http.request(BASE_URL + PETS) { method = HttpMethod(LOWER_GET) } }
+
+            reportOf(api).codes shouldBe listOf(ContractCodes.METHOD_UNDECLARED)
+        }
+
         test("are reported with their codes, places and locations") {
             val api = petstore {
                 get(PETS) { respond(OK, listOf(Pet(id = 0, name = ""))) }

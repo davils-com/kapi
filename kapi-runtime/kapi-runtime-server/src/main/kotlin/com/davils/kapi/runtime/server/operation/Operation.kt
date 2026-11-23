@@ -26,8 +26,9 @@ import com.davils.kore.core.text.SafeText
  * An operation of an API that a server serves: its name, its method, its path template, its security and its
  * handler.
  *
- * The method is any token of RFC 9110 §9, in upper case as written: the methods of OpenAPI, `QUERY` and the arbitrary
- * methods of the `additionalOperations` of OpenAPI 3.2. The path template starts with `/` and names its parameters in
+ * The method is any token of RFC 9110 §9, kept exactly as written because methods are case-sensitive: the methods of
+ * OpenAPI in upper case, `QUERY` and the arbitrary methods of the `additionalOperations` of OpenAPI 3.2, so `purge`
+ * and `PURGE` are served as different methods. The path template starts with `/` and names its parameters in
  * braces, such as `/pets/{petId}`; a parameter name consists of letters, digits, `_`, `-` and `.`, so no name can
  * smuggle a routing wildcard of Ktor into the template. The security lists the alternatives of OpenAPI 3.2 §4.26: an
  * empty list asks for nothing, and an empty alternative lets a caller in without credentials. A delivery is a webhook
@@ -43,7 +44,7 @@ import com.davils.kore.core.text.SafeText
  * @param security the alternatives of security requirements, in order.
  * @property isDelivery whether the operation receives a webhook or a callback.
  * @property handler answers a request that passed the checks of the server.
- * @throws IllegalArgumentException if [name] is blank, [method] is no token in upper case, or [path] is no path
+ * @throws IllegalArgumentException if [name] is blank, [method] is no token, or [path] is no path
  * template.
  * @since 1.0.0
  */
@@ -64,7 +65,7 @@ public class Operation(
 
     init {
         require(name.isNotBlank()) { "An operation has a name" }
-        require(PathTemplates.isMethod(method)) { "The method of an operation is a token in upper case" }
+        require(PathTemplates.isMethod(method)) { "The method of an operation is a token" }
         require(PathTemplates.isTemplate(path)) { "The path of an operation is a template such as /pets/{petId}" }
     }
 
