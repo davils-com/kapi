@@ -108,7 +108,7 @@ class DocumentLoaderTest : FunSpec({
             val diagnostic = loading.diagnostics.single()
 
             diagnostic.code shouldBe ViolationCode("kaml.mapping.duplicate-key")
-            diagnostic.location?.position shouldBe TextPosition(1, 0)
+            diagnostic.location?.position shouldBe TextPosition(line = 1, column = 0)
             diagnostic.snippet?.line shouldBe "openapi: 3.0.3"
         }
 

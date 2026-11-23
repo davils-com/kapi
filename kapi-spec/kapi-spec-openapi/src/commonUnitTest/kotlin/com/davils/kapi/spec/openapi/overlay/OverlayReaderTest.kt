@@ -35,7 +35,7 @@ private const val VERSION: String = "overlay: 1.0.0"
 
 private val shape: List<ViolationCode> = listOf(DiagnosticCodes.OVERLAY_SHAPE)
 
-private fun overlayOf(vararg lines: String) = overlaid(listOf("a: 1"), lines.asList())
+private fun overlayOf(vararg lines: String) = overlaid(document = listOf("a: 1"), overlay = lines.asList())
 
 class OverlayReaderTest : FunSpec({
     context("the document of an overlay") {

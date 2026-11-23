@@ -37,6 +37,8 @@ import io.kotest.matchers.string.shouldNotContain
 
 private const val PATHS: String = "paths:"
 
+private const val PETS: String = "/pets"
+
 private const val FINE: String = "responses: {'200': {description: Fine}}"
 
 private const val SEARCH: String = "  /pets: {query: {operationId: search, $FINE}}"
@@ -49,14 +51,14 @@ class MethodReadingTest : FunSpec({
             val reading = reading32(PATHS, SEARCH)
 
             reading.diagnostics.shouldBeEmpty()
-            reading.document().operation("/pets", Method.Query).operationId shouldBe "search"
+            reading.document().operation(PETS, Method.Query).operationId shouldBe "search"
         }
 
         test("is no field of a path item before OpenAPI 3.2") {
             val reading = reading31(PATHS, SEARCH)
 
             reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_VERSION)
-            reading.readable().path("/pets").operations shouldBe emptyMap()
+            reading.readable().path(PETS).operations shouldBe emptyMap()
         }
 
         test("is written for OpenAPI 3.2 and reads back") {
@@ -70,7 +72,7 @@ class MethodReadingTest : FunSpec({
     context("an additional operation") {
         test("is read by the name of its method as it is sent") {
             val reading = reading32(PATHS, COPY)
-            val item = reading.document().path("/pets")
+            val item = reading.document().path(PETS)
 
             reading.diagnostics.shouldBeEmpty()
             item.additionalOperations.keys shouldBe setOf("COPY")
@@ -81,7 +83,7 @@ class MethodReadingTest : FunSpec({
             val reading = reading31(PATHS, COPY)
 
             reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_VERSION)
-            reading.readable().path("/pets").additionalOperations shouldBe emptyMap()
+            reading.readable().path(PETS).additionalOperations shouldBe emptyMap()
         }
 
         test("is written for OpenAPI 3.2 and reads back") {

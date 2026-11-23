@@ -48,7 +48,7 @@ class SecurityUpgradeTest : FunSpec({
                 "accessCode" to "authorizationCode: {authorizationUrl: 'https://a', tokenUrl: 'https://t', scopes: {}}",
             )
             flows.forEach { (flow, upgraded) ->
-                val settings = upgraded.substringAfter(": ").removeSurrounding("{", "}")
+                val settings = upgraded.substringAfter(": ").removeSurrounding(prefix = "{", suffix = "}")
 
                 schemeOf("{type: oauth2, flow: $flow, description: Tokens, x-vendor: kide, $settings}") shouldBe
                     nodeOf("{type: oauth2, description: Tokens, x-vendor: kide, flows: {$upgraded}}")

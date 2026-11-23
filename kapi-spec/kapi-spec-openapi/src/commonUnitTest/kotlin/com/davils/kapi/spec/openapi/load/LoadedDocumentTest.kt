@@ -61,7 +61,7 @@ class LoadedDocumentTest : FunSpec({
             location.document shouldBe petstore
             location.pointer shouldBe title
             location.range shouldBe node.shouldNotBeNull().range
-            location.position shouldBe TextPosition(2, TITLE_LINE.indexOf("Petstore"))
+            location.position shouldBe TextPosition(line = 2, column = TITLE_LINE.indexOf("Petstore"))
         }
 
         test("locates what has no node by its pointer alone") {

@@ -40,6 +40,10 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val REMOTE: String = "https://api.example.com/v2/openapi.yaml"
 
+private const val PET: String = "Pet"
+
+private const val TOY: String = "\$ref: '#/components/schemas/Toy'"
+
 private val nested: DocumentUri = DocumentUri("memory:/api/v2/models.yaml")
 
 private val models: DocumentUri = DocumentUri("memory:/api/models.yaml")
@@ -66,7 +70,7 @@ class SelfReadingTest : FunSpec({
         test("names the document itself, so a reference to it stays in the document") {
             val reading = readingWith(emptyMap(), documentWith(REMOTE, "\$ref: '$REMOTE#/components/schemas/Toy'"))
             val document = reading.document()
-            val reference = document.schema("Pet").reference.shouldNotBeNull()
+            val reference = document.schema(PET).reference.shouldNotBeNull()
 
             reading.diagnostics.shouldBeEmpty()
             reference.target.document shouldBe petstoreUri
@@ -74,12 +78,9 @@ class SelfReadingTest : FunSpec({
         }
 
         test("keeps a reference by fragment in the document") {
-            val reading = readingWith(emptyMap(), documentWith(REMOTE, "\$ref: '#/components/schemas/Toy'"))
-            val reference = reading
-                .document()
-                .schema("Pet")
-                .reference
-                .shouldNotBeNull()
+            val reading = readingWith(emptyMap(), documentWith(REMOTE, TOY))
+            val pet = reading.document().schema(PET)
+            val reference = pet.reference.shouldNotBeNull()
 
             reading.diagnostics.shouldBeEmpty()
             reference.target.document shouldBe petstoreUri
@@ -87,11 +88,8 @@ class SelfReadingTest : FunSpec({
 
         test("is the base of relative references, which a reading still refuses to load from the network") {
             val reading = readingWith(mapOf(models to modelText), documentWith(REMOTE, "\$ref: 'models.yaml#/Pet'"))
-            val reference = reading
-                .readable()
-                .schema("Pet")
-                .reference
-                .shouldNotBeNull()
+            val pet = reading.readable().schema(PET)
+            val reference = pet.reference.shouldNotBeNull()
 
             reading.codes() shouldBe listOf(DiagnosticCodes.LOAD_REMOTE)
             reference.target.document shouldBe DocumentUri("https://api.example.com/v2/models.yaml")
@@ -100,25 +98,20 @@ class SelfReadingTest : FunSpec({
         test("resolves against the address the document was read from when it is relative") {
             val documents = mapOf(nested to modelText, models to modelText)
             val reading = readingWith(documents, documentWith("v2/openapi.yaml", "\$ref: 'models.yaml#/Pet'"))
-            val reference = reading
-                .document()
-                .schema("Pet")
-                .reference
-                .shouldNotBeNull()
+            val pet = reading.document().schema(PET)
+            val reference = pet.reference.shouldNotBeNull()
 
             reading.diagnostics.shouldBeEmpty()
             reference.target.document shouldBe nested
-            reading.document().resolve(reference).shouldNotBeNull()
+            val document = reading.document()
+            document.resolve(reference).shouldNotBeNull()
         }
 
         test("is an error when it holds a fragment or is no URI reference") {
             listOf("$REMOTE#top", "http://[broken").forEach { self ->
-                val reading = readingWith(emptyMap(), documentWith(self, "\$ref: '#/components/schemas/Toy'"))
-                val reference = reading
-                    .readable()
-                    .schema("Pet")
-                    .reference
-                    .shouldNotBeNull()
+                val reading = readingWith(emptyMap(), documentWith(self, TOY))
+                val pet = reading.readable().schema(PET)
+                val reference = pet.reference.shouldNotBeNull()
 
                 reading.codes() shouldBe listOf(DiagnosticCodes.DOCUMENT_SELF)
                 reference.target.document shouldBe petstoreUri
@@ -135,27 +128,20 @@ class SelfReadingTest : FunSpec({
             val reading = readingWith(documents, head32 + schemas("\$ref: 'shared.yaml#/Pet'"))
 
             reading.diagnostics.shouldBeEmpty()
-            reading
-                .document()
-                .targets.keys
-                .map { target -> target.document } shouldBe listOf(
-                DocumentUri("memory:/api/shared.yaml"),
-                nested,
-            )
+            val targets = reading.document().targets
+            val owners = targets.keys.map { target -> target.document }
+            owners shouldBe listOf(DocumentUri("memory:/api/shared.yaml"), nested)
         }
 
         test("is no field before OpenAPI 3.2 and changes no reference there") {
-            val lines = head31 + "\$self: '$REMOTE'" + schemas("\$ref: '#/components/schemas/Toy'")
+            val lines = head31 + "\$self: '$REMOTE'" + schemas(TOY)
             val reading = readingWith(emptyMap(), lines)
             val document = reading.readable()
 
             reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_VERSION)
             document.self shouldBe null
-            document
-                .schema("Pet")
-                .reference
-                ?.target
-                ?.document shouldBe petstoreUri
+            val reference = document.schema(PET).reference.shouldNotBeNull()
+            reference.target.document shouldBe petstoreUri
         }
     }
 })

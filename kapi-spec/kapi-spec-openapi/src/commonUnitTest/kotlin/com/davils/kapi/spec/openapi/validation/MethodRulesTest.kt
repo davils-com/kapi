@@ -31,7 +31,9 @@ private const val RESPONSES: String = "responses: {'200': {description: Fine}}"
 private const val FINE: String = "{$RESPONSES}"
 
 private fun additional(vararg methods: String): String {
-    val entries = methods.joinToString(separator = ", ") { method -> "'${method.replace("'", "''")}': $FINE" }
+    val entries = methods.joinToString(
+        separator = ", ",
+    ) { method -> "'${method.replace(oldValue = "'", newValue = "''")}': $FINE" }
     return "  /pets: {additionalOperations: {$entries}}"
 }
 

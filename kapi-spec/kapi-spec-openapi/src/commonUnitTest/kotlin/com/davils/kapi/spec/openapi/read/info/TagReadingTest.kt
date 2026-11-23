@@ -31,6 +31,8 @@ import io.kotest.matchers.string.shouldContain
 
 private const val TAGS: String = "tags:"
 
+private const val FIELDS_OF_3_2: Int = 3
+
 private const val PARENT: String = "  - {name: pets, summary: Pets, kind: nav}"
 
 private const val CHILD: String = "  - {name: cats, summary: Cats, parent: pets, kind: badge}"
@@ -62,7 +64,7 @@ class TagReadingTest : FunSpec({
             val reading = reading31(TAGS, CHILD)
             val tag = reading.readable().tags.single()
 
-            reading.codes() shouldBe List(3) { DiagnosticCodes.FIELD_VERSION }
+            reading.codes() shouldBe List(FIELDS_OF_3_2) { DiagnosticCodes.FIELD_VERSION }
             listOf(tag.summary, tag.parent, tag.kind) shouldBe listOf(null, null, null)
         }
     }

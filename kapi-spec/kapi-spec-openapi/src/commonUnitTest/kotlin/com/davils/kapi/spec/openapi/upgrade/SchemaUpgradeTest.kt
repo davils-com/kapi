@@ -75,8 +75,8 @@ class SchemaUpgradeTest : FunSpec({
 
     context("the nested schemas") {
         test("are upgraded in properties, additional properties, items, alternatives and negations") {
-            val written = keywords.map { keyword -> keyword.replace(SLOT, FILE) }
-            val expected = keywords.map { keyword -> keyword.replace(SLOT, BINARY) }
+            val written = keywords.map { keyword -> keyword.replace(oldValue = SLOT, newValue = FILE) }
+            val expected = keywords.map { keyword -> keyword.replace(oldValue = SLOT, newValue = BINARY) }
 
             schemaOfLines(written) shouldBe nodeOfLines(expected)
         }

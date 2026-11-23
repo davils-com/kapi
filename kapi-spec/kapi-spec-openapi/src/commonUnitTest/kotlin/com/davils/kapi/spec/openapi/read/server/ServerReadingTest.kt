@@ -60,12 +60,8 @@ class ServerReadingTest : FunSpec({
             val reading = reading31(SERVERS, NAMED)
 
             reading.codes() shouldBe listOf(DiagnosticCodes.FIELD_VERSION)
-            reading
-                .readable()
-                .servers
-                .single()
-                .name
-                .shouldBeNull()
+            val server = reading.readable().servers.single()
+            server.name.shouldBeNull()
         }
     }
 })
