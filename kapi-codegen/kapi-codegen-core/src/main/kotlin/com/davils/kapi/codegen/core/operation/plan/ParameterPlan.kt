@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation.plan
 
 import com.davils.kapi.codegen.core.model.plan.TypeUse
@@ -27,4 +26,5 @@ internal data class ParameterPlan(
     val isExploded: Boolean,
     val type: TypeUse,
     val isQuoted: Boolean = true,
+    val isReservedAllowed: Boolean = false,
 )

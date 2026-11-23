@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.Generation
@@ -84,7 +83,7 @@ class ClientEmitterTest : FunSpec({
         test("takes the client of the runtime and executes one call per operation") {
             val kotlin = clientOf(get(LIST_PETS))
 
-            kotlin shouldContain "public class $DEFAULT_CLIENT(\n    private val client: Client,\n) {"
+            kotlin shouldContain "public class $DEFAULT_CLIENT(\n    private val client: ApiClient,\n) {"
             kotlin shouldContain """        val call = apiCall("listPets", "GET") {"""
             kotlin shouldContain """            path("/pets")"""
             kotlin shouldContain "        return when (val exchange = client.execute(call)) {\n"

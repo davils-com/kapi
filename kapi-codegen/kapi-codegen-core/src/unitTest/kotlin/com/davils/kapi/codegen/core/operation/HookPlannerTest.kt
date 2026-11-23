@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -194,8 +193,8 @@ class HookPlannerTest : FunSpec({
         }
 
         test("is refused on the receiving side for what a server does not serve yet") {
-            val form = "requestBody: {content: {application/x-www-form-urlencoded: {schema: {type: object, " +
-                "properties: {name: {type: string}}}}}}"
+            val form = "requestBody: {content: {multipart/form-data: {schema: {type: object, " +
+                "properties: {ids: {type: array, items: {type: integer}}}}}}}"
             val senders = hookGenerationOf(webhook(ADOPTED, NAMED, form), models + Artifact.Senders)
             val receivers = hookGenerationOf(webhook(ADOPTED, NAMED, form), models + Artifact.Receivers)
 

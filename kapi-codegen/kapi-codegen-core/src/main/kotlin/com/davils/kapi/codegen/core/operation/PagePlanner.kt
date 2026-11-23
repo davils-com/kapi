@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.PlanScope
@@ -31,6 +28,8 @@ import com.davils.kapi.codegen.core.operation.plan.PageStyle
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
+import com.davils.kapi.spec.core.value.Value
+import com.davils.kapi.spec.openapi.model.path.Operation
 
 private const val STYLE: String = "style"
 
@@ -57,11 +56,7 @@ private val keys: Map<PageStyle, String> = mapOf(
 )
 
 internal class PagePlanner(private val scope: PlanScope) {
-    fun plan(
-        operation: Operation,
-        parameters: List<ParameterPlan>,
-        responses: List<ResponsePlan>,
-    ): PagePlan? {
+    fun plan(operation: Operation, parameters: List<ParameterPlan>, responses: List<ResponsePlan>): PagePlan? {
         val declared = listOfNotNull(operation.extensions[Keywords.PAGINATION] as? Value.Mapping)
         val sites = declared.map { mapping ->
             PageSite(

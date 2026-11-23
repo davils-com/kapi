@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.content.Response
-import com.davils.kapi.spec.openapi.model.parameter.Header
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.PlanScope
@@ -31,6 +26,10 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.operation.plan.HeaderPlan
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.content.Response
+import com.davils.kapi.spec.openapi.model.parameter.Header
+import com.davils.kapi.spec.openapi.resolve
 
 private const val CONTENT_TYPE: String = "content-type"
 
@@ -55,7 +54,10 @@ internal class HeaderPlanner(private val scope: PlanScope, private val models: M
             resolved.filter { header -> isTyped(name, header) }.mapNotNull { header -> plan(context, name, header) }
         }
         val names = NameTable(scope.findings)
-        plans.forEach { plan -> names.claim(NameClaim(plan.name, "The header ${plan.wireName}", response.location)) }
+        plans.forEach { plan ->
+            val origin = "The header ${plan.wireName}"
+            names.claim(NameClaim(name = plan.name, origin = origin, location = response.location))
+        }
         return plans
     }
 

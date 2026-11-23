@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.emit.Kotlin
@@ -33,7 +32,7 @@ private const val STREAMS: String = "com.davils.kapi.runtime.client.stream"
 
 private val flow: ClassName = ClassName("kotlinx.coroutines.flow", "Flow")
 
-private val emptyFlow: MemberName = MemberName("kotlinx.coroutines.flow", "emptyFlow")
+private val emptyFlow: MemberName = MemberName(packageName = "kotlinx.coroutines.flow", simpleName = "emptyFlow")
 
 private val event: ClassName = ClassName(STREAMS, "StreamEvent")
 
@@ -45,6 +44,7 @@ internal class StreamCode(private val types: TypeNames, private val serializers:
             function.addParameter(parts.signatures.parameter(name, type))
         }
         if (operation.upgrade != null) function.addParameter(input())
+        if (stream.kind == StreamKind.Events) function.addParameter(reconnection())
         function.returns(flow.parameterizedBy(event.parameterizedBy(types.of(stream.item))))
         function.addCode(parts.calls.of(operation, isStreamed = true))
         function.addCode(reading(stream))
@@ -58,13 +58,30 @@ internal class StreamCode(private val types: TypeNames, private val serializers:
         return parameter.build()
     }
 
+    private fun reconnection(): ParameterSpec {
+        val parameter = ParameterSpec.builder(RECONNECTION, ClientTypes.reconnection.copy(nullable = true))
+        parameter.defaultValue("null")
+        return parameter.build()
+    }
+
     private fun reading(stream: StreamPlan): CodeBlock {
-        if (stream.kind == StreamKind.Bytes) return CodeBlock.of("return client.bytes(call)\n")
-        val reader = MemberName(STREAMS, stream.kind.function, isExtension = true)
-        return CodeBlock.of("return client.%M(%L, call)\n", reader, serializers.of(stream.item))
+        val reader = MemberName(packageName = STREAMS, simpleName = stream.kind.function, isExtension = true)
+        val serializer = serializers.of(stream.item)
+        return when (stream.kind) {
+            StreamKind.Bytes -> CodeBlock.of("return client.%M(call)\n", reader)
+            StreamKind.Events -> CodeBlock.of("return client.%M(%L, call, %N)\n", reader, serializer, RECONNECTION)
+            StreamKind.Records -> CodeBlock.of("return client.%M(%L, call, %L)\n", reader, serializer, framing(stream))
+        }
+    }
+
+    private fun framing(stream: StreamPlan): CodeBlock {
+        val framing = "JsonSequence".takeIf { stream.isSequence } ?: "JsonLines"
+        return CodeBlock.of("%T.%L", ClientTypes.recordFraming, framing)
     }
 
     companion object {
         const val SUFFIX: String = "Stream"
+
+        const val RECONNECTION: String = "reconnection"
     }
 }

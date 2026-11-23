@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
+import com.davils.kapi.spec.openapi.model.path.Operation
 
 internal data class PageSite(
     val operation: Operation,

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.squareup.kotlinpoet.ClassName
@@ -29,7 +28,13 @@ internal object ClientTypes {
 
     private const val BUILTINS: String = "kotlinx.serialization.builtins"
 
-    val client: ClassName = ClassName(CLIENT, "Client")
+    private const val NEGOTIATION: String = "com.davils.kapi.runtime.core.negotiation"
+
+    private const val CONDITIONAL: String = "com.davils.kapi.runtime.client.conditional"
+
+    private const val STREAM: String = "com.davils.kapi.runtime.client.stream"
+
+    val client: ClassName = ClassName(CLIENT, "ApiClient")
 
     val exchange: ClassName = ClassName(CALL, "Exchange")
 
@@ -43,7 +48,7 @@ internal object ClientTypes {
 
     val placement: ClassName = ClassName(CALL, "CredentialPlacement")
 
-    val apiCall: MemberName = MemberName(CALL, "apiCall")
+    val apiCall: MemberName = MemberName(packageName = CALL, simpleName = "apiCall")
 
     val format: ClassName = ClassName(PARAMETER, "ParameterFormat")
 
@@ -55,16 +60,28 @@ internal object ClientTypes {
 
     val decoding: ClassName = ClassName("com.davils.kapi.runtime.core.codec", "Decoding")
 
-    val decodeToString: MemberName = MemberName("kotlinx.io.bytestring", "decodeToString")
+    val decodeToString: MemberName = MemberName(packageName = "kotlinx.io.bytestring", simpleName = "decodeToString")
 
     val milliseconds: MemberName =
         MemberName(ClassName("kotlin.time", "Duration").nestedClass("Companion"), "milliseconds")
 
-    val serializer: MemberName = MemberName(BUILTINS, "serializer")
+    val serializer: MemberName = MemberName(packageName = BUILTINS, simpleName = "serializer")
 
-    val nullable: MemberName = MemberName(BUILTINS, "nullable")
+    val nullable: MemberName = MemberName(packageName = BUILTINS, simpleName = "nullable")
 
-    val listSerializer: MemberName = MemberName(BUILTINS, "ListSerializer")
+    val listSerializer: MemberName = MemberName(packageName = BUILTINS, simpleName = "ListSerializer")
 
-    val mapSerializer: MemberName = MemberName(BUILTINS, "MapSerializer")
+    val mapSerializer: MemberName = MemberName(packageName = BUILTINS, simpleName = "MapSerializer")
+
+    val mediaType: ClassName = ClassName(NEGOTIATION, "MediaType")
+
+    val mediaRange: ClassName = ClassName(NEGOTIATION, "MediaRange")
+
+    val validators: ClassName = ClassName(CONDITIONAL, "Validators")
+
+    val revalidate: MemberName = MemberName(packageName = CONDITIONAL, simpleName = "revalidate", isExtension = true)
+
+    val reconnection: ClassName = ClassName(STREAM, "Reconnection")
+
+    val recordFraming: ClassName = ClassName(STREAM, "RecordFraming")
 }

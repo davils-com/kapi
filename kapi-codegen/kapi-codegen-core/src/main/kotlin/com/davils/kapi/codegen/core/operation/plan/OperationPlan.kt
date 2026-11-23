@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation.plan
 
 import com.davils.kapi.spec.core.diagnostic.Location

@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.content.MediaType
-import com.davils.kapi.spec.openapi.model.content.Response
-import com.davils.kapi.spec.openapi.model.content.ResponseStatus
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.ModelPlanner
 import com.davils.kapi.codegen.core.model.PlanScope
@@ -33,6 +26,12 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.operation.plan.StreamPlan
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.content.MediaType
+import com.davils.kapi.spec.openapi.model.content.Response
+import com.davils.kapi.spec.openapi.model.content.ResponseStatus
+import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kapi.spec.openapi.resolve
 
 private const val JSON: String = "application/json"
 
@@ -47,7 +46,10 @@ private val streams: Map<String, StreamKind> = mapOf(
     "application/x-ndjson" to StreamKind.Records,
     "application/jsonl" to StreamKind.Records,
     "application/x-jsonlines" to StreamKind.Records,
+    "application/json-seq" to StreamKind.Records,
 )
+
+private const val SEQUENCE: String = "application/json-seq"
 
 private val json: TypeUse = TypeUse(TypeShape.Scalar(ScalarKind.Json))
 
@@ -81,11 +83,7 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
         }
     }
 
-    private fun response(
-        context: String,
-        status: ResponseStatus,
-        response: Response,
-    ): ResponsePlan {
+    private fun response(context: String, status: ResponseStatus, response: Response): ResponsePlan {
         val digit = status.value.first()
         val range = digit.digitToIntOrNull().takeIf { status.isRange }
         val name = nameOf(status, range)
@@ -104,10 +102,11 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     }
 
     private fun forcedOf(context: String, response: Response): Pair<String, StreamPlan>? {
-        val declared = scope.contentOf(response.content).entries.firstOrNull { (_, media) -> declaredKind(media) != null }
+        val content = scope.contentOf(response.content)
+        val declared = content.entries.firstOrNull { (_, media) -> declaredKind(media) != null }
         val (type, media) = declared ?: return null
         val kind = declaredKind(media) ?: StreamKind.Bytes
-        val item = TypeUse(Chunks.item).takeIf { kind == StreamKind.Bytes } ?: typeOf(media, context + ITEM)
+        val item = TypeUse(Chunks.item).takeIf { kind == StreamKind.Bytes } ?: itemOf(media, context + ITEM)
         return type to StreamPlan(kind, item)
     }
 
@@ -120,9 +119,11 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     private fun streamOf(context: String, response: Response): StreamPlan? {
         val kinds = scope.contentOf(response.content).mapKeys { (type, _) -> type.substringBefore(';').trim() }
         val streamed = kinds.entries.firstNotNullOfOrNull { (type, media) ->
-            streams[type.lowercase()]?.let { kind -> kind to media }
+            streams[type.lowercase()]?.let { kind -> Triple(kind, media, type.lowercase() == SEQUENCE) }
         }
-        return streamed?.let { (kind, media) -> StreamPlan(kind, typeOf(media, context + ITEM)) }
+        return streamed?.let { (kind, media, isSequence) ->
+            StreamPlan(kind = kind, item = itemOf(media, context + ITEM), isSequence = isSequence)
+        }
     }
 
     private fun nameOf(status: ResponseStatus, range: Int?): String {
@@ -134,6 +135,11 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
         content.entries.firstOrNull { (type, _) -> isJson(type.substringBefore(';').trim()) }
 
     private fun isJson(type: String): Boolean = type == JSON || type.endsWith(JSON_SUFFIX)
+
+    private fun itemOf(media: MediaType, context: String): TypeUse {
+        val schema = media.itemSchema ?: return typeOf(media, context)
+        return models.typeOf(schema, context)
+    }
 
     private fun typeOf(media: MediaType, context: String): TypeUse {
         val schema = media.schema ?: return json

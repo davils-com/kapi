@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.ModelKind
+import com.davils.kapi.codegen.core.emit.Conditionals
 import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.operation.plan.DeliveryPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
@@ -42,13 +42,19 @@ internal class CallCode(private val serializers: SerializerCode) {
         code.add(path(operation))
         operation.parameters.forEach { parameter -> code.add(placed(parameter)) }
         code.add(delivery(operation.delivery))
-        accepted.sorted().forEach { type -> code.add("accept(%S)\n", type) }
+        accepted.sorted().forEach { type -> code.add("accept(%T.of(%S))\n", ClientTypes.mediaRange, type) }
         operation.body?.let { body -> code.add(bodies.of(body)) }
+        if (!isStreamed && Conditionals.isConditional(operation)) code.add(revalidation())
         operation.upgrade?.takeIf { isStreamed }?.let { protocol -> code.add("upgrade(%S, %N)\n", protocol, INPUT) }
         operation.security.forEach { alternative -> code.add(security(alternative)) }
         code.unindent()
         code.add("}\n")
         return code.build()
+    }
+
+    private fun revalidation(): CodeBlock {
+        val validators = Conditionals.VALIDATORS
+        return CodeBlock.of("if (%N != null) %M(%N)\n", validators, ClientTypes.revalidate, validators)
     }
 
     private fun path(operation: OperationPlan): CodeBlock {
@@ -75,14 +81,18 @@ internal class CallCode(private val serializers: SerializerCode) {
         return CodeBlock.of("%L%L(%L, %L)\n", guard ?: "", function, format(parameter), value(parameter))
     }
 
-    private fun format(parameter: ParameterPlan): CodeBlock = CodeBlock.of(
-        "%T(%S, %T.%L, %L)",
-        ClientTypes.format,
-        parameter.wireName,
-        ClientTypes.style,
-        parameter.style,
-        parameter.isExploded,
-    )
+    private fun format(parameter: ParameterPlan): CodeBlock {
+        val reserved = CodeBlock.of(", isReservedAllowed = true").takeIf { parameter.isReservedAllowed }
+        return CodeBlock.of(
+            "%T(%S, %T.%L, %L%L)",
+            ClientTypes.format,
+            parameter.wireName,
+            ClientTypes.style,
+            parameter.style,
+            parameter.isExploded,
+            reserved ?: "",
+        )
+    }
 
     private fun value(parameter: ParameterPlan): CodeBlock {
         val shape = parameter.type.shape

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
+import com.davils.kapi.codegen.core.CodegenCodes
+import com.davils.kapi.codegen.core.model.PlanScope
+import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.security.ApiKeyScheme
 import com.davils.kapi.spec.openapi.model.security.HttpScheme
@@ -26,9 +28,6 @@ import com.davils.kapi.spec.openapi.model.security.OpenIdConnectScheme
 import com.davils.kapi.spec.openapi.model.security.SecurityRequirement
 import com.davils.kapi.spec.openapi.model.security.SecurityScheme
 import com.davils.kapi.spec.openapi.resolve
-import com.davils.kapi.codegen.core.CodegenCodes
-import com.davils.kapi.codegen.core.model.PlanScope
-import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
 
 private const val BEARER: String = "Bearer"
 
@@ -47,23 +46,20 @@ internal class SecurityPlanner(private val scope: PlanScope) {
         return requirements.map { requirement -> alternative(operation, requirement) }
     }
 
-    private fun alternative(
-        operation: Operation,
-        requirement: SecurityRequirement,
-    ): List<SecurityPlan> = requirement.schemes.entries.flatMap { (name, scopes) ->
-        val declared = listOfNotNull(schemes[name])
-        val resolved = declared.mapNotNull { referable -> scope.document.resolve(referable) }
-        val uses = resolved.mapNotNull { scheme -> use(operation, name, scheme) }
-        uses.map { use -> use.copy(scopes = scopes) }
-    }
-
-    private fun use(operation: Operation, name: String, scheme: SecurityScheme): SecurityPlan? =
-        when (scheme) {
-            is HttpScheme -> http(operation, name, scheme)
-            is ApiKeyScheme -> SecurityPlan(name, scheme.placement.name, scheme.name)
-            is OAuth2Scheme, is OpenIdConnectScheme -> SecurityPlan(name, BEARER, null)
-            is MutualTlsScheme -> SecurityPlan(name, SecurityPlan.CERTIFICATE, null)
+    private fun alternative(operation: Operation, requirement: SecurityRequirement): List<SecurityPlan> =
+        requirement.schemes.entries.flatMap { (name, scopes) ->
+            val declared = listOfNotNull(schemes[name])
+            val resolved = declared.mapNotNull { referable -> scope.document.resolve(referable) }
+            val uses = resolved.mapNotNull { scheme -> use(operation, name, scheme) }
+            uses.map { use -> use.copy(scopes = scopes) }
         }
+
+    private fun use(operation: Operation, name: String, scheme: SecurityScheme): SecurityPlan? = when (scheme) {
+        is HttpScheme -> http(operation, name, scheme)
+        is ApiKeyScheme -> SecurityPlan(scheme = name, placement = scheme.placement.name, name = scheme.name)
+        is OAuth2Scheme, is OpenIdConnectScheme -> SecurityPlan(scheme = name, placement = BEARER, name = null)
+        is MutualTlsScheme -> SecurityPlan(scheme = name, placement = SecurityPlan.CERTIFICATE, name = null)
+    }
 
     private fun http(operation: Operation, name: String, scheme: HttpScheme): SecurityPlan? {
         val placement = listOf(BEARER, BASIC).firstOrNull { known -> known.equals(scheme.scheme, ignoreCase = true) }
@@ -74,6 +70,6 @@ internal class SecurityPlanner(private val scope: PlanScope) {
                 operation.location,
             )
         }
-        return placement?.let { known -> SecurityPlan(name, known, null) }
+        return placement?.let { known -> SecurityPlan(scheme = name, placement = known, name = null) }
     }
 }

@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.content.MediaType
-import com.davils.kapi.spec.openapi.model.content.RequestBody
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.ModelKind
@@ -34,6 +28,11 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.BodyPlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.content.MediaType
+import com.davils.kapi.spec.openapi.model.content.RequestBody
+import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kapi.spec.openapi.resolve
 
 private const val JSON: String = "application/json"
 
@@ -83,11 +82,7 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         return isAsked && isPatchable
     }
 
-    private fun plan(
-        context: String,
-        body: RequestBody,
-        entry: Pair<String, MediaType>,
-    ): BodyPlan {
+    private fun plan(context: String, body: RequestBody, entry: Pair<String, MediaType>): BodyPlan {
         val (type, media) = entry
         val isOptional = !body.isRequired
         val kind = BodyKind.Upload.takeIf { isUpload(media) } ?: kindOf(type)

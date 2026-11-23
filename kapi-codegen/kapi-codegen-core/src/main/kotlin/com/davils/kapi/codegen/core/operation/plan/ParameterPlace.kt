@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation.plan
 
 internal enum class ParameterPlace(val function: String) {
@@ -22,4 +21,5 @@ internal enum class ParameterPlace(val function: String) {
     Query("query"),
     Header("header"),
     Cookie("cookie"),
+    QueryString("query"),
 }

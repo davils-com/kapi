@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
@@ -45,7 +44,7 @@ internal class PageCode(private val signatures: SignatureCode, private val visib
         function.addModifiers(visibility)
         taken.forEach { (name, type) -> function.addParameter(signatures.parameter(name, type)) }
         function.returns(flow.parameterizedBy(result))
-        val pager = MemberName(PAGES, pages.style.function)
+        val pager = MemberName(packageName = PAGES, simpleName = pages.style.function)
         function.addCode("return %M(%L = { %L }) {\n", pager, readers.getValue(pages.style), read(pages, result))
         function.addCode("⇥%N(%L)\n", operation.name, arguments(pages, taken.map { (name, _) -> name }))
         function.addCode("⇤}\n")

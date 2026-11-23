@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.spec.core.diagnostic.Location
 
-private val taken: Set<String> = setOf("body", "call", "client", "exchange", "it")
+private val taken: Set<String> = setOf("body", "call", "client", "exchange", "it", "reconnection", "validators")
 
 internal class ClientNames(private val findings: Findings) {
     fun audit(name: String, origin: String, location: Location?) {

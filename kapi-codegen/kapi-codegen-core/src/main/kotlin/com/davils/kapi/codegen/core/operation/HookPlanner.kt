@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.openapi.model.path.Callback
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.openapi.model.path.PathItem
-import com.davils.kapi.spec.openapi.resolve
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.emit.client.SignatureNames
@@ -28,6 +23,10 @@ import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
+import com.davils.kapi.spec.openapi.model.path.Callback
+import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kapi.spec.openapi.model.path.PathItem
+import com.davils.kapi.spec.openapi.resolve
 
 private const val WEBHOOKS: String = "Webhooks"
 private const val CALLBACKS: String = "Callbacks"
@@ -47,7 +46,7 @@ internal class HookPlanner(
     private fun webhooks(): List<OperationPlan> {
         val sorted = scope.document.webhooks.entries
             .sortedBy { (key, _) -> key }
-        return sorted.flatMap { (key, item) -> deliveries(item, prefix + WEBHOOKS, key) }
+        return sorted.flatMap { (key, item) -> deliveries(item = item, group = prefix + WEBHOOKS, label = key) }
     }
 
     private fun callbacks(): List<OperationPlan> {

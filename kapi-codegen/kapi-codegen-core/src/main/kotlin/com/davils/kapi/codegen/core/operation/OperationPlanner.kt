@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.core.model.Element
-import com.davils.kapi.spec.openapi.model.path.Method
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.openapi.model.path.PathItem
-import com.davils.kapi.spec.openapi.model.path.PathTemplate
-import com.davils.kapi.spec.core.value.ExtensionName
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.codegen.core.CodegenCodes
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.model.ModelPlanner
@@ -37,6 +29,13 @@ import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.core.value.ExtensionName
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.openapi.model.path.Method
+import com.davils.kapi.spec.openapi.model.path.Operation
+import com.davils.kapi.spec.openapi.model.path.PathItem
+import com.davils.kapi.spec.openapi.model.path.PathTemplate
 
 private const val DEFAULT_GROUP: String = "Default"
 
@@ -77,8 +76,7 @@ internal class OperationPlanner(
         return Identifiers.member(declared)
     }
 
-    fun declaredName(operation: Operation): String? =
-        text(operation, Keywords.NAME) ?: operation.operationId
+    fun declaredName(operation: Operation): String? = text(operation, Keywords.NAME) ?: operation.operationId
 
     fun isIgnored(operation: Operation): Boolean {
         val reading = operation.extensions.flag(Keywords.IGNORE) as? ExtensionReading.Present
@@ -92,9 +90,10 @@ internal class OperationPlanner(
         val body = bodies.plan(context, operation)
         val answers = responses.plan(context, operation)
         val paged = pages.plan(operation, planned, answers)
-        claim(site.group, site.name, operation)
-        if (paged != null) claimPages(site.group, site.name, operation)
-        if (answers.any { answer -> answer.stream != null }) claimStream(site.group, site.name, operation)
+        claim(group = site.group, name = site.name, operation = operation)
+        if (paged != null) claimPages(group = site.group, name = site.name, operation = operation)
+        val isStreamed = answers.any { answer -> answer.stream != null }
+        if (isStreamed) claimStream(group = site.group, name = site.name, operation = operation)
         claim(operation, planned, body)
         val upgrade = text(operation, Keywords.UPGRADE)
         if (upgrade != null) auditUpgrade(operation, planned, answers)
@@ -116,11 +115,7 @@ internal class OperationPlanner(
         )
     }
 
-    private fun auditUpgrade(
-        operation: Operation,
-        parameters: List<ParameterPlan>,
-        responses: List<ResponsePlan>,
-    ) {
+    private fun auditUpgrade(operation: Operation, parameters: List<ParameterPlan>, responses: List<ResponsePlan>) {
         val isStreamed = responses.any { response -> response.stream?.kind == StreamKind.Bytes }
         if (!isStreamed) {
             scope.findings.error(
@@ -162,28 +157,32 @@ internal class OperationPlanner(
     }
 
     private fun claim(group: String, name: String, operation: Operation) {
-        val claim = NameClaim(name, "The operation $name", operation.location)
+        val claim = NameClaim(name = name, origin = "The operation $name", location = operation.location)
         functions.getOrPut(group) { NameTable(scope.findings) }.claim(claim)
         results.claim(claim)
     }
 
     private fun claimStream(group: String, name: String, operation: Operation) {
-        val claim = NameClaim(name + STREAM, "The stream of the operation $name", operation.location)
+        val origin = "The stream of the operation $name"
+        val claim = NameClaim(name = name + STREAM, origin = origin, location = operation.location)
         functions.getOrPut(group) { NameTable(scope.findings) }.claim(claim)
     }
 
     private fun claimPages(group: String, name: String, operation: Operation) {
-        val claim = NameClaim(name + PAGES, "The pages of the operation $name", operation.location)
+        val origin = "The pages of the operation $name"
+        val claim = NameClaim(name = name + PAGES, origin = origin, location = operation.location)
         functions.getOrPut(group) { NameTable(scope.findings) }.claim(claim)
     }
 
     private fun claim(operation: Operation, parameters: List<ParameterPlan>, body: BodyPlan?) {
         val names = NameTable(scope.findings)
         parameters.forEach { plan ->
-            names.claim(NameClaim(plan.name, "The parameter ${plan.wireName}", operation.location))
+            val origin = "The parameter ${plan.wireName}"
+            names.claim(NameClaim(name = plan.name, origin = origin, location = operation.location))
         }
         body?.fields.orEmpty().forEach { field ->
-            names.claim(NameClaim(field.name, "The field ${field.wireName}", operation.location))
+            val origin = "The field ${field.wireName}"
+            names.claim(NameClaim(name = field.name, origin = origin, location = operation.location))
         }
     }
 

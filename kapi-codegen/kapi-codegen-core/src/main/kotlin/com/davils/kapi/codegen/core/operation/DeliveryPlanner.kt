@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.operation
 
-import com.davils.kapi.spec.core.model.Element
-import com.davils.kapi.spec.openapi.model.path.Method
-import com.davils.kapi.spec.openapi.model.path.Operation
-import com.davils.kapi.spec.core.value.ExtensionReading
-import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.operation.plan.DeliveryPlan
 import com.davils.kapi.codegen.core.operation.plan.TimeoutPlan
+import com.davils.kapi.spec.core.model.Element
+import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.spec.core.value.Value
+import com.davils.kapi.spec.openapi.model.path.Method
+import com.davils.kapi.spec.openapi.model.path.Operation
 import kotlin.time.Duration
 
 private const val REQUEST: String = "request"
@@ -48,7 +47,11 @@ internal object DeliveryPlanner {
         val mapping = value as? Value.Mapping
             ?: return TimeoutPlan(millis(value), connect = null, socket = null)
         val entries = mapping.entries
-        return TimeoutPlan(millis(entries[REQUEST]), millis(entries["connect"]), millis(entries["socket"]))
+        return TimeoutPlan(
+            request = millis(entries[REQUEST]),
+            connect = millis(entries["connect"]),
+            socket = millis(entries["socket"]),
+        )
     }
 
     private fun millis(value: Value?): Long? {

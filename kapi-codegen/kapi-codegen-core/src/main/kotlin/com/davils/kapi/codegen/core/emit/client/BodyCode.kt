@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.model.plan.TypeShape
@@ -39,17 +38,17 @@ internal class BodyCode(private val serializers: SerializerCode) {
         BodyKind.Binary -> whole(body, CodeBlock.of(BODY))
         BodyKind.Upload -> upload(body)
         BodyKind.Form -> block(CodeBlock.of("form {\n"), body.fields.map(::formField))
-        BodyKind.Multipart -> block(CodeBlock.of("multipart(%S) {\n", body.contentType), body.fields.map(::part))
+        BodyKind.Multipart -> block(CodeBlock.of("multipart {\n"), body.fields.map(::part))
     }
 
     private fun whole(body: BodyPlan, content: CodeBlock): CodeBlock {
         val guard = CodeBlock.of(GUARD, BODY).takeIf { body.type.isNullable }
-        return CodeBlock.of("%Lbody(%S, %L)\n", guard ?: "", body.contentType, content)
+        return CodeBlock.of("%Lbody(%L, %L)\n", guard ?: "", mediaType(body.contentType), content)
     }
 
     private fun upload(body: BodyPlan): CodeBlock {
         val guard = CodeBlock.of(GUARD, BODY).takeIf { body.type.isNullable }
-        return CodeBlock.of("%Lupload(%S, %N)\n", guard ?: "", body.contentType, BODY)
+        return CodeBlock.of("%Lupload(%L, %N)\n", guard ?: "", mediaType(body.contentType), BODY)
     }
 
     private fun block(head: CodeBlock, fields: List<CodeBlock>): CodeBlock {
@@ -87,14 +86,16 @@ internal class BodyCode(private val serializers: SerializerCode) {
 
     private fun file(field: FieldPlan): CodeBlock {
         val type = field.contentType ?: return CodeBlock.of("%N", field.name)
-        return CodeBlock.of("%N, %S", field.name, type)
+        return CodeBlock.of("%N, %L", field.name, mediaType(type))
     }
 
     private fun jsonText(field: FieldPlan): CodeBlock =
         CodeBlock.of("%L.%M()", json(field.name, field.type), ClientTypes.decodeToString)
 
     private fun jsonPart(field: FieldPlan): CodeBlock =
-        CodeBlock.of("%S, %L", field.contentType ?: JSON, json(field.name, field.type))
+        CodeBlock.of("%L, %L", mediaType(field.contentType ?: JSON), json(field.name, field.type))
+
+    private fun mediaType(text: String): CodeBlock = CodeBlock.of("%T.parse(%S)", ClientTypes.mediaType, text)
 
     private fun json(name: String, type: TypeUse): CodeBlock =
         CodeBlock.of("client.json(%L, %N)", serializers.of(type.copy(isNullable = false)), name)

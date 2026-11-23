@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
+import com.davils.kapi.codegen.core.emit.Conditionals
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.squareup.kotlinpoet.ClassName
@@ -37,6 +37,8 @@ private const val READERS: String = "Readers"
 private const val RANGES: String = "Ranges"
 
 private const val RANGE_SIZE: Int = 100
+
+private const val NOT_MODIFIED: Int = 304
 
 internal class AnswerCode(private val serializers: SerializerCode, private val results: (OperationPlan) -> ClassName) {
     fun properties(operation: OperationPlan): List<PropertySpec> {
@@ -104,10 +106,22 @@ internal class AnswerCode(private val serializers: SerializerCode, private val r
         val reader = LambdaTypeName.get(parameters = arrayOf(ClientTypes.answered), returnType = result)
         val code = CodeBlock.builder()
         entries.forEach { (key, response) -> code.add("%L to %L,\n", key, entry(operation, result, response)) }
+        if (suffix == READERS && Conditionals.addsNotModified(operation)) code.add(notModified(result))
         val property = PropertySpec.builder(name, MAP.parameterizedBy(INT, reader), KModifier.PRIVATE)
         property.initializer("mapOf(\n⇤%L⇤)⇥⇥", code.build())
         return property.build()
     }
+
+    private fun notModified(result: ClassName): CodeBlock = CodeBlock.of(
+        "%L to { %N -> %T.%L(%T.of(%N.headers), %N.headers) },\n",
+        NOT_MODIFIED,
+        EXCHANGE,
+        result,
+        Conditionals.NOT_MODIFIED_NAME,
+        ClientTypes.validators,
+        EXCHANGE,
+        EXCHANGE,
+    )
 
     private fun entry(operation: OperationPlan, result: ClassName, response: ResponsePlan): CodeBlock {
         if (response.headers.isNotEmpty()) return CodeBlock.of("::%N", operation.name + response.name)

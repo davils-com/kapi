@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit.client
 
 import com.davils.kapi.codegen.core.operation.plan.HeaderPlan
@@ -53,7 +52,7 @@ internal class HeaderCode(private val result: ClassName) {
 
     private fun value(header: HeaderPlan): CodeBlock {
         if (header.reader == HeaderPlan.TEXT) return CodeBlock.of("exchange.headers[%S]", header.wireName)
-        val reader = MemberName(RESPONSE, header.reader, isExtension = true)
+        val reader = MemberName(packageName = RESPONSE, simpleName = header.reader, isExtension = true)
         return CodeBlock.of("exchange.headers.%M(%S)", reader, header.wireName)
     }
 
