@@ -77,8 +77,9 @@ internal class YamlReader(private val maximumDepth: Int, private val maximumNode
     private fun mapping(node: YamlNode.Mapping, trail: Trail?, depth: Int): JsonElement {
         val members = LinkedHashMap<String, JsonElement>()
         node.entries.forEach { entry ->
-            val key = (entry.key as? YamlNode.Scalar)?.value
+            val scalar = entry.key as? YamlNode.Scalar
                 ?: refuse(RefusalReason.UnsupportedValue, "A key of the YAML mapping is no scalar", trail)
+            val key = scalar.value
             val isDuplicate = key in members
             if (isDuplicate) {
                 refuse(

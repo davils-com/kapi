@@ -23,7 +23,7 @@ import com.davils.kapi.spec.schema.internal.value.Canonical
 internal class EnumKeyword(private val sorted: List<String>) : Keyword("enum") {
     override fun evaluate(frame: Frame): Boolean {
         val canonical = Canonical.of(frame.instance, frame.run)
-        val matches = sorted.binarySearch(canonical) >= 0
-        return matches || frame.fail(name, "The value is none of the ${sorted.size} values of the enumeration")
+        val isMatching = sorted.binarySearch(canonical) >= 0
+        return isMatching || failed(frame, "The value is none of the ${sorted.size} values of the enumeration")
     }
 }

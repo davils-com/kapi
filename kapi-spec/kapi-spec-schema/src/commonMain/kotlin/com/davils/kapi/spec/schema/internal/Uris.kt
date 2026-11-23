@@ -31,12 +31,12 @@ internal object Uris {
         val parsedBase = UriReference.parseOrNull(base) ?: return null
         val parsedReference = UriReference.parseOrNull(reference)
         val resolved = parsedReference?.let { parsedBase.resolve(it) }
-        return resolved?.normalize()?.toString()
+        return resolved?.run { normalize().toString() }
     }
 
     fun normalized(uri: String): String? {
         val parsed = UriReference.parseOrNull(uri)?.takeIf { it.isAbsolute }
-        val text = parsed?.normalize()?.toString()
+        val text = parsed?.run { normalize().toString() }
         return text?.removeSuffix("#")
     }
 
@@ -54,19 +54,22 @@ internal object Uris {
         var index = 0
         var isValid = true
         while (index < text.length && isValid) {
-            val escape = text[index] == '%'
-            val value = hexAt(text, index + 1).takeIf { escape }
-            isValid = !escape || value != null
+            val isEscape = text[index] == '%'
+            val value = hexAt(text, index + 1).takeIf { isEscape }
+            isValid = !isEscape || value != null
             val chunk = value?.let { byteArrayOf(it.toByte()) } ?: text[index].toString().encodeToByteArray()
             chunk.forEach { bytes += it }
-            index += ESCAPE_LENGTH.takeIf { escape } ?: 1
+            index += ESCAPE_LENGTH.takeIf { isEscape } ?: 1
         }
         val decoded = bytes.toByteArray().decodeToString()
         return decoded.takeIf { isValid }
     }
 
     private fun hexAt(text: String, start: Int): Int? {
-        val digits = text.substring(start.coerceAtMost(text.length), (start + 2).coerceAtMost(text.length))
+        val digits = text.substring(
+            startIndex = start.coerceAtMost(text.length),
+            endIndex = (start + 2).coerceAtMost(text.length),
+        )
         val isComplete = digits.length == 2 && digits.all { it.isHexDigit() }
         return digits.takeIf { isComplete }?.toInt(HEX_RADIX)
     }

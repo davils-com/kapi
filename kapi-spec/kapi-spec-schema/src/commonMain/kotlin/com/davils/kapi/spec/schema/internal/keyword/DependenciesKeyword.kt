@@ -30,9 +30,9 @@ internal class DependenciesKeyword(name: String, private val entries: List<Depen
         var isValid = true
         for (entry in entries) {
             val isPresent = members.indexOf(entry.property) != null
-            val passed = !isPresent || satisfies(frame, members, entry)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = !isPresent || satisfies(frame, members, entry)
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }
@@ -43,11 +43,11 @@ internal class DependenciesKeyword(name: String, private val entries: List<Depen
         missing.forEach { property ->
             val message = "The property ${SafeText.quoted(property)} is missing, which " +
                 "${SafeText.quoted(entry.property)} requires"
-            frame.fail(name, message)
+            failed(frame, message)
         }
         val schema = entry.schema ?: return missing.isEmpty()
-        val result = frame.inPlace(schema, frame.trail(name, entry.property), frame.sink)
+        val result = frame.inPlace(index = schema, keywordTrail = frame.trail(name, entry.property), sink = frame.sink)
         frame.merge(result)
-        return missing.isEmpty() && result != null
+        return result != null
     }
 }

@@ -42,29 +42,29 @@ internal class Scanner(private val session: Session, private val document: Docum
             session.record(target, resource, profile)
             return
         }
-        val effective = profileOf(members, profile, pointer, isRoot)
-        val own = identified(members, target, resource, effective)
+        val effective = profileOf(members = members, profile = profile, pointer = pointer, isRoot = isRoot)
+        val own = identified(members = members, target = target, resource = resource, profile = effective)
         session.record(target, own, effective)
-        anchors(members, target, own, effective)
+        anchors(members = members, target = target, resource = own, profile = effective)
         references(members, own, effective)
-        children(members, pointer, own, effective)
+        children(members = members, pointer = pointer, resource = own, profile = effective)
     }
 
     private fun profileOf(members: JsonObject, profile: Profile, pointer: List<String>, isRoot: Boolean): Profile {
-        val hasId = profile.draft.idKeyword?.let { it in members } ?: false
-        val applies = isRoot || (profile.draft.hasVocabularies && hasId)
-        val declared = textOf(members["\$schema"])?.takeIf { applies } ?: return profile
+        val hasId = profile.draft.idKeyword?.let { it in members } == true
+        val isApplied = isRoot || (profile.draft.hasVocabularies && hasId)
+        val declared = textOf(members["\$schema"])?.takeIf { isApplied } ?: return profile
         return session.profileFor(declared) ?: throw MetaSchemaNeeded(declared, pointer + "\$schema")
     }
 
     private fun identified(members: JsonObject, target: Target, resource: Int, profile: Profile): Int {
         val id = idOf(members, profile) ?: return resource
-        return identifiedBy(id, target, resource, profile)
+        return identifiedBy(id = id, target = target, resource = resource, profile = profile)
     }
 
     private fun idOf(members: JsonObject, profile: Profile): String? {
         val keyword = profile.draft.idKeyword ?: return null
-        val isIgnored = profile.draft.refOverridesSiblings && "\$ref" in members
+        val isIgnored = profile.draft.hasRefOverridingSiblings && "\$ref" in members
         return textOf(members[keyword])?.takeIf { !isIgnored }
     }
 
@@ -73,13 +73,13 @@ internal class Scanner(private val session: Session, private val document: Docum
         val absolute = Uris.resolve(id, base) ?: return invalidId(id, target, resource)
         val uri = Uris.withoutFragment(absolute)
         val fragment = Uris.fragmentOf(absolute)
-        val anchorsInId = profile.draft.anchorsInId
-        if (fragment.isNotEmpty() && !anchorsInId) {
+        val hasAnchorsInId = profile.draft.hasAnchorsInId
+        if (fragment.isNotEmpty() && !hasAnchorsInId) {
             report("The identifier ${SafeText.quoted(id)} must not have a fragment", target, DiagnosticCodes.ID_INVALID)
         }
-        val isAnchorOnly = anchorsInId && fragment.isNotEmpty() && uri == base
+        val isAnchorOnly = hasAnchorsInId && fragment.isNotEmpty() && uri == base
         val own = resource.takeIf { isAnchorOnly } ?: session.resourceFor(uri, target)
-        if (anchorsInId && fragment.isNotEmpty()) session.addAnchor(own, fragment, target)
+        if (hasAnchorsInId && fragment.isNotEmpty()) session.addAnchor(own, fragment, target)
         return own
     }
 
@@ -91,15 +91,17 @@ internal class Scanner(private val session: Session, private val document: Docum
     private fun anchors(members: JsonObject, target: Target, resource: Int, profile: Profile) {
         val draft = profile.draft
         if (!draft.hasVocabularies) return
-        textOf(members["\$anchor"])?.let { name -> anchor(name, target, resource, draft) }
+        val owner = session.resources[resource]
+        textOf(
+            members["\$anchor"],
+        )?.let { name -> anchor(name = name, target = target, resource = resource, draft = draft) }
         val dynamic = textOf(members["\$dynamicAnchor"])?.takeIf { draft == Draft.Draft202012 }
         dynamic?.let { name ->
-            anchor(name, target, resource, draft)
-            session.resources[resource].dynamicAnchors[name] = target.pointer
+            anchor(name = name, target = target, resource = resource, draft = draft)
+            owner.dynamicAnchors[name] = target.pointer
         }
         val isRecursive = (members["\$recursiveAnchor"] as? JsonPrimitive)?.content == "true"
-        val isRoot = session.resources[resource].pointer == target.pointer
-        if (draft == Draft.Draft201909 && isRecursive && isRoot) session.resources[resource].recursiveAnchor = true
+        if (draft == Draft.Draft201909 && isRecursive && owner.isRootOf(target.pointer)) owner.hasRecursiveAnchor = true
     }
 
     private fun anchor(name: String, target: Target, resource: Int, draft: Draft) {
@@ -127,7 +129,7 @@ internal class Scanner(private val session: Session, private val document: Docum
     private fun children(members: JsonObject, pointer: List<String>, resource: Int, profile: Profile) {
         members.forEach { (name, value) ->
             val shape = KeywordRules.ruleOf(name, profile)?.shape ?: Shape.None
-            child(shape, value, pointer + name, resource, profile)
+            child(shape = shape, value = value, pointer = pointer + name, resource = resource, profile = profile)
         }
     }
 
@@ -135,11 +137,40 @@ internal class Scanner(private val session: Session, private val document: Docum
         val isList = value is JsonArray
         when (shape) {
             Shape.None -> Unit
-            Shape.Single -> scan(value, pointer, resource, profile, isRoot = false)
-            Shape.List -> listed(value, pointer, resource, profile)
-            Shape.Map -> mapped(value, pointer, resource, profile, onlySchemas = false)
-            Shape.SingleOrList -> child(Shape.List.takeIf { isList } ?: Shape.Single, value, pointer, resource, profile)
-            Shape.Dependencies -> mapped(value, pointer, resource, profile, onlySchemas = true)
+
+            Shape.Single -> scan(
+                element = value,
+                pointer = pointer,
+                resource = resource,
+                profile = profile,
+                isRoot = false,
+            )
+
+            Shape.List -> listed(value = value, pointer = pointer, resource = resource, profile = profile)
+
+            Shape.Map -> mapped(
+                value = value,
+                pointer = pointer,
+                resource = resource,
+                profile = profile,
+                onlySchemas = false,
+            )
+
+            Shape.SingleOrList -> child(
+                shape = Shape.List.takeIf { isList } ?: Shape.Single,
+                value = value,
+                pointer = pointer,
+                resource = resource,
+                profile = profile,
+            )
+
+            Shape.Dependencies -> mapped(
+                value = value,
+                pointer = pointer,
+                resource = resource,
+                profile = profile,
+                onlySchemas = true,
+            )
         }
     }
 
@@ -147,10 +178,10 @@ internal class Scanner(private val session: Session, private val document: Docum
         val items = value as? JsonArray ?: return
         items.forEachIndexed { index, item ->
             scan(
-                item,
-                pointer + index.toString(),
-                resource,
-                profile,
+                element = item,
+                pointer = pointer + index.toString(),
+                resource = resource,
+                profile = profile,
                 isRoot = false,
             )
         }
@@ -166,7 +197,15 @@ internal class Scanner(private val session: Session, private val document: Docum
         val members = value as? JsonObject ?: return
         members.forEach { (key, item) ->
             val isSkipped = onlySchemas && item is JsonArray
-            if (!isSkipped) scan(item, pointer + key, resource, profile, isRoot = false)
+            if (!isSkipped) {
+                scan(
+                    element = item,
+                    pointer = pointer + key,
+                    resource = resource,
+                    profile = profile,
+                    isRoot = false,
+                )
+            }
         }
     }
 

@@ -28,5 +28,8 @@ internal object Texts {
         return count
     }
 
-    fun escapedToken(token: String): String = token.replace("~", "~0").replace("/", "~1")
+    fun escapedToken(token: String): String {
+        val tildes = token.replace(oldValue = "~", newValue = "~0")
+        return tildes.replace(oldValue = "/", newValue = "~1")
+    }
 }

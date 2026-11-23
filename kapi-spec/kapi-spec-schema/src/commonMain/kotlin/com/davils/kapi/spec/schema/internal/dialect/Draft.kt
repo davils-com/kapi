@@ -25,13 +25,13 @@ internal enum class Draft(val idKeyword: String?) {
     OpenApi30(null),
     ;
 
-    val refOverridesSiblings: Boolean get() = this in LEGACY
+    val hasRefOverridingSiblings: Boolean get() = this in LEGACY
 
-    val allowsBooleanSchemas: Boolean get() = this != Draft04 && this != OpenApi30
+    val areBooleanSchemasAllowed: Boolean get() = this != Draft04 && this != OpenApi30
 
     val hasVocabularies: Boolean get() = this == Draft201909 || this == Draft202012
 
-    val anchorsInId: Boolean get() = this == Draft04 || this == Draft06 || this == Draft07
+    val hasAnchorsInId: Boolean get() = this == Draft04 || this == Draft06 || this == Draft07
 
     private companion object {
         val LEGACY: Set<Draft> = setOf(Draft04, Draft06, Draft07, OpenApi30)

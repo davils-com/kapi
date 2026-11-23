@@ -25,11 +25,11 @@ internal class ConditionalKeyword(
     private val alternative: Int?,
 ) : Keyword("if") {
     override fun evaluate(frame: Frame): Boolean {
-        val result = frame.inPlace(condition, frame.trail(name), null)
+        val result = frame.inPlace(index = condition, keywordTrail = frame.trail(name), sink = null)
         frame.merge(result)
         val branch = consequence.takeIf { result != null } ?: alternative.takeIf { result == null }
         val token = "then".takeIf { result != null } ?: "else"
-        val outcome = branch?.let { frame.inPlace(it, frame.trail(token), frame.sink) }
+        val outcome = branch?.let { frame.inPlace(index = it, keywordTrail = frame.trail(token), sink = frame.sink) }
         frame.merge(outcome)
         return branch == null || outcome != null
     }

@@ -76,18 +76,17 @@ public class CompiledSchema internal constructor(
      * @since 1.0.0
      */
     public fun validate(instance: YamlNode, output: OutputFormat = OutputFormat.Basic): Validation = try {
-        val json = YamlReader(limits.maximumInstanceDepth, limits.maximumInstanceNodes).read(instance)
+        val reader = YamlReader(maximumDepth = limits.maximumInstanceDepth, maximumNodes = limits.maximumInstanceNodes)
+        val json = reader.read(instance)
         validate(json, output)
     } catch (refusal: Refusal) {
         Validation.Refused(refusal.reason, refusal.description, Trail.pointerOf(refusal.trail))
     }
 
-    private fun validated(
-        instance: Instance,
-        output: OutputFormat,
-    ): Validation {
+    private fun validated(instance: Instance, output: OutputFormat): Validation {
         val sink = ArrayList<Failure>().takeIf { output == OutputFormat.Basic }
-        val result = Run(graph, limits).evaluate(root, Visit(instance, null, null, null, null), sink)
+        val visit = Visit(instance = instance, instanceTrail = null, keywordTrail = null, scope = null, chain = null)
+        val result = Run(graph, limits).evaluate(root, visit, sink)
         if (result != null) return Validation.Valid
         return invalid(sink.orEmpty())
     }

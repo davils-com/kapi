@@ -29,7 +29,7 @@ internal object Literals {
             val current = stack.removeLast()
             count++
             (current as? JsonArray)?.forEach(stack::addLast)
-            (current as? JsonObject)?.values?.forEach(stack::addLast)
+            (current as? JsonObject)?.run { values.forEach(stack::addLast) }
         }
         return count
     }

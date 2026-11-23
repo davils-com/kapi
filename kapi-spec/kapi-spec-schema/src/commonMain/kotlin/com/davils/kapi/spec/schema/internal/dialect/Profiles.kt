@@ -32,7 +32,7 @@ internal object Profiles {
         Dialect.OpenApi31 to Draft.Draft202012,
     )
 
-    fun of(dialect: Dialect, formatAssertion: Boolean): Profile {
+    fun of(dialect: Dialect, isFormatAsserted: Boolean): Profile {
         val draft = drafts.getValue(dialect)
         val vocabularies = when (dialect) {
             Dialect.Draft201909 -> Vocabulary.DEFAULT_201909
@@ -40,7 +40,12 @@ internal object Profiles {
             Dialect.OpenApi31 -> Vocabulary.DEFAULT_202012 + Vocabulary.OpenApiBase
             Dialect.Draft04, Dialect.Draft06, Dialect.Draft07, Dialect.OpenApi30 -> emptySet()
         }
-        return Profile(draft, vocabularies, formatAssertion, dialect)
+        return Profile(
+            draft = draft,
+            vocabularies = vocabularies,
+            isFormatAsserted = isFormatAsserted,
+            dialect = dialect,
+        )
     }
 
     fun dialectOf(uri: String): Dialect? {
@@ -48,7 +53,7 @@ internal object Profiles {
         return Dialect.entries.firstOrNull { dialect -> dialect.uri?.let(::keyOf) == key }
     }
 
-    fun custom(meta: JsonElement, metaProfile: Profile, formatAssertion: Boolean, unknown: (String) -> Unit): Profile {
+    fun custom(meta: JsonElement, metaProfile: Profile, isFormatAsserted: Boolean, unknown: (String) -> Unit): Profile {
         val declared = (meta as? JsonObject)?.get("\$vocabulary") as? JsonObject
         val usable = declared.takeIf { metaProfile.draft.hasVocabularies } ?: return metaProfile
         val vocabularies = LinkedHashSet<Vocabulary>()
@@ -58,12 +63,17 @@ internal object Profiles {
             val isRequired = (required as? JsonPrimitive)?.content == "true"
             if (vocabulary == null && isRequired) unknown(uri)
         }
-        val asserts = formatAssertion || Vocabulary.FormatAssertion in vocabularies
-        return Profile(metaProfile.draft, vocabularies, asserts, dialect = null)
+        val isAsserted = isFormatAsserted || Vocabulary.FormatAssertion in vocabularies
+        return Profile(
+            draft = metaProfile.draft,
+            vocabularies = vocabularies,
+            isFormatAsserted = isAsserted,
+            dialect = null,
+        )
     }
 
     private fun keyOf(uri: String): String {
         val bare = uri.removeSuffix("#")
-        return bare.replace("https://json-schema.org/", "http://json-schema.org/")
+        return bare.replace(oldValue = "https://json-schema.org/", newValue = "http://json-schema.org/")
     }
 }

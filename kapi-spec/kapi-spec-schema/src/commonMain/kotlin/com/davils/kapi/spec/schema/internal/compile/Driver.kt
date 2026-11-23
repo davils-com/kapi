@@ -37,8 +37,8 @@ import kotlinx.serialization.json.JsonElement
 internal class Driver(private val compiler: Compiler) {
     private val session = Session(
         limits = compiler.limits,
-        defaultProfile = Profiles.of(compiler.defaultDialect, compiler.formatAssertion),
-        formatAssertion = compiler.formatAssertion,
+        defaultProfile = Profiles.of(compiler.defaultDialect, compiler.isFormatAsserted),
+        isFormatAsserted = compiler.isFormatAsserted,
     )
 
     private val requested = OrderedSet<String>()
@@ -48,24 +48,24 @@ internal class Driver(private val compiler: Compiler) {
     suspend fun compile(schema: JsonElement, uri: DocumentUri?): Compilation {
         val built = try {
             build(schema, uri)
-        } catch (abort: CompileAbort) {
-            check(session.diagnostics.isNotEmpty()) { abort.message.orEmpty() }
+        } catch (_: CompileAbort) {
             null
         }
         val isValid = built != null && session.diagnostics.isEmpty()
         if (!isValid) return Compilation.Invalid(session.diagnostics.toList())
-        return Compilation.Compiled(checkNotNull(built))
+        return Compilation.Compiled(built)
     }
 
     private suspend fun build(schema: JsonElement, uri: DocumentUri?): CompiledSchema {
-        val retrieval = uri?.value?.let { Uris.normalized(it) } ?: DocumentUri.MEMORY.value
+        val retrieval = uri?.let { Uris.normalized(it.value) } ?: DocumentUri.MEMORY.value
         val document = admit(retrieval, schema, session.defaultProfile)
         preload()
         val factory = NodeFactory(session)
         val root = factory.nodeAt(document.index, emptyList())
         factory.compileAll()
-        val base = session.resources[session.locationOf(Target(document.index, emptyList()))?.resource ?: 0].uri
-        return CompiledSchema(factory.graph(), root, compiler.limits, base)
+        val graph = factory.graph()
+        val base = graph.resources[graph.nodes[root].resource].uri
+        return CompiledSchema(graph = graph, root = root, limits = compiler.limits, uri = base)
     }
 
     private suspend fun admit(uri: String, json: JsonElement, profile: Profile): Document {
@@ -81,12 +81,15 @@ internal class Driver(private val compiler: Compiler) {
     private fun scanned(document: Document, profile: Profile): MetaSchemaNeeded? {
         val diagnostics = session.diagnostics.size
         val references = session.references.size
-        val root = session.resourceIndexOf(document.uri) ?: 0
+        val scanner = Scanner(session, document)
         val scan = runCatching {
-            Scanner(
-                session,
-                document,
-            ).scan(document.root, emptyList(), root, profile, isRoot = true)
+            scanner.scan(
+                element = document.root,
+                pointer = emptyList(),
+                resource = session.rootResourceOf(document),
+                profile = profile,
+                isRoot = true,
+            )
         }
         val missing = scan.exceptionOrNull()
         missing?.takeIf { it !is MetaSchemaNeeded }?.let { throw it }
@@ -115,7 +118,7 @@ internal class Driver(private val compiler: Compiler) {
         val meta = admit(key, json, session.defaultProfile)
         resolving.remove(key)
         val metaProfile = session.locationOf(Target(meta.index, emptyList()))?.profile ?: session.defaultProfile
-        session.metaProfiles[key] = Profiles.custom(json, metaProfile, compiler.formatAssertion) { vocabulary ->
+        session.metaProfiles[key] = Profiles.custom(json, metaProfile, compiler.isFormatAsserted) { vocabulary ->
             val message = "The meta-schema requires the unknown vocabulary ${SafeText.quoted(vocabulary)}"
             session.report(DiagnosticCodes.VOCABULARY_UNKNOWN, message, Target(document.index, missing.pointer))
         }
@@ -145,7 +148,7 @@ internal class Driver(private val compiler: Compiler) {
         val documentUri = DocumentUri.parseOrNull(uri)
         if (loader == null || documentUri == null) return null
         val result = attempted { loader.load(documentUri) }
-        result.exceptionOrNull()?.let {
+        if (result.isFailure) {
             val message = "The loader failed to load ${SafeText.quoted(uri)}"
             session.report(DiagnosticCodes.LOADER_FAILED, message, null)
         }

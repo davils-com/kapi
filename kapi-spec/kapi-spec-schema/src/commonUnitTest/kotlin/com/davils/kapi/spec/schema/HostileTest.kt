@@ -19,31 +19,38 @@ package com.davils.kapi.spec.schema
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 
 private const val WIDE: Int = 20_000
 
+private const val SHALLOW_DEPTH: Int = 100
+
+private const val STEP_BUDGET: Long = 1_000_000L
+
 class HostileTest : FunSpec({
     test("a schema nested far too deep is refused, not overflowed") {
-        val schema = nested("""{"items": """, "{}", "}", 300)
+        val schema = nested(open = """{"items": """, center = "{}", close = "}", depth = 300)
         codesOf(schema) shouldContain DiagnosticCodes.LIMIT_EXCEEDED
     }
 
     test("a reference to itself that reads nothing is refused") {
         listOf(
             """{"${'$'}ref": "#"}""",
-            """{"${'$'}defs": {"a": {"${'$'}ref": "#/${'$'}defs/b"},
-                "b": {"allOf": [{"${'$'}ref": "#/${'$'}defs/a"}]}}, "${'$'}ref": "#/${'$'}defs/a"}""",
+            """{"${'$'}defs": {"a": {"${'$'}ref": "#/${'$'}defs/b"}, """ +
+                """"b": {"allOf": [{"${'$'}ref": "#/${'$'}defs/a"}]}}, "${'$'}ref": "#/${'$'}defs/a"}""",
             """{"${'$'}dynamicAnchor": "x", "anyOf": [{"${'$'}dynamicRef": "#x"}]}""",
         ).forEach { schema ->
             schemaOf(schema).refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
         }
-        val legacy = schemaOf("""{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}},
-            "${'$'}ref": "#/definitions/a"}""") {
-            defaultDialect = Dialect.Draft07
-        }
+        val legacy =
+            schemaOf(
+                """{"definitions": {"a": {"${'$'}ref": "#/definitions/a"}}, "${'$'}ref": "#/definitions/a"}""",
+            ) {
+                defaultDialect = Dialect.Draft07
+            }
         legacy.refusalOf(json("1")).reason shouldBe RefusalReason.ReferenceCycle
     }
 
@@ -54,15 +61,15 @@ class HostileTest : FunSpec({
 
     test("a long chain of dynamic references is bounded") {
         val definitions = (0 until 200).joinToString(", ") { index ->
-            """"d$index": {"${'$'}id": "https://example.com/d$index", "${'$'}dynamicAnchor": "n",
-                "${'$'}ref": "https://example.com/d${index + 1}"}"""
+            """"d$index": {"${'$'}id": "https://example.com/d$index", "${'$'}dynamicAnchor": "n", """ +
+                """"${'$'}ref": "https://example.com/d${index + 1}"}"""
         }
-        val schema = """{"${'$'}defs": {$definitions, "d200": {"${'$'}id": "https://example.com/d200",
-            "${'$'}dynamicAnchor": "n", "items": {"${'$'}dynamicRef": "#n"}}},
-            "${'$'}ref": "https://example.com/d0"}"""
+        val schema = """{"${'$'}defs": {$definitions, "d200": {"${'$'}id": "https://example.com/d200", """ +
+            """"${'$'}dynamicAnchor": "n", "items": {"${'$'}dynamicRef": "#n"}}}, """ +
+            """"${'$'}ref": "https://example.com/d0"}"""
         val compiled = schemaOf(schema) { limits { maximumEvaluationDepth = SchemaLimits.CEILING_EVALUATION_DEPTH } }
         compiled.accepts("[1]") shouldBe true
-        schemaOf(schema) { limits { maximumEvaluationDepth = 100 } }.refusalOf(json("[1]")).reason shouldBe
+        schemaOf(schema) { limits { maximumEvaluationDepth = SHALLOW_DEPTH } }.refusalOf(json("[1]")).reason shouldBe
             RefusalReason.EvaluationDepth
     }
 
@@ -77,9 +84,15 @@ class HostileTest : FunSpec({
     }
 
     test("nested alternatives that all fail run out of steps instead of time") {
-        val schema = nested("""{"anyOf": [{"type": "string"}, """, """{"type": "string"}""", "]}", 40)
-            .replace("""{"anyOf": [{"type": "string"}, {"type": "string"}]}""", """{"anyOf": [{"type": "string"},
-                {"type": "boolean"}]}""")
+        val schema = nested(
+            open = """{"anyOf": [{"type": "string"}, """,
+            center = """{"type": "string"}""",
+            close = "]}",
+            depth = 40,
+        ).replace(
+            oldValue = """{"anyOf": [{"type": "string"}, {"type": "string"}]}""",
+            newValue = """{"anyOf": [{"type": "string"}, {"type": "boolean"}]}""",
+        )
         val compiled = schemaOf(schema) { limits { maximumEvaluationSteps = 100_000L } }
         compiled.accepts("\"a\"") shouldBe true
         compiled.validate(json("1")).isValid shouldBe false
@@ -92,22 +105,33 @@ class HostileTest : FunSpec({
             """"l$level": {"items": {"anyOf": [$next]}}"""
         }
         val schema = """{"${'$'}defs": {$levels, "l7": {"type": "string"}}, "anyOf": [$branches]}"""
-        val value = json(nested("[", "1", "]", 7))
-        schemaOf(schema) { limits { maximumEvaluationSteps = 1_000_000L } }.refusalOf(value).reason shouldBe
+        val value = json(nested(open = "[", center = "1", close = "]", depth = 7))
+        schemaOf(schema) { limits { maximumEvaluationSteps = STEP_BUDGET } }.refusalOf(value).reason shouldBe
             RefusalReason.EvaluationSteps
     }
 
     test("multipleOf with extreme exponents is exact and bounded") {
-        verify("""{"multipleOf": 1e-4000}""", listOf("1e4000", "3"), emptyList())
-        verify("""{"multipleOf": 3e4000}""", listOf("6e4000", "0"), listOf("1e4000", "1"))
+        verify(schema = """{"multipleOf": 1e-4000}""", valid = listOf("1e4000", "3"), invalid = emptyList())
+        verify(
+            schema = """{"multipleOf": 3e4000}""",
+            valid = listOf("6e4000", "0"),
+            invalid = listOf("1e4000", "1"),
+        )
         val big = "9".repeat(400)
-        verify("""{"multipleOf": $big}""", listOf(big, "${big}0"), listOf("1${big.drop(1)}"))
+        verify(
+            schema = """{"multipleOf": $big}""",
+            valid = listOf(big, "${big}0"),
+            invalid = listOf("1${big.drop(1)}"),
+        )
     }
 
     test("keys an attacker chose do not slow lookups") {
         val keys = (0 until WIDE).joinToString(", ") { """"k${"0".repeat(20)}$it": $it""" }
-        val compiled = schemaOf("""{"required": ["k${"0".repeat(20)}19999", "missing"],
-            "propertyNames": {"maxLength": 40}}""")
-        compiled.errorsOf("{$keys}").single().error.contains("missing") shouldBe true
+        val compiled =
+            schemaOf(
+                """{"required": ["k${"0".repeat(20)}19999", "missing"], "propertyNames": {"maxLength": 40}}""",
+            )
+        val error = compiled.errorsOf("{$keys}").single()
+        error.error shouldContain "missing"
     }
 })

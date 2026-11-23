@@ -138,22 +138,23 @@ public class SchemaLimits internal constructor(builder: SchemaLimitsBuilder) : V
         )
 
     override fun ValidationScope.validate() {
-        bounded(::maximumSchemaDepth, maximumSchemaDepth.toLong(), CEILING_SCHEMA_DEPTH.toLong())
-        bounded(::maximumSubschemas, maximumSubschemas.toLong(), CEILING_SUBSCHEMAS.toLong())
-        bounded(::maximumDocuments, maximumDocuments.toLong(), CEILING_DOCUMENTS.toLong())
-        bounded(::maximumEvaluationSteps, maximumEvaluationSteps, CEILING_EVALUATION_STEPS)
-        bounded(::maximumEvaluationDepth, maximumEvaluationDepth.toLong(), CEILING_EVALUATION_DEPTH.toLong())
-        bounded(::maximumInstanceDepth, maximumInstanceDepth.toLong(), CEILING_INSTANCE_DEPTH.toLong())
-        bounded(::maximumInstanceNodes, maximumInstanceNodes.toLong(), CEILING_INSTANCE_NODES.toLong())
-        bounded(::maximumErrors, maximumErrors.toLong(), CEILING_ERRORS.toLong())
-        bounded(::maximumStringLength, maximumStringLength.toLong(), CEILING_STRING_LENGTH.toLong())
-        bounded(::maximumPatternLength, maximumPatternLength.toLong(), CEILING_PATTERN_LENGTH.toLong())
-        bounded(::maximumEnumValues, maximumEnumValues.toLong(), CEILING_ENUM_VALUES.toLong())
-        bounded(::maximumLiteralNodes, maximumLiteralNodes.toLong(), CEILING_LITERAL_NODES.toLong())
+        bounded(::maximumSchemaDepth, CEILING_SCHEMA_DEPTH)
+        bounded(::maximumSubschemas, CEILING_SUBSCHEMAS)
+        bounded(::maximumDocuments, CEILING_DOCUMENTS)
+        bounded(::maximumEvaluationSteps, CEILING_EVALUATION_STEPS)
+        bounded(::maximumEvaluationDepth, CEILING_EVALUATION_DEPTH)
+        bounded(::maximumInstanceDepth, CEILING_INSTANCE_DEPTH)
+        bounded(::maximumInstanceNodes, CEILING_INSTANCE_NODES)
+        bounded(::maximumErrors, CEILING_ERRORS)
+        bounded(::maximumStringLength, CEILING_STRING_LENGTH)
+        bounded(::maximumPatternLength, CEILING_PATTERN_LENGTH)
+        bounded(::maximumEnumValues, CEILING_ENUM_VALUES)
+        bounded(::maximumLiteralNodes, CEILING_LITERAL_NODES)
     }
 
-    private fun ValidationScope.bounded(property: KProperty0<*>, value: Long, ceiling: Long) {
-        if (value !in 1L..ceiling) {
+    private fun ValidationScope.bounded(property: KProperty0<Number>, ceiling: Number) {
+        val value = property.get().toLong()
+        if (value !in 1L..ceiling.toLong()) {
             fail(property, "must lie between 1 and $ceiling, but was $value", ViolationCode.OUT_OF_RANGE)
         }
     }

@@ -125,6 +125,8 @@ libraries:
       - '**/runtime/core/security/Credential.kt'
       - '**/runtime/core/structured/BareItem.kt'
       - '**/runtime/core/wire/Patch.kt'
+      - '**/spec/schema/Compilation.kt'
+      - '**/spec/schema/YamlConversion.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   LibraryCodeMustSpecifyReturnType:
     active: true
@@ -213,6 +215,8 @@ style:
       - '**/runtime/core/security/Credential.kt'
       - '**/runtime/core/structured/BareItem.kt'
       - '**/runtime/core/wire/Patch.kt'
+      - '**/spec/schema/Compilation.kt'
+      - '**/spec/schema/YamlConversion.kt'
   # The compiler rejects an explicit Unit return type as redundant under warnings as errors.
   OptionalUnit:
     active: false

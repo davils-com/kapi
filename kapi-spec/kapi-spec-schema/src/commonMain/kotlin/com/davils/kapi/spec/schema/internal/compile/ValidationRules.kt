@@ -56,9 +56,9 @@ internal object ValidationRules {
         val isOpenApi = context.draft == Draft.OpenApi30
         val single = (element as? JsonPrimitive)?.takeIf { it.isString }?.content
         val many = (element as? JsonArray)?.takeIf { !isOpenApi }
-        val names = single?.let(::listOf) ?: many?.let { context.texts("type", it) }
-        val isValid = names != null && names.isNotEmpty() && names.all { name -> Types.bitOf(name) != null }
-        if (!isValid) return context.report("type", "The keyword type must name the types of JSON")
+        val names = many?.let { context.texts("type", it) } ?: listOfNotNull(single)
+        val isValid = names.isNotEmpty() && names.all { name -> Types.bitOf(name) != null }
+        if (!isValid) return context.report(keyword = "type", message = "The keyword type must name the types of JSON")
         val isNullable = isOpenApi && (context.members["nullable"] as? JsonPrimitive)?.content == "true"
         val all = names.plus("null").takeIf { isNullable } ?: names
         val mask = all.fold(0) { total, name -> total or (Types.bitOf(name) ?: 0) }
@@ -66,17 +66,23 @@ internal object ValidationRules {
     }
 
     fun enumeration(context: KeywordContext, element: JsonElement): Keyword? {
-        val values = element as? JsonArray ?: return context.report(ENUM, "The keyword enum must be an array")
+        val values = element as? JsonArray ?: return context.report(
+            keyword = ENUM,
+            message = "The keyword enum must be an array",
+        )
         val maximum = context.session.limits.maximumEnumValues
         val isBounded = values.size <= maximum
         if (!isBounded) {
-            context.report(ENUM, "The enumeration has more than $maximum values", DiagnosticCodes.LIMIT_EXCEEDED)
+            context.report(
+                keyword = ENUM,
+                message = "The enumeration has more than $maximum values",
+                code = DiagnosticCodes.LIMIT_EXCEEDED,
+            )
         }
         val canonical = values.takeIf { isBounded && checkNodes(context, ENUM, element) }?.mapNotNull { value ->
             context.literal(ENUM, value)
         }
-        val distinct = canonical?.distinct()
-        return distinct?.sorted()?.let(::EnumKeyword)
+        return canonical?.run { EnumKeyword(distinct().sorted()) }
     }
 
     fun constant(context: KeywordContext, element: JsonElement): Keyword? {
@@ -89,29 +95,31 @@ internal object ValidationRules {
         val divisor = context.number("multipleOf", element) ?: return null
         val isPositive = divisor.sign > 0
         return MultipleOfKeyword(divisor).takeIf { isPositive }
-            ?: context.report("multipleOf", "The keyword multipleOf must be greater than zero")
+            ?: context.report(keyword = "multipleOf", message = "The keyword multipleOf must be greater than zero")
     }
 
-    fun maximum(context: KeywordContext, element: JsonElement): Keyword? = bound(context, element, "maximum", true)
+    fun maximum(context: KeywordContext, element: JsonElement): Keyword? =
+        bound(context = context, element = element, name = "maximum", isMaximum = true)
 
-    fun minimum(context: KeywordContext, element: JsonElement): Keyword? = bound(context, element, "minimum", false)
+    fun minimum(context: KeywordContext, element: JsonElement): Keyword? =
+        bound(context = context, element = element, name = "minimum", isMaximum = false)
 
     private fun bound(context: KeywordContext, element: JsonElement, name: String, isMaximum: Boolean): Keyword? {
         val limit = context.number(name, element) ?: return null
         val sibling = EXCLUSIVE_MAXIMUM.takeIf { isMaximum } ?: EXCLUSIVE_MINIMUM
         val isLegacy = context.draft == Draft.Draft04 || context.draft == Draft.OpenApi30
         val isExclusive = isLegacy && (context.members[sibling] as? JsonPrimitive)?.content == "true"
-        return BoundKeyword(name, limit, isMaximum, isExclusive)
+        return BoundKeyword(name = name, limit = limit, isMaximum = isMaximum, isExclusive = isExclusive)
     }
 
     fun exclusiveMaximum(context: KeywordContext, element: JsonElement): Keyword? =
         context.number(EXCLUSIVE_MAXIMUM, element)?.let {
-            BoundKeyword(EXCLUSIVE_MAXIMUM, it, isMaximum = true, isExclusive = true)
+            BoundKeyword(name = EXCLUSIVE_MAXIMUM, limit = it, isMaximum = true, isExclusive = true)
         }
 
     fun exclusiveMinimum(context: KeywordContext, element: JsonElement): Keyword? =
         context.number(EXCLUSIVE_MINIMUM, element)?.let {
-            BoundKeyword(EXCLUSIVE_MINIMUM, it, isMaximum = false, isExclusive = true)
+            BoundKeyword(name = EXCLUSIVE_MINIMUM, limit = it, isMaximum = false, isExclusive = true)
         }
 
     fun flag(context: KeywordContext, element: JsonElement, name: String): Keyword? {
@@ -121,7 +129,12 @@ internal object ValidationRules {
 
     fun count(context: KeywordContext, element: JsonElement, counted: Counted): Keyword? {
         val bound = context.count(counted.name, element) ?: return null
-        return CountKeyword(counted.name, counted.measure, bound, counted.isMaximum)
+        return CountKeyword(
+            name = counted.name,
+            measure = counted.measure,
+            bound = bound,
+            isMaximum = counted.isMaximum,
+        )
     }
 
     fun countOnly(context: KeywordContext, element: JsonElement, name: String): Keyword? {
@@ -146,7 +159,10 @@ internal object ValidationRules {
 
     fun dependentRequired(context: KeywordContext, element: JsonElement): Keyword? {
         val members = element as? JsonObject
-            ?: return context.report(DEPENDENT_REQUIRED, "The keyword dependentRequired must be an object")
+            ?: return context.report(
+                keyword = DEPENDENT_REQUIRED,
+                message = "The keyword dependentRequired must be an object",
+            )
         val entries = members.mapNotNull { (name, value) ->
             context.texts(DEPENDENT_REQUIRED, value)?.let { Dependency(name, it, schema = null) }
         }
@@ -155,7 +171,7 @@ internal object ValidationRules {
 
     fun format(context: KeywordContext, element: JsonElement): Keyword? {
         val format = context.text("format", element) ?: return null
-        return FormatKeyword(format).takeIf { context.profile.formatAssertion }
+        return FormatKeyword(format).takeIf { context.profile.isFormatAsserted }
     }
 
     private fun checkNodes(context: KeywordContext, keyword: String, element: JsonElement): Boolean {

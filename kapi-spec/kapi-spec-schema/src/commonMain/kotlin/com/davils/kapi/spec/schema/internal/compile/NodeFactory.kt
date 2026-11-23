@@ -37,7 +37,7 @@ internal class NodeFactory(private val session: Session) {
 
     private val pending = ArrayDeque<Pair<Int, Target>>()
 
-    private var tracksAnnotations: Boolean = false
+    private var isTrackingAnnotations: Boolean = false
 
     fun nodeAt(document: Int, pointer: List<String>): Int {
         val target = Target(document, pointer)
@@ -67,14 +67,14 @@ internal class NodeFactory(private val session: Session) {
 
     private fun isSchema(entry: LocationEntry): Boolean {
         val element = session.elementAt(entry.target)
-        val isFlag = flagOf(element) != null && entry.profile.draft.allowsBooleanSchemas
+        val isFlag = flagOf(element) != null && entry.profile.draft.areBooleanSchemasAllowed
         return element is JsonObject || isFlag
     }
 
     fun graph(): Graph {
-        val compiled = nodes.map(::checkNotNull)
+        val compiled = nodes.filterNotNull()
         val resources = session.resources.map { resource -> infoOf(resource) }
-        return Graph(compiled, resources, tracksAnnotations)
+        return Graph(compiled, resources, isTrackingAnnotations)
     }
 
     private fun infoOf(resource: Resource): ResourceInfo {
@@ -85,7 +85,7 @@ internal class NodeFactory(private val session: Session) {
                 pointer,
             )
         }
-        val root = nodeAt(resource.document, resource.pointer).takeIf { resource.recursiveAnchor }
+        val root = nodeAt(resource.document, resource.pointer).takeIf { resource.hasRecursiveAnchor }
         return ResourceInfo(resource.uri, anchors, root)
     }
 
@@ -114,17 +114,24 @@ internal class NodeFactory(private val session: Session) {
 
     private fun compiled(target: Target): Node {
         val element = checkNotNull(session.elementAt(target)) { "A subschema is compiled only where a value is" }
-        val entry = session.locationOf(target) ?: detached(target)
+        val entry = session.locationOf(target) ?: detached(target, element)
         val keywords = keywordsOf(element, target, entry)
-        tracksAnnotations = tracksAnnotations || keywords.any { it.isUnevaluated }
+        isTrackingAnnotations = isTrackingAnnotations || keywords.any { it.isUnevaluated }
         return Node(entry.resource, session.absoluteOf(entry.resource, target.pointer), keywords)
     }
 
     private fun keywordsOf(element: JsonElement, target: Target, entry: LocationEntry): List<Keyword> {
         val members = element as? JsonObject ?: return flagKeywords(element, target, entry)
-        val context = KeywordContext(this, session, target, members, entry.resource, entry.profile)
-        val overrides = entry.profile.draft.refOverridesSiblings && "\$ref" in members
-        val names = listOf("\$ref").takeIf { overrides } ?: members.keys
+        val context = KeywordContext(
+            factory = this,
+            session = session,
+            target = target,
+            members = members,
+            resource = entry.resource,
+            profile = entry.profile,
+        )
+        val isOverridden = entry.profile.draft.hasRefOverridingSiblings && "\$ref" in members
+        val names = listOf("\$ref").takeIf { isOverridden } ?: members.keys
         val keywords = names.mapNotNull { name ->
             val rule = KeywordRules.ruleOf(name, entry.profile)
             rule?.compile?.invoke(context, members.getValue(name))
@@ -133,12 +140,12 @@ internal class NodeFactory(private val session: Session) {
     }
 
     private fun flagKeywords(element: JsonElement, target: Target, entry: LocationEntry): List<Keyword> {
-        val flag = flagOf(element)
-        val isAllowed = flag != null && entry.profile.draft.allowsBooleanSchemas
+        val isTrue = flagOf(element)
+        val isAllowed = isTrue != null && entry.profile.draft.areBooleanSchemasAllowed
         if (!isAllowed) {
             session.report(DiagnosticCodes.NOT_A_SCHEMA, "The value is no schema of the dialect", target)
         }
-        val keywords = listOf(FalseKeyword()).takeIf { flag == false }
+        val keywords = listOf(FalseKeyword()).takeIf { isTrue == false }
         return keywords.orEmpty()
     }
 
@@ -148,12 +155,19 @@ internal class NodeFactory(private val session: Session) {
         return (content == "true").takeIf { isFlag }
     }
 
-    private fun detached(target: Target): LocationEntry {
-        val ancestor = (target.pointer.size - 1 downTo 0).firstNotNullOf { length ->
-            session.locationOf(Target(target.document, target.pointer.subList(0, length)))
+    private fun ancestorOf(target: Target): LocationEntry {
+        var length = target.pointer.size
+        var ancestor: LocationEntry? = null
+        while (ancestor == null) {
+            length--
+            ancestor = session.locationOf(Target(target.document, target.pointer.take(length)))
         }
-        val element = checkNotNull(session.elementAt(target))
-        val wasStrict = session.isStrict
+        return ancestor
+    }
+
+    private fun detached(target: Target, element: JsonElement): LocationEntry {
+        val ancestor = ancestorOf(target)
+        val isStrict = session.isStrict
         session.isStrict = false
         val scanned = runCatching {
             Scanner(session, session.documents[target.document]).scan(
@@ -164,7 +178,7 @@ internal class NodeFactory(private val session: Session) {
                 isRoot = false,
             )
         }
-        session.isStrict = wasStrict
+        session.isStrict = isStrict
         val failure = scanned.exceptionOrNull()
         failure?.takeIf { it !is MetaSchemaNeeded }?.let { throw it }
         return session.locationOf(target) ?: LocationEntry(target, ancestor.resource, ancestor.profile)

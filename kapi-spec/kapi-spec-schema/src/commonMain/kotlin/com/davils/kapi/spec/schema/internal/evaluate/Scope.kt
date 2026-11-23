@@ -16,15 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.evaluate
 
-internal class Scope(val parent: Scope?, val resource: Int) {
-    fun outermostFirst(): List<Int> {
-        val resources = ArrayList<Int>()
-        var current: Scope? = this
-        while (current != null) {
-            resources += current.resource
-            current = current.parent
-        }
-        resources.reverse()
-        return resources
-    }
-}
+internal data class Scope(val parent: Scope?, val resource: Int)

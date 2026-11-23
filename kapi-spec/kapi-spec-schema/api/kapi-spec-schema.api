@@ -1,0 +1,377 @@
+public abstract interface class com/davils/kapi/spec/schema/Compilation {
+}
+
+public final class com/davils/kapi/spec/schema/Compilation$Compiled : com/davils/kapi/spec/schema/Compilation {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSchema ()Lcom/davils/kapi/spec/schema/CompiledSchema;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/Compilation$Invalid : com/davils/kapi/spec/schema/Compilation {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDiagnostics ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/CompiledSchema {
+	public final fun getSubschemas ()I
+	public final fun getUri ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public final fun validate (Lcom/davils/kaml/core/node/YamlNode;Lcom/davils/kapi/spec/schema/OutputFormat;)Lcom/davils/kapi/spec/schema/Validation;
+	public final fun validate (Lkotlinx/serialization/json/JsonElement;Lcom/davils/kapi/spec/schema/OutputFormat;)Lcom/davils/kapi/spec/schema/Validation;
+	public static synthetic fun validate$default (Lcom/davils/kapi/spec/schema/CompiledSchema;Lcom/davils/kaml/core/node/YamlNode;Lcom/davils/kapi/spec/schema/OutputFormat;ILjava/lang/Object;)Lcom/davils/kapi/spec/schema/Validation;
+	public static synthetic fun validate$default (Lcom/davils/kapi/spec/schema/CompiledSchema;Lkotlinx/serialization/json/JsonElement;Lcom/davils/kapi/spec/schema/OutputFormat;ILjava/lang/Object;)Lcom/davils/kapi/spec/schema/Validation;
+}
+
+public final class com/davils/kapi/spec/schema/Compiler : com/davils/kore/core/validation/Validatable {
+	public final fun compile-3ScFL5o (Lcom/davils/kaml/core/node/YamlNode;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun compile-3ScFL5o (Lkotlinx/serialization/json/JsonElement;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun compile-3ScFL5o$default (Lcom/davils/kapi/spec/schema/Compiler;Lcom/davils/kaml/core/node/YamlNode;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun compile-3ScFL5o$default (Lcom/davils/kapi/spec/schema/Compiler;Lkotlinx/serialization/json/JsonElement;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun getDefaultDialect ()Lcom/davils/kapi/spec/schema/Dialect;
+	public final fun getLimits ()Lcom/davils/kapi/spec/schema/SchemaLimits;
+	public final fun isFormatAsserted ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/schema/CompilerBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getDefaultDialect ()Lcom/davils/kapi/spec/schema/Dialect;
+	public final fun getLoader ()Lcom/davils/kapi/spec/schema/SchemaLoader;
+	public final fun isFormatAsserted ()Z
+	public final fun limits (Lkotlin/jvm/functions/Function1;)V
+	public final fun schema-ABZ1FNU (Ljava/lang/String;Lkotlinx/serialization/json/JsonElement;)V
+	public final fun setDefaultDialect (Lcom/davils/kapi/spec/schema/Dialect;)V
+	public final fun setFormatAsserted (Z)V
+	public final fun setLoader (Lcom/davils/kapi/spec/schema/SchemaLoader;)V
+}
+
+public final class com/davils/kapi/spec/schema/DiagnosticCodes {
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/DiagnosticCodes;
+	public final fun getANCHOR_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDIALECT_UNKNOWN-J_S2PC0 ()Ljava/lang/String;
+	public final fun getID_DUPLICATE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getID_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getKEYWORD_INVALID-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLIMIT_EXCEEDED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getLOADER_FAILED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNOT_A_SCHEMA-J_S2PC0 ()Ljava/lang/String;
+	public final fun getNOT_JSON-J_S2PC0 ()Ljava/lang/String;
+	public final fun getPATTERN_REFUSED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getREFERENCE_UNRESOLVED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getVOCABULARY_UNKNOWN-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/Dialect : java/lang/Enum {
+	public static final field Draft04 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field Draft06 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field Draft07 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field Draft201909 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field Draft202012 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field OpenApi30 Lcom/davils/kapi/spec/schema/Dialect;
+	public static final field OpenApi31 Lcom/davils/kapi/spec/schema/Dialect;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getUri ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/schema/Dialect;
+	public static fun values ()[Lcom/davils/kapi/spec/schema/Dialect;
+}
+
+public final class com/davils/kapi/spec/schema/JsonSchema {
+	public static final field DEFAULT_YAML_DEPTH I
+	public static final field DEFAULT_YAML_NODES I
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/JsonSchema;
+	public final fun compiler (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/schema/Compiler;
+	public static synthetic fun compiler$default (Lcom/davils/kapi/spec/schema/JsonSchema;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/spec/schema/Compiler;
+	public final fun json (Lcom/davils/kaml/core/node/YamlNode;II)Lcom/davils/kapi/spec/schema/YamlConversion;
+	public static synthetic fun json$default (Lcom/davils/kapi/spec/schema/JsonSchema;Lcom/davils/kaml/core/node/YamlNode;IIILjava/lang/Object;)Lcom/davils/kapi/spec/schema/YamlConversion;
+}
+
+public final class com/davils/kapi/spec/schema/OutputFormat : java/lang/Enum {
+	public static final field Basic Lcom/davils/kapi/spec/schema/OutputFormat;
+	public static final field Flag Lcom/davils/kapi/spec/schema/OutputFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/schema/OutputFormat;
+	public static fun values ()[Lcom/davils/kapi/spec/schema/OutputFormat;
+}
+
+public final class com/davils/kapi/spec/schema/OutputUnit {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAbsoluteKeywordLocation ()Ljava/lang/String;
+	public final fun getError ()Ljava/lang/String;
+	public final fun getInstanceLocation ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public final fun getKeywordLocation ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/RefusalReason : java/lang/Enum {
+	public static final field EvaluationDepth Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field EvaluationSteps Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field InstanceDepth Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field InstanceSize Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field ReferenceCycle Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field ReportedErrors Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field StringLength Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static final field UnsupportedValue Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/schema/RefusalReason;
+	public static fun values ()[Lcom/davils/kapi/spec/schema/RefusalReason;
+}
+
+public final class com/davils/kapi/spec/schema/SchemaLimits : com/davils/kore/core/validation/Validatable {
+	public static final field CEILING_DOCUMENTS I
+	public static final field CEILING_ENUM_VALUES I
+	public static final field CEILING_ERRORS I
+	public static final field CEILING_EVALUATION_DEPTH I
+	public static final field CEILING_EVALUATION_STEPS J
+	public static final field CEILING_INSTANCE_DEPTH I
+	public static final field CEILING_INSTANCE_NODES I
+	public static final field CEILING_LITERAL_NODES I
+	public static final field CEILING_PATTERN_LENGTH I
+	public static final field CEILING_SCHEMA_DEPTH I
+	public static final field CEILING_STRING_LENGTH I
+	public static final field CEILING_SUBSCHEMAS I
+	public static final field Companion Lcom/davils/kapi/spec/schema/SchemaLimits$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaximumDocuments ()I
+	public final fun getMaximumEnumValues ()I
+	public final fun getMaximumErrors ()I
+	public final fun getMaximumEvaluationDepth ()I
+	public final fun getMaximumEvaluationSteps ()J
+	public final fun getMaximumInstanceDepth ()I
+	public final fun getMaximumInstanceNodes ()I
+	public final fun getMaximumLiteralNodes ()I
+	public final fun getMaximumPatternLength ()I
+	public final fun getMaximumSchemaDepth ()I
+	public final fun getMaximumStringLength ()I
+	public final fun getMaximumSubschemas ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/schema/SchemaLimits$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/schema/SchemaLimits;
+}
+
+public final class com/davils/kapi/spec/schema/SchemaLimitsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/spec/schema/SchemaLimitsBuilder$Companion;
+	public static final field DEFAULT_DOCUMENTS I
+	public static final field DEFAULT_ENUM_VALUES I
+	public static final field DEFAULT_ERRORS I
+	public static final field DEFAULT_EVALUATION_DEPTH I
+	public static final field DEFAULT_EVALUATION_STEPS J
+	public static final field DEFAULT_INSTANCE_DEPTH I
+	public static final field DEFAULT_INSTANCE_NODES I
+	public static final field DEFAULT_LITERAL_NODES I
+	public static final field DEFAULT_PATTERN_LENGTH I
+	public static final field DEFAULT_SCHEMA_DEPTH I
+	public static final field DEFAULT_STRING_LENGTH I
+	public static final field DEFAULT_SUBSCHEMAS I
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getMaximumDocuments ()I
+	public final fun getMaximumEnumValues ()I
+	public final fun getMaximumErrors ()I
+	public final fun getMaximumEvaluationDepth ()I
+	public final fun getMaximumEvaluationSteps ()J
+	public final fun getMaximumInstanceDepth ()I
+	public final fun getMaximumInstanceNodes ()I
+	public final fun getMaximumLiteralNodes ()I
+	public final fun getMaximumPatternLength ()I
+	public final fun getMaximumSchemaDepth ()I
+	public final fun getMaximumStringLength ()I
+	public final fun getMaximumSubschemas ()I
+	public final fun setMaximumDocuments (I)V
+	public final fun setMaximumEnumValues (I)V
+	public final fun setMaximumErrors (I)V
+	public final fun setMaximumEvaluationDepth (I)V
+	public final fun setMaximumEvaluationSteps (J)V
+	public final fun setMaximumInstanceDepth (I)V
+	public final fun setMaximumInstanceNodes (I)V
+	public final fun setMaximumLiteralNodes (I)V
+	public final fun setMaximumPatternLength (I)V
+	public final fun setMaximumSchemaDepth (I)V
+	public final fun setMaximumStringLength (I)V
+	public final fun setMaximumSubschemas (I)V
+}
+
+public final class com/davils/kapi/spec/schema/SchemaLimitsBuilder$Companion {
+}
+
+public abstract interface class com/davils/kapi/spec/schema/SchemaLoader {
+	public abstract fun load-ABZ1FNU (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/davils/kapi/spec/schema/Validation {
+	public abstract fun isValid ()Z
+}
+
+public final class com/davils/kapi/spec/schema/Validation$Invalid : com/davils/kapi/spec/schema/Validation {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrors ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun isValid ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/Validation$Refused : com/davils/kapi/spec/schema/Validation {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInstanceLocation ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getReason ()Lcom/davils/kapi/spec/schema/RefusalReason;
+	public fun hashCode ()I
+	public fun isValid ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/Validation$Valid : com/davils/kapi/spec/schema/Validation {
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/Validation$Valid;
+	public fun isValid ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/spec/schema/YamlConversion {
+}
+
+public final class com/davils/kapi/spec/schema/YamlConversion$Converted : com/davils/kapi/spec/schema/YamlConversion {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getJson ()Lkotlinx/serialization/json/JsonElement;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/YamlConversion$Refused : com/davils/kapi/spec/schema/YamlConversion {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPointer ()Lcom/davils/kaml/document/pointer/JsonPointer;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kapi/spec/schema/format/FormatCheck {
+}
+
+public final class com/davils/kapi/spec/schema/format/FormatCheck$Invalid : com/davils/kapi/spec/schema/format/FormatCheck {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/format/FormatCheck$Unknown : com/davils/kapi/spec/schema/format/FormatCheck {
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/format/FormatCheck$Unknown;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/format/FormatCheck$Valid : com/davils/kapi/spec/schema/format/FormatCheck {
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/format/FormatCheck$Valid;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/format/Formats {
+	public static final field INSTANCE Lcom/davils/kapi/spec/schema/format/Formats;
+	public static final field MAXIMUM_VALUE_LENGTH I
+	public final fun check (Ljava/lang/String;Ljava/lang/String;)Lcom/davils/kapi/spec/schema/format/FormatCheck;
+	public final fun getNames ()Ljava/util/Set;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/Pattern {
+	public static final field Companion Lcom/davils/kapi/spec/schema/pattern/Pattern$Companion;
+	public final fun containsMatchIn (Ljava/lang/CharSequence;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLimits ()Lcom/davils/kapi/spec/schema/pattern/PatternLimits;
+	public final fun getSource ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun matchesEntirely (Ljava/lang/CharSequence;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/Pattern$Companion {
+	public final fun compile (Ljava/lang/String;Lcom/davils/kapi/spec/schema/pattern/PatternLimits;)Lcom/davils/kapi/spec/schema/pattern/PatternCompilation;
+	public static synthetic fun compile$default (Lcom/davils/kapi/spec/schema/pattern/Pattern$Companion;Ljava/lang/String;Lcom/davils/kapi/spec/schema/pattern/PatternLimits;ILjava/lang/Object;)Lcom/davils/kapi/spec/schema/pattern/PatternCompilation;
+}
+
+public abstract interface class com/davils/kapi/spec/schema/pattern/PatternCompilation {
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternCompilation$Compiled : com/davils/kapi/spec/schema/pattern/PatternCompilation {
+	public fun <init> (Lcom/davils/kapi/spec/schema/pattern/Pattern;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPattern ()Lcom/davils/kapi/spec/schema/pattern/Pattern;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternCompilation$Refused : com/davils/kapi/spec/schema/pattern/PatternCompilation {
+	public fun <init> (Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;ILjava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getOffset ()I
+	public final fun getReason ()Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternLimits : com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/spec/schema/pattern/PatternLimits$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaximumInputLength ()I
+	public final fun getMaximumNesting ()I
+	public final fun getMaximumSourceLength ()I
+	public final fun getMaximumStates ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternLimits$Companion {
+	public final fun getDefault ()Lcom/davils/kapi/spec/schema/pattern/PatternLimits;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternLimitsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kapi/spec/schema/pattern/PatternLimitsBuilder$Companion;
+	public static final field DEFAULT_INPUT_LENGTH I
+	public static final field DEFAULT_NESTING I
+	public static final field DEFAULT_SOURCE_LENGTH I
+	public static final field DEFAULT_STATES I
+	public static final field HARD_INPUT_LENGTH I
+	public static final field HARD_NESTING I
+	public static final field HARD_SOURCE_LENGTH I
+	public static final field HARD_STATES I
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getMaximumInputLength ()I
+	public final fun getMaximumNesting ()I
+	public final fun getMaximumSourceLength ()I
+	public final fun getMaximumStates ()I
+	public final fun setMaximumInputLength (I)V
+	public final fun setMaximumNesting (I)V
+	public final fun setMaximumSourceLength (I)V
+	public final fun setMaximumStates (I)V
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternLimitsBuilder$Companion {
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternLimitsDslKt {
+	public static final fun patternLimits (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/spec/schema/pattern/PatternLimits;
+}
+
+public final class com/davils/kapi/spec/schema/pattern/PatternRefusal : java/lang/Enum {
+	public static final field Backreference Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field Flags Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field Lookaround Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field Syntax Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field TooDeep Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field TooLong Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field TooManyStates Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static final field UnsupportedProperty Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isValidSyntax ()Z
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+	public static fun values ()[Lcom/davils/kapi/spec/schema/pattern/PatternRefusal;
+}
+

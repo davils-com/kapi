@@ -24,18 +24,24 @@ internal class UnevaluatedItemsKeyword(private val child: Int) : Keyword("uneval
     override val isUnevaluated: Boolean get() = true
 
     override fun evaluate(frame: Frame): Boolean {
-        val items = (frame.instance as? Instance.ArrayValue)?.items ?: return true
+        val items = (frame.instance as? Instance.ArrayValue ?: return true).items
         var isValid = true
         for ((index, item) in items.withIndex()) {
-            val passed = frame.evaluated.isMarked(index) || checked(frame, index, item)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = frame.evaluated.isMarked(index) || checked(frame, index, item)
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }
 
     private fun checked(frame: Frame, index: Int, item: Instance): Boolean {
         frame.evaluated.mark(index)
-        return frame.descend(child, item, index.toString(), frame.trail(name), frame.sink)
+        return frame.descend(
+            index = child,
+            child = item,
+            token = index.toString(),
+            keywordTrail = frame.trail(name),
+            sink = frame.sink,
+        )
     }
 }

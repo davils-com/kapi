@@ -20,4 +20,6 @@ internal abstract class Keyword(val name: String) {
     open val isUnevaluated: Boolean get() = false
 
     abstract fun evaluate(frame: Frame): Boolean
+
+    fun failed(frame: Frame, message: String): Boolean = frame.fail(keyword = name, message = message)
 }

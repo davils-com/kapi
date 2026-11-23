@@ -30,15 +30,21 @@ internal object Divisibility {
     fun isMultiple(value: Decimal, divisor: Decimal, meter: Meter): Boolean {
         if (value.isZero) return true
         val shift = value.exponent - divisor.exponent
-        return shift >= 0L && dividesScaled(digitsOf(value.digits), digitsOf(divisor.digits), shift, meter)
+        return shift >= 0L &&
+            dividesScaled(
+                value = digitsOf(value.digits),
+                divisor = digitsOf(divisor.digits),
+                shift = shift,
+                meter = meter,
+            )
     }
 
     private fun dividesScaled(value: IntArray, divisor: IntArray, shift: Long, meter: Meter): Boolean {
         meter.charge(divisor.size.toLong() * divisor.size)
         val twos = factored(divisor, TWO, Long.MAX_VALUE)
         val fives = factored(twos.second, FIVE, Long.MAX_VALUE)
-        val hasTwos = hasFactors(value, TWO, twos.first - shift, meter)
-        val hasFives = hasTwos && hasFactors(value, FIVE, fives.first - shift, meter)
+        val hasTwos = hasFactors(value = value, prime = TWO, needed = twos.first - shift, meter = meter)
+        val hasFives = hasTwos && hasFactors(value = value, prime = FIVE, needed = fives.first - shift, meter = meter)
         return hasFives && divides(value, fives.second, meter)
     }
 
@@ -87,7 +93,7 @@ internal object Divisibility {
         val divisor = modulus.reversedArray()
         val remainder = IntArray(divisor.size + 1)
         value.forEach { digit ->
-            remainder.copyInto(remainder, destinationOffset = 1, startIndex = 0, endIndex = divisor.size)
+            remainder.copyInto(destination = remainder, destinationOffset = 1, startIndex = 0, endIndex = divisor.size)
             remainder[0] = digit
             while (compare(remainder, divisor) >= 0) subtract(remainder, divisor)
         }
@@ -98,7 +104,7 @@ internal object Divisibility {
         var index = remainder.size - 1
         var order = 0
         while (index >= 0 && order == 0) {
-            val other = divisor.getOrElse(index) { 0 }
+            val other = divisor.getOrNull(index) ?: 0
             order = remainder[index].compareTo(other)
             index--
         }
@@ -108,7 +114,7 @@ internal object Divisibility {
     private fun subtract(remainder: IntArray, divisor: IntArray) {
         var borrow = 0
         remainder.indices.forEach { index ->
-            val difference = remainder[index] - divisor.getOrElse(index) { 0 } - borrow
+            val difference = remainder[index] - (divisor.getOrNull(index) ?: 0) - borrow
             borrow = 1.takeIf { difference < 0 } ?: 0
             remainder[index] = difference + RADIX * borrow
         }
@@ -118,6 +124,6 @@ internal object Divisibility {
 
     private fun stripped(digits: IntArray): IntArray {
         val first = digits.indexOfFirst { it != 0 }
-        return digits.copyOfRange(first.coerceAtLeast(0), digits.size)
+        return digits.copyOfRange(fromIndex = first.coerceAtLeast(0), toIndex = digits.size)
     }
 }

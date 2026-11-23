@@ -16,4 +16,4 @@
 
 package com.davils.kapi.spec.schema.internal.evaluate
 
-internal data class Graph(val nodes: List<Node>, val resources: List<ResourceInfo>, val tracksAnnotations: Boolean)
+internal data class Graph(val nodes: List<Node>, val resources: List<ResourceInfo>, val isTrackingAnnotations: Boolean)

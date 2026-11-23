@@ -49,10 +49,8 @@ internal object MetaSchemas {
         OPENAPI_31 + "meta/base" to OPENAPI_31_VOCABULARY,
     )
 
-    val uris: Set<String> get() = texts.keys
-
     fun textOf(uri: String): String? {
         val bare = uri.removeSuffix("#")
-        return texts[bare.replace("https://json-schema.org/", JSON_SCHEMA)]
+        return texts[bare.replace(oldValue = "https://json-schema.org/", newValue = JSON_SCHEMA)]
     }
 }

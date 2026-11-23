@@ -25,9 +25,15 @@ internal class PropertyNamesKeyword(private val child: Int) : Keyword("propertyN
         val members = frame.instance as? Instance.ObjectValue ?: return true
         var isValid = true
         for (property in members.keys) {
-            val passed = frame.descend(child, Instance.StringValue(property), property, frame.trail(name), frame.sink)
-            isValid = isValid && passed
-            if (!isValid && !frame.collects) break
+            val isPassed = frame.descend(
+                index = child,
+                child = Instance.StringValue(property),
+                token = property,
+                keywordTrail = frame.trail(name),
+                sink = frame.sink,
+            )
+            isValid = isValid && isPassed
+            if (!isValid && !frame.isCollecting) break
         }
         return isValid
     }

@@ -29,6 +29,6 @@ internal class CountKeyword(
         val size = measure.of(frame.instance, frame.run) ?: return true
         val isWithin = (size <= bound).takeIf { isMaximum } ?: (size >= bound)
         val relation = "at most".takeIf { isMaximum } ?: "at least"
-        return isWithin || frame.fail(name, "The value has $size ${measure.unit} but must have $relation $bound")
+        return isWithin || failed(frame, "The value has $size ${measure.unit} but must have $relation $bound")
     }
 }

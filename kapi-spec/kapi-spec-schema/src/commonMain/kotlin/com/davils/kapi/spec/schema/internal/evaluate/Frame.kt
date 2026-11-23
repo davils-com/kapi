@@ -31,13 +31,13 @@ internal class Frame(
 ) {
     val instance: Instance get() = visit.instance
 
-    val collects: Boolean get() = sink != null
+    val isCollecting: Boolean get() = sink != null
 
     fun evaluateKeywords(): Boolean {
         var isValid = true
         for (keyword in node.keywords) {
-            val passed = keyword.evaluate(this)
-            isValid = isValid && passed
+            val isPassed = keyword.evaluate(this)
+            isValid = isValid && isPassed
             if (!isValid && sink == null) break
         }
         return isValid
@@ -48,13 +48,19 @@ internal class Frame(
     fun temporarySink(): MutableList<Failure>? = sink?.let { ArrayList() }
 
     fun inPlace(index: Int, keywordTrail: Trail?, sink: MutableList<Failure>?): Evaluated? {
-        val inner = Visit(instance, visit.instanceTrail, keywordTrail, visit.scope, visit.chain)
+        val inner = Visit(
+            instance = instance,
+            instanceTrail = visit.instanceTrail,
+            keywordTrail = keywordTrail,
+            scope = visit.scope,
+            chain = visit.chain,
+        )
         return run.evaluate(index, inner, sink)
     }
 
     fun referenced(index: Int, keywordTrail: Trail?): Evaluated? {
         val chain = visit.chain
-        val isCycle = chain?.contains(index) ?: false
+        val isCycle = chain?.contains(index) == true
         if (isCycle) {
             throw Refusal(
                 RefusalReason.ReferenceCycle,
@@ -62,7 +68,13 @@ internal class Frame(
                 visit.instanceTrail,
             )
         }
-        val inner = Visit(instance, visit.instanceTrail, keywordTrail, visit.scope, Chain(chain, index))
+        val inner = Visit(
+            instance = instance,
+            instanceTrail = visit.instanceTrail,
+            keywordTrail = keywordTrail,
+            scope = visit.scope,
+            chain = Chain(chain, index),
+        )
         return run.evaluate(index, inner, sink)
     }
 
@@ -73,12 +85,18 @@ internal class Frame(
         keywordTrail: Trail?,
         sink: MutableList<Failure>?,
     ): Boolean {
-        val inner = Visit(child, Trail(visit.instanceTrail, token), keywordTrail, visit.scope, null)
+        val inner = Visit(
+            instance = child,
+            instanceTrail = Trail(visit.instanceTrail, token),
+            keywordTrail = keywordTrail,
+            scope = visit.scope,
+            chain = null,
+        )
         return run.evaluate(index, inner, sink) != null
     }
 
     fun merge(result: Evaluated?) {
-        result?.let(evaluated::merge)
+        evaluated.merge(result ?: Evaluated.UNTRACKED)
     }
 
     fun fail(keyword: String, message: String): Boolean {
@@ -86,11 +104,11 @@ internal class Frame(
         run.charge(1L)
         val trail = visit.keywordTrail.takeIf { keyword.isEmpty() } ?: Trail(visit.keywordTrail, keyword)
         val absolute = node.absolute.takeIf { keyword.isEmpty() } ?: (node.absolute + "/" + Texts.escapedToken(keyword))
-        target += Failure(trail, absolute, visit.instanceTrail, message)
+        target += Failure(keyword = trail, absolute = absolute, instance = visit.instanceTrail, message = message)
         return false
     }
 
     fun failAll(failures: List<Failure>?) {
-        failures?.let { sink?.addAll(it) }
+        sink?.addAll(failures.orEmpty())
     }
 }

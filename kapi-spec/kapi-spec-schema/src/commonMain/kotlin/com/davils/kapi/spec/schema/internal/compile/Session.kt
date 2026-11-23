@@ -40,7 +40,7 @@ import kotlinx.serialization.json.JsonObject
 internal class Session(
     val limits: SchemaLimits,
     val defaultProfile: Profile,
-    private val formatAssertion: Boolean,
+    private val isFormatAsserted: Boolean,
 ) {
     val documents: MutableList<Document> = ArrayList()
 
@@ -64,6 +64,8 @@ internal class Session(
 
     private val anchors = OrderedMap<String, Target>()
 
+    private val documentResources = ArrayList<Int>()
+
     var isStrict: Boolean = true
 
     fun documentOf(uri: String): Document? = documentsByUri[uri]?.let(documents::get)
@@ -77,10 +79,10 @@ internal class Session(
             )
         }
         val location = DocumentUri.parseOrNull(uri) ?: DocumentUri.MEMORY
-        val document = Document(documents.size, uri, root, location)
+        val document = Document(index = documents.size, uri = uri, root = root, location = location)
         documents += document
         documentsByUri[uri] = document.index
-        resourceFor(uri, Target(document.index, emptyList()))
+        documentResources += resourceFor(uri, Target(document.index, emptyList()))
         return document
     }
 
@@ -97,7 +99,8 @@ internal class Session(
 
     private fun aliasOrCreate(uri: String, target: Target, existing: Int?): Int {
         val index = existing ?: resources.size
-        val resource = existing?.let(resources::get) ?: Resource(index, uri, target.document, target.pointer)
+        val resource = resources.getOrNull(index)
+            ?: Resource(index = index, uri = uri, document = target.document, pointer = target.pointer)
         if (existing == null) resources += resource
         resource.uri = uri
         resourcesByUri[uri] = index
@@ -107,8 +110,10 @@ internal class Session(
 
     fun resourceIndexOf(uri: String): Int? = resourcesByUri[uri]
 
+    fun rootResourceOf(document: Document): Int = documentResources[document.index]
+
     fun addAnchor(resource: Int, name: String, target: Target) {
-        val key = resources[resource].uri + "#" + name
+        val key = resources[resource].anchorKey(name)
         val existing = anchors[key]
         val isConflict = existing != null && keyOf(existing) != keyOf(target)
         if (isConflict && isStrict) {
@@ -125,14 +130,15 @@ internal class Session(
 
     fun profileFor(uri: String): Profile? {
         val dialect = Profiles.dialectOf(uri)
-        if (dialect != null) return Profiles.of(dialect, formatAssertion)
+        if (dialect != null) return Profiles.of(dialect, isFormatAsserted)
         val key = Uris.normalized(uri) ?: uri
         return metaProfiles[key] ?: defaultProfile.takeIf { key in failedMetaSchemas }
     }
 
     fun locate(absolute: String): Target? {
         val uri = Uris.withoutFragment(absolute)
-        val resource = resourcesByUri[uri]?.let(resources::get) ?: return null
+        val index = resourcesByUri[uri] ?: return null
+        val resource = resources[index]
         return targetIn(resource, Uris.fragmentOf(absolute))
     }
 
@@ -142,17 +148,19 @@ internal class Session(
         val tokens = Uris.pointerOf(fragment).takeIf { isPointer }
         val pointed = tokens?.let { Target(resource.document, resource.pointer + it) }
         val existing = pointed?.takeIf { elementAt(it) != null }
-        return existing ?: anchors[resource.uri + "#" + fragment].takeIf { !isPointer }
+        return existing ?: anchors[resource.anchorKey(fragment)].takeIf { !isPointer }
     }
 
     fun elementAt(target: Target): JsonElement? {
-        val root: JsonElement? = documents[target.document].root
-        return target.pointer.fold(root) { element, token -> childOf(element, token) }
+        val root = documents[target.document].root
+        return target.pointer.fold<String, JsonElement?>(root) { element, token -> childOf(element, token) }
     }
 
     private fun childOf(element: JsonElement?, token: String): JsonElement? {
         val member = (element as? JsonObject)?.get(token)
-        return member ?: (element as? JsonArray)?.let { array -> indexOf(token)?.let(array::getOrNull) }
+        val array = element as? JsonArray
+        val index = indexOf(token)
+        return member ?: index?.let { array?.getOrNull(it) }
     }
 
     private fun indexOf(token: String): Int? {
@@ -162,7 +170,7 @@ internal class Session(
 
     fun absoluteOf(resource: Int, pointer: List<String>): String {
         val owner = resources[resource]
-        val isInside = pointer.size >= owner.pointer.size && pointer.subList(0, owner.pointer.size) == owner.pointer
+        val isInside = pointer.size >= owner.pointer.size && owner.isRootOf(pointer.take(owner.pointer.size))
         val relative = pointer.drop(owner.pointer.size).takeIf { isInside } ?: pointer
         return owner.uri + "#" + JsonPointer.of(relative).text
     }
@@ -173,7 +181,12 @@ internal class Session(
         }
         val document = target?.let { documents[it.document].location } ?: DocumentUri.MEMORY
         val pointer = JsonPointer.of(target?.pointer.orEmpty())
-        diagnostics += Diagnostic(code, Severity.Error, message, Location(document, pointer))
+        diagnostics += Diagnostic(
+            code = code,
+            severity = Severity.Error,
+            message = message,
+            location = Location(document, pointer),
+        )
     }
 
     fun abort(code: ViolationCode, message: String, target: Target?): Nothing {

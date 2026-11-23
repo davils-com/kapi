@@ -16,14 +16,25 @@
 
 package com.davils.kapi.spec.schema
 
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+private val SCALARS: List<String> = listOf("a: ~", "b: true", "c: 12", "d: 1.5e3", "e: text", "f: [1, '2']")
+
 class YamlConversionTest : FunSpec({
+    test("a boolean that is none and a key that is no scalar are refused") {
+        JsonSchema.json(yamlOf("? [a]\n: 1\n")).shouldBeInstanceOf<YamlConversion.Refused>()
+        val uri = DocumentUri("https://example.com/s.yaml")
+        val compilation = JsonSchema.compiler().compile(yamlOf("? [a]\n: 1\n"), uri)
+        val diagnostic = compilation.shouldBeInstanceOf<Compilation.Invalid>().diagnostics.single()
+        diagnostic.location?.document shouldBe uri
+    }
+
     test("scalars convert by their tag") {
-        val converted = JsonSchema.json(yamlOf("a: ~\nb: true\nc: 12\nd: 1.5e3\ne: text\nf: [1, '2']\n"))
+        val converted = JsonSchema.json(yamlOf(SCALARS.joinToString(separator = "\n", postfix = "\n")))
         converted.shouldBeInstanceOf<YamlConversion.Converted>().json shouldBe
             json("""{"a": null, "b": true, "c": 12, "d": 1.5e3, "e": "text", "f": [1, "2"]}""")
         converted.toString() shouldBe "Converted"
@@ -44,7 +55,7 @@ class YamlConversionTest : FunSpec({
     }
 
     test("depth and nodes are bounded") {
-        val deep = yamlOf(nested("[", "1", "]", 10))
+        val deep = yamlOf(nested(open = "[", center = "1", close = "]", depth = 10))
         JsonSchema.json(deep, maximumDepth = 10).shouldBeInstanceOf<YamlConversion.Converted>()
         JsonSchema.json(deep, maximumDepth = 9).shouldBeInstanceOf<YamlConversion.Refused>()
         val wide = yamlOf("[1, 2, 3]")
