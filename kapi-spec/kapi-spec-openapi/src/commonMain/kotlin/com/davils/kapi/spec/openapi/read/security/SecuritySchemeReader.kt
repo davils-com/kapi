@@ -59,6 +59,7 @@ internal object SecuritySchemeReader {
     private fun apiKey(cursor: Cursor): SecurityScheme =
         cursor.read(Shapes.securityScheme, ApiKeySchemeBuilder()) { fields ->
             description = fields.text(Keys.DESCRIPTION)
+            isDeprecated = fields.flag(Keys.DEPRECATED)
             name = SecurityReader.required(fields, Keys.NAME)
             placement = placementOf(fields) ?: placement
         }
@@ -66,6 +67,7 @@ internal object SecuritySchemeReader {
     private fun http(cursor: Cursor): SecurityScheme =
         cursor.read(Shapes.securityScheme, HttpSchemeBuilder()) { fields ->
             description = fields.text(Keys.DESCRIPTION)
+            isDeprecated = fields.flag(Keys.DEPRECATED)
             scheme = SecurityReader.required(fields, Keys.SCHEME)
             bearerFormat = fields.text(Keys.BEARER_FORMAT)
         }
@@ -73,11 +75,14 @@ internal object SecuritySchemeReader {
     private fun mutualTls(cursor: Cursor): SecurityScheme =
         cursor.read(Shapes.securityScheme, MutualTlsSchemeBuilder()) { fields ->
             description = fields.text(Keys.DESCRIPTION)
+            isDeprecated = fields.flag(Keys.DEPRECATED)
         }
 
     private fun oauth2(cursor: Cursor): SecurityScheme =
         cursor.read(Shapes.securityScheme, OAuth2SchemeBuilder()) { fields ->
             description = fields.text(Keys.DESCRIPTION)
+            isDeprecated = fields.flag(Keys.DEPRECATED)
+            oauth2MetadataUrl = fields.text(Keys.OAUTH2_METADATA_URL)
             val written = fields.cursor(Keys.FLOWS)
             if (written == null) {
                 val message = "An oauth2 security scheme needs the field flows"
@@ -89,6 +94,7 @@ internal object SecuritySchemeReader {
     private fun openIdConnect(cursor: Cursor): SecurityScheme =
         cursor.read(Shapes.securityScheme, OpenIdConnectSchemeBuilder()) { fields ->
             description = fields.text(Keys.DESCRIPTION)
+            isDeprecated = fields.flag(Keys.DEPRECATED)
             openIdConnectUrl = SecurityReader.required(fields, Keys.OPEN_ID_CONNECT_URL)
         }
 

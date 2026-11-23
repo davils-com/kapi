@@ -45,6 +45,7 @@ internal class SecurityWriter(family: VersionFamily) {
             is OpenIdConnectScheme -> openIdConnect(out, scheme)
         }
         out.text(Keys.DESCRIPTION, scheme.description)
+        out.flag(Keys.DEPRECATED, scheme.isDeprecated && isCurrent)
         return out.build(scheme)
     }
 
@@ -63,6 +64,7 @@ internal class SecurityWriter(family: VersionFamily) {
     private fun oauth2(out: Out, scheme: OAuth2Scheme) {
         out.text(Keys.TYPE, Keys.OAUTH2)
         out.node(Keys.FLOWS, flows(scheme.flows))
+        out.text(Keys.OAUTH2_METADATA_URL, scheme.oauth2MetadataUrl?.takeIf { isCurrent })
     }
 
     private fun openIdConnect(out: Out, scheme: OpenIdConnectScheme) {
@@ -76,12 +78,14 @@ internal class SecurityWriter(family: VersionFamily) {
         out.node(Keys.PASSWORD, flows.password?.let(::flow))
         out.node(Keys.CLIENT_CREDENTIALS, flows.clientCredentials?.let(::flow))
         out.node(Keys.AUTHORIZATION_CODE, flows.authorizationCode?.let(::flow))
+        out.node(Keys.DEVICE_AUTHORIZATION, flows.deviceAuthorization?.takeIf { isCurrent }?.let(::flow))
         return out.build(flows)
     }
 
     private fun flow(flow: OAuthFlow): YamlNode {
         val out = Out()
         out.text(Keys.AUTHORIZATION_URL, flow.authorizationUrl)
+        out.text(Keys.DEVICE_AUTHORIZATION_URL, flow.deviceAuthorizationUrl?.takeIf { isCurrent })
         out.text(Keys.TOKEN_URL, flow.tokenUrl)
         out.text(Keys.REFRESH_URL, flow.refreshUrl)
         out.node(Keys.SCOPES, Nodes.mapping(flow.scopes) { description -> yamlScalar(description) })

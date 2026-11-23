@@ -277,6 +277,8 @@ internal object Shapes {
             FieldRule(Keys.BEARER_FORMAT, FieldKind.Text),
             FieldRule(Keys.FLOWS, FieldKind.Mapping),
             FieldRule(Keys.OPEN_ID_CONNECT_URL, FieldKind.Text),
+            FieldRule(Keys.OAUTH2_METADATA_URL, FieldKind.Text, since = VersionFamily.V32),
+            FieldRule(Keys.DEPRECATED, FieldKind.Flag, since = VersionFamily.V32),
         ),
     )
 
@@ -287,6 +289,7 @@ internal object Shapes {
             FieldRule(Keys.PASSWORD, FieldKind.Mapping),
             FieldRule(Keys.CLIENT_CREDENTIALS, FieldKind.Mapping),
             FieldRule(Keys.AUTHORIZATION_CODE, FieldKind.Mapping),
+            FieldRule(Keys.DEVICE_AUTHORIZATION, FieldKind.Mapping, since = VersionFamily.V32),
         ),
     )
 
@@ -295,6 +298,16 @@ internal object Shapes {
         fields = listOf(
             FieldRule(Keys.AUTHORIZATION_URL, FieldKind.Text),
             FieldRule(Keys.TOKEN_URL, FieldKind.Text),
+            FieldRule(Keys.REFRESH_URL, FieldKind.Text),
+            FieldRule(Keys.SCOPES, FieldKind.Mapping),
+        ),
+    )
+
+    val deviceFlow: ObjectShape = ObjectShape(
+        subject = "A device authorization flow of a security scheme",
+        fields = listOf(
+            FieldRule(Keys.DEVICE_AUTHORIZATION_URL, FieldKind.Text, isRequired = true),
+            FieldRule(Keys.TOKEN_URL, FieldKind.Text, isRequired = true),
             FieldRule(Keys.REFRESH_URL, FieldKind.Text),
             FieldRule(Keys.SCOPES, FieldKind.Mapping),
         ),

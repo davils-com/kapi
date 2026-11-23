@@ -20,7 +20,14 @@ public class OpenIdConnectScheme internal constructor(builder: OpenIdConnectSche
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public override val isDeprecated: Boolean = builder.isDeprecated
+
     public val openIdConnectUrl: String = builder.openIdConnectUrl
 
-    override val identity: List<Any?> get() = listOf(description, openIdConnectUrl)
+    override val identity: List<Any?> get() = listOf(description, openIdConnectUrl, isDeprecated)
 }

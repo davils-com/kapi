@@ -49,6 +49,7 @@ internal object SecurityReader {
         password = fields.cursor(Keys.PASSWORD)?.let(::flow)
         clientCredentials = fields.cursor(Keys.CLIENT_CREDENTIALS)?.let(::flow)
         authorizationCode = fields.cursor(Keys.AUTHORIZATION_CODE)?.let(::flow)
+        deviceAuthorization = fields.cursor(Keys.DEVICE_AUTHORIZATION)?.let(::deviceFlow)
     }
 
     fun required(fields: Fields, name: String): String {
@@ -62,6 +63,13 @@ internal object SecurityReader {
 
     private fun flow(cursor: Cursor): OAuthFlow = cursor.read(Shapes.oauthFlow, OAuthFlowBuilder()) { fields ->
         authorizationUrl = fields.text(Keys.AUTHORIZATION_URL)
+        tokenUrl = fields.text(Keys.TOKEN_URL)
+        refreshUrl = fields.text(Keys.REFRESH_URL)
+        scopes.putAll(fields.textsByName(Keys.SCOPES))
+    }
+
+    private fun deviceFlow(cursor: Cursor): OAuthFlow = cursor.read(Shapes.deviceFlow, OAuthFlowBuilder()) { fields ->
+        deviceAuthorizationUrl = fields.text(Keys.DEVICE_AUTHORIZATION_URL)
         tokenUrl = fields.text(Keys.TOKEN_URL)
         refreshUrl = fields.text(Keys.REFRESH_URL)
         scopes.putAll(fields.textsByName(Keys.SCOPES))

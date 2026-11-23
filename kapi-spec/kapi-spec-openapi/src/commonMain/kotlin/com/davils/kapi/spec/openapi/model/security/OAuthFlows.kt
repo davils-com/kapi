@@ -28,5 +28,13 @@ public class OAuthFlows internal constructor(builder: OAuthFlowsBuilder) :
 
     public val authorizationCode: OAuthFlow? = builder.authorizationCode
 
-    override val identity: List<Any?> get() = listOf(implicit, password, clientCredentials, authorizationCode)
+    /**
+     * The device authorization flow of RFC 8628; `null` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val deviceAuthorization: OAuthFlow? = builder.deviceAuthorization
+
+    override val identity: List<Any?>
+        get() = listOf(implicit, password, clientCredentials, authorizationCode, deviceAuthorization)
 }

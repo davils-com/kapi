@@ -25,6 +25,13 @@ public class HttpSchemeBuilder internal constructor() : ElementBuilder<HttpSchem
 
     public var description: String? = null
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var isDeprecated: Boolean = false
+
     public var scheme: String = ""
 
     public var bearerFormat: String? = null

@@ -25,6 +25,13 @@ public class OAuthFlowBuilder internal constructor() : ElementBuilder<OAuthFlow>
 
     public var authorizationUrl: String? = null
 
+    /**
+     * The device authorization endpoint of the device authorization flow, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var deviceAuthorizationUrl: String? = null
+
     public var tokenUrl: String? = null
 
     public var refreshUrl: String? = null

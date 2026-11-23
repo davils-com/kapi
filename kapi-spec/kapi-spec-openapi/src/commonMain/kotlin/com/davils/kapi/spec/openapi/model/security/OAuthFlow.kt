@@ -22,11 +22,20 @@ public class OAuthFlow internal constructor(builder: OAuthFlowBuilder) :
     Element(builder) {
     public val authorizationUrl: String? = builder.authorizationUrl
 
+    /**
+     * The device authorization endpoint of the device authorization flow; `null` for every other flow and before
+     * OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public val deviceAuthorizationUrl: String? = builder.deviceAuthorizationUrl
+
     public val tokenUrl: String? = builder.tokenUrl
 
     public val refreshUrl: String? = builder.refreshUrl
 
     public val scopes: Map<String, String> = builder.scopes.toMap()
 
-    override val identity: List<Any?> get() = listOf(authorizationUrl, tokenUrl, refreshUrl, scopes)
+    override val identity: List<Any?>
+        get() = listOf(authorizationUrl, deviceAuthorizationUrl, tokenUrl, refreshUrl, scopes)
 }

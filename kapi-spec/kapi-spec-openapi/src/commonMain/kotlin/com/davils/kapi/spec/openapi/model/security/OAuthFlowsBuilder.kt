@@ -31,5 +31,12 @@ public class OAuthFlowsBuilder internal constructor() : ElementBuilder<OAuthFlow
 
     public var authorizationCode: OAuthFlow? = null
 
+    /**
+     * The device authorization flow, written from OpenAPI 3.2 on.
+     *
+     * @since 1.0.0
+     */
+    public var deviceAuthorization: OAuthFlow? = null
+
     override fun assemble(): OAuthFlows = OAuthFlows(this)
 }

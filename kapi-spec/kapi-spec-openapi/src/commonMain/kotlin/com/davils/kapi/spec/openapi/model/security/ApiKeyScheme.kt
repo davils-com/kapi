@@ -20,9 +20,16 @@ public class ApiKeyScheme internal constructor(builder: ApiKeySchemeBuilder) :
     SecurityScheme(builder) {
     public override val description: String? = builder.description
 
+    /**
+     * Whether the scheme is deprecated and should no longer be used; `false` before OpenAPI 3.2.
+     *
+     * @since 1.0.0
+     */
+    public override val isDeprecated: Boolean = builder.isDeprecated
+
     public val name: String = builder.name
 
     public val placement: ApiKeyPlacement = builder.placement
 
-    override val identity: List<Any?> get() = listOf(description, name, placement)
+    override val identity: List<Any?> get() = listOf(description, name, placement, isDeprecated)
 }
