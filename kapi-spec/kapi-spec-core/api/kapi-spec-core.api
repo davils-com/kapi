@@ -39,6 +39,16 @@ public final class com/davils/kapi/spec/core/diagnostic/DocumentUri$Companion {
 	public final fun parseOrNull-l97T-7k (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public class com/davils/kapi/spec/core/diagnostic/Findings {
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/policy/SeverityPolicy;ILjava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun adopt-ITHqWAI (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
+	public final fun getHasErrors ()Z
+	public final fun pointersIn-zhsEnvQ (Ljava/lang/String;)Ljava/util/Set;
+	public final fun report-XlT1djc (Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
+	public static synthetic fun report-XlT1djc$default (Lcom/davils/kapi/spec/core/diagnostic/Findings;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;ILjava/lang/Object;)V
+	public final fun sorted (Ljava/util/Map;)Ljava/util/List;
+}
+
 public final class com/davils/kapi/spec/core/diagnostic/Location {
 	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kore/core/text/TextRange;Lcom/davils/kore/core/text/TextPosition;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/davils/kaml/document/pointer/JsonPointer;Lcom/davils/kore/core/text/TextRange;Lcom/davils/kore/core/text/TextPosition;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -52,8 +62,8 @@ public final class com/davils/kapi/spec/core/diagnostic/Location {
 }
 
 public final class com/davils/kapi/spec/core/load/DocumentLoader {
-	public fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/read/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/read/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/diagnostic/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/diagnostic/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getDocuments ()Ljava/util/List;
 	public final fun getOrder ()Ljava/util/Map;
 	public final fun getOverlays ()Ljava/util/List;
@@ -273,16 +283,6 @@ public final class com/davils/kapi/spec/core/policy/SeverityPolicyBuilder : com/
 	public final fun downgrade-7GJnixg (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getAreWarningsErrors ()Z
 	public final fun setAreWarningsErrors (Z)V
-}
-
-public class com/davils/kapi/spec/core/read/Findings {
-	public synthetic fun <init> (Lcom/davils/kapi/spec/core/policy/SeverityPolicy;ILjava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun adopt-ITHqWAI (Ljava/lang/String;Lcom/davils/kore/core/validation/violation/Severity;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
-	public final fun getHasErrors ()Z
-	public final fun pointersIn-zhsEnvQ (Ljava/lang/String;)Ljava/util/Set;
-	public final fun report-XlT1djc (Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;)V
-	public static synthetic fun report-XlT1djc$default (Lcom/davils/kapi/spec/core/read/Findings;Ljava/lang/String;Ljava/lang/String;Lcom/davils/kapi/spec/core/diagnostic/Location;Lcom/davils/kore/core/text/TextSnippet;ILjava/lang/Object;)V
-	public final fun sorted (Ljava/util/Map;)Ljava/util/List;
 }
 
 public final class com/davils/kapi/spec/core/source/Refusal : java/lang/Enum {

@@ -32,7 +32,6 @@ module com.davils.kapi.spec.core {
     exports com.davils.kapi.spec.core.load;
     exports com.davils.kapi.spec.core.model;
     exports com.davils.kapi.spec.core.policy;
-    exports com.davils.kapi.spec.core.read;
     exports com.davils.kapi.spec.core.source;
     exports com.davils.kapi.spec.core.value;
 }

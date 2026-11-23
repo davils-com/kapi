@@ -20,13 +20,13 @@ package com.davils.kapi.spec.core.load.fixture
 
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
+import com.davils.kapi.spec.core.diagnostic.Findings
 import com.davils.kapi.spec.core.load.DocumentLoader
 import com.davils.kapi.spec.core.load.LoadSettings
 import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.core.policy.ReferencePolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicy
-import com.davils.kapi.spec.core.read.Findings
 import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Resolver
 import com.davils.kapi.spec.core.source.Source

@@ -16,12 +16,9 @@
 
 @file:OptIn(DavilsInternal::class)
 
-package com.davils.kapi.spec.core.read
+package com.davils.kapi.spec.core.diagnostic
 
 import com.davils.kaml.document.pointer.JsonPointer
-import com.davils.kapi.spec.core.diagnostic.Diagnostic
-import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.core.policy.SeverityPolicyBuilder
 import com.davils.kore.core.annotation.DavilsInternal
