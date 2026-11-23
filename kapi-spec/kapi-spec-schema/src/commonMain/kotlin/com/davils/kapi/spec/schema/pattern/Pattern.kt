@@ -48,8 +48,9 @@ private const val SHOWN_SOURCE_LENGTH: Int = 64
  * Refused with a [PatternRefusal] and the offset of the construct are back references, lookarounds, modifier groups
  * such as `(?i:…)`, other properties such as `Script_Extensions` or `Emoji`, and every syntax error, such as an
  * unbalanced parenthesis, a range like `[z-a]`, a dangling quantifier, a lone `]` or `}`, or an escape Unicode mode
- * does not allow, such as `\a` or `\-` outside a class. Two groups with one name are refused as well, even in
- * different alternatives.
+ * does not allow, such as `\a` or `\-` outside a class. Two groups may share a name only in different alternatives,
+ * as ECMAScript 2025 allows. Quantifier counts are compared exactly, so `a{99999999999,99999999998}` is a syntax
+ * error, and counts above 10⁹ are treated as 10⁹, which [PatternLimits.maximumStates] refuses anyway.
  *
  * A pattern is immutable and safe to share between threads; every match allocates its own state.
  *
