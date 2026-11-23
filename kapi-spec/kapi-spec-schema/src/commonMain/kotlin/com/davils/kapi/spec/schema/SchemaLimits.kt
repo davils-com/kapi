@@ -163,7 +163,7 @@ public class SchemaLimits internal constructor(builder: SchemaLimitsBuilder) : V
          *
          * @since 1.0.0
          */
-        public const val CEILING_EVALUATION_DEPTH: Int = 1_024
+        public const val CEILING_EVALUATION_DEPTH: Int = 512
 
         /**
          * The ceiling of [maximumInstanceDepth].

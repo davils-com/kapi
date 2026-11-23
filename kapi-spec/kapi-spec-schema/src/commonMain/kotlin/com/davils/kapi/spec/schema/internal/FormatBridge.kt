@@ -103,8 +103,9 @@ internal object FormatBridge {
         val fractionEnd = fractionEnd(rest)
         val zone = rest.substring(fractionEnd.coerceAtLeast(0)).takeIf { fractionEnd >= 0 }
         val offset = zone?.let(::offsetOf)
-        val second = clock % MINUTES_PER_HOUR
-        val utcMinute = offset?.let { (clock / MINUTES_PER_HOUR - it).mod(MINUTES_PER_DAY) }
+        val second = number(text, 6, CLOCK_LENGTH) ?: 0
+        val minute = (clock - second) / MINUTES_PER_HOUR
+        val utcMinute = offset?.let { (minute - it).mod(MINUTES_PER_DAY) }
         val isLeapAllowed = second < LEAP_SECOND || utcMinute == HOURS * MINUTES_PER_HOUR + MINUTES
         return utcMinute != null && isLeapAllowed
     }

@@ -156,7 +156,7 @@ public class SchemaLimitsBuilder internal constructor() : ValidatingBuilder<Sche
          *
          * @since 1.0.0
          */
-        public const val DEFAULT_EVALUATION_DEPTH: Int = 512
+        public const val DEFAULT_EVALUATION_DEPTH: Int = 256
 
         /**
          * The default of [maximumInstanceDepth].

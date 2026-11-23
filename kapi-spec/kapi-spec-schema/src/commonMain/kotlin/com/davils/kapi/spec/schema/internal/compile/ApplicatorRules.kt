@@ -50,12 +50,12 @@ internal object ApplicatorRules {
     fun oneOf(context: KeywordContext, element: JsonElement): Keyword? =
         context.schemas("oneOf", element)?.let(::OneOfKeyword)
 
-    fun not(context: KeywordContext, element: JsonElement): Keyword = NotKeyword(context.schemaOrFlag(element, "not"))
+    fun not(context: KeywordContext, element: JsonElement): Keyword = NotKeyword(context.child("not"))
 
     fun conditional(context: KeywordContext, element: JsonElement): Keyword {
-        val condition = context.schemaOrFlag(element, "if")
-        val consequence = context.members["then"]?.let { context.schemaOrFlag(it, "then") }
-        val alternative = context.members["else"]?.let { context.schemaOrFlag(it, "else") }
+        val condition = context.child("if")
+        val consequence = context.members["then"]?.let { context.child("then") }
+        val alternative = context.members["else"]?.let { context.child("else") }
         return ConditionalKeyword(condition, consequence, alternative)
     }
 
@@ -83,7 +83,7 @@ internal object ApplicatorRules {
     }
 
     fun propertyNames(context: KeywordContext, element: JsonElement): Keyword =
-        PropertyNamesKeyword(context.schemaOrFlag(element, "propertyNames"))
+        PropertyNamesKeyword(context.child("propertyNames"))
 
     fun dependentSchemas(context: KeywordContext, element: JsonElement): Keyword? {
         val entries = context.schemaMap("dependentSchemas", element) ?: return null
@@ -95,7 +95,7 @@ internal object ApplicatorRules {
             ?: return context.report("dependencies", "The keyword dependencies must be an object")
         val entries = members.mapNotNull { (name, value) ->
             val required = (value as? JsonArray)?.let { context.texts("dependencies", it) }
-            val schema = value.takeIf { it !is JsonArray }?.let { context.schemaOrFlag(it, "dependencies", name) }
+            val schema = value.takeIf { it !is JsonArray }?.let { context.child("dependencies", name) }
             Dependency(name, required, schema).takeIf { required != null || schema != null }
         }
         return DependenciesKeyword("dependencies", entries)
@@ -104,11 +104,11 @@ internal object ApplicatorRules {
     fun items(context: KeywordContext, element: JsonElement): Keyword? {
         if (element is JsonArray) return context.report("items", "The keyword items must be a single schema")
         val prefix = context.active("prefixItems") as? JsonArray
-        return RestItemsKeyword("items", prefix?.size ?: 0, context.schemaOrFlag(element, "items"))
+        return RestItemsKeyword("items", prefix?.size ?: 0, context.child("items"))
     }
 
     fun legacyItems(context: KeywordContext, element: JsonElement): Keyword? {
-        val items = element as? JsonArray ?: return RestItemsKeyword("items", 0, context.schemaOrFlag(element, "items"))
+        val items = element as? JsonArray ?: return RestItemsKeyword("items", 0, context.child("items"))
         return TupleKeyword("items", items.indices.map { index -> context.child("items", index.toString()) })
     }
 
@@ -126,7 +126,7 @@ internal object ApplicatorRules {
         val minimum = context.members["minContains"]?.takeIf { counts }?.let { context.count("minContains", it) }
         val maximum = context.members["maxContains"]?.takeIf { counts }?.let { context.count("maxContains", it) }
         return ContainsKeyword(
-            child = context.schemaOrFlag(element, "contains"),
+            child = context.child("contains"),
             minimum = minimum ?: 1L,
             maximum = maximum,
             minimumName = "minContains".takeIf { minimum != null } ?: "contains",
@@ -135,8 +135,8 @@ internal object ApplicatorRules {
     }
 
     fun unevaluatedItems(context: KeywordContext, element: JsonElement): Keyword =
-        UnevaluatedItemsKeyword(context.schemaOrFlag(element, "unevaluatedItems"))
+        UnevaluatedItemsKeyword(context.child("unevaluatedItems"))
 
     fun unevaluatedProperties(context: KeywordContext, element: JsonElement): Keyword =
-        UnevaluatedPropertiesKeyword(context.schemaOrFlag(element, "unevaluatedProperties"))
+        UnevaluatedPropertiesKeyword(context.child("unevaluatedProperties"))
 }
