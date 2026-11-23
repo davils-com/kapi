@@ -1,0 +1,154 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+asyncapi: 3.0.0
+info:
+  title: Chat
+  version: 1.0.0
+defaultContentType: application/json
+servers:
+  production:
+    host: chat.example.com
+    protocol: wss
+    security:
+      - $ref: '#/components/securitySchemes/token'
+  audit:
+    host: kafka.example.com
+    protocol: kafka
+channels:
+  room:
+    address: /rooms/{roomId}
+    summary: A chat room that members join with a nick.
+    servers:
+      - $ref: '#/servers/production'
+    parameters:
+      roomId:
+        description: The room.
+    messages:
+      say:
+        $ref: '#/components/messages/Say'
+      leave:
+        $ref: '#/components/messages/Leave'
+      said:
+        $ref: '#/components/messages/Said'
+      joined:
+        $ref: '#/components/messages/Joined'
+    bindings:
+      ws:
+        query:
+          type: object
+          required: [nick]
+          properties:
+            nick:
+              type: string
+            since:
+              type: integer
+              format: int64
+        headers:
+          type: object
+          properties:
+            Sec-WebSocket-Protocol:
+              type: string
+              enum: [chat.v1]
+            X-Client:
+              type: string
+  audit:
+    address: audit
+    servers:
+      - $ref: '#/servers/audit'
+    messages:
+      said:
+        $ref: '#/components/messages/Said'
+operations:
+  receiveChat:
+    action: receive
+    summary: The server receives what members say and their leaving.
+    channel:
+      $ref: '#/channels/room'
+    messages:
+      - $ref: '#/channels/room/messages/say'
+      - $ref: '#/channels/room/messages/leave'
+  sendChat:
+    action: send
+    channel:
+      $ref: '#/channels/room'
+    messages:
+      - $ref: '#/channels/room/messages/said'
+      - $ref: '#/channels/room/messages/joined'
+  sendAudit:
+    action: send
+    channel:
+      $ref: '#/channels/audit'
+components:
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+  messages:
+    Say:
+      summary: Something a member says.
+      payload:
+        $ref: '#/components/schemas/Say'
+    Leave:
+      summary: A member leaves the room.
+      payload:
+        type: object
+        required: [type]
+        properties:
+          type:
+            type: string
+            const: leave
+    Said:
+      summary: Something a member said, as every member sees it.
+      payload:
+        $ref: '#/components/schemas/Said'
+    Joined:
+      payload:
+        type: object
+        required: [type, member]
+        properties:
+          type:
+            type: string
+            const: joined
+          member:
+            $ref: '#/components/schemas/Member'
+  schemas:
+    Say:
+      type: object
+      required: [type, text]
+      properties:
+        type:
+          type: string
+          const: say
+        text:
+          type: string
+    Said:
+      type: object
+      required: [type, from, text]
+      properties:
+        type:
+          type: string
+          const: said
+        from:
+          $ref: '#/components/schemas/Member'
+        text:
+          type: string
+    Member:
+      type: object
+      required: [nick]
+      properties:
+        nick:
+          type: string

@@ -1,0 +1,106 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+asyncapi: 3.0.0
+info:
+  title: Hostile
+  version: '1'
+servers:
+  local:
+    host: localhost
+    protocol: ws
+channels:
+  class:
+    address: /fun/{in}
+    summary: "Ends */ a comment, /* opens one, @param x, ‮ reversed, ${injected}, · and ♢ and %s"
+    parameters:
+      in:
+        description: "*/ fun x() {}"
+        enum: ["a*/b", "${c}"]
+    messages:
+      object:
+        $ref: '#/components/messages/object'
+      Companion:
+        $ref: '#/components/messages/Companion'
+      when:
+        $ref: '#/components/messages/when'
+    bindings:
+      ws:
+        query:
+          type: object
+          required: ["for $x */ ‮"]
+          properties:
+            "for $x */ ‮":
+              type: string
+              enum: ["a\"b", "${c}‮"]
+        headers:
+          type: object
+          properties:
+            X-$:
+              type: integer
+            Sec-WebSocket-Protocol:
+              type: string
+              const: "v1.$"
+operations:
+  do:
+    action: receive
+    channel:
+      $ref: '#/channels/class'
+    messages:
+      - $ref: '#/channels/class/messages/object'
+      - $ref: '#/channels/class/messages/Companion'
+    reply:
+      messages:
+        - $ref: '#/channels/class/messages/when'
+components:
+  correlationIds:
+    weird:
+      location: '$message.payload#/a$b~1c'
+  messages:
+    object:
+      summary: "*/ class Evil { init { error(\"x\") } } /*"
+      correlationId:
+        $ref: '#/components/correlationIds/weird'
+      payload:
+        type: object
+        required: [kind, a$b/c]
+        properties:
+          kind:
+            type: string
+            const: "obj*/\"${x}‮\n·♢%"
+          a$b/c:
+            type: string
+    Companion:
+      correlationId:
+        $ref: '#/components/correlationIds/weird'
+      payload:
+        type: object
+        required: [kind, a$b/c]
+        properties:
+          kind:
+            type: string
+            const: companion
+          a$b/c:
+            type: string
+    when:
+      correlationId:
+        $ref: '#/components/correlationIds/weird'
+      payload:
+        type: object
+        required: [a$b/c]
+        properties:
+          a$b/c:
+            type: string
