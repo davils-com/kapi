@@ -16,7 +16,7 @@
 
 package com.davils.kapi.spec.schema.internal.compile
 
-import com.davils.kapi.spec.schema.internal.PatternBridge
+import com.davils.kapi.spec.schema.internal.Patterns
 import com.davils.kapi.spec.schema.internal.dialect.Draft
 import com.davils.kapi.spec.schema.internal.dialect.Vocabulary
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
@@ -93,7 +93,10 @@ internal object ApplicatorRules {
         val named = context.active("properties") as? JsonObject
         val patterned = context.active(PATTERN_PROPERTIES) as? JsonObject
         val names = named?.keys.orEmpty().sorted()
-        val patterns = patterned?.keys.orEmpty().mapNotNull(PatternBridge::compile)
+        val limits = context.session.limits
+        val patterns = patterned?.keys.orEmpty().mapNotNull { source ->
+            Patterns.compile(source, limits.maximumPatternLength, limits.maximumStringLength)
+        }
         val child = context.schemaOrFlag(element, "additionalProperties")
         return AdditionalPropertiesKeyword(child, names, patterns)
     }

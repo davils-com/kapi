@@ -19,7 +19,7 @@
 package com.davils.kapi.spec.schema.internal.compile
 
 import com.davils.kapi.spec.schema.DiagnosticCodes
-import com.davils.kapi.spec.schema.internal.PatternBridge
+import com.davils.kapi.spec.schema.internal.Patterns
 import com.davils.kapi.spec.schema.internal.Refusal
 import com.davils.kapi.spec.schema.internal.Uris
 import com.davils.kapi.spec.schema.internal.dialect.Draft
@@ -118,7 +118,7 @@ internal class KeywordContext(
         if (source.length > maximum) {
             return report(keyword, "The pattern is longer than $maximum characters", DiagnosticCodes.LIMIT_EXCEEDED)
         }
-        return PatternBridge.compile(source)
+        return Patterns.compile(source, maximum, session.limits.maximumStringLength)
             ?: report(
                 keyword,
                 "The pattern ${SafeText.quoted(source)} is not supported",

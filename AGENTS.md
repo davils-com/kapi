@@ -213,7 +213,8 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
 ## Kore internals
 
 kapi opts into these `@DavilsInternal` declarations of Kore; Kore changes them only in a major version:
-`SafeText.text`, `SafeText.REDACTED`, and `OrderedMap`, `OrderedSet` and `OrderedIndex` for the maps and sets keyed
+`SafeText.text`, `SafeText.quoted`, `SafeText.REDACTED`, `UriReference` for document URIs and references,
+`parseDecimalOrNull` for exact numbers, and `OrderedMap`, `OrderedSet` and `OrderedIndex` for the maps and sets keyed
 by input. A new use is added here and to the table of Kore's `AGENTS.md`.
 
 ## Public API

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
+
 package com.davils.kapi.spec.schema.internal
 
-import com.davils.kore.core.failure.contained
+import com.davils.kapi.spec.schema.format.FormatCheck
+import com.davils.kapi.spec.schema.format.Formats
 
-internal object PatternBridge {
-    fun compile(source: String): ((CharSequence) -> Boolean)? {
-        val translated = source.replace("\\p{Letter}", "\\p{L}").replace("\\P{Letter}", "\\P{L}")
-        val regex = contained { Regex(translated) }.getOrNull() ?: return null
-        return { input -> regex.containsMatchIn(input) }
+internal object FormatAssertions {
+    fun check(format: String, value: String): Boolean? = when (Formats.check(format, value)) {
+        is FormatCheck.Valid -> true
+        is FormatCheck.Invalid -> false
+        is FormatCheck.Unknown -> null
     }
 }

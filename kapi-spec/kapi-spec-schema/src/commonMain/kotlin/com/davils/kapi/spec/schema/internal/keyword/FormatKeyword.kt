@@ -18,7 +18,7 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
-import com.davils.kapi.spec.schema.internal.FormatBridge
+import com.davils.kapi.spec.schema.internal.FormatAssertions
 import com.davils.kapi.spec.schema.internal.evaluate.Frame
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 import com.davils.kapi.spec.schema.internal.value.Instance
@@ -32,7 +32,7 @@ internal class FormatKeyword(private val format: String) : Keyword("format") {
         val text = (frame.instance as? Instance.StringValue)?.value ?: return true
         frame.run.refuseLongText(text)
         frame.run.charge(text.length.toLong() / CHARACTERS_PER_STEP + 1L)
-        val isValid = FormatBridge.check(format, text) ?: true
+        val isValid = FormatAssertions.check(format, text) ?: true
         return isValid || frame.fail(name, "The string is no valid ${SafeText.quoted(format)}")
     }
 }
