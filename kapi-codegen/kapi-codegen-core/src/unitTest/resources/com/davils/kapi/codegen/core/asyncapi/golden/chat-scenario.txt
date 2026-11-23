@@ -1,0 +1,127 @@
+package scenario
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.apiClient
+import com.davils.kapi.runtime.client.channel.ChannelOutcome
+import com.davils.kapi.runtime.core.destination.destinationPolicy
+import com.davils.kapi.runtime.core.security.Secret
+import com.davils.kapi.runtime.core.security.credentials
+import com.davils.kapi.runtime.server.Kapi
+import com.davils.kapi.runtime.server.channel.channelLimits
+import com.davils.kapi.runtime.server.mount
+import com.davils.kapi.runtime.server.security.Authorization
+import com.davils.kapi.runtime.server.security.AuthorizationAttempt
+import com.davils.kapi.runtime.server.security.Authorizer
+import com.davils.kapi.runtime.server.security.PresentedCredential
+import com.davils.kore.core.principal.principal
+import com.example.chat.channel.ChatRoomClientMessage
+import com.example.chat.channel.ChatRoomServerMessage
+import com.example.chat.client.ChatRoomChannel
+import com.example.chat.model.ChatJoinedPayload
+import com.example.chat.model.ChatLeavePayload
+import com.example.chat.model.ChatMember
+import com.example.chat.model.ChatSaid
+import com.example.chat.model.ChatSay
+import com.example.chat.server.ChatRoomServerSession
+import com.example.chat.server.ChatRoomService
+import com.example.chat.server.ChatRoutes
+import io.ktor.client.HttpClient
+import io.ktor.server.application.install
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.routing.routing
+import kotlinx.coroutines.runBlocking
+import io.ktor.client.engine.cio.CIO as ClientEngine
+import io.ktor.client.plugins.websocket.WebSockets as ClientWebSockets
+import io.ktor.server.websocket.WebSockets as ServerWebSockets
+
+private const val HOST: String = "127.0.0.1"
+
+private const val LIMIT: Int = 256
+
+private const val APPLICATION_CODES: Int = 4000
+
+private object Tokens : Authorizer {
+    override suspend fun authorize(attempt: AuthorizationAttempt): Authorization {
+        val token = (attempt.credential as? PresentedCredential.Token)?.token?.reveal()
+        return Authorization.Granted(principal("ann")).takeIf { token == "t1" } ?: Authorization.Unknown
+    }
+}
+
+private class Room : ChatRoomService {
+    override suspend fun serve(session: ChatRoomServerSession) {
+        session.sendJoined(ChatJoinedPayload(type = "joined", member = ChatMember(session.nick)))
+        session.incoming.collect { message ->
+            when (message) {
+                is ChatRoomClientMessage.Say -> {
+                    val text = listOf(message.payload.text, session.roomId, session.protocol, session.since, session.xClient)
+                    session.sendSaid(ChatSaid(type = "said", from = ChatMember(session.nick), text = text.joinToString(":")))
+                }
+                is ChatRoomClientMessage.Leave -> session.close(4001.toShort(), "bye")
+            }
+        }
+    }
+}
+
+public object Scenario {
+    public fun run(): List<String> = runBlocking {
+        val server = embeddedServer(CIO, port = 0, host = HOST) {
+            install(ServerWebSockets)
+            install(Kapi) { authorizer("token", Tokens) }
+            routing {
+                mount(ChatRoutes(Room(), channelLimits { maxFrameBytes = LIMIT; maxMessageBytes = LIMIT }))
+            }
+        }
+        server.start(wait = false)
+        try {
+            val port = server.engine.resolvedConnectors().first().port
+            HttpClient(ClientEngine) {
+                followRedirects = false
+                install(ClientWebSockets)
+            }.use { http -> talk(clientOf(http, port, "t1")) + talk(clientOf(http, port, "wrong")).take(1) }
+        } finally {
+            server.stop(gracePeriodMillis = 0, timeoutMillis = 0)
+        }
+    }
+
+    private suspend fun talk(client: ApiClient): List<String> {
+        val room = ChatRoomChannel(client)
+        val chat = room.connect(roomId = "lobby", nick = "ann", since = 7, xClient = "test") {
+            val seen = mutableListOf<String>()
+            sendSay(ChatSay(type = "say", text = "hi"))
+            incoming.collect { message ->
+                seen += shown(message)
+                if (message is ChatRoomServerMessage.Said) sendLeave(ChatLeavePayload(type = "leave"))
+            }
+            seen.joinToString(", ") + " / " + subprotocol
+        }
+        val large = room.connect(roomId = "lobby", nick = "bob") {
+            sendSay(ChatSay(type = "say", text = "x".repeat(LIMIT * 2)))
+            incoming.collect { _ -> }
+            "large"
+        }
+        return listOf(outcome(chat), outcome(large))
+    }
+
+    private fun clientOf(http: HttpClient, port: Int, token: String): ApiClient = apiClient(http) {
+        baseUrl = "http://$HOST:$port"
+        destinations = destinationPolicy {
+            schemes = setOf("http")
+            hosts = setOf(HOST)
+        }
+        credentials = credentials { scheme("token") { Secret(token) } }
+    }
+
+    private fun shown(message: ChatRoomServerMessage): String = when (message) {
+        is ChatRoomServerMessage.Joined -> "joined " + message.payload.member.nick
+        is ChatRoomServerMessage.Said -> "said " + message.payload.from.nick + " " + message.payload.text
+    }
+
+    private fun outcome(outcome: ChannelOutcome<String>): String = when (outcome) {
+        is ChannelOutcome.Completed -> {
+            val reason = (" " + outcome.close.reason).takeIf { outcome.close.code >= APPLICATION_CODES }.orEmpty()
+            outcome.value + " closed " + outcome.close.code + reason
+        }
+        is ChannelOutcome.Failed -> "failed " + outcome.failure
+    }
+}

@@ -1,0 +1,119 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+asyncapi: 3.0.0
+info:
+  title: Quotes
+  version: 1.0.0
+defaultContentType: application/json
+servers:
+  local:
+    host: localhost
+    protocol: ws
+channels:
+  quotes:
+    address: /quotes
+    messages:
+      quote:
+        $ref: '#/components/messages/Quote'
+      price:
+        $ref: '#/components/messages/Price'
+      tick:
+        $ref: '#/components/messages/Tick'
+operations:
+  askQuote:
+    action: receive
+    channel:
+      $ref: '#/channels/quotes'
+    security:
+      - $ref: '#/components/securitySchemes/key'
+    messages:
+      - $ref: '#/channels/quotes/messages/quote'
+    reply:
+      channel:
+        $ref: '#/channels/quotes'
+      messages:
+        - $ref: '#/channels/quotes/messages/price'
+  pushTicks:
+    action: send
+    channel:
+      $ref: '#/channels/quotes'
+    security:
+      - $ref: '#/components/securitySchemes/key'
+    messages:
+      - $ref: '#/channels/quotes/messages/tick'
+components:
+  securitySchemes:
+    key:
+      type: httpApiKey
+      name: X-Key
+      in: header
+  correlationIds:
+    request:
+      location: '$message.payload#/request/id'
+  messages:
+    Quote:
+      payload:
+        $ref: '#/components/schemas/Quote'
+      correlationId:
+        $ref: '#/components/correlationIds/request'
+    Price:
+      payload:
+        $ref: '#/components/schemas/Price'
+      correlationId:
+        $ref: '#/components/correlationIds/request'
+    Tick:
+      payload:
+        $ref: '#/components/schemas/Tick'
+  schemas:
+    Request:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+    Quote:
+      type: object
+      required: [request, symbol]
+      properties:
+        request:
+          $ref: '#/components/schemas/Request'
+        symbol:
+          type: string
+    Price:
+      type: object
+      required: [type, request, cents]
+      properties:
+        type:
+          type: string
+          const: price
+        request:
+          $ref: '#/components/schemas/Request'
+        cents:
+          type: integer
+          format: int64
+    Tick:
+      type: object
+      required: [type, symbol, cents]
+      properties:
+        type:
+          type: string
+          const: tick
+        symbol:
+          type: string
+        cents:
+          type: integer
+          format: int64

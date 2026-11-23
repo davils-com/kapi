@@ -1,0 +1,227 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+asyncapi: 3.0.0
+info:
+  title: Features
+  version: '1'
+defaultContentType: application/vnd.example+json
+servers:
+  local:
+    host: localhost
+    protocol: ws
+    security:
+      - $ref: '#/components/securitySchemes/cert'
+channels:
+  feed:
+    address: feed/{kind}/{page}
+    parameters:
+      kind:
+        enum: [news, sport]
+        default: news
+      page:
+        description: The page.
+    messages:
+      item:
+        payload:
+          type: array
+          items:
+            type: string
+    bindings:
+      ws:
+        method: GET
+        query:
+          type: object
+          required: [limit]
+          properties:
+            limit:
+              type: integer
+              format: int32
+            ratio:
+              type: number
+            fresh:
+              type: boolean
+            tier:
+              type: string
+              enum: [gold, silver]
+            big:
+              type: integer
+        headers:
+          type: object
+          required: [X-Tenant]
+          properties:
+            X-Tenant:
+              type: string
+              const: acme
+            Authorization:
+              type: string
+  upload:
+    address: /upload
+    messages:
+      chunk:
+        summary: A message without a payload.
+      size:
+        payload:
+          $ref: '#/components/schemas/Size'
+  events:
+    address: /events
+    messages:
+      created:
+        payload:
+          $ref: '#/components/schemas/Created'
+      deleted:
+        payload:
+          $ref: '#/components/schemas/Deleted'
+  legacy:
+    address: /legacy
+    messages:
+      old:
+        payload:
+          schemaFormat: 'application/vnd.oai.openapi;version=3.0.0'
+          schema:
+            type: object
+            required: [n, kind]
+            properties:
+              kind:
+                type: string
+                enum: [old]
+              n:
+                type: integer
+                minimum: 1
+                exclusiveMinimum: true
+                nullable: true
+              s:
+                type: string
+                enum: [a, b]
+                nullable: true
+              m:
+                type: number
+                maximum: 9
+                exclusiveMaximum: false
+      draft:
+        payload:
+          schemaFormat: 'application/schema+json;version=draft-07'
+          schema:
+            type: object
+            required: [kind]
+            properties:
+              kind:
+                type: string
+                const: draft
+              tag:
+                $ref: '#/components/schemas/Holder/definitions/Tag'
+              list:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Size'
+            dependencies:
+              list: [kind]
+operations:
+  pushFeed:
+    action: send
+    channel:
+      $ref: '#/channels/feed'
+    security:
+      - $ref: '#/components/securitySchemes/bearer'
+      - $ref: '#/components/securitySchemes/oauth'
+      - $ref: '#/components/securitySchemes/oidc'
+      - $ref: '#/components/securitySchemes/cert'
+  takeUpload:
+    action: receive
+    channel:
+      $ref: '#/channels/upload'
+    messages:
+      - $ref: '#/channels/upload/messages/chunk'
+    security:
+      - $ref: '#/components/securitySchemes/keyQuery'
+      - $ref: '#/components/securitySchemes/keyCookie'
+      - $ref: '#/components/securitySchemes/basic'
+  sendSize:
+    action: send
+    channel:
+      $ref: '#/channels/upload'
+    messages:
+      - $ref: '#/channels/upload/messages/size'
+    security:
+      - $ref: '#/components/securitySchemes/keyQuery'
+      - $ref: '#/components/securitySchemes/keyCookie'
+      - $ref: '#/components/securitySchemes/basic'
+  sendEvents:
+    action: send
+    channel:
+      $ref: '#/channels/events'
+  receiveLegacy:
+    action: receive
+    channel:
+      $ref: '#/channels/legacy'
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+    basic:
+      type: http
+      scheme: basic
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://auth.example.com/token'
+          availableScopes:
+            read: Read the feed.
+      scopes: [read]
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: 'https://auth.example.com/.well-known/openid-configuration'
+      scopes: [openid]
+    cert:
+      type: X509
+    keyQuery:
+      type: httpApiKey
+      name: key
+      in: query
+    keyCookie:
+      type: httpApiKey
+      name: sid
+      in: cookie
+  schemas:
+    Size:
+      type: integer
+      format: int64
+    Holder:
+      type: object
+      definitions:
+        Tag:
+          type: object
+          properties:
+            name:
+              type: string
+    Created:
+      type: object
+      required: [kind, id]
+      properties:
+        kind:
+          type: string
+          enum: [created]
+        id:
+          type: string
+    Deleted:
+      type: object
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [deleted]
