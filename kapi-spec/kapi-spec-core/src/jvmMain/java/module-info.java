@@ -28,6 +28,7 @@ module com.davils.kapi.spec.core {
     requires transitive com.davils.kaml.document;
     requires com.davils.krypt.primitive;
 
+    exports com.davils.kapi.spec.core.collection;
     exports com.davils.kapi.spec.core.diagnostic;
     exports com.davils.kapi.spec.core.load;
     exports com.davils.kapi.spec.core.model;

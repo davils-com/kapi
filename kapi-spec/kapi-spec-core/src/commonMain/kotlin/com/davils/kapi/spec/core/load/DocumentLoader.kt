@@ -23,6 +23,8 @@ import com.davils.kaml.core.YamlParseResult
 import com.davils.kaml.core.diagnostic.YamlDiagnostic
 import com.davils.kaml.core.diagnostic.YamlDiagnosticCode
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.collection.KeyedMap
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.diagnostic.Findings
 import com.davils.kapi.spec.core.diagnostic.Location
@@ -85,7 +87,7 @@ public class DocumentLoader(
         codes.encoding to "is not valid UTF-8",
     )
 
-    private val attempts: MutableMap<DocumentUri, LoadedDocument?> = linkedMapOf()
+    private val attempts: MutableMap<DocumentUri, Attempt> = KeyedMap()
 
     private val overlaid: MutableList<LoadedDocument> = mutableListOf()
 
@@ -94,7 +96,7 @@ public class DocumentLoader(
      *
      * @since 1.0.0
      */
-    public val documents: List<LoadedDocument> get() = attempts.values.filterNotNull()
+    public val documents: List<LoadedDocument> get() = attempts.values.mapNotNull(Attempt::document)
 
     /**
      * The overlays loaded so far, in order.
@@ -110,8 +112,10 @@ public class DocumentLoader(
      */
     public val order: Map<DocumentUri, Int>
         get() {
-            val uris = attempts.keys + overlaid.map(LoadedDocument::uri)
-            return uris.withIndex().associate { (index, uri) -> uri to index }
+            val positions = KeyedMap<DocumentUri, Int>()
+            val uris = attempts.keys.toList() + overlaid.map(LoadedDocument::uri)
+            uris.forEach { uri -> positions.getOrPut(uri) { positions.size } }
+            return positions.frozen()
         }
 
     private val crypto: Crypto = Crypto()
@@ -124,7 +128,7 @@ public class DocumentLoader(
      */
     public suspend fun root(): LoadedDocument? {
         val loaded = loadedOf(source)
-        attempts[source.uri] = loaded
+        attempts[source.uri] = Attempt(loaded)
         return loaded
     }
 
@@ -144,7 +148,7 @@ public class DocumentLoader(
      * @since 1.0.0
      */
     public fun replace(document: LoadedDocument) {
-        attempts[document.uri] = document
+        attempts[document.uri] = Attempt(document)
     }
 
     private suspend fun loadedOf(origin: Source): LoadedDocument? = when (origin) {
@@ -161,9 +165,10 @@ public class DocumentLoader(
      * @since 1.0.0
      */
     public suspend fun load(uri: DocumentUri, from: Location?): LoadedDocument? {
-        if (uri in attempts) return attempts[uri]
+        val known = attempts[uri]
+        if (known != null) return known.document
         val loaded = fetched(uri, from)
-        attempts[uri] = loaded
+        attempts[uri] = Attempt(loaded)
         return loaded
     }
 
@@ -243,4 +248,6 @@ public class DocumentLoader(
         findings.report(codes.failed, "The document $uri could not be loaded: $reason", from)
         return null
     }
+
+    private data class Attempt(val document: LoadedDocument?)
 }

@@ -34,7 +34,7 @@ import kotlin.jvm.JvmInline
  * @since 1.0.0
  */
 @JvmInline
-public value class DocumentUri(public val value: String) {
+public value class DocumentUri(public val value: String) : Comparable<DocumentUri> {
     init {
         require(isDocumentUri(value)) { "${SafeText.quoted(value)} is no document uri such as file:///api/a.yaml" }
     }
@@ -47,6 +47,15 @@ public value class DocumentUri(public val value: String) {
     public val scheme: String get() = value.substringBefore(':')
 
     override fun toString(): String = value
+
+    /**
+     * Compares the URIs by their text, so that document URIs can key an ordered map.
+     *
+     * @param other the other URI.
+     * @return a negative number, zero or a positive number as this URI sorts before, with or after [other].
+     * @since 1.0.0
+     */
+    override fun compareTo(other: DocumentUri): Int = value.compareTo(other.value)
 
     /**
      * Creates and reads document URIs.

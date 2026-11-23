@@ -318,6 +318,21 @@ abstract class com.davils.kapi.spec.core.model/Element : com.davils.kore.core.va
     open fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.spec.core.model/Element.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
 }
 
+final class <#A: kotlin/Comparable<#A>, #B: kotlin/Any> com.davils.kapi.spec.core.collection/KeyedMap : kotlin.collections/AbstractMutableMap<#A, #B> { // com.davils.kapi.spec.core.collection/KeyedMap|null[0]
+    constructor <init>() // com.davils.kapi.spec.core.collection/KeyedMap.<init>|<init>(){}[0]
+
+    final val entries // com.davils.kapi.spec.core.collection/KeyedMap.entries|{}entries[0]
+        final fun <get-entries>(): kotlin.collections/MutableSet<kotlin.collections/MutableMap.MutableEntry<#A, #B>> // com.davils.kapi.spec.core.collection/KeyedMap.entries.<get-entries>|<get-entries>(){}[0]
+    final val size // com.davils.kapi.spec.core.collection/KeyedMap.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.davils.kapi.spec.core.collection/KeyedMap.size.<get-size>|<get-size>(){}[0]
+
+    final fun clear() // com.davils.kapi.spec.core.collection/KeyedMap.clear|clear(){}[0]
+    final fun containsKey(#A): kotlin/Boolean // com.davils.kapi.spec.core.collection/KeyedMap.containsKey|containsKey(1:0){}[0]
+    final fun get(#A): #B? // com.davils.kapi.spec.core.collection/KeyedMap.get|get(1:0){}[0]
+    final fun put(#A, #B): #B? // com.davils.kapi.spec.core.collection/KeyedMap.put|put(1:0;1:1){}[0]
+    final fun remove(#A): #B? // com.davils.kapi.spec.core.collection/KeyedMap.remove|remove(1:0){}[0]
+}
+
 final class com.davils.kapi.spec.core.diagnostic/Diagnostic { // com.davils.kapi.spec.core.diagnostic/Diagnostic|null[0]
     constructor <init>(com.davils.kore.core.validation.violation/ViolationCode, com.davils.kore.core.validation.violation/Severity, kotlin/String, com.davils.kapi.spec.core.diagnostic/Location? = ..., com.davils.kore.core.text/TextSnippet? = ...) // com.davils.kapi.spec.core.diagnostic/Diagnostic.<init>|<init>(com.davils.kore.core.validation.violation.ViolationCode;com.davils.kore.core.validation.violation.Severity;kotlin.String;com.davils.kapi.spec.core.diagnostic.Location?;com.davils.kore.core.text.TextSnippet?){}[0]
 
@@ -425,7 +440,7 @@ final class com.davils.kapi.spec.core.model/Reference { // com.davils.kapi.spec.
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Reference.toString|toString(){}[0]
 }
 
-final class com.davils.kapi.spec.core.model/Target { // com.davils.kapi.spec.core.model/Target|null[0]
+final class com.davils.kapi.spec.core.model/Target : kotlin/Comparable<com.davils.kapi.spec.core.model/Target> { // com.davils.kapi.spec.core.model/Target|null[0]
     constructor <init>(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kaml.document.pointer/JsonPointer) // com.davils.kapi.spec.core.model/Target.<init>|<init>(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kaml.document.pointer.JsonPointer){}[0]
 
     final val document // com.davils.kapi.spec.core.model/Target.document|{}document[0]
@@ -433,6 +448,7 @@ final class com.davils.kapi.spec.core.model/Target { // com.davils.kapi.spec.cor
     final val pointer // com.davils.kapi.spec.core.model/Target.pointer|{}pointer[0]
         final fun <get-pointer>(): com.davils.kaml.document.pointer/JsonPointer // com.davils.kapi.spec.core.model/Target.pointer.<get-pointer>|<get-pointer>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.model/Target): kotlin/Int // com.davils.kapi.spec.core.model/Target.compareTo|compareTo(com.davils.kapi.spec.core.model.Target){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.model/Target.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.model/Target.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.model/Target.toString|toString(){}[0]
@@ -653,7 +669,7 @@ final class com.davils.kapi.spec.core.value/NumberValue : kotlin/Comparable<com.
     }
 }
 
-final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davils.kapi.spec.core.diagnostic/DocumentUri|null[0]
+final value class com.davils.kapi.spec.core.diagnostic/DocumentUri : kotlin/Comparable<com.davils.kapi.spec.core.diagnostic/DocumentUri> { // com.davils.kapi.spec.core.diagnostic/DocumentUri|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.core.diagnostic/DocumentUri.<init>|<init>(kotlin.String){}[0]
 
     final val scheme // com.davils.kapi.spec.core.diagnostic/DocumentUri.scheme|{}scheme[0]
@@ -661,6 +677,7 @@ final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davi
     final val value // com.davils.kapi.spec.core.diagnostic/DocumentUri.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.diagnostic/DocumentUri): kotlin/Int // com.davils.kapi.spec.core.diagnostic/DocumentUri.compareTo|compareTo(com.davils.kapi.spec.core.diagnostic.DocumentUri){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/DocumentUri.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.diagnostic/DocumentUri.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/DocumentUri.toString|toString(){}[0]
@@ -673,12 +690,13 @@ final value class com.davils.kapi.spec.core.diagnostic/DocumentUri { // com.davi
     }
 }
 
-final value class com.davils.kapi.spec.core.value/ExtensionName { // com.davils.kapi.spec.core.value/ExtensionName|null[0]
+final value class com.davils.kapi.spec.core.value/ExtensionName : kotlin/Comparable<com.davils.kapi.spec.core.value/ExtensionName> { // com.davils.kapi.spec.core.value/ExtensionName|null[0]
     constructor <init>(kotlin/String) // com.davils.kapi.spec.core.value/ExtensionName.<init>|<init>(kotlin.String){}[0]
 
     final val value // com.davils.kapi.spec.core.value/ExtensionName.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.value.<get-value>|<get-value>(){}[0]
 
+    final fun compareTo(com.davils.kapi.spec.core.value/ExtensionName): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionName.compareTo|compareTo(com.davils.kapi.spec.core.value.ExtensionName){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.spec.core.value/ExtensionName.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.spec.core.value/ExtensionName.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.value/ExtensionName.toString|toString(){}[0]
@@ -717,3 +735,5 @@ final val com.davils.kapi.spec.core.diagnostic/hasErrors // com.davils.kapi.spec
 
 final fun (com.davils.kapi.spec.core.diagnostic/Diagnostic).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@com.davils.kapi.spec.core.diagnostic.Diagnostic(){}[0]
 final fun (kotlin.collections/Iterable<com.davils.kapi.spec.core.diagnostic/Diagnostic>).com.davils.kapi.spec.core.diagnostic/render(): kotlin/String // com.davils.kapi.spec.core.diagnostic/render|render@kotlin.collections.Iterable<com.davils.kapi.spec.core.diagnostic.Diagnostic>(){}[0]
+final fun <#A: kotlin/Any?> (kotlin.collections/Collection<#A>).com.davils.kapi.spec.core.collection/frozen(): kotlin.collections/List<#A> // com.davils.kapi.spec.core.collection/frozen|frozen@kotlin.collections.Collection<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Comparable<#A>, #B: kotlin/Any> (kotlin.collections/Map<#A, #B>).com.davils.kapi.spec.core.collection/frozen(): kotlin.collections/Map<#A, #B> // com.davils.kapi.spec.core.collection/frozen|frozen@kotlin.collections.Map<0:0,0:1>(){0§<kotlin.Comparable<0:0>>;1§<kotlin.Any>}[0]

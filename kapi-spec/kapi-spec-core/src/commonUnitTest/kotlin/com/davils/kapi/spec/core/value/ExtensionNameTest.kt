@@ -32,6 +32,11 @@ class ExtensionNameTest : FunSpec({
             ExtensionName(NAME).toString() shouldBe NAME
         }
 
+        test("sorts by its text") {
+            (ExtensionName("x-a") < ExtensionName("x-b")) shouldBe true
+            ExtensionName(NAME).compareTo(ExtensionName(NAME)) shouldBe 0
+        }
+
         test("refuses what does not start with x- or names nothing after it") {
             listOf("", "x", "x-", "X-kide", "kide-name").forEach { text ->
                 val failure = shouldThrow<IllegalArgumentException> { ExtensionName(text) }

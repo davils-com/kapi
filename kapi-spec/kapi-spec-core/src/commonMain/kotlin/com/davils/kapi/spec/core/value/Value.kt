@@ -18,6 +18,7 @@
 
 package com.davils.kapi.spec.core.value
 
+import com.davils.kapi.spec.core.collection.frozen
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
@@ -138,7 +139,7 @@ public sealed interface Value {
          *
          * @since 1.0.0
          */
-        public val items: List<Value> = items.toList()
+        public val items: List<Value> = items.frozen()
 
         override val kind: ValueKind get() = ValueKind.Sequence
 
@@ -165,7 +166,7 @@ public sealed interface Value {
          *
          * @since 1.0.0
          */
-        public val entries: Map<String, Value> = entries.toMap()
+        public val entries: Map<String, Value> = entries.frozen()
 
         override val kind: ValueKind get() = ValueKind.Mapping
 

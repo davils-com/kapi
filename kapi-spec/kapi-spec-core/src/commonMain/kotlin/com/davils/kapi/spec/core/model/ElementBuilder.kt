@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kapi.spec.core.model
 
+import com.davils.kapi.spec.core.collection.KeyedMap
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.value.ExtensionName
 import com.davils.kapi.spec.core.value.Extensions
@@ -36,7 +39,7 @@ import com.davils.kore.core.validation.Validatable
 @DavilsDsl
 public abstract class ElementBuilder<T : Validatable> protected constructor() :
     ValidatingBuilder<T>() {
-    private val declared: MutableMap<ExtensionName, Value> = linkedMapOf()
+    private val declared: MutableMap<ExtensionName, Value> = KeyedMap()
 
     /**
      * Where the element was written; set by the readers of kapi.
