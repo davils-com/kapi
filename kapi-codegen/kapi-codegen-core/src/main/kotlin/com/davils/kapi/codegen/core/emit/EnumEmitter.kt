@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.model.plan.EnumEntryPlan
@@ -56,7 +55,6 @@ internal class EnumEmitter(private val types: TypeNames, private val visibility:
         builder.addAnnotation(Annotations.generated(plan.origin))
         builder.primaryConstructor(constructor.build())
         builder.addProperty(value.build())
-        builder.addSuperinterface(Kotlin.transferObject)
         builder.addProperty(known())
         builder.addFunction(rendered(plan.base))
         builder.addType(companion(plan, types.model(plan.name)))

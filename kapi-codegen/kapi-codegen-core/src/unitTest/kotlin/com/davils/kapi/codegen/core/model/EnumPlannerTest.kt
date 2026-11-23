@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.model
 
 import com.davils.kapi.codegen.core.CodegenCodes
@@ -37,7 +36,7 @@ class EnumPlannerTest : FunSpec({
 
             kotlin shouldContain "public value class PetstoreStatus("
             kotlin shouldContain "public val `value`: String,"
-            kotlin shouldContain ") : DataTransferObject {"
+            kotlin shouldContain "public value class PetstoreStatus(\n    public val `value`: String,\n) {"
             kotlin shouldContain "public val OPEN: PetstoreStatus = PetstoreStatus(\"open\")"
             kotlin shouldContain "public val SOLD_OUT: PetstoreStatus = PetstoreStatus(\"sold-out\")"
             kotlin shouldContain "public val entries: List<PetstoreStatus> = listOf(OPEN, SOLD_OUT)"

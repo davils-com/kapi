@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.GeneratedFile
@@ -25,8 +24,6 @@ import com.davils.kapi.codegen.core.options.Visibility
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
-
-private const val INDENT: String = "    "
 
 private val modifiers: Map<Visibility, KModifier> = mapOf(
     Visibility.Public to KModifier.PUBLIC,
@@ -56,13 +53,12 @@ internal class ModelEmitter(options: GeneratorOptions) {
     }
 
     private fun file(name: String, type: TypeSpec): GeneratedFile {
-        val file = FileSpec.builder(modelPackage, name)
-        file.indent(INDENT)
+        val file = FileSpec.builder(packageName = modelPackage, fileName = name)
         file.addType(type)
         return GeneratedFile(
-            path = modelPackage.replace('.', '/') + "/" + name + ".kt",
+            path = modelPackage.replace(oldChar = '.', newChar = '/') + "/" + name + ".kt",
             kind = GeneratedFileKind.Kotlin,
-            content = file.build().toString(),
+            content = Sources.of(file),
         )
     }
 }

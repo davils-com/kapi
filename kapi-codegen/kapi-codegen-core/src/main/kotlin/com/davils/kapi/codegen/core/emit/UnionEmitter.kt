@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.davils.kapi.codegen.core.emit
 
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
@@ -44,7 +43,6 @@ internal class UnionEmitter(private val types: TypeNames, private val visibility
         builder.addModifiers(visibility, KModifier.SEALED)
         builder.addAnnotation(Annotations.serializedWith(types.model(plan.name + SUFFIX)))
         builder.addAnnotation(Annotations.generated(plan.origin))
-        builder.addSuperinterface(Kotlin.transferObject)
         builder.addSuperinterface(Kotlin.validatable)
         return builder.build()
     }
@@ -91,7 +89,7 @@ internal class UnionEmitter(private val types: TypeNames, private val visibility
         val code = CodeBlock.builder()
         code.addStatement("val tag = fields?.get(%S) as? %T", property, Kotlin.jsonPrimitive)
         code.addStatement("val value = tag?.takeIf { primitive -> primitive.isString }?.content.orEmpty()")
-        code.add(chosen("value", "The property $property names none of ${valuesOf(plan)}"))
+        code.add(chosen(key = "value", message = "The property $property names none of ${valuesOf(plan)}"))
         return code.build()
     }
 
@@ -101,7 +99,7 @@ internal class UnionEmitter(private val types: TypeNames, private val visibility
         val code = CodeBlock.builder()
         code.addStatement("val present = %N.keys.filter { name -> fields?.containsKey(name) == true }", MEMBERS)
         code.addStatement("val key = present.%L().orEmpty()", pick)
-        code.add(chosen("key", "The object has $amount of ${valuesOf(plan)}"))
+        code.add(chosen(key = "key", message = "The object has $amount of ${valuesOf(plan)}"))
         return code.build()
     }
 
