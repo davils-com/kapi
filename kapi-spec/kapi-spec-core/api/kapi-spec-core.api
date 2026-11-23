@@ -98,6 +98,12 @@ public final class com/davils/kapi/spec/core/diagnostic/Location {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/davils/kapi/spec/core/diagnostic/PointerTree {
+	public fun <init> (Ljava/lang/Iterable;)V
+	public final fun hasBelow (Lcom/davils/kaml/document/pointer/JsonPointer;)Z
+	public final fun isRelated (Lcom/davils/kaml/document/pointer/JsonPointer;)Z
+}
+
 public final class com/davils/kapi/spec/core/load/DocumentLoader {
 	public fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/diagnostic/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lcom/davils/kapi/spec/core/load/LoadSettings;Lcom/davils/kapi/spec/core/diagnostic/Findings;Lcom/davils/kapi/spec/core/source/Source;Lcom/davils/kapi/spec/core/load/LoadCodes;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

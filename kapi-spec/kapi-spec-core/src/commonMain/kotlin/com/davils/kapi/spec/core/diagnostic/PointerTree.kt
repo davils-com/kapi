@@ -16,20 +16,39 @@
 
 @file:OptIn(DavilsInternal::class)
 
-package com.davils.kapi.spec.openapi.structure
+package com.davils.kapi.spec.core.diagnostic
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.collection.OrderedMap
 
-internal class PointerTree(pointers: Iterable<JsonPointer>) {
+/**
+ * The places of a document that findings were reported at, as a tree of the tokens of their JSON Pointers, so that a
+ * further check, such as the validation against an official schema, reports only where nothing was reported yet.
+ *
+ * Every question walks the tokens of one pointer and costs `O(d log n)` for a pointer of depth `d`, whatever the
+ * tokens are. The tree is built once and not changed afterwards; it is not safe to share between threads while it is
+ * built.
+ *
+ * @param pointers the places findings were reported at.
+ * @since 1.0.0
+ */
+@DavilsInternal
+public class PointerTree(pointers: Iterable<JsonPointer>) {
     private val root: Branch = Branch()
 
     init {
         pointers.forEach(::add)
     }
 
-    fun isRelated(pointer: JsonPointer): Boolean {
+    /**
+     * Whether a finding was reported at [pointer], above it, beside it as a sibling, or below it.
+     *
+     * @param pointer the place.
+     * @return `true` if [pointer] is related to a place of the tree.
+     * @since 1.0.0
+     */
+    public fun isRelated(pointer: JsonPointer): Boolean {
         val tokens = pointer.tokens
         var branch: Branch? = root
         var depth = 0
@@ -46,7 +65,14 @@ internal class PointerTree(pointers: Iterable<JsonPointer>) {
         return isRelated
     }
 
-    fun hasBelow(pointer: JsonPointer): Boolean {
+    /**
+     * Whether the tree holds a place below [pointer].
+     *
+     * @param pointer the place.
+     * @return `true` if a place of the tree lies below [pointer].
+     * @since 1.0.0
+     */
+    public fun hasBelow(pointer: JsonPointer): Boolean {
         var branch: Branch? = root
         for (token in pointer.tokens) branch = branch?.let { found -> found.children[token] }
         return branch?.let { found -> found.children.size > 0 } == true

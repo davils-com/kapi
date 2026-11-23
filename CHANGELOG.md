@@ -78,3 +78,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `KeyedMap`, and hold every public map and list as an immutable copy.
 - **JSON Schema** converts the mappings of a YAML instance or schema into JSON objects keyed through `KeyedMap`, so
   keys whose hash codes collide cannot slow a validation down on Wasm.
+- **The pointer tree** that keeps the structure check of OpenAPI from reporting twice at one place moved to
+  `kapi-spec-core` as `@DavilsInternal` `PointerTree`, so the structure check of AsyncAPI shares it.

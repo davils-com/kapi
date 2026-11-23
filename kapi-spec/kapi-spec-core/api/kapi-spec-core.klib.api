@@ -371,6 +371,13 @@ final class com.davils.kapi.spec.core.diagnostic/Location { // com.davils.kapi.s
     final fun toString(): kotlin/String // com.davils.kapi.spec.core.diagnostic/Location.toString|toString(){}[0]
 }
 
+final class com.davils.kapi.spec.core.diagnostic/PointerTree { // com.davils.kapi.spec.core.diagnostic/PointerTree|null[0]
+    constructor <init>(kotlin.collections/Iterable<com.davils.kaml.document.pointer/JsonPointer>) // com.davils.kapi.spec.core.diagnostic/PointerTree.<init>|<init>(kotlin.collections.Iterable<com.davils.kaml.document.pointer.JsonPointer>){}[0]
+
+    final fun hasBelow(com.davils.kaml.document.pointer/JsonPointer): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/PointerTree.hasBelow|hasBelow(com.davils.kaml.document.pointer.JsonPointer){}[0]
+    final fun isRelated(com.davils.kaml.document.pointer/JsonPointer): kotlin/Boolean // com.davils.kapi.spec.core.diagnostic/PointerTree.isRelated|isRelated(com.davils.kaml.document.pointer.JsonPointer){}[0]
+}
+
 final class com.davils.kapi.spec.core.load/DocumentLoader { // com.davils.kapi.spec.core.load/DocumentLoader|null[0]
     constructor <init>(com.davils.kapi.spec.core.load/LoadSettings, com.davils.kapi.spec.core.diagnostic/Findings, com.davils.kapi.spec.core.source/Source, com.davils.kapi.spec.core.load/LoadCodes, kotlin/Function1<com.davils.kapi.spec.core.load/LoadedDocument, com.davils.kapi.spec.core.load/LoadedDocument?> = ...) // com.davils.kapi.spec.core.load/DocumentLoader.<init>|<init>(com.davils.kapi.spec.core.load.LoadSettings;com.davils.kapi.spec.core.diagnostic.Findings;com.davils.kapi.spec.core.source.Source;com.davils.kapi.spec.core.load.LoadCodes;kotlin.Function1<com.davils.kapi.spec.core.load.LoadedDocument,com.davils.kapi.spec.core.load.LoadedDocument?>){}[0]
 
