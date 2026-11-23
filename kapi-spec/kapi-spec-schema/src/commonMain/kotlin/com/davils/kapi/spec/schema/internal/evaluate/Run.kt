@@ -1,0 +1,85 @@
+/*
+ * Copyright 2026 Davils
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.davils.kapi.spec.schema.internal.evaluate
+
+import com.davils.kapi.spec.schema.RefusalReason
+import com.davils.kapi.spec.schema.SchemaLimits
+import com.davils.kapi.spec.schema.internal.Meter
+import com.davils.kapi.spec.schema.internal.Refusal
+import com.davils.kapi.spec.schema.internal.Trail
+import com.davils.kapi.spec.schema.internal.value.Instance
+
+internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
+    private var steps: Long = 0L
+
+    private var depth: Int = 0
+
+    val tracksAnnotations: Boolean get() = graph.tracksAnnotations
+
+    var trail: Trail? = null
+        private set
+
+    override fun charge(steps: Long) {
+        this.steps += steps
+        if (this.steps > limits.maximumEvaluationSteps) {
+            throw Refusal(
+                RefusalReason.EvaluationSteps,
+                "The validation needs more than the ${limits.maximumEvaluationSteps} steps it may take",
+                trail,
+            )
+        }
+    }
+
+    fun resource(index: Int): ResourceInfo = graph.resources[index]
+
+    fun evaluate(index: Int, visit: Visit, sink: MutableList<Failure>?): Evaluated? {
+        trail = visit.instanceTrail
+        charge(1L)
+        depth++
+        if (depth > limits.maximumEvaluationDepth) {
+            throw Refusal(
+                RefusalReason.EvaluationDepth,
+                "The validation nests subschemas deeper than ${limits.maximumEvaluationDepth} levels",
+                visit.instanceTrail,
+            )
+        }
+        val node = graph.nodes[index]
+        val evaluated = annotationsFor(visit.instance)
+        val frame = Frame(this, node, visit.entering(node.resource), evaluated, sink)
+        val isValid = frame.evaluateKeywords()
+        depth--
+        return evaluated.takeIf { isValid }
+    }
+
+    fun refuseLongText(text: String) {
+        val isTooLong = text.length > limits.maximumStringLength
+        if (isTooLong) {
+            throw Refusal(
+                RefusalReason.StringLength,
+                "The string has more than the ${limits.maximumStringLength} characters a pattern or format may read",
+                trail,
+            )
+        }
+    }
+
+    private fun annotationsFor(instance: Instance): Evaluated {
+        val items = (instance as? Instance.ArrayValue)?.items?.size
+        val size = items ?: (instance as? Instance.ObjectValue)?.keys?.size
+        val tracked = size?.takeIf { tracksAnnotations }
+        return tracked?.let(Evaluated::of) ?: Evaluated.UNTRACKED
+    }
+}
