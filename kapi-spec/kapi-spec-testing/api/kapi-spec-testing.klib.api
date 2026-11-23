@@ -25,6 +25,8 @@ final object com.davils.kapi.spec.testing/Corpus { // com.davils.kapi.spec.testi
 
 final object com.davils.kapi.spec.testing/HostileDocuments { // com.davils.kapi.spec.testing/HostileDocuments|null[0]
     final fun aliasBomb(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.aliasBomb|aliasBomb(kotlin.Int){}[0]
+    final fun collidingKeys(kotlin/Int): kotlin.collections/List<kotlin/String> // com.davils.kapi.spec.testing/HostileDocuments.collidingKeys|collidingKeys(kotlin.Int){}[0]
+    final fun collidingKeysDocument(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.collidingKeysDocument|collidingKeysDocument(kotlin.Int){}[0]
     final fun deepNesting(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.deepNesting|deepNesting(kotlin.Int){}[0]
     final fun referenceChain(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.referenceChain|referenceChain(kotlin.Int){}[0]
     final fun unknownFields(kotlin/Int): kotlin/String // com.davils.kapi.spec.testing/HostileDocuments.unknownFields|unknownFields(kotlin.Int){}[0]

@@ -8,6 +8,8 @@ public final class com/davils/kapi/spec/testing/Corpus {
 public final class com/davils/kapi/spec/testing/HostileDocuments {
 	public static final field INSTANCE Lcom/davils/kapi/spec/testing/HostileDocuments;
 	public final fun aliasBomb (I)Ljava/lang/String;
+	public final fun collidingKeys (I)Ljava/util/List;
+	public final fun collidingKeysDocument (I)Ljava/lang/String;
 	public final fun deepNesting (I)Ljava/lang/String;
 	public final fun referenceChain (I)Ljava/lang/String;
 	public final fun unknownFields (I)Ljava/lang/String;

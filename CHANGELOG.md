@@ -66,3 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that a cast cannot change, `KeyedMap`, `frozen()`, `frozenSet()` and the keyed counterparts of `toMap`, `associate`,
   `associateBy`, `groupBy`, `distinctBy` and `filter` of `com.davils.kapi.spec.core.collection` are `@DavilsInternal`
   API for the other modules, and `ExtensionName`, `DocumentUri` and `Target` are `Comparable`.
+- **The test support of documents** adds `HostileDocuments.collidingKeys` and
+  `HostileDocuments.collidingKeysDocument`, keys that share one hash code and a document whose components, properties,
+  extensions and enum use them.

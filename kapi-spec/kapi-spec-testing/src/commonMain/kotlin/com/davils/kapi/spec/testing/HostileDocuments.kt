@@ -20,11 +20,13 @@ private const val LINE_END: String = "\n"
 
 private const val WIDTH: Int = 9
 
+private val blocks: List<String> = listOf("Aa", "BB")
+
 private val head: List<String> = listOf("openapi: 3.1.0", "info:", "  title: Hostile", "  version: 1.0.0", "paths: {}")
 
 /**
- * OpenAPI documents built to probe the limits of a reader: alias bombs, deep nesting, many unknown fields and long
- * chains of references, each sized by the caller.
+ * OpenAPI documents built to probe the limits of a reader: alias bombs, deep nesting, many unknown fields, long
+ * chains of references and keys whose hash codes collide, each sized by the caller.
  *
  * @since 1.0.0
  */
@@ -74,6 +76,38 @@ public object HostileDocuments {
         val links = (1..length).map { index -> "    R$index: {\$ref: '#/components/responses/R${index + 1}'}" }
         val end = "    R${length + 1}: {description: The end}"
         return document(listOf("components:", "  responses:") + links + end)
+    }
+
+    /**
+     * Returns [count] distinct keys that all share one hash code, such as `AaAa` and `BBBB`, the keys an attacker
+     * chooses to turn a hash map without tree bins, like those of Wasm, into a list.
+     *
+     * @param count the number of keys.
+     * @return the keys, each of the same length.
+     * @since 1.0.0
+     */
+    public fun collidingKeys(count: Int): List<String> {
+        var keys = listOf("")
+        while (keys.size < count) keys = keys.flatMap { key -> blocks.map { block -> key + block } }
+        return keys.take(count)
+    }
+
+    /**
+     * Returns a document whose schemas of the components and whose properties, extensions and enum of one of them are
+     * named by [count] keys of [collidingKeys].
+     *
+     * @param count the number of keys.
+     * @return the YAML text.
+     * @since 1.0.0
+     */
+    public fun collidingKeysDocument(count: Int): String {
+        val keys = collidingKeys(count)
+        val schemas = keys.map { key -> "    $key: {type: string}" }
+        val properties = keys.map { key -> "        $key: {type: integer}" }
+        val extensions = keys.map { key -> "      x-$key: $key" }
+        val values = keys.joinToString(prefix = "[", postfix = "]")
+        val colliding = listOf("    Colliding:", "      type: object", "      enum: $values", "      properties:")
+        return document(listOf("components:", "  schemas:") + schemas + colliding + properties + extensions)
     }
 
     private fun document(lines: List<String>): String =
