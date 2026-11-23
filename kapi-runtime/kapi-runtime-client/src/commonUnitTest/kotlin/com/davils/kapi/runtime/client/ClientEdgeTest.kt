@@ -109,7 +109,7 @@ class ClientEdgeTest : FunSpec({
             exchanges.requests.size shouldBe 1
         }
 
-        test("is missing credentials when an interceptor hands back a trip that was never sent") {
+        test("is unsent when an interceptor hands back a trip that was never sent") {
             var stashed: RoundTrip? = null
             val exchanges = Exchanges(configure = {
                 intercept(CallPhase.Prepare, "stash") { trip ->
@@ -119,7 +119,7 @@ class ClientEdgeTest : FunSpec({
                 intercept(CallPhase.Receive, "rewind") { trip -> stashed ?: trip }
             })
 
-            exchanges.execute(pets) shouldBe Exchange.Failed(CallFailure.CredentialMissing)
+            exchanges.execute(pets) shouldBe Exchange.Failed(CallFailure.Unsent("rewind"))
         }
     }
 })

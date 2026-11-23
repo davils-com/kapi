@@ -44,18 +44,29 @@ public sealed interface RangeOutcome {
     }
 
     /**
-     * `206 Partial Content` with several ranges as `multipart/byteranges`, to read with the multipart decoder of the
-     * runtime core.
+     * `206 Partial Content` with several ranges as `multipart/byteranges` of RFC 9110 §14.6, read into its parts.
+     *
+     * Every part names its range in `Content-Range` and is exactly as long as that range; an answer with a part that
+     * does not is [Malformed] instead.
      *
      * @property answered the answer.
+     * @param parts the parts in the order the server sent them, each with its range and its bytes.
      * @since 1.0.0
      */
-    public class Ranges(public val answered: Exchange.Answered) : RangeOutcome {
-        override fun equals(other: Any?): Boolean = other is Ranges && answered == other.answered
+    public class Ranges(public val answered: Exchange.Answered, parts: List<Partial>) : RangeOutcome {
+        /**
+         * The parts in the order the server sent them, each with its range and its bytes.
+         *
+         * @since 1.0.0
+         */
+        public val parts: List<Partial> = parts.toList()
+
+        override fun equals(other: Any?): Boolean =
+            other is Ranges && answered == other.answered && parts == other.parts
 
         override fun hashCode(): Int = answered.hashCode()
 
-        override fun toString(): String = "Ranges($answered)"
+        override fun toString(): String = "Ranges($answered, ${parts.size} parts)"
     }
 
     /**

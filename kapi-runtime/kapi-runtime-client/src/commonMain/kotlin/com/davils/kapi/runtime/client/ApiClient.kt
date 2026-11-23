@@ -52,6 +52,8 @@ import kotlin.concurrent.atomics.incrementAndFetch
 
 private const val UNAUTHORIZED: Int = 401
 
+private const val PIPELINE: String = "pipeline"
+
 private const val CONTENT_TYPE: String = "content-type"
 
 private const val CHALLENGE: String = "www-authenticate"
@@ -225,7 +227,7 @@ public class ApiClient internal constructor(
 
     private suspend fun attempt(call: Call): Exchange {
         val first = pipeline.run(call)
-        val exchange = first.exchange ?: Exchange.Failed(CallFailure.CredentialMissing)
+        val exchange = first.exchange ?: Exchange.Failed(CallFailure.Unsent(PIPELINE))
         val answered = (exchange as? Exchange.Answered)?.takeIf { found -> found.status == UNAUTHORIZED }
         if (answered == null || !call.isReplayable) return exchange
         return retried(call = call, first = first, answered = answered)

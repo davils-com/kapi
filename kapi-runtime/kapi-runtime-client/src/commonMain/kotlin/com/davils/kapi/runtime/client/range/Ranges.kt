@@ -18,11 +18,14 @@ package com.davils.kapi.runtime.client.range
 
 import com.davils.kapi.runtime.client.call.CallBuilder
 import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.core.codec.multipart.MultipartFormData
 import com.davils.kapi.runtime.core.conditional.IfRange
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.range.ContentRange
 import com.davils.kapi.runtime.core.range.RangeRequest
 import com.davils.kapi.runtime.core.response.isSuccess
+import com.davils.kore.core.outcome.Outcome
+import kotlinx.io.bytestring.ByteString
 
 private const val PARTIAL: Int = 206
 
@@ -56,6 +59,8 @@ public fun CallBuilder.ifRange(condition: IfRange) {
 /**
  * Reads how a call for a range ended.
  *
+ * A `multipart/byteranges` answer is read into its parts within the default multipart limits of the runtime core.
+ *
  * @receiver how the call ended.
  * @return the outcome by the status, the media type and the `Content-Range` field of the answer.
  * @since 1.0.0
@@ -71,9 +76,27 @@ public fun Exchange.ranged(): RangeOutcome {
 }
 
 private fun partialOf(answered: Exchange.Answered, range: ContentRange?): RangeOutcome {
-    val isMultipart = answered.contentType?.essence == MediaType.MultipartByteRanges.essence
-    if (isMultipart) return RangeOutcome.Ranges(answered)
-    val size = answered.content.size.toLong()
+    val type = answered.contentType
+    val isMultipart = type?.essence == MediaType.MultipartByteRanges.essence
+    if (isMultipart) return rangesOf(answered, type)
+    val partial = partOf(range, answered.content)
+    return partial ?: RangeOutcome.Malformed(answered)
+}
+
+private fun rangesOf(answered: Exchange.Answered, type: MediaType?): RangeOutcome {
+    val boundary = type?.let(MultipartFormData::boundaryOf)
+    val decoded = boundary?.let { found -> MultipartFormData.decode(answered.content, found) }
+    val parts = (decoded as? Outcome.Success)?.value.orEmpty()
+    val partials = parts.mapNotNull { part ->
+        val range = part.header(CONTENT_RANGE)?.let(ContentRange::parseOrNull)
+        partOf(range, part.content)
+    }
+    val isWhole = partials.isNotEmpty() && partials.size == parts.size
+    return RangeOutcome.Ranges(answered, partials).takeIf { isWhole } ?: RangeOutcome.Malformed(answered)
+}
+
+private fun partOf(range: ContentRange?, content: ByteString): RangeOutcome.Partial? {
+    val size = content.size.toLong()
     val satisfied = (range as? ContentRange.Satisfied)?.takeIf { found -> found.range.length == size }
-    return satisfied?.let { found -> RangeOutcome.Partial(found, answered.content) } ?: RangeOutcome.Malformed(answered)
+    return satisfied?.let { found -> RangeOutcome.Partial(found, content) }
 }

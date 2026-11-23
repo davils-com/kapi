@@ -79,6 +79,22 @@ public sealed interface CallFailure {
     }
 
     /**
+     * The interceptor [interceptor] of [CallPhase.Receive][com.davils.kapi.runtime.client.pipeline.CallPhase.Receive]
+     * handed back a round trip without an exchange, such as one it kept from an earlier phase, so the call has no
+     * answer the client could report.
+     *
+     * @property interceptor the name of the interceptor.
+     * @since 1.0.0
+     */
+    public class Unsent(public val interceptor: String) : CallFailure {
+        override fun equals(other: Any?): Boolean = other is Unsent && interceptor == other.interceptor
+
+        override fun hashCode(): Int = interceptor.hashCode()
+
+        override fun toString(): String = "Unsent(${SafeText.text(interceptor)})"
+    }
+
+    /**
      * The source of [scheme] handed out a credential that could inject a header field; it was not sent.
      *
      * @property scheme the name of the scheme.

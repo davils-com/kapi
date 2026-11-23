@@ -19,17 +19,23 @@ package com.davils.kapi.runtime.client.range
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.codec.multipart.Boundary
 import com.davils.kapi.runtime.core.conditional.EntityTag
 import com.davils.kapi.runtime.core.conditional.IfRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterEntry
 import com.davils.kapi.runtime.core.range.ByteRangeSpec
 import com.davils.kapi.runtime.core.range.ContentRange
+import com.davils.kapi.runtime.core.range.MultipartByteRanges
 import com.davils.kapi.runtime.core.range.RangeRequest
 import com.davils.kapi.runtime.core.range.ResolvedRange
 import com.davils.kapi.runtime.core.response.headersOf
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.io.bytestring.ByteString
+import kotlinx.io.bytestring.decodeToString
 import kotlinx.io.bytestring.encodeToByteString
 
 private const val PARTIAL: Int = 206
@@ -53,6 +59,26 @@ private const val OUTCOMES: Int = 5
 private const val HELLO: String = "hello"
 
 private const val MULTIPART: String = "multipart/byteranges; boundary=x"
+
+private const val SECOND_FIRST: Long = 5
+
+private const val CONTENT_TYPE: String = "Content-Type"
+
+private const val CRLF: String = "\r\n"
+
+private fun wire(vararg lines: String): String = lines.joinToString(separator = "") { line -> line + CRLF }
+
+private val encodedParts: ByteString = MultipartByteRanges.encode(
+    boundary = Boundary("x"),
+    contentType = MediaType.TextPlain,
+    completeLength = LENGTH,
+    parts = listOf(
+        ResolvedRange(first = 0, last = 1) to "ab".encodeToByteString(),
+        ResolvedRange(first = SECOND_FIRST, last = SECOND_FIRST + 1) to "fg".encodeToByteString(),
+    ),
+)
+
+private val PARTS: String = encodedParts.decodeToString()
 
 private fun answered(status: Int, content: String, vararg headers: Pair<String, String>): Exchange.Answered =
     Exchange.Answered(
@@ -91,8 +117,33 @@ class RangesTest : FunSpec({
             bare.shouldBeInstanceOf<RangeOutcome.Malformed>()
         }
 
+        test("of several ranges is read into its parts, each exactly as long as its range") {
+            val ranges = answered(PARTIAL, PARTS, CONTENT_TYPE to MULTIPART).ranged()
+
+            val parts = ranges.shouldBeInstanceOf<RangeOutcome.Ranges>().parts
+
+            parts.map { part -> part.content.decodeToString() } shouldBe listOf("ab", "fg")
+            parts.map { part -> part.range.range.first } shouldBe listOf(0L, SECOND_FIRST)
+            ranges.toString() shouldContain "2 parts"
+        }
+
+        test("of several ranges is malformed when a part names no range, the wrong length or no boundary") {
+            val unnamed = wire("--x", "Content-Type: text/plain", "", "ab", "--x--")
+            val long = wire("--x", "Content-Range: bytes 0-0/100", "", "ab", "--x--")
+            val bodies = listOf(
+                unnamed to MULTIPART,
+                long to MULTIPART,
+                "" to MULTIPART,
+                PARTS to "multipart/byteranges",
+            )
+
+            val outcomes = bodies.map { (body, type) -> answered(PARTIAL, body, CONTENT_TYPE to type).ranged() }
+
+            outcomes.all { outcome -> outcome is RangeOutcome.Malformed } shouldBe true
+        }
+
         test("is several ranges, the whole representation, none or another answer") {
-            val multipart = answered(PARTIAL, "", "Content-Type" to MULTIPART).ranged()
+            val multipart = answered(PARTIAL, PARTS, CONTENT_TYPE to MULTIPART).ranged()
             val full = answered(OK, "all").ranged()
             val none = answered(NOT_SATISFIABLE, "", CONTENT_RANGE to "bytes */$LENGTH").ranged()
             val unnamed = answered(NOT_SATISFIABLE, "").ranged()
@@ -110,7 +161,7 @@ class RangesTest : FunSpec({
             listOf(multipart, full, none, other).map { outcome -> outcome.toString().isNotEmpty() } shouldBe
                 listOf(true, true, true, true)
             listOf(multipart, full, none, other, unsent).map { outcome -> outcome.hashCode() }.size shouldBe OUTCOMES
-            multipart shouldBe answered(PARTIAL, "", "Content-Type" to MULTIPART).ranged()
+            multipart shouldBe answered(PARTIAL, PARTS, CONTENT_TYPE to MULTIPART).ranged()
             RangeOutcome.Malformed(answered(PARTIAL, "")) shouldBe RangeOutcome.Malformed(answered(PARTIAL, ""))
             RangeOutcome.Malformed(answered(PARTIAL, "")).hashCode() shouldBe answered(PARTIAL, "").hashCode()
             val malformed = RangeOutcome.Malformed(answered(PARTIAL, "")).toString()

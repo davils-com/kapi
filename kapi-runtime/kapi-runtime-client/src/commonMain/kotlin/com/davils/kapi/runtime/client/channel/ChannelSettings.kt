@@ -100,6 +100,26 @@ public class ChannelSettings internal constructor(builder: ChannelSettingsBuilde
      */
     public val maxPendingRequests: Int = builder.maxPendingRequests
 
+    /**
+     * Returns a builder that starts from these settings, such as to change one of them for one channel.
+     *
+     * @return a new builder with every setting of these settings.
+     * @since 1.0.0
+     */
+    public fun toBuilder(): ChannelSettingsBuilder {
+        val builder = ChannelSettingsBuilder()
+        builder.subprotocols = subprotocols
+        builder.mediaType = mediaType
+        builder.maxFrameBytes = maxFrameBytes
+        builder.maxMessageBytes = maxMessageBytes
+        builder.pingInterval = pingInterval
+        builder.pongTimeout = pongTimeout
+        builder.closeTimeout = closeTimeout
+        builder.incomingCapacity = incomingCapacity
+        builder.maxPendingRequests = maxPendingRequests
+        return builder
+    }
+
     override fun ValidationScope.validate() {
         if (subprotocols.any { protocol -> !FieldText.isToken(protocol) }) {
             fail(::subprotocols, "must each be a token", ClientViolationCodes.LIMIT_INVALID)

@@ -17,6 +17,7 @@
 package com.davils.kapi.runtime.client.call
 
 import com.davils.kapi.runtime.client.internal.FieldText
+import com.davils.kapi.runtime.client.internal.QueryText
 import com.davils.kapi.runtime.core.codec.multipart.Boundary
 import com.davils.kapi.runtime.core.header.IdempotencyKey
 import com.davils.kapi.runtime.core.negotiation.MediaRange
@@ -38,6 +39,8 @@ import kotlin.time.Duration
 
 private const val CHUNK: Int = 8_192
 
+private const val QUERY_STRING: String = "querystring"
+
 /**
  * Builds a [Call]; generated clients call it, and an interceptor changes a call through [Call.change].
  *
@@ -53,6 +56,8 @@ public class CallBuilder internal constructor(internal val operation: String, in
     private val path: StringBuilder = StringBuilder()
 
     internal val queryEntries: MutableList<ParameterEntry> = mutableListOf()
+
+    internal var rawQuery: String? = null
 
     internal val headerEntries: MutableList<ParameterEntry> = mutableListOf()
 
@@ -137,6 +142,26 @@ public class CallBuilder internal constructor(internal val operation: String, in
      */
     public fun query(name: String, value: String) {
         queryEntries += ParameterEntry(name, value)
+    }
+
+    /**
+     * Sends [text] as the whole query, as a parameter `in: querystring` of OpenAPI 3.2 §4.12.2 with a media type other
+     * than `application/x-www-form-urlencoded` writes it, such as the JSON of a value.
+     *
+     * The text is percent-encoded strictly: every UTF-8 octet but the unreserved characters of RFC 3986 §2.3 is
+     * escaped, so `&`, `=`, `+`, `#` and spaces of the text can neither split it into fields nor end the query. The
+     * query parameters of [query] and of a credential placed in the query follow it, separated by `&`. A text with a
+     * lone surrogate, which has no UTF-8, or a second query string refuses the call with [CallFailure.ParameterRefused]
+     * for `querystring`; an empty text sends no query.
+     *
+     * @param text the serialized value of the parameter, not yet percent-encoded.
+     * @since 1.0.0
+     */
+    public fun queryString(text: String) {
+        val encoded = QueryText.encoded(text)
+        val isSafe = encoded != null && rawQuery == null
+        if (!isSafe) refuse(CallFailure.ParameterRefused(QUERY_STRING))
+        if (isSafe) rawQuery = encoded
     }
 
     /**
@@ -338,6 +363,7 @@ public class CallBuilder internal constructor(internal val operation: String, in
 
     internal fun clearQuery() {
         queryEntries.clear()
+        rawQuery = null
     }
 
     internal fun build(): Call = Call(this)
@@ -347,6 +373,7 @@ public class CallBuilder internal constructor(internal val operation: String, in
             val builder = CallBuilder(operation = call.operation, method = call.method)
             builder.path.append(call.path)
             builder.queryEntries += call.query
+            builder.rawQuery = call.queryString
             builder.headerEntries += call.headers
             builder.cookieEntries += call.cookies
             builder.accepted += call.accept

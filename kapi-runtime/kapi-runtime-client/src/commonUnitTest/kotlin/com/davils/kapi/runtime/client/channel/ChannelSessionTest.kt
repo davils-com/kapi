@@ -32,6 +32,9 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -53,6 +56,11 @@ private val correlated: ChannelSpec<Message, Message> = ChannelSpec(
     settings = quick,
     correlation = Correlation(sent = { message: Message -> message.id }, received = { message: Message -> message.id }),
 )
+
+private fun idOf(element: JsonElement): String? {
+    val id = element.jsonObject["id"] ?: return null
+    return id.jsonPrimitive.content
+}
 
 private fun text(message: String, fin: Boolean = true): Frame = Frame.Text(fin, message.encodeToByteArray())
 
@@ -200,6 +208,47 @@ class ChannelSessionTest : FunSpec({
                 ChannelReply.Received(Message(text = "pong", id = "1")),
                 ChannelReply.Received(Message("other")),
             )
+        }
+
+        test("pairs a reply by the correlation id in the JSON of the messages") {
+            val session = FakeSession()
+            val byJson = ChannelSpec(
+                sendSerializer = Message.serializer(),
+                receiveDeserializer = Message.serializer(),
+                settings = quick,
+                correlation = Correlation.json(sent = ::idOf),
+            )
+
+            val outcome = running(session, byJson) {
+                val reply = async(start = CoroutineStart.UNDISPATCHED) {
+                    request(Message(text = PING, id = "7"), 5.seconds)
+                }
+                session.inbound.send(text("""{"text":"other","id":"8"}"""))
+                session.inbound.send(text("""{"text":"pong","id":"7"}"""))
+                val refused = request(Message(PING), 10.milliseconds)
+                listOf(reply.await(), ChannelReply.Received(incoming.first()), refused)
+            }
+
+            outcome.shouldBeInstanceOf<ChannelOutcome.Completed<List<ChannelReply<Message>>>>().value shouldBe listOf(
+                ChannelReply.Received(Message(text = "pong", id = "7")),
+                ChannelReply.Received(Message(text = "other", id = "8")),
+                ChannelReply.Refused,
+            )
+        }
+
+        test("finds no id in JSON a correlation cannot read") {
+            val session = FakeSession()
+            val failing = ChannelSpec(
+                sendSerializer = Message.serializer(),
+                receiveDeserializer = Message.serializer(),
+                settings = quick,
+                correlation = Correlation.json(sent = { error("broken") }),
+            )
+
+            val normal = ChannelClose(code = CloseKind.Normal.code, isLocal = true)
+
+            running(session, failing) { request(Message(text = PING, id = "1"), 10.milliseconds) } shouldBe
+                ChannelOutcome.Completed(ChannelReply.Refused, normal)
         }
 
         test("times out, is refused without an id or a correlation, and ends when the channel closes") {

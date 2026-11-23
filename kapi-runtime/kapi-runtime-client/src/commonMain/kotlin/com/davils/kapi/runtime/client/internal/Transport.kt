@@ -43,7 +43,6 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.content.OutgoingContent
@@ -102,11 +101,8 @@ internal class Transport(
         return Outcome.Failure(refusal)
     }
 
-    private fun builtOf(trip: RoundTrip, raw: String): Outcome<Outgoing, CallFailure> {
-        val builder = URLBuilder(raw)
-        trip.call.query.forEach { entry -> builder.parameters.append(name = entry.name, value = entry.value) }
-        return Outcome.Success(Outgoing.first(trip, builder.buildString()))
-    }
+    private fun builtOf(trip: RoundTrip, raw: String): Outcome<Outgoing, CallFailure> =
+        Outcome.Success(Outgoing.first(trip, QueryText.built(raw, trip.call)))
 
     private suspend fun followed(first: Outgoing, delivery: Delivery): Exchange {
         val policy = settings.redirects ?: return once(first, delivery)

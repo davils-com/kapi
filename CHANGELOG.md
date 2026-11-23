@@ -42,3 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ChannelEndpoint` that refuses an invalid handshake before the upgrade, `ChannelSession.request` with a
   `Correlation` and `ChannelLimits.maxHeldMessages`, `Request.of { }` to build a request without Ktor and
   `ReplyBody.Value.encoded`.
+- **The client runtime** adds `CallBuilder.queryString` for a `querystring` parameter of another media type than a
+  form, encoded strictly, `ChannelSettings.toBuilder`, `Correlation.json` over the JSON of messages, DPoP proofs on
+  WebSocket handshakes, `CallFailure.Unsent` for an interceptor that hands back a trip that was never sent, and
+  `RangeOutcome.Ranges.parts` with the parts of a `multipart/byteranges` answer.

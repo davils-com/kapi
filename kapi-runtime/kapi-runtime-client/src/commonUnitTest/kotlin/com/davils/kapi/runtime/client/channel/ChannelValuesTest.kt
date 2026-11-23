@@ -37,6 +37,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.client.plugins.websocket.WebSockets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.seconds
 
 private const val APPLICATION: Int = 4_000
 
@@ -71,6 +72,31 @@ class ChannelValuesTest : FunSpec({
             shouldThrow<ValidationException> { channelSettings { pingInterval = 2.hours } }
             shouldThrow<ValidationException> { channelSettings { closeTimeout = Duration.ZERO } }
             channelSettings { pingInterval = Duration.ZERO }.pingInterval shouldBe Duration.ZERO
+        }
+
+        test("are copied into a builder that changes some of them") {
+            val original = channelSettings {
+                subprotocols = listOf("chat")
+                mediaType = MediaType.Cbor
+                maxFrameBytes = 2
+                maxMessageBytes = 4
+                pingInterval = Duration.ZERO
+                pongTimeout = 1.seconds
+                closeTimeout = 2.seconds
+                incomingCapacity = 3
+                maxPendingRequests = incomingCapacity
+            }
+            val builder = original.toBuilder()
+            builder.maxPendingRequests = original.maxPendingRequests + 1
+
+            val copy = builder.build()
+
+            listOf(copy.subprotocols, copy.mediaType, copy.maxFrameBytes, copy.maxMessageBytes) shouldBe
+                listOf(original.subprotocols, original.mediaType, original.maxFrameBytes, original.maxMessageBytes)
+            listOf(copy.pingInterval, copy.pongTimeout, copy.closeTimeout) shouldBe
+                listOf(original.pingInterval, original.pongTimeout, original.closeTimeout)
+            copy.incomingCapacity shouldBe original.incomingCapacity
+            copy.maxPendingRequests shouldBe original.maxPendingRequests + 1
         }
     }
 
