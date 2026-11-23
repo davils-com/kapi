@@ -154,6 +154,7 @@ class PatternRefusalTest : FunSpec({
 
             first shouldBe second
             first.hashCode() shouldBe second.hashCode()
+            first.equals(Pattern.compile("a")) shouldBe false
             first.toString() shouldContain "reason=Syntax"
         }
     }

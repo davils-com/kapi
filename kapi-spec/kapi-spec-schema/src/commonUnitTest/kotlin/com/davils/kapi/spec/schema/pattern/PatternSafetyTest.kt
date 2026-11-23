@@ -157,6 +157,7 @@ class PatternSafetyTest : FunSpec({
             compiled("a+").equals("a+") shouldBe false
             Pattern.compile("a+") shouldBe Pattern.compile("a+")
             Pattern.compile("a+").hashCode() shouldBe Pattern.compile("a+").hashCode()
+            Pattern.compile("a+").equals(Pattern.compile("(")) shouldBe false
             Pattern.compile("a+").toString() shouldBe "Compiled(Pattern(\"a+\"))"
         }
 

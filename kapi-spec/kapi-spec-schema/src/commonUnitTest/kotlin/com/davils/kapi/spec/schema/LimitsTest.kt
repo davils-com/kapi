@@ -225,5 +225,7 @@ class LimitsTest : FunSpec({
         ).accepts("[1, 2]") shouldBe true
         codesOf("""{"const": [1, 2, 3]}""", limited { maximumLiteralNodes = LITERAL_NODES }) shouldBe
             listOf(DiagnosticCodes.LIMIT_EXCEEDED)
+        codesOf("""{"enum": [[1, 2, 3, 4]]}""", limited { maximumLiteralNodes = LITERAL_NODES }) shouldBe
+            listOf(DiagnosticCodes.LIMIT_EXCEEDED)
     }
 })

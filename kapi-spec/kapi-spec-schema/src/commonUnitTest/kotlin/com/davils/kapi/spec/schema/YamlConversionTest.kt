@@ -16,6 +16,7 @@
 
 package com.davils.kapi.spec.schema
 
+import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -24,6 +25,14 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 private val SCALARS: List<String> = listOf("a: ~", "b: true", "c: 12", "d: 1.5e3", "e: text", "f: [1, '2']")
 
 class YamlConversionTest : FunSpec({
+    test("a boolean that is none and a key that is no scalar are refused") {
+        JsonSchema.json(yamlOf("? [a]\n: 1\n")).shouldBeInstanceOf<YamlConversion.Refused>()
+        val uri = DocumentUri("https://example.com/s.yaml")
+        val compilation = JsonSchema.compiler().compile(yamlOf("? [a]\n: 1\n"), uri)
+        val diagnostic = compilation.shouldBeInstanceOf<Compilation.Invalid>().diagnostics.single()
+        diagnostic.location?.document shouldBe uri
+    }
+
     test("scalars convert by their tag") {
         val converted = JsonSchema.json(yamlOf(SCALARS.joinToString(separator = "\n", postfix = "\n")))
         converted.shouldBeInstanceOf<YamlConversion.Converted>().json shouldBe
