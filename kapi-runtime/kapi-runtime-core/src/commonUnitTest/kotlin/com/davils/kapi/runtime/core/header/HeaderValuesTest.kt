@@ -91,14 +91,16 @@ class HeaderValuesTest : FunSpec({
         }
 
         test("keeps the first of a repeated parameter and reads one without a value") {
-            val link = links("<$TARGET>; rel=next; rel=prev; hidden").shouldNotBeNull().single()
+            val read = links("<$TARGET>; rel=next; rel=prev; hidden").shouldNotBeNull()
+            val link = read.single()
 
             link.relations shouldBe listOf("next")
             link.parameter("hidden") shouldBe ""
         }
 
         test("reads an extended title") {
-            val link = links("<$TARGET>; title*=UTF-8''%C3%A9").shouldNotBeNull().single()
+            val read = links("<$TARGET>; title*=UTF-8''%C3%A9").shouldNotBeNull()
+            val link = read.single()
 
             link.parameter("TITLE*") shouldBe "é"
             link.toString() shouldBe "<$TARGET>; title*=UTF-8''%C3%A9"

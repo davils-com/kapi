@@ -30,14 +30,17 @@ private const val UNDEFINED_LIMITS: String = """("a");r=1, a;r=1, "b";r="1", "c"
 class RateLimitMembersTest : FunSpec({
     context("RateLimit") {
         test("reads and writes a partition key") {
-            val limit = RateLimits.parseLimits(KEYED_LIMIT).shouldNotBeNull().single()
+            val limits = RateLimits.parseLimits(KEYED_LIMIT).shouldNotBeNull()
+            val limit = limits.single()
 
             limit.partitionKey shouldBe "abc".encodeToByteString()
             RateLimits.formatLimits(listOf(limit)) shouldBe KEYED_LIMIT
         }
 
         test("ignores an inner list, a name that is no String and malformed numbers") {
-            RateLimits.parseLimits(UNDEFINED_LIMITS).shouldNotBeNull().map(RateLimit::name) shouldBe listOf("d")
+            val limits = RateLimits.parseLimits(UNDEFINED_LIMITS).shouldNotBeNull()
+
+            limits.map(RateLimit::name) shouldBe listOf("d")
         }
 
         test("differs from what is no limit") {

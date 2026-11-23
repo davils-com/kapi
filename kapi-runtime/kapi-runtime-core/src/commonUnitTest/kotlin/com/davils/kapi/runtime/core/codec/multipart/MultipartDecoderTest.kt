@@ -68,7 +68,9 @@ class MultipartDecoderTest : FunSpec({
         test("ignores what follows the closing delimiter") {
             val decoder = MultipartDecoder(boundary)
 
-            decoder.feed("$OPEN$CRLF$CRLF$CONTENT$CRLF$CLOSE".encodeToByteString()).getOrNull().shouldNotBeNull()
+            val body = decoder.feed("$OPEN$CRLF$CRLF$CONTENT$CRLF$CLOSE".encodeToByteString())
+
+            body.getOrNull().shouldNotBeNull()
             decoder.feed("$CRLF$OPEN junk".encodeToByteString()) shouldBe Outcome.Success(emptyList())
             decoder.finish() shouldBe Outcome.Success(emptyList())
         }

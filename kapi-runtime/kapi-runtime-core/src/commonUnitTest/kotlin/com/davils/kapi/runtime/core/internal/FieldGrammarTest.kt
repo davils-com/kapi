@@ -26,6 +26,8 @@ private const val TAB: Char = '\t'
 
 private const val BEYOND_LATIN: Char = 'ā'
 
+private fun inQuotes(text: String): String = "\"$text\""
+
 private fun quoted(text: String, isUnicode: Boolean = false): String? = FieldScanner(text).tokenOrQuoted(isUnicode)
 
 class FieldGrammarTest : FunSpec({
@@ -54,7 +56,7 @@ class FieldGrammarTest : FunSpec({
 
     context("quoting") {
         test("escapes quotes and backslashes") {
-            FieldGrammar.quote("a\"b\\c") shouldBe "\"a\\\"b\\\\c\""
+            FieldGrammar.quote("""a"b\c""") shouldBe """"a\"b\\c""""
             FieldGrammar.tokenOrQuoted("a b") shouldBe "\"a b\""
             FieldGrammar.tokenOrQuoted("ab") shouldBe "ab"
         }
@@ -62,12 +64,12 @@ class FieldGrammarTest : FunSpec({
 
     context("a quoted string") {
         test("reads escaped whitespace, visible and obsolete characters") {
-            quoted("\"a\\ b\\\"\\é\"") shouldBe "a b\"é"
-            quoted("\"a\\\tb\"") shouldBe "a\tb"
+            quoted(""""a\ b\"\é"""") shouldBe """a b"é"""
+            quoted(inQuotes("a\\${TAB}b")) shouldBe "a${TAB}b"
         }
 
         test("refuses an escaped control character and an escape at the end") {
-            quoted("\"a\\\u0001\"").shouldBeNull()
+            quoted(inQuotes("a\\\u0001")).shouldBeNull()
             quoted("\"a\\").shouldBeNull()
             quoted("\"a").shouldBeNull()
         }
@@ -75,7 +77,7 @@ class FieldGrammarTest : FunSpec({
         test("reads characters beyond Latin-1 only where Unicode is allowed") {
             quoted("\"$BEYOND_LATIN\"").shouldBeNull()
             quoted("\"$BEYOND_LATIN\"", isUnicode = true) shouldBe BEYOND_LATIN.toString()
-            quoted("\"\\$BEYOND_LATIN\"", isUnicode = true).shouldBeNull()
+            quoted(inQuotes("\\$BEYOND_LATIN"), isUnicode = true).shouldBeNull()
             quoted("\"$DELETE\"", isUnicode = true).shouldBeNull()
         }
 

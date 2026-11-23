@@ -32,6 +32,10 @@ private const val LAST: Long = 20L
 
 private const val FAR: Long = 50L
 
+private const val SECOND_LAST: Long = 12L
+
+private const val SHORT_FIELD: Int = 8
+
 private const val LONGEST_CONTENT_RANGE: Int = 128
 
 private const val OVERFLOWING: String = "99999999999999999999"
@@ -66,7 +70,8 @@ class RangeValuesTest : FunSpec({
         }
 
         test("reads a range of an unknown length") {
-            ContentRange.parseOrNull("bytes 0-1/*") shouldBe ContentRange.Satisfied(ResolvedRange(first = 0L, last = 1L))
+            ContentRange.parseOrNull("bytes 0-1/*") shouldBe
+                ContentRange.Satisfied(ResolvedRange(first = 0L, last = 1L))
         }
 
         test("is equal by its range and its length") {
@@ -91,14 +96,14 @@ class RangeValuesTest : FunSpec({
         }
 
         test("refuses a field above the limit of its length") {
-            RangeRequest.parseOrNull("bytes=0-1", fieldLimits { maxFieldLength = 8 }).shouldBeNull()
+            RangeRequest.parseOrNull("bytes=0-1", fieldLimits { maxFieldLength = SHORT_FIELD }).shouldBeNull()
         }
 
         test("leaves a range apart that does not touch the merged ranges") {
             val resolution = request("bytes=0-1,1-2,10-12").resolve(LENGTH)
 
             resolution shouldBe RangeResolution.Partial(
-                listOf(ResolvedRange(first = 0L, last = 2L), ResolvedRange(first = FIRST, last = 12L)),
+                listOf(ResolvedRange(first = 0L, last = 2L), ResolvedRange(first = FIRST, last = SECOND_LAST)),
                 LENGTH,
             )
         }
