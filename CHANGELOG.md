@@ -50,6 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bounds, patterns, formats, enums, constants, properties, required properties, additional properties, items and
   alternatives, judged by the direction the data flows in, bounded in depth, reference hops, steps and changes, and
   safe against cyclic schemas.
+- **The comparison of two OpenAPI documents**: `OpenApi.compare(baseline, candidate) { limits { } }` reports, with the
+  codes of `CompatibilityCodes` (`openapi.compatibility.<rule>`), removed and added servers, paths and operations,
+  renamed path parameters, changed operation ids, deprecations, removed, added, newly required and optional parameters
+  and their serialization, request bodies and their media types, removed and added response statuses, media types and
+  headers, security that is added, removed or needs other scopes, changed security schemes, and every change of the
+  schemas of parameters, bodies and headers, judged as requests or responses. References are followed through the
+  targets of each document within the limits of a reading.
 
 ### Changed
 
