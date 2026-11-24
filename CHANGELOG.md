@@ -47,13 +47,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   structure = ... }`, validates the root document against the official JSON Schema of AsyncAPI 3.0.0
   (`asyncapi/spec-json-schemas` 6.11.1, embedded unchanged and recorded in `NOTICE`) and reports
   `asyncapi.structure.schema` only where the reader has not reported yet, leaving references, boolean schemas and
-  schemas of other formats, such as Avro, to the reader. The rules add `asyncapi.operation.key-duplicate` for one operation listed under several keys of
+  schemas of other formats, such as Avro, to the reader. The rules add `asyncapi.operation.key-duplicate` for one
+  operation listed under several keys of
   `operations` and `asyncapi.security.reference-placement` for a security requirement that refers outside
   `components/securitySchemes`.
 - **The comparison of two versions of a document** in `kapi-spec-core`: `Comparison` of `Change`s, each with a stable
   code, a message, its places in the baseline and the candidate and its `Impact` (`Breaking`, `NonBreaking` or `Info`)
   for clients and for providers, configured by `ComparisonBuilder` within `ReadLimits`, and the `@DavilsInternal` JSON
-  Schema comparison `SchemaComparison` over `SchemaView`s, with `FixedSchemaView` for boolean schemas, that OpenAPI and AsyncAPI share: types and nullability,
+  Schema comparison `SchemaComparison` over `SchemaView`s, with `FixedSchemaView` for boolean schemas, that OpenAPI
+  and AsyncAPI share: types and nullability,
   bounds, patterns, formats, enums, constants, properties, required properties, additional properties, items and
   alternatives, judged by the direction the data flows in, bounded in depth, reference hops, steps and changes, and
   safe against cyclic schemas.
@@ -71,92 +73,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   judged by whether the application sends or receives them; schemas of other formats, such as Avro, are compared as
   written.
 
-### Changed
-
-- **Generated servers check the rules of a schema** for parameters, the whole query string, the parts of a
-  multipart body and the fields of a form before the service is asked: `minimum`, `maximum`, `multipleOf`,
-  `minLength`, `maxLength`, `pattern` through the linear matcher, `minItems`, `maxItems`, `uniqueItems`, the known
-  values of an enum and the rules of every item, reported as a problem with status 400 under the path of the
-  parameter; a string field of a form that has rules is read through `Input.field` so they apply as well.
-- **The rules of a schema for parameters, parts and form fields** in the server runtime: `Input.value`, `items`,
-  `fields`, `queryString`, `part`, `partItems` and `field` take an optional `rule: ValidationScope.(T) -> Unit` that
-  checks a decoded value, such as `minimum`, `maxLength` or `pattern`, and reports through `fail` under the path of
-  the parameter, such as `query.limit`; a violation at the root of a validated value is reported under that path
-  instead of one with a trailing dot, and one of an item without a dot before its index.
-- **Methods are case-sensitive** (RFC 9110 §9.1) in every runtime: `apiCall` sends the method exactly as written and
-  refuses one that is no token with `CallFailure.ParameterRefused("method")`, `Operation` and `Request.of` serve any
-  token as written, so a custom method `purge` of `additionalOperations` is no `PURGE`, and the mock API and the
-  contract check of `kapi-runtime-testing` match methods exactly, so a request `get` no longer counts as `GET`.
-- **The linear pattern engine** moved from `kapi-spec-schema` to `kapi-runtime-core` as
-  `com.davils.kapi.runtime.core.pattern`, so generated models validate `pattern` with it: `Pattern.compileOrThrow`
-  compiles a known-good pattern once and `Constraints.matches` checks a text against it, reporting
-  `kapi.runtime.constraint.pattern`.
-- **The core runtime** shares what the other runtimes duplicated: `FieldSyntax` (tokens and field values) and the
-  `bounded` limit check as `@DavilsInternal` API, `HttpStatus` with the status codes and their classes,
-  `Headers.joined` for the combined value of every line of a field and `Codecs.decode` for a parsed `MediaType`.
-- **The server runtime** reads the shared grammar, limit check and status codes of the core runtime instead of copies,
-  and adds `ReplyBuilder.events(serializer, items)` for typed server-sent events, `Input.part`, `Input.partItems` and
-  `Input.field` that decode parts and form fields through the codecs of the server, an `admission` hook on
-  `ChannelEndpoint` that refuses an invalid handshake before the upgrade, `ChannelSession.request` with a
-  `Correlation` and `ChannelLimits.maxHeldMessages`, `Request.of { }` to build a request without Ktor and
-  `ReplyBody.Value.encoded`.
-- **The client runtime** adds `CallBuilder.queryString` for a `querystring` parameter of another media type than a
-  form, encoded strictly, `ChannelSettings.toBuilder`, `Correlation.json` over the JSON of messages, DPoP proofs on
-  WebSocket handshakes, `CallFailure.Unsent` for an interceptor that hands back a trip that was never sent, and
+- **Schema rules for every input of a server**: generated servers check `minimum`, `maximum`, `multipleOf`,
+  `minLength`, `maxLength`, `pattern`, `minItems`, `maxItems`, `uniqueItems`, the values of an enum and the rules of
+  every item for parameters, the whole query string, the parts of a multipart body and the fields of a form before the
+  service is asked, through the optional `rule: ValidationScope.(T) -> Unit` of `Input.value`, `items`, `fields`,
+  `queryString`, `part`, `partItems` and `field`, and answer a violation with a problem with status 400 under the path
+  of the input, such as `query.limit`.
+- **Methods as written** (RFC 9110 §9.1) in every runtime: `apiCall` sends a method exactly as written and refuses
+  one that is no token, `Operation` and `Request.of` serve any token, so a custom method `purge` of
+  `additionalOperations` is no `PURGE`, and the mock API and the contract check match methods exactly.
+- **The linear pattern engine** of `kapi-runtime-core`, `com.davils.kapi.runtime.core.pattern`: `Pattern.compileOrThrow`
+  compiles a pattern once and `Constraints.matches` checks a text against it, so JSON Schema, generated models and the
+  samples of mocks never run a `Regex` of the platform on a pattern of a document.
+- **Shared HTTP helpers** of the core runtime: `FieldSyntax` for tokens and field values, `HttpStatus` with the status
+  codes and their classes, `Headers.joined` and `Codecs.decode` for a parsed `MediaType`.
+- **Typed streams, parts and channels** in the server runtime: `ReplyBuilder.events(serializer, items)` for typed
+  server-sent events, `Input.part`, `Input.partItems` and `Input.field` that decode through the codecs of the server,
+  an `admission` hook on `ChannelEndpoint` that refuses an invalid handshake before the upgrade,
+  `ChannelSession.request` with a `Correlation` and `ChannelLimits.maxHeldMessages`, and `Request.of { }` to build a
+  request without Ktor.
+- **Query strings, correlation and byte ranges** in the client runtime: `CallBuilder.queryString` for a `querystring`
+  parameter of another media type than a form, `ChannelSettings.toBuilder`, `Correlation.json` over the JSON of
+  messages, DPoP proofs on WebSocket handshakes, `CallFailure.Unsent` for an interceptor that never sends, and
   `RangeOutcome.Ranges.parts` with the parts of a `multipart/byteranges` answer.
-- **The test support** calls the operations of generated server routes without Ktor on the JVM: `Routes.call` with a
-  request of `Request.of` or one it builds, and `Reply.content`, `Reply.text`, `Reply.mediaType` and `Reply.decoded`
-  to read the reply.
-- **Every builder** of the DSLs closes after its first `build()` or `validate()`: a setter or a function that changes
-  it afterwards throws an `IllegalStateException` instead of losing the change silently.
-- **Generated models** are regular classes instead of data classes: they write `equals`, `hashCode` and `toString`
-  by hand, mask every property marked `x-kapi-sensitive` in `toString` and offer `copy` with named parameters, but no
-  `componentN`.
-- **Generated patterns** run in the linear engine of `kapi-runtime-core`: a model compiles each pattern once into a
-  private `Pattern` of its file and checks it with `Constraints.matches`, never a `Regex` of the platform, and a
-  pattern the engine refuses is refused at generation with a located `codegen.schema.unsupported`; the samples of
-  mocks match patterns with the engine as well.
-- **Generated KDoc** describes models, their properties, enums and unions with the `title` and `description` of their
-  schemas and the functions of operations in clients, senders and services with their `summary` and `description`,
-  escaped for KDoc: no `*/` or `/*`, no tags, invisible and bidirectional characters as escapes.
-- **OpenAPI 3.2 in the generator**: a `querystring` parameter of JSON, `application/json` or a `+json` type, is sent
-  with `CallBuilder.queryString` and read with `Input.queryString` of its media type, beside the form it already
-  supported; the operations of `additionalOperations` are generated for clients, senders and servers with their
-  method exactly as the document names it, lower case included, since the reader already refuses a key that is no
-  method token or names a method with a field of its own.
-- **Generated servers** stream typed server-sent events with `ReplyBuilder.events(serializer, items)` and read the
-  parts of a multipart body and the fields of a form with `Input.part`, `Input.partItems` and `Input.field`, so every
-  value is decoded by the codecs of the server, validated and reported under `body.<name>`; repeated parts of numbers
-  or flags are served instead of refused.
-- **Generated WebSocket channels** check the parameters of a handshake in the `admission` of their
-  `ChannelEndpoint` and refuse an invalid one with a problem with status 400 before the upgrade; a request the server
-  sends with a reply and correlation ids becomes `request<Operation>` on the server session over
-  `ChannelSession.request` and the `correlation` of the endpoint, and clients pair their requests with
-  `Correlation.json`, reading each id from the JSON of a message by its discriminator, so ids inside union payloads
-  are found on every platform. The correlation object of a channel moved to the `channel` package.
-- **Diagnostics of the generator** show every text of a document, such as the name of a parameter, a property, a
-  field, a header, a schema or a reference, quoted and escaped through `SafeText` of Kore, exactly once, where the
-  message is written.
-- **The generator** locates every finding of a partial AsyncAPI document, such as a handshake whose schema the reader
-  could not resolve, which is now reported at its ws binding.
-- **Generated servers** read a multipart body that the document does not require as optional, instead of refusing a
-  request without one, and check the names of response headers with `FieldSyntax` of the core runtime.
-- **The specification core** keeps maps keyed by document input in Kore's balanced trees instead of hash maps, which
-  Wasm cannot defend against colliding keys: `Value.Mapping`, `Value.Sequence` and `Extensions` hold immutable copies
-  that a cast cannot change, `KeyedMap`, `frozen()`, `frozenSet()` and the keyed counterparts of `toMap`, `associate`,
-  `associateBy`, `groupBy`, `distinctBy` and `filter` of `com.davils.kapi.spec.core.collection` are `@DavilsInternal`
-  API for the other modules, and `ExtensionName`, `DocumentUri` and `Target` are `Comparable`.
-- **The test support of documents** adds `HostileDocuments.collidingKeys` and
-  `HostileDocuments.collidingKeysDocument`, keys that share one hash code and a document whose components, properties,
-  extensions and enum use them.
-- **The OpenAPI model and reader** keep every map keyed by document input, such as paths, operations, responses,
-  components, properties, extensions and the targets of references, in balanced trees through `KeyedMap`, group,
-  deduplicate and filter what a document names without hashing it, and hold every public map, list and set as an
-  immutable copy; `PathTemplate` and `ResponseStatus` are `Comparable`.
-- **The AsyncAPI model and reader** keep every map keyed by document input, such as servers, channels, operations,
-  messages, components, parameters, bindings, extensions and the targets of references, in balanced trees through
-  `KeyedMap`, and hold every public map and list as an immutable copy.
-- **JSON Schema** converts the mappings of a YAML instance or schema into JSON objects keyed through `KeyedMap`, so
-  keys whose hash codes collide cannot slow a validation down on Wasm.
-- **The pointer tree** that keeps the structure check of OpenAPI from reporting twice at one place moved to
-  `kapi-spec-core` as `@DavilsInternal` `PointerTree`, so the structure check of AsyncAPI shares it.
+- **Server tests without Ktor**: `Routes.call` of `kapi-runtime-testing` calls the operations of generated server
+  routes with a request of `Request.of`, and `Reply.content`, `Reply.text`, `Reply.mediaType` and `Reply.decoded` read
+  the reply.
+- **Closing builders**: every builder of the DSLs closes after its first `build()` or `validate()`, so a change
+  afterwards throws an `IllegalStateException` instead of being lost silently.
+- **Generated models** are regular classes with hand-written `equals`, `hashCode` and `toString`, which masks every
+  property marked `x-kapi-sensitive`, and a `copy` with named parameters; a pattern the engine refuses is refused at
+  generation with a located `codegen.schema.unsupported`.
+- **Generated KDoc** from the `title`, `summary` and `description` of a document for models, properties, enums,
+  unions and the functions of clients, senders and services, escaped for KDoc.
+- **OpenAPI 3.2 in the generator**: a `querystring` parameter of a form or of JSON, and the operations of
+  `additionalOperations` with their method exactly as the document names it.
+- **Generated servers** stream typed server-sent events, read parts and fields through the codecs of the server and
+  validate them under `body.<name>`.
+- **Generated WebSocket channels** check the parameters of a handshake before the upgrade, generate
+  `request<Operation>` for a request the server sends with a reply and correlation ids, and pair the requests of a
+  client with `Correlation.json`, which reads each id by the discriminator of its message.
+- **Safe diagnostics**: the generator shows every text of a document quoted and escaped through `SafeText` of Kore,
+  exactly once, and locates every finding, also of a partial document.
+- **Balanced maps for document input**: the specification modules and JSON Schema keep every map keyed by document
+  input in Kore's balanced trees, which Wasm needs against keys whose hash codes collide, and hold every public map,
+  list and set as an immutable copy; `KeyedMap`, `frozen()`, `frozenSet()` and keyed counterparts of `toMap`,
+  `associate`, `associateBy`, `groupBy`, `distinctBy` and `filter` are `@DavilsInternal` API for the other modules,
+  and `HostileDocuments.collidingKeys` and `collidingKeysDocument` of `kapi-spec-testing` test them.
+- **Shared resolution of references**: `UriResolution`, `PointerTree` and the views of the comparison live in
+  `kapi-spec-core` as `@DavilsInternal` API that the readers of OpenAPI and AsyncAPI and the generator share.
