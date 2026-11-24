@@ -25,6 +25,7 @@ import com.davils.kapi.spec.asyncapi.read.Entry
 import com.davils.kapi.spec.asyncapi.read.shape.Keys
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.core.model.Target
+import com.davils.kapi.spec.core.model.UriResolution
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.uri.UriReference
 import com.davils.kore.core.validation.violation.ViolationCode

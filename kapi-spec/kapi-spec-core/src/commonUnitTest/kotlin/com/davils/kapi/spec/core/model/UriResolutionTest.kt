@@ -16,11 +16,10 @@
 
 @file:OptIn(DavilsInternal::class)
 
-package com.davils.kapi.spec.openapi.read.reference
+package com.davils.kapi.spec.core.model
 
 import com.davils.kaml.document.pointer.JsonPointer
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
-import com.davils.kapi.spec.core.model.Target
 import com.davils.kore.core.annotation.DavilsInternal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull

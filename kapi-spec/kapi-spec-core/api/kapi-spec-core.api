@@ -372,6 +372,15 @@ public final class com/davils/kapi/spec/core/model/Target : java/lang/Comparable
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/davils/kapi/spec/core/model/UriResolution {
+	public static final field INSTANCE Lcom/davils/kapi/spec/core/model/UriResolution;
+	public final fun documentOf-ZaraxNw (Ljava/lang/String;Lcom/davils/kore/core/uri/UriReference;)Ljava/lang/String;
+	public final fun parse (Ljava/lang/String;)Lcom/davils/kore/core/uri/UriReference;
+	public final fun pointerOf (Lcom/davils/kore/core/uri/UriReference;)Lcom/davils/kaml/document/pointer/JsonPointer;
+	public final fun selfOf-ZaraxNw (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public final fun target-ABZ1FNU (Ljava/lang/String;Lcom/davils/kore/core/uri/UriReference;)Lcom/davils/kapi/spec/core/model/Target;
+}
+
 public final class com/davils/kapi/spec/core/policy/PolicyCodes {
 	public static final field INSTANCE Lcom/davils/kapi/spec/core/policy/PolicyCodes;
 	public final fun getABOVE_HARD_LIMIT-J_S2PC0 ()Ljava/lang/String;

@@ -21,6 +21,7 @@ package com.davils.kapi.spec.openapi.read.reference
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.model.Reference
 import com.davils.kapi.spec.core.model.Target
+import com.davils.kapi.spec.core.model.UriResolution
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.VersionFamily
 import com.davils.kapi.spec.openapi.read.Cursor

@@ -984,6 +984,14 @@ open class com.davils.kapi.spec.core.diagnostic/Findings { // com.davils.kapi.sp
     final fun sorted(kotlin.collections/Map<com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/Int>): kotlin.collections/List<com.davils.kapi.spec.core.diagnostic/Diagnostic> // com.davils.kapi.spec.core.diagnostic/Findings.sorted|sorted(kotlin.collections.Map<com.davils.kapi.spec.core.diagnostic.DocumentUri,kotlin.Int>){}[0]
 }
 
+final object com.davils.kapi.spec.core.model/UriResolution { // com.davils.kapi.spec.core.model/UriResolution|null[0]
+    final fun documentOf(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kore.core.uri/UriReference): com.davils.kapi.spec.core.diagnostic/DocumentUri? // com.davils.kapi.spec.core.model/UriResolution.documentOf|documentOf(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kore.core.uri.UriReference){}[0]
+    final fun parse(kotlin/String): com.davils.kore.core.uri/UriReference? // com.davils.kapi.spec.core.model/UriResolution.parse|parse(kotlin.String){}[0]
+    final fun pointerOf(com.davils.kore.core.uri/UriReference): com.davils.kaml.document.pointer/JsonPointer? // com.davils.kapi.spec.core.model/UriResolution.pointerOf|pointerOf(com.davils.kore.core.uri.UriReference){}[0]
+    final fun selfOf(com.davils.kapi.spec.core.diagnostic/DocumentUri, kotlin/String): com.davils.kapi.spec.core.diagnostic/DocumentUri? // com.davils.kapi.spec.core.model/UriResolution.selfOf|selfOf(com.davils.kapi.spec.core.diagnostic.DocumentUri;kotlin.String){}[0]
+    final fun target(com.davils.kapi.spec.core.diagnostic/DocumentUri, com.davils.kore.core.uri/UriReference): com.davils.kapi.spec.core.model/Target? // com.davils.kapi.spec.core.model/UriResolution.target|target(com.davils.kapi.spec.core.diagnostic.DocumentUri;com.davils.kore.core.uri.UriReference){}[0]
+}
+
 final object com.davils.kapi.spec.core.policy/PolicyCodes { // com.davils.kapi.spec.core.policy/PolicyCodes|null[0]
     final val ABOVE_HARD_LIMIT // com.davils.kapi.spec.core.policy/PolicyCodes.ABOVE_HARD_LIMIT|{}ABOVE_HARD_LIMIT[0]
         final fun <get-ABOVE_HARD_LIMIT>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.core.policy/PolicyCodes.ABOVE_HARD_LIMIT.<get-ABOVE_HARD_LIMIT>|<get-ABOVE_HARD_LIMIT>(){}[0]

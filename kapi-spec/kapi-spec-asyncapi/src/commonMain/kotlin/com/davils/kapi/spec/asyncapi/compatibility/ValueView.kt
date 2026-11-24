@@ -21,12 +21,12 @@ package com.davils.kapi.spec.asyncapi.compatibility
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
-import com.davils.kapi.spec.asyncapi.read.reference.UriResolution
 import com.davils.kapi.spec.core.collection.associateKeyed
 import com.davils.kapi.spec.core.collection.frozenSet
 import com.davils.kapi.spec.core.compatibility.FixedSchemaView
 import com.davils.kapi.spec.core.compatibility.SchemaView
 import com.davils.kapi.spec.core.diagnostic.Location
+import com.davils.kapi.spec.core.model.UriResolution
 import com.davils.kapi.spec.core.value.NumberValue
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kore.core.annotation.DavilsInternal
