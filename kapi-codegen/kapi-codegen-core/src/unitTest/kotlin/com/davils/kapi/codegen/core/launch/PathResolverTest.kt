@@ -22,6 +22,7 @@ import com.davils.kapi.spec.core.source.Resolution
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -32,13 +33,17 @@ private const val LIMIT: Int = 16
 
 private const val SMALL: String = "a: 1"
 
+private const val OUTSIDE: String = "outside.yaml"
+
+private val isPosix: Boolean = "posix" in FileSystems.getDefault().supportedFileAttributeViews()
+
 private fun workspace(): Path {
     val base = createTempDirectory("kapi-resolver")
     val root = base.resolve("api").createDirectories()
     root.resolve("small.yaml").writeText(SMALL)
     root.resolve("large.yaml").writeText("a".repeat(LIMIT + 1))
     root.resolve("folder").createDirectories()
-    base.resolve("outside.yaml").writeText("b: 2")
+    base.resolve(OUTSIDE).writeText("b: 2")
     return root
 }
 
@@ -58,7 +63,7 @@ class PathResolverTest : FunSpec({
         }
 
         test("refuses a file outside its root, a folder and a file above its limit") {
-            val outside = resolved(root, PathResolver.uriOf(root.resolveSibling("outside.yaml")))
+            val outside = resolved(root, PathResolver.uriOf(root.resolveSibling(OUTSIDE)))
             val folder = resolved(root, PathResolver.uriOf(root.resolve("folder")))
             val large = resolved(root, PathResolver.uriOf(root.resolve("large.yaml")))
 
@@ -74,12 +79,22 @@ class PathResolverTest : FunSpec({
         test("refuses what is no file and what is no URI") {
             val remote = resolved(root, DocumentUri("https://example.com/api.yaml"))
             val broken = resolved(root, DocumentUri("file://example.com/api.yaml"))
+            val share = resolved(root, DocumentUri("file:////example.com/share/api.yaml"))
 
             remote.shouldBeInstanceOf<Resolution.Refused>().refusal shouldBe Refusal.Unresolvable
             broken.shouldBeInstanceOf<Resolution.Refused>().refusal shouldBe Refusal.Unresolvable
+            share.shouldBeInstanceOf<Resolution.Refused>()
         }
 
-        test("fails on a file it cannot read") {
+        test("refuses a link inside its root that leads outside of it").config(enabled = isPosix) {
+            val link = root.resolve("link.yaml")
+            Files.createSymbolicLink(link, root.resolveSibling(OUTSIDE))
+
+            resolved(root, PathResolver.uriOf(link)).shouldBeInstanceOf<Resolution.Refused>().refusal shouldBe
+                Refusal.Confinement
+        }
+
+        test("fails on a file it cannot read").config(enabled = isPosix) {
             val locked = root.resolve("locked.yaml")
             locked.writeText("c: 3")
             Files.setPosixFilePermissions(locked, emptySet())

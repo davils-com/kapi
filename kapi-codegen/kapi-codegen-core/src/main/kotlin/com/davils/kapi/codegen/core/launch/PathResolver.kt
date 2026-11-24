@@ -33,9 +33,15 @@ private const val FILE: String = "file"
 internal class PathResolver(root: Path, private val maximumLength: Int) : Resolver {
     private val root: Path = root.toRealPath()
 
+    private val written: Path = root.toAbsolutePath().normalize()
+
     override suspend fun resolve(uri: DocumentUri): Resolution {
         val local = uri.takeIf { found -> found.scheme == FILE }
-        val path = local?.let(::pathOf) ?: return Resolution.Refused(Refusal.Unresolvable)
+        val path = local?.let(::pathOf)
+        val normal = path?.run { toAbsolutePath().normalize() }
+        val isBelow = normal?.startsWith(written) == true
+        val refusal = Refusal.Unresolvable.takeIf { path == null } ?: Refusal.Confinement
+        if (path == null || !isBelow) return Resolution.Refused(refusal)
         return read(path)
     }
 
@@ -57,7 +63,8 @@ internal class PathResolver(root: Path, private val maximumLength: Int) : Resolv
     }
 
     private fun pathOf(uri: DocumentUri): Path? = try {
-        Path.of(URI(uri.value))
+        val parsed = URI(uri.value)
+        parsed.takeIf { found -> found.rawAuthority == null }?.let(Path::of)
     } catch (_: URISyntaxException) {
         null
     } catch (_: IllegalArgumentException) {

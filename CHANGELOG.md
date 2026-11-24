@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **The file resolver of the generator** refuses a `file` URI that names a host, which Windows reads as a network
+  share, and checks that a path lies below its root before it touches the file system.
 - **Streamed replies** of the server run their producer as the authorized caller and contained: a producer that fails
   is reported as a failed operation and breaks the response instead of ending it as if it were complete.
 - **Authorization responses** of OAuth 2 are refused when they name `code`, `state` or `iss` more than once, and need
