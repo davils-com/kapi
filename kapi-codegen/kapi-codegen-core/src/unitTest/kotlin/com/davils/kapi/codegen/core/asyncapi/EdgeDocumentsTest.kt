@@ -49,6 +49,8 @@ private fun identified(kind: String): String =
 
 private const val CORRELATION: String = "{location: '\$message.payload#/id'}"
 
+private const val SEND_ON_ROOM: String = "{send: {action: send, channel: {$REF: '#/channels/room'}, "
+
 private const val PREFIX: String = "codegen.asyncapi."
 
 private const val ROOM: String = "@/channels/room"
@@ -124,7 +126,7 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
     "a reply on a channel with no messages of its own" to (
         doc(
             "{room: {address: /room, messages: $TEXT}, back: {address: /back}}",
-            operations = "{send: {action: send, channel: {$REF: '#/channels/room'}, " +
+            operations = SEND_ON_ROOM +
                 "reply: {channel: {$REF: '#/channels/back'}}}}",
         ) to listOf(PREFIX + "channel.skipped@/channels/back", PREFIX + "reply.channel@/operations/send/reply")
         ),
@@ -145,7 +147,7 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
     "a request and a reply without correlation ids" to (
         doc(
             "{room: {address: /room, messages: $TEXT}, back: {address: /back, messages: {b: {payload: $STRING}}}}",
-            operations = "{send: {action: send, channel: {$REF: '#/channels/room'}, " +
+            operations = SEND_ON_ROOM +
                 "reply: {channel: {$REF: '#/channels/back'}}}, listen: {action: receive, " +
                 "channel: {$REF: '#/channels/back'}}}",
         ) to listOf(PREFIX + "reply.channel@/operations/send/reply")
@@ -179,6 +181,38 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
                 "messages: [{$REF: '#/channels/room/messages/b'}]}}, tell: {action: send, " +
                 "channel: {$REF: '#/channels/room'}, messages: [{$REF: '#/channels/room/messages/c'}]}}",
         ) to emptyList()
+        ),
+    "a named security scheme of a type a handshake cannot carry" to (
+        doc(PLAIN, servers = secured("u"), components = schemes("{u: {type: userPassword}}")) to
+            listOf(PREFIX + "security.unsupported@/components/securitySchemes/u")
+        ),
+    "a bearer scheme of HTTP" to (
+        doc(PLAIN, servers = secured("b"), components = schemes("{b: {type: http, scheme: bearer}}")) to emptyList()
+        ),
+    "an operation that sends a message of the components instead of its channel" to (
+        doc(
+            PLAIN,
+            operations = SEND_ON_ROOM +
+                "messages: [{$REF: '#/components/messages/m'}]}}",
+            components = "{messages: {m: {payload: $STRING}}}",
+        ) to listOf(PREFIX + "message.foreign@/operations/send/messages/0")
+        ),
+    "an address with a parameter the channel does not declare" to (
+        doc("{room: {address: '/rooms/{id}', messages: $TEXT}}") to emptyList()
+        ),
+    "an address without a leading slash and names Kotlin reserves" to (
+        doc(
+            "{class: {address: '{fun}/x', messages: {object: {payload: $STRING}}, parameters: {fun: {}}}}",
+            operations = "{send: {action: send, channel: {$REF: '#/channels/class'}}}",
+        ) to emptyList()
+        ),
+    "a request and a reply of one message each with correlation ids" to (
+        doc(
+            "{room: {address: /room, messages: {a: {payload: ${identified("a")}, correlationId: $CORRELATION}}}, " +
+                "back: {address: /back, messages: {b: {payload: ${identified("b")}, correlationId: $CORRELATION}}}}",
+            operations = "{ask: {action: send, channel: {$REF: '#/channels/room'}, " +
+                "reply: {channel: {$REF: '#/channels/room'}}}}",
+        ) to listOf(PREFIX + "channel.skipped@/channels/back")
         ),
     "a message of XML" to (
         doc(room("messages: {a: {contentType: application/xml, payload: {type: string}}}")) to

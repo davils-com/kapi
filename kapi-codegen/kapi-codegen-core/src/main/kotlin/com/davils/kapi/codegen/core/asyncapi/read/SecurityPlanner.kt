@@ -62,14 +62,15 @@ internal class SecurityPlanner(private val document: Document, private val repor
         security.mapNotNull { referable -> use(referable)?.let(::listOf) }
 
     private fun use(referable: Referable<SecurityScheme>): SchemeUsePlan? {
-        val name = (referable as? Referable.Referenced)?.run { reference.target.pointer.last }
+        val reference = (referable as? Referable.Referenced)?.reference
+        val name = reference?.run { target.pointer.last }
         val resolved = document.resolve(referable)
         val placed = resolved?.let(::placedOf)
         if (name == null || placed == null) {
             val shownName = name?.let(::shown) ?: "written inline"
             val text = "The security scheme $shownName cannot authorize a WebSocket handshake: a scheme must be a " +
                 "named component of the type httpApiKey, http with bearer or basic, oauth2, openIdConnect or X509"
-            report.error(GenerationCodes.SECURITY_UNSUPPORTED, text, resolved?.location)
+            report.error(GenerationCodes.SECURITY_UNSUPPORTED, text, resolved?.location ?: reference?.location)
             return null
         }
         val (scheme, place) = placed

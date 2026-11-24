@@ -102,6 +102,20 @@ private val partials: Map<String, Pair<String, List<ViolationCode>>> = mapOf(
         ) to
             listOf(GenerationCodes.REPLY_CHANNEL)
         ),
+    "an operation without a channel" to (
+        document(room(PLAIN), operations = "{send: {action: send}}") to
+            listOf(GenerationCodes.CHANNEL_SKIPPED, GenerationCodes.OPERATION_CHANNEL)
+        ),
+    "a security scheme that is missing" to (
+        listOf(
+            "asyncapi: 3.0.0",
+            "info: {title: T, version: '1'}",
+            "servers: {local: {host: localhost, protocol: ws, security: [{$REF: '#/components/securitySchemes/n'}]}}",
+            "channels: ${room(PLAIN)}",
+            "operations: {send: {action: send, channel: $ROOM}}",
+        ).joinToString(separator = "\n") to
+            listOf(GenerationCodes.SECURITY_UNSUPPORTED, GenerationCodes.CONTENT_TYPE_ASSUMED)
+        ),
     "a handshake whose query is missing" to (
         document(room("{address: /room, messages: {$TEXT}, bindings: {ws: {query: {$REF: '#/none'}}}}")) to
             listOf(GenerationCodes.HANDSHAKE_UNSUPPORTED)
