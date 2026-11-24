@@ -33,6 +33,8 @@ import com.davils.kore.core.text.SafeText
  * @property deviceAuthorizationEndpoint the device authorization endpoint of RFC 8628, or `null`.
  * @property revocationEndpoint the revocation endpoint of RFC 7009, or `null`.
  * @property codeChallengeMethods the PKCE methods the server supports; empty when it names none.
+ * @property isIssuerReturned whether the server returns `iss` with every authorization response by RFC 9207
+ * (`authorization_response_iss_parameter_supported`); the client then refuses a response without it.
  * @since 1.0.0
  */
 public class ServerMetadata internal constructor(
@@ -42,6 +44,7 @@ public class ServerMetadata internal constructor(
     public val deviceAuthorizationEndpoint: String?,
     public val revocationEndpoint: String?,
     public val codeChallengeMethods: List<String>,
+    public val isIssuerReturned: Boolean = false,
 ) {
     override fun toString(): String = "ServerMetadata(${SafeText.text(issuer)})"
 }

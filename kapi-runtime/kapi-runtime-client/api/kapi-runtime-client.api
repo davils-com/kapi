@@ -224,6 +224,14 @@ public final class com/davils/kapi/runtime/client/call/CallFailure$BaseUrlMissin
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/davils/kapi/runtime/client/call/CallFailure$ChannelFramesUnbounded : com/davils/kapi/runtime/client/call/CallFailure {
+	public fun <init> (J)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaxFrameSize ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/davils/kapi/runtime/client/call/CallFailure$ChannelsNotInstalled : com/davils/kapi/runtime/client/call/CallFailure {
 	public static final field INSTANCE Lcom/davils/kapi/runtime/client/call/CallFailure$ChannelsNotInstalled;
 	public fun toString ()Ljava/lang/String;
@@ -975,6 +983,7 @@ public final class com/davils/kapi/runtime/client/oauth/ServerMetadata {
 	public final fun getIssuer ()Ljava/lang/String;
 	public final fun getRevocationEndpoint ()Ljava/lang/String;
 	public final fun getTokenEndpoint ()Ljava/lang/String;
+	public final fun isIssuerReturned ()Z
 	public fun toString ()Ljava/lang/String;
 }
 

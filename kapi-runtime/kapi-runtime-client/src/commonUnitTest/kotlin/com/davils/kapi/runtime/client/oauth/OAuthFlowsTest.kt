@@ -76,6 +76,9 @@ private const val DOCUMENT: String = """{"issuer":"$ISSUER","token_endpoint":"$T
     """"authorization_endpoint":"$AUTHORIZE","device_authorization_endpoint":"$DEVICE",""" +
     """"revocation_endpoint":"$REVOKE","code_challenge_methods_supported":["S256"]}"""
 
+private const val ISSUER_DOCUMENT: String = """{"issuer":"$ISSUER","token_endpoint":"$TOKEN_URL",""" +
+    """"authorization_endpoint":"$AUTHORIZE","authorization_response_iss_parameter_supported":true}"""
+
 private const val DEVICE_ANSWER: String = """{"device_code":"d1","user_code":"ABCD-EFGH",""" +
     """"verification_uri":"https://login.example.com/activate","expires_in":600,"interval":0}"""
 
@@ -225,6 +228,29 @@ class OAuthFlowsTest : FunSpec({
             AuthorizationResponse.fromRedirect("$REDIRECT?state=s") shouldBe null
             AuthorizationResponse.fromRedirect("$REDIRECT?code=c") shouldBe null
             AuthorizationResponse.fromRedirect("$REDIRECT?code=%ZZ&state=s") shouldBe null
+            AuthorizationResponse.fromRedirect("$REDIRECT?code=c&code=d&state=s") shouldBe null
+            AuthorizationResponse.fromRedirect("$REDIRECT?code=c&state=s&state=t") shouldBe null
+            AuthorizationResponse.fromRedirect("$REDIRECT?code=c&state=s&iss=a&iss=b") shouldBe null
+        }
+
+        test("needs the issuer in the response when the metadata of the server announce it") {
+            val answers = listOf<Pair<String?, String?>>(null to null, ISSUER to TOKEN)
+
+            answers.forEach { (issuer, expected) ->
+                val tokens = TokenServer(configure = {
+                    tokenUrl = ""
+                    this.issuer = ISSUER
+                    authentication = basic
+                    grant = Grant.AuthorizationCode(REDIRECT) { request ->
+                        AuthorizationResponse(code = Secret(CODE), state = request.state, issuer = issuer)
+                    }
+                }) { request ->
+                    val isDocument = request.url.encodedPath.contains("/.well-known/")
+                    json(ISSUER_DOCUMENT).takeIf { isDocument } ?: granted(TOKEN)
+                }
+
+                tokens.withTokens { source -> source.token()?.reveal() } shouldBe expected
+            }
         }
     }
 

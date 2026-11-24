@@ -52,6 +52,11 @@ internal object OAuthJson {
         return value?.run { longOrNull ?: content.toLongOrNull() }
     }
 
+    fun isTrue(json: JsonObject, name: String): Boolean {
+        val value = json[name] as? JsonPrimitive
+        return value?.takeUnless { found -> found.isString }?.content == "true"
+    }
+
     fun texts(json: JsonObject, name: String): List<String> {
         val items = (json[name] as? JsonArray).orEmpty()
         return items.mapNotNull { item -> (item as? JsonPrimitive)?.takeIf { value -> value.isString }?.content }

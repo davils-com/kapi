@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Streamed replies** of the server run their producer as the authorized caller and contained: a producer that fails
   is reported as a failed operation and breaks the response instead of ending it as if it were complete.
+- **Authorization responses** of OAuth 2 are refused when they name `code`, `state` or `iss` more than once, and need
+  `iss` when the metadata of the server announce `authorization_response_iss_parameter_supported` (RFC 9207), which
+  `ServerMetadata.isIssuerReturned` shows.
 - **Cookie credentials** that hold a character a cookie value cannot carry, such as `;`, are refused with
   `CallFailure.CredentialMalformed` instead of adding cookies of their own to the request.
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text

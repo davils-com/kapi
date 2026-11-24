@@ -79,6 +79,7 @@ internal class Discoverer(private val transport: OAuthHttp, private val settings
             deviceAuthorizationEndpoint = response.deviceAuthorizationEndpoint,
             revocationEndpoint = response.revocationEndpoint,
             codeChallengeMethods = response.codeChallengeMethods,
+            isIssuerReturned = response.isIssuerReturned,
         )
     }
 

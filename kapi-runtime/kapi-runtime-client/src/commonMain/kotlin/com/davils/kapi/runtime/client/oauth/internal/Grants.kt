@@ -117,7 +117,8 @@ internal class Grants(
         val target = authorizationUrlOf(endpoint = authorization, grant = grant, pkce = pkce, state = state)
         val request = AuthorizationRequest(url = target, state = state, redirectUri = grant.redirectUri)
         val response = attempted { grant.redirect.authorize(request) }.getOrNull()
-        return response?.takeIf { found -> isAuthentic(found, state) }?.code
+        val isIssuerReturned = discoverer.metadata()?.isIssuerReturned == true
+        return response?.takeIf { found -> isAuthentic(found, state, isIssuerReturned) }?.code
     }
 
     private fun authorizationUrlOf(
@@ -139,10 +140,11 @@ internal class Grants(
         return builder.buildString()
     }
 
-    private fun isAuthentic(response: AuthorizationResponse, state: String): Boolean {
+    private fun isAuthentic(response: AuthorizationResponse, state: String, isIssuerReturned: Boolean): Boolean {
         val isState = Secret(response.state) == Secret(state)
         val issuer = response.issuer
-        return isState && (issuer == null || issuer == settings.issuer)
+        val isIssuerMissing = issuer == null && !isIssuerReturned
+        return isState && (isIssuerMissing || issuer == settings.issuer)
     }
 
     private suspend fun deviceAuthorized(url: String, grant: Grant.DeviceCode): Answer {

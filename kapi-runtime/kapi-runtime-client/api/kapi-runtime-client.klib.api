@@ -197,6 +197,17 @@ sealed interface com.davils.kapi.runtime.client.call/CallFailure { // com.davils
         final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.Aborted.toString|toString(){}[0]
     }
 
+    final class ChannelFramesUnbounded : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded|null[0]
+        constructor <init>(kotlin/Long) // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.<init>|<init>(kotlin.Long){}[0]
+
+        final val maxFrameSize // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.maxFrameSize|{}maxFrameSize[0]
+            final fun <get-maxFrameSize>(): kotlin/Long // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.maxFrameSize.<get-maxFrameSize>|<get-maxFrameSize>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.davils.kapi.runtime.client.call/CallFailure.ChannelFramesUnbounded.toString|toString(){}[0]
+    }
+
     final class CredentialMalformed : com.davils.kapi.runtime.client.call/CallFailure { // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed|null[0]
         constructor <init>(kotlin/String) // com.davils.kapi.runtime.client.call/CallFailure.CredentialMalformed.<init>|<init>(kotlin.String){}[0]
 
@@ -1233,6 +1244,8 @@ final class com.davils.kapi.runtime.client.oauth/ServerMetadata { // com.davils.
         final fun <get-codeChallengeMethods>(): kotlin.collections/List<kotlin/String> // com.davils.kapi.runtime.client.oauth/ServerMetadata.codeChallengeMethods.<get-codeChallengeMethods>|<get-codeChallengeMethods>(){}[0]
     final val deviceAuthorizationEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.deviceAuthorizationEndpoint|{}deviceAuthorizationEndpoint[0]
         final fun <get-deviceAuthorizationEndpoint>(): kotlin/String? // com.davils.kapi.runtime.client.oauth/ServerMetadata.deviceAuthorizationEndpoint.<get-deviceAuthorizationEndpoint>|<get-deviceAuthorizationEndpoint>(){}[0]
+    final val isIssuerReturned // com.davils.kapi.runtime.client.oauth/ServerMetadata.isIssuerReturned|{}isIssuerReturned[0]
+        final fun <get-isIssuerReturned>(): kotlin/Boolean // com.davils.kapi.runtime.client.oauth/ServerMetadata.isIssuerReturned.<get-isIssuerReturned>|<get-isIssuerReturned>(){}[0]
     final val issuer // com.davils.kapi.runtime.client.oauth/ServerMetadata.issuer|{}issuer[0]
         final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.client.oauth/ServerMetadata.issuer.<get-issuer>|<get-issuer>(){}[0]
     final val revocationEndpoint // com.davils.kapi.runtime.client.oauth/ServerMetadata.revocationEndpoint|{}revocationEndpoint[0]

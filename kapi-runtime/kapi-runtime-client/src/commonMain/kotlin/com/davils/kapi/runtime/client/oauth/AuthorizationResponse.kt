@@ -32,6 +32,8 @@ private const val ISSUER: String = "iss"
 
 private const val ERROR: String = "error"
 
+private val unique: List<String> = listOf(CODE, STATE, ISSUER)
+
 /**
  * What the authorization server handed back through the redirect URI: the authorization code, the state and, by
  * RFC 9207, the issuer.
@@ -40,7 +42,8 @@ private const val ERROR: String = "error"
  *
  * @property code the authorization code.
  * @property state the state of the request.
- * @property issuer the `iss` parameter of RFC 9207, or `null`; when present it must name the issuer of the client.
+ * @property issuer the `iss` parameter of RFC 9207, or `null`; when present it must name the issuer of the client, and
+ * it must be present when the metadata of the server announce it ([ServerMetadata.isIssuerReturned]).
  * @since 1.0.0
  */
 public class AuthorizationResponse(
@@ -60,8 +63,8 @@ public class AuthorizationResponse(
          * Reads the query of the URI the authorization server redirected to.
          *
          * @param uri the whole redirect URI, which may come from an attacker.
-         * @return the response, or `null` for an error response, a query that cannot be read or one without a code
-         * or a state.
+         * @return the response, or `null` for an error response, a query that cannot be read, one without a code or a
+         * state, or one that names `code`, `state` or `iss` more than once (RFC 6749 §3.1).
          * @since 1.0.0
          */
         public fun fromRedirect(uri: String): AuthorizationResponse? {
@@ -74,7 +77,9 @@ public class AuthorizationResponse(
             val state = fields.firstOrNull { (name, _) -> name == STATE }?.second
             val issuer = fields.firstOrNull { (name, _) -> name == ISSUER }?.second
             val isError = fields.any { (name, _) -> name == ERROR }
-            if (isError || code.isNullOrEmpty() || state == null) return null
+            val isRepeated = unique.any { parameter -> fields.count { (name, _) -> name == parameter } > 1 }
+            val isIncomplete = code.isNullOrEmpty() || state == null
+            if (isError || isRepeated || isIncomplete) return null
             return AuthorizationResponse(code = Secret(code), state = state, issuer = issuer)
         }
     }

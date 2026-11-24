@@ -23,6 +23,7 @@ internal class MetadataResponse(
     val deviceAuthorizationEndpoint: String?,
     val revocationEndpoint: String?,
     val codeChallengeMethods: List<String>,
+    val isIssuerReturned: Boolean,
 ) {
     companion object {
         fun of(text: String): MetadataResponse? {
@@ -36,6 +37,7 @@ internal class MetadataResponse(
                 deviceAuthorizationEndpoint = OAuthJson.text(json, "device_authorization_endpoint"),
                 revocationEndpoint = OAuthJson.text(json, "revocation_endpoint"),
                 codeChallengeMethods = OAuthJson.texts(json, "code_challenge_methods_supported"),
+                isIssuerReturned = OAuthJson.isTrue(json, "authorization_response_iss_parameter_supported"),
             )
         }
     }
