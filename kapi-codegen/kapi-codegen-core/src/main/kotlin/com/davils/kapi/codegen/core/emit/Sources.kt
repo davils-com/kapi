@@ -22,10 +22,6 @@ private const val INDENT: String = "    "
 
 private const val LINE: Char = '\n'
 
-private const val HEX: Int = 16
-
-private const val WIDTH: Int = 4
-
 private val invisible: Set<CharCategory> = setOf(
     CharCategory.CONTROL,
     CharCategory.FORMAT,
@@ -45,13 +41,7 @@ internal object Sources {
     fun visible(text: String): String {
         val isClean = text.none(::isHidden)
         if (isClean) return text
-        val written = StringBuilder(text.length)
-        text.forEach { char ->
-            val digits = char.code.toString(HEX).uppercase()
-            val escape = "\\u" + digits.padStart(WIDTH, '0')
-            written.append(escape.takeIf { isHidden(char) } ?: char.toString())
-        }
-        return written.toString()
+        return VisibleText(text, ::isHidden).written()
     }
 
     private fun isHidden(char: Char): Boolean = char != LINE && char.category in invisible

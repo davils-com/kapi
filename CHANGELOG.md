@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Authorization responses** of OAuth 2 are refused when they name `code`, `state` or `iss` more than once, and need
   `iss` when the metadata of the server announce `authorization_response_iss_parameter_supported` (RFC 9207), which
   `ServerMetadata.isIssuerReturned` shows.
+- **Hidden characters in raw strings** of generated code are written as `${'\uXXXX'}` templates, since an escape
+  means nothing in a raw string and would have changed the value.
 - **Cookie credentials** that hold a character a cookie value cannot carry, such as `;`, are refused with
   `CallFailure.CredentialMalformed` instead of adding cookies of their own to the request.
 - **Text sources** longer in characters than `maximumDocumentLength` are refused before they are encoded.
