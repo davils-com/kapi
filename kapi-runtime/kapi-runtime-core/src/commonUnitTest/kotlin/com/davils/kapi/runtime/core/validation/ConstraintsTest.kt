@@ -42,6 +42,10 @@ private const val TENTH: Double = 0.1
 
 private const val QUARTER: Double = 0.25
 
+private const val COLLIDING_BITS: Int = 12
+
+private const val COLLIDING: Int = 1 shl COLLIDING_BITS
+
 private fun decimal(text: String): Decimal = Decimal.parse(text)
 
 class ConstraintsTest : FunSpec({
@@ -156,6 +160,25 @@ class ConstraintsTest : FunSpec({
             Constraints.isUnique(listOf("a", "b")) shouldBe true
             Constraints.isUnique(listOf("a", "a")) shouldBe false
             Constraints.isUnique(emptyList<String>()) shouldBe true
+        }
+
+        test("sorts items of one comparable class, so numbers equal in value repeat and colliding text stays fast") {
+            val halves = listOf("Aa", "BB")
+            val colliding = List(COLLIDING) { index ->
+                (0 until COLLIDING_BITS).joinToString("") { bit -> halves[index shr bit and 1] }
+            }
+
+            Constraints.isUnique(listOf(decimal("1.0"), decimal("1.00"))) shouldBe false
+            Constraints.isUnique(listOf(SIX, FOUR, SEVEN)) shouldBe true
+            Constraints.isUnique(listOf(SIX, FOUR, SIX)) shouldBe false
+            Constraints.isUnique(colliding) shouldBe true
+            Constraints.isUnique(colliding + colliding.last()) shouldBe false
+        }
+
+        test("compares other items by equals") {
+            Constraints.isUnique(listOf(1, "1")) shouldBe true
+            Constraints.isUnique(listOf(listOf(1), listOf(1))) shouldBe false
+            Constraints.isUnique(listOf(null, null)) shouldBe false
         }
     }
 

@@ -92,11 +92,24 @@ public object Constraints {
     public fun isMultipleOf(value: Decimal, factor: Decimal): Boolean = value.isMultipleOf(factor)
 
     /**
-     * Returns whether every item of [items] appears once, by `equals`.
+     * Returns whether every item of [items] appears once.
+     *
+     * Items that are all of one comparable class, such as strings, numbers and enums, are sorted and compared by
+     * `compareTo`, so text chosen to collide in `hashCode` cannot slow the check, and numbers such as `1.0` and `1.00`
+     * count as one value like in JSON Schema. Other items, such as models, are compared by `equals` and `hashCode`.
      *
      * @param items the items.
      * @return `true` if no two items are equal.
      * @since 1.0.0
      */
-    public fun isUnique(items: Collection<*>): Boolean = items.toSet().size == items.size
+    public fun isUnique(items: Collection<*>): Boolean {
+        val first = items.firstOrNull()
+        val isOrdered = first != null && items.all { item -> item is Comparable<*> && item::class == first::class }
+        if (!isOrdered) return items.toSet().size == items.size
+        val sorted = items.sortedWith(::compared)
+        return sorted.zipWithNext().none { (left, right) -> compared(left, right) == 0 }
+    }
+
+    private fun compared(left: Any?, right: Any?): Int =
+        compareValues(a = left as? Comparable<*>, b = right as? Comparable<*>)
 }
