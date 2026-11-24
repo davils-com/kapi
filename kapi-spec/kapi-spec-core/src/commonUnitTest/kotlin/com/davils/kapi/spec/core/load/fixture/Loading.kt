@@ -43,11 +43,13 @@ internal class Loading(
     references: ReferencePolicy = ReferencePolicy.Default,
     hasMergeKeys: Boolean = false,
     prepare: (LoadedDocument) -> LoadedDocument? = { document -> document },
+    broken: DocumentUri? = null,
 ) {
     val requested: MutableList<DocumentUri> = mutableListOf()
 
     private val resolver: Resolver = Resolver { uri ->
         requested += uri
+        check(uri != broken) { "the resolver broke" }
         answers[uri] ?: Resolution.Missing
     }
 

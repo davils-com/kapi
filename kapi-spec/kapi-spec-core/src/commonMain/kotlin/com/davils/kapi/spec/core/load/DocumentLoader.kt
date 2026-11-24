@@ -33,6 +33,7 @@ import com.davils.kapi.spec.core.source.Resolution
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.failure.attempted
 import com.davils.kore.core.text.LineMap
 import com.davils.kore.core.validation.violation.ViolationCode
 import com.davils.krypt.primitive.Crypto
@@ -40,6 +41,8 @@ import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 
 private val remoteSchemes: Set<String> = setOf("http", "https")
+
+private const val RESOLVER_FAILED: String = "The resolver failed"
 
 /**
  * Loads the documents of one reading through its resolver: the root, every document a reference names and the
@@ -152,8 +155,14 @@ public class DocumentLoader(
     }
 
     private suspend fun loadedOf(origin: Source): LoadedDocument? = when (origin) {
-        is Source.Text -> sized(origin.uri, origin.text.encodeToByteString(), null)
+        is Source.Text -> encoded(origin)
         is Source.Located -> fetched(origin.uri, null)
+    }
+
+    private suspend fun encoded(origin: Source.Text): LoadedDocument? {
+        val isTooLong = origin.text.length > settings.limits.maximumDocumentLength
+        if (isTooLong) return rejected(origin.uri, codes.size, null)
+        return sized(origin.uri, origin.text.encodeToByteString(), null)
     }
 
     /**
@@ -175,7 +184,8 @@ public class DocumentLoader(
     private suspend fun fetched(uri: DocumentUri, from: Location?): LoadedDocument? {
         val refusal = refusalOf(uri)
         if (refusal != null) return rejected(uri, refusal.first, from)
-        val content = contentOf(uri, settings.resolver.resolve(uri), from)
+        val resolution = attempted { settings.resolver.resolve(uri) }.getOrElse { Resolution.Failed(RESOLVER_FAILED) }
+        val content = contentOf(uri, resolution, from)
         return content?.let { bytes -> sized(uri, bytes, from) }
     }
 

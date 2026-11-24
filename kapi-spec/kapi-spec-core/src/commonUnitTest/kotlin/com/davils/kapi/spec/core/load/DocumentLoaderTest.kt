@@ -42,6 +42,7 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
@@ -61,6 +62,8 @@ private val models: DocumentUri = DocumentUri("memory:/api/models.yaml")
 private val errors: DocumentUri = DocumentUri("memory:/api/errors.yaml")
 
 private val from: Location = Location(petstore, JsonPointer.of("components"))
+
+private const val ACCENTS: Int = 10
 
 private val inline: Source = Source.Text(petstoreText, petstore)
 
@@ -115,6 +118,15 @@ class DocumentLoaderTest : FunSpec({
             larger.loader.root() shouldBe null
             larger.codes shouldBe listOf(TestLoadCodes.size)
             larger.diagnostics.single().message shouldContain "is larger than a document may be"
+        }
+
+        test("is measured in bytes of UTF-8, not in characters") {
+            val accented = "x: " + "é".repeat(ACCENTS)
+            val limited = limits { maximumDocumentLength = accented.length }
+            val loading = Loading(Source.Text(accented, petstore), limits = limited)
+
+            loading.loader.root() shouldBe null
+            loading.codes shouldBe listOf(TestLoadCodes.size)
         }
 
         test("reports what the parser found with its place and a snippet") {
@@ -278,6 +290,15 @@ class DocumentLoaderTest : FunSpec({
             val messages = loading.diagnostics.map(Diagnostic::message)
             messages.toSet().size shouldBe answers.size
             loading.diagnostics.first().message shouldContain "the disk is gone"
+        }
+
+        test("is reported as failed when the resolver throws, without the words of the exception") {
+            val loading = Loading(Source.Located(petstore), broken = petstore)
+
+            loading.loader.root() shouldBe null
+
+            loading.codes shouldBe listOf(TestLoadCodes.failed)
+            loading.diagnostics.single().message shouldNotContain "broke"
         }
 
         test("is refused when it is larger than a document may be") {
