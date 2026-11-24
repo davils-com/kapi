@@ -18,12 +18,17 @@ package com.davils.kapi.runtime.client.internal
 
 import com.davils.kapi.runtime.client.call.Call
 import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.client.call.CredentialPlacement
 import com.davils.kapi.runtime.client.call.SecurityUse
 import com.davils.kapi.runtime.client.dpop.DpopProofs
 import com.davils.kapi.runtime.core.security.Credential
 import com.davils.kapi.runtime.core.security.Credentials
 import com.davils.kapi.runtime.core.security.Secret
 import com.davils.kore.core.outcome.Outcome
+
+private val cookieOctets: CharRange = '!'..'~'
+
+private const val NOT_IN_COOKIES: String = "\",;\\"
 
 internal class Authorization(private val credentials: Credentials, private val bindings: Map<String, DpopProofs>) {
     suspend fun of(call: Call): Outcome<Granted, CallFailure> {
@@ -53,7 +58,16 @@ internal class Authorization(private val credentials: Credentials, private val b
             Credential.Missing -> Outcome.Failure(CallFailure.CredentialMissing)
             Credential.Malformed -> Outcome.Failure(CallFailure.CredentialMalformed(use.scheme))
             Credential.Peer -> outcome
-            is Credential.Present -> Outcome.Success(granted.placed(use, credential.secret, bindings[use.scheme]))
+            is Credential.Present -> placed(granted = granted, use = use, secret = credential.secret)
         }
+    }
+
+    private fun placed(granted: Granted, use: SecurityUse, secret: Secret): Outcome<Granted, CallFailure> {
+        val isCookie = use.placement is CredentialPlacement.Cookie
+        val isCookieValue = secret.reveal().all { character ->
+            character in cookieOctets && character !in NOT_IN_COOKIES
+        }
+        if (isCookie && !isCookieValue) return Outcome.Failure(CallFailure.CredentialMalformed(use.scheme))
+        return Outcome.Success(granted.placed(use, secret, bindings[use.scheme]))
     }
 }

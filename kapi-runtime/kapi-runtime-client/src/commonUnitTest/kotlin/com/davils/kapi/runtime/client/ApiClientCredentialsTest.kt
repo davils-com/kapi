@@ -143,6 +143,17 @@ class ApiClientCredentialsTest : FunSpec({
             malformed.execute(both) shouldBe Exchange.Failed(CallFailure.CredentialMalformed(BEARER))
             malformed.requests.shouldBeEmpty()
         }
+
+        test("is not sent in a cookie when it would end the cookie or start another") {
+            val cookie = securedBy(listOf(SecurityUse(BEARER, CredentialPlacement.Cookie("session"))))
+
+            listOf("a; admin=1", "a,b", "a b", "\"a\"", "a\\b").forEach { token ->
+                val exchanges = Exchanges(configure = { credentials = tokens(token) })
+
+                exchanges.execute(cookie) shouldBe Exchange.Failed(CallFailure.CredentialMalformed(BEARER))
+                exchanges.requests.shouldBeEmpty()
+            }
+        }
     }
 
     context("a call the server rejects") {
