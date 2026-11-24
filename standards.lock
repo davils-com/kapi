@@ -1015,8 +1015,8 @@
         },
         {
             "id": "rfc:7662",
-            "reviewedOn": "2026-11-23",
-            "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
+            "reviewedOn": "2026-11-24",
+            "note": "Erratum 9331 (reported 2026-11-19) only proposes renaming the title to OAuth 2.0 Token Info Endpoint; no change of the protocol, IntrospectionAuthorizer unaffected",
             "snapshot": {
                 "title": "OAuth 2.0 Token Introspection",
                 "status": "PROPOSED STANDARD",
@@ -1026,7 +1026,8 @@
                 "updatedBy": [],
                 "errata": {
                     "4764": "VERIFIED",
-                    "7607": "REPORTED"
+                    "7607": "REPORTED",
+                    "9331": "REPORTED"
                 }
             }
         },
