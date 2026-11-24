@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
   chosen to collide in `hashCode` can no longer make the check quadratic.
+- **Webhook signatures** bind the body: by default a delivery with content is accepted only by a signature that
+  covers a `Content-Digest` matching its bytes (`SignaturePolicy.isContentBound`), and a `ReplayGuard` in
+  `SignaturePolicy.replays` refuses a signature that was accepted before.
 - **WebSocket channels** are refused when the `WebSockets` plugin of Ktor reads frames larger than the channel
   allows, because Ktor reads the first frames before a limit set on the session applies: the client fails with
   `CallFailure.ChannelFramesUnbounded`, and `mount` of the server throws.

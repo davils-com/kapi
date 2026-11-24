@@ -34,6 +34,7 @@ import kotlinx.io.bytestring.encodeToByteString
 import kotlin.io.encoding.Base64
 import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 private const val AUTHORITY: String = """"@authority""""
@@ -51,6 +52,8 @@ private const val INPUT: String = """sig-b25=("date" "@authority" "content-type"
 private const val SIGNATURE: String = "sig-b25=:pxcQw6G3AjtMBQjwo8XzkZf/bws5LelbaMk5rGIGtE8=:"
 
 private const val HOUR: Long = 3_600L
+
+private const val CREATED_BY_KEY: String = ";created=$CREATED;keyid=\"$KEY_ID\""
 
 private val shared: VerificationKey.Shared = VerificationKey.Shared(
     SecretKey.of(SecretBytes.copyOf(Base64.decode(SHARED))),
@@ -74,10 +77,11 @@ private fun verifier(policy: SignaturePolicy = policyAt(), key: VerificationKey?
         policy = policy,
     )
 
-private fun delivery(input: String? = INPUT, signature: String? = SIGNATURE): Request {
+private fun delivery(input: String? = INPUT, signature: String? = SIGNATURE, digest: String? = null): Request {
     val headers = mapOf(
         "Date" to listOf("Tue, 20 Apr 2021 02:07:55 GMT"),
         "Content-Type" to listOf("application/json"),
+        "Content-Digest" to listOfNotNull(digest),
         "Signature-Input" to listOfNotNull(input),
         "Signature" to listOfNotNull(signature),
     )
@@ -88,9 +92,34 @@ private fun delivery(input: String? = INPUT, signature: String? = SIGNATURE): Re
     )
 }
 
-private suspend fun signed(components: String, parameters: String, base: String): Request {
+private suspend fun signed(components: String, parameters: String, base: String, digest: String? = null): Request {
     val signature = crypto.macs.mac(shared.key, base.encodeToByteString())
-    return delivery(input = "s=($components)$parameters", signature = "s=:${Base64.encode(signature.toByteArray())}:")
+    val encoded = Base64.encode(signature.toByteArray())
+    return delivery(input = "s=($components)$parameters", signature = "s=:$encoded:", digest = digest)
+}
+
+private suspend fun bound(digest: String): Request {
+    val parameters = CREATED_BY_KEY
+    val components = "$AUTHORITY \"content-digest\""
+    val base = lines(
+        """"@authority": example.com""",
+        """"content-digest": $digest""",
+        """"@signature-params": ($components)$parameters""",
+    )
+    return signed(components = components, parameters = parameters, base = base, digest = digest)
+}
+
+private fun remembering(seen: MutableSet<ByteString>, until: MutableList<Instant>): MessageSignatureVerifier {
+    val guard = ReplayGuard { signature, instant ->
+        until += instant
+        seen.add(signature)
+    }
+    return verifier(
+        policyAt {
+            isCreatedRequired = false
+            replays = guard
+        },
+    )
 }
 
 private const val TARGET: String = """"@target-uri": https://example.com/foo?param=Value&Pet=dog"""
@@ -173,7 +202,7 @@ class MessageSignatureTest : FunSpec({
         }
 
         test("is refused for a component it does not read, one with parameters, one named twice or in upper case") {
-            val parameters = ";created=$CREATED;keyid=\"$KEY_ID\""
+            val parameters = CREATED_BY_KEY
             listOf(
                 """"@authority" "@query-param";name="a"""",
                 """"@authority" "date";sf""",
@@ -213,7 +242,7 @@ class MessageSignatureTest : FunSpec({
             test("verifies with ${algorithm.id}") {
                 val pair = crypto.keys.generate(type)
                 val key = VerificationKey.Public(pair.publicKey, algorithm)
-                val parameters = ";created=$CREATED;keyid=\"$KEY_ID\""
+                val parameters = CREATED_BY_KEY
                 val base = authorityBase(parameters)
                 val signature = crypto.signatures.sign(
                     key = pair.privateKey,
@@ -260,6 +289,48 @@ class MessageSignatureTest : FunSpec({
         }
     }
 
+    context("a signature over a delivery with content") {
+        test("is accepted only when it covers a Content-Digest that matches the content") {
+            val content = BODY.encodeToByteString()
+            val request = bound(DIGEST)
+
+            verifier().verify(request, content) shouldBe Verdict.Accepted
+            verifier().verify(request, OTHER_BODY.encodeToByteString()) shouldBe Verdict.Refused(UNVERIFIED)
+            verifier().verify(delivery(digest = DIGEST), content) shouldBe Verdict.Refused(UNVERIFIED)
+            verifier(policyAt { isContentBound = false }).verify(delivery(), content) shouldBe Verdict.Accepted
+        }
+    }
+
+    context("a signature the policy remembers") {
+        test("is accepted once and refused when it comes again or the guard fails") {
+            val seen = mutableSetOf<ByteString>()
+            val until = mutableListOf<Instant>()
+            val failing = verifier(policyAt { replays = ReplayGuard { _, _ -> error("cache down") } })
+
+            remembering(seen, until).verify(delivery(), ByteString()) shouldBe Verdict.Accepted
+            remembering(seen, until).verify(delivery(), ByteString()) shouldBe Verdict.Refused(REPLAYED)
+            failing.verify(delivery(), ByteString()) shouldBe Verdict.Refused(REPLAYED)
+            until.first() shouldBe Instant.fromEpochSeconds(CREATED) + SIX_MINUTES.minutes
+        }
+
+        test("is remembered until it expires, or for good when it names no time") {
+            val seen = mutableSetOf<ByteString>()
+            val until = mutableListOf<Instant>()
+            val expiring = ";created=$CREATED;expires=${CREATED + 1};keyid=\"$KEY_ID\""
+            val timeless = ";keyid=\"$KEY_ID\""
+
+            val expiringRequest = signed(components = AUTHORITY, parameters = expiring, base = authorityBase(expiring))
+            val timelessRequest = signed(components = AUTHORITY, parameters = timeless, base = authorityBase(timeless))
+
+            remembering(seen, until).verify(expiringRequest, ByteString()) shouldBe Verdict.Accepted
+            remembering(seen, until).verify(timelessRequest, ByteString()) shouldBe Verdict.Accepted
+            until shouldBe listOf(
+                Instant.fromEpochSeconds(CREATED + 1) + 1.minutes,
+                Instant.DISTANT_FUTURE + 1.minutes,
+            )
+        }
+    }
+
     context("a signature with an expiry and a signature that is no byte sequence") {
         test("is accepted before its expiry and refused when the signature is a list") {
             val parameters = ";created=$CREATED;expires=${CREATED + HOUR};keyid=\"$KEY_ID\""
@@ -273,3 +344,13 @@ class MessageSignatureTest : FunSpec({
 })
 
 private const val UNVERIFIED: String = "No signature of the delivery verifies under the policy"
+
+private const val REPLAYED: String = "The signature of the delivery was accepted before"
+
+private const val BODY: String = """{"hello": "world"}"""
+
+private const val OTHER_BODY: String = """{"hello": "there"}"""
+
+private const val DIGEST: String = "sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:"
+
+private const val SIX_MINUTES: Int = 6

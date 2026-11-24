@@ -858,15 +858,21 @@ public final class com/davils/kapi/runtime/server/webhook/MessageSignatureAlgori
 
 public final class com/davils/kapi/runtime/server/webhook/MessageSignatureVerifier : com/davils/kapi/runtime/server/webhook/DeliveryVerifier {
 	public static final field ALGORITHM Ljava/lang/String;
+	public static final field CONTENT_DIGEST Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field EXPIRES Ljava/lang/String;
 	public static final field KEY_ID Ljava/lang/String;
+	public static final field REPLAYED Ljava/lang/String;
 	public static final field TAG Ljava/lang/String;
 	public static final field UNVERIFIED Ljava/lang/String;
 	public fun <init> (Lcom/davils/kapi/runtime/server/webhook/SignatureKeyResolver;Lcom/davils/krypt/primitive/Crypto;Lcom/davils/kapi/runtime/server/webhook/SignaturePolicy;)V
 	public synthetic fun <init> (Lcom/davils/kapi/runtime/server/webhook/SignatureKeyResolver;Lcom/davils/krypt/primitive/Crypto;Lcom/davils/kapi/runtime/server/webhook/SignaturePolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun toString ()Ljava/lang/String;
 	public fun verify (Lcom/davils/kapi/runtime/server/request/Request;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface com/davils/kapi/runtime/server/webhook/ReplayGuard {
+	public abstract fun isFirstUse (Lkotlinx/io/bytestring/ByteString;Lkotlin/time/Instant;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface com/davils/kapi/runtime/server/webhook/SignatureKeyResolver {
@@ -880,8 +886,10 @@ public final class com/davils/kapi/runtime/server/webhook/SignaturePolicy : com/
 	public final fun getLabel ()Ljava/lang/String;
 	public final fun getLimits ()Lcom/davils/kapi/runtime/core/FieldLimits;
 	public final fun getMaxAge-UwyO8pc ()J
+	public final fun getReplays ()Lcom/davils/kapi/runtime/server/webhook/ReplayGuard;
 	public final fun getRequiredComponents ()Ljava/util/Set;
 	public final fun getTag ()Ljava/lang/String;
+	public final fun isContentBound ()Z
 	public final fun isCreatedRequired ()Z
 	public fun toString ()Ljava/lang/String;
 	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
@@ -900,16 +908,20 @@ public final class com/davils/kapi/runtime/server/webhook/SignaturePolicyBuilder
 	public final fun getLabel ()Ljava/lang/String;
 	public final fun getLimits ()Lcom/davils/kapi/runtime/core/FieldLimits;
 	public final fun getMaxAge-UwyO8pc ()J
+	public final fun getReplays ()Lcom/davils/kapi/runtime/server/webhook/ReplayGuard;
 	public final fun getRequiredComponents ()Ljava/util/Set;
 	protected fun getSubject ()Ljava/lang/String;
 	public final fun getTag ()Ljava/lang/String;
+	public final fun isContentBound ()Z
 	public final fun isCreatedRequired ()Z
 	public final fun setClock (Lkotlin/time/Clock;)V
 	public final fun setClockSkew-LRDsOJo (J)V
+	public final fun setContentBound (Z)V
 	public final fun setCreatedRequired (Z)V
 	public final fun setLabel (Ljava/lang/String;)V
 	public final fun setLimits (Lcom/davils/kapi/runtime/core/FieldLimits;)V
 	public final fun setMaxAge-LRDsOJo (J)V
+	public final fun setReplays (Lcom/davils/kapi/runtime/server/webhook/ReplayGuard;)V
 	public final fun setRequiredComponents (Ljava/util/Set;)V
 	public final fun setTag (Ljava/lang/String;)V
 }

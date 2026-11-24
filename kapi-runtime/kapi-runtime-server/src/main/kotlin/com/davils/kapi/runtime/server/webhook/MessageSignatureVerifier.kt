@@ -32,6 +32,7 @@ import com.davils.krypt.primitive.Crypto
 import com.davils.krypt.primitive.signature.SignatureFormat
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
+import kotlin.time.Instant
 
 private const val SIGNATURE_INPUT: String = "signature-input"
 
@@ -48,7 +49,10 @@ private const val SIGNATURE: String = "signature"
  * policy; when its `keyid` resolves to a key and its `alg`, if any, names the algorithm of that key; and when the
  * signature over the signature base of RFC 9421 §2.5 verifies, a MAC in constant time. A delivery is accepted when one
  * of its signatures is. Every other component, such as `@query-param` or a field with the parameter `sf`, makes a
- * signature fail rather than be read in a way the sender did not mean.
+ * signature fail rather than be read in a way the sender did not mean. Unless [SignaturePolicy.isContentBound] is off,
+ * a delivery with content also needs a `Content-Digest` that matches its bytes, checked like [ContentDigestVerifier]
+ * does, and a signature that covers it, so the signature binds the body. A [SignaturePolicy.replays] guard then
+ * refuses a signature it has seen before.
  *
  * @param keys finds the key of a `keyid`.
  * @param crypto the crypto of the verification, whose policy may refuse an algorithm or a key.
@@ -66,11 +70,16 @@ public class MessageSignatureVerifier(
         val candidates = inputs?.entries.orEmpty().filter { (label, _) ->
             policy.label == null || label == policy.label
         }
-        val isVerified = signatures != null &&
-            candidates.any { (label, member) ->
-                isValid(request, member, signatures[label])
+        val hasContent = policy.isContentBound && content.size > 0
+        val isBound = !hasContent || isDigestMatching(request, content)
+        val signed = signatures?.takeIf { isBound }?.let { found ->
+            candidates.firstNotNullOfOrNull { (label, member) ->
+                signedOf(request = request, member = member, signature = found[label], hasContent = hasContent)
             }
-        return Verdict.Accepted.takeIf { isVerified } ?: Verdict.Refused(UNVERIFIED)
+        }
+        val isFresh = signed?.let { found -> isFirstUse(found) } != false
+        val reason = UNVERIFIED.takeIf { signed == null } ?: REPLAYED.takeUnless { isFresh }
+        return reason?.let(Verdict::Refused) ?: Verdict.Accepted
     }
 
     override fun toString(): String = "MessageSignatureVerifier($policy)"
@@ -81,8 +90,16 @@ public class MessageSignatureVerifier(
         return text?.let { value -> StructuredFields.parseDictionaryOrNull(value, policy.limits) }
     }
 
-    private suspend fun isValid(request: Request, member: Member, signature: Member?): Boolean {
-        val covered = (member as? InnerList)?.takeIf { list -> isAllowed(list) }
+    private suspend fun isDigestMatching(request: Request, content: ByteString): Boolean =
+        ContentDigestVerifier(crypto, policy.limits).verify(request, content) == Verdict.Accepted
+
+    private suspend fun isFirstUse(signed: Signed): Boolean {
+        val guard = policy.replays ?: return true
+        return attempted { guard.isFirstUse(signed.bytes, signed.until) }.getOrNull() == true
+    }
+
+    private suspend fun signedOf(request: Request, member: Member, signature: Member?, hasContent: Boolean): Signed? {
+        val covered = (member as? InnerList)?.takeIf { list -> isAllowed(list, hasContent) }
         val bytes = ((signature as? Item)?.value as? BareItem.Bytes)?.value
         val keyId = covered?.let { list -> text(list.parameters, KEY_ID) }
         val base = covered?.let { list -> SignatureBase.of(request, list) }
@@ -90,14 +107,16 @@ public class MessageSignatureVerifier(
         val key = keyId?.takeIf { isComplete }?.let { id -> attempted { keys.resolve(id) }.getOrNull() }
         val algorithm = covered?.let { list -> text(list.parameters, ALGORITHM) }
         val isMatching = key != null && (algorithm == null || algorithm == key.algorithm.id)
+        val signed = bytes ?: ByteString()
         val isVerified = key?.takeIf { isMatching }?.let { found ->
             val content = base.orEmpty().encodeToByteString()
-            attempted { isSigned(key = found, base = content, signature = bytes ?: ByteString()) }.getOrNull()
+            attempted { isSigned(key = found, base = content, signature = signed) }.getOrNull()
         }
-        return isVerified == true
+        val until = covered?.takeIf { isVerified == true }?.let { list -> untilOf(list.parameters) }
+        return until?.let { instant -> Signed(bytes = signed, until = instant) }
     }
 
-    private fun isAllowed(covered: InnerList): Boolean {
+    private fun isAllowed(covered: InnerList, hasContent: Boolean): Boolean {
         val names = covered.items.map(SignatureBase::nameOf)
         val parameters = covered.parameters
         val now = policy.clock.now().epochSeconds
@@ -108,9 +127,19 @@ public class MessageSignatureVerifier(
         val isCreatedPresent = created != null || !policy.isCreatedRequired
         val isUnexpired = expires == null || expires + skew >= now
         val isTagged = policy.tag == null || text(parameters, TAG) == policy.tag
-        val isCovering = names.containsAll(policy.requiredComponents)
+        val isCovering = names.containsAll(policy.requiredComponents) && (!hasContent || CONTENT_DIGEST in names)
         return isCreatedValid && isCreatedPresent && isUnexpired && isTagged && isCovering
     }
+
+    private fun untilOf(parameters: Parameters): Instant {
+        val createdAt = number(parameters, CREATED)?.let(Instant::fromEpochSeconds)
+        val created = createdAt?.plus(policy.maxAge)
+        val expires = number(parameters, EXPIRES)?.let(Instant::fromEpochSeconds)
+        val latest = listOfNotNull(created, expires).minOrNull() ?: Instant.DISTANT_FUTURE
+        return latest + policy.clockSkew
+    }
+
+    private data class Signed(val bytes: ByteString, val until: Instant)
 
     private suspend fun isSigned(key: VerificationKey, base: ByteString, signature: ByteString): Boolean {
         val verification = when (key) {
@@ -133,6 +162,8 @@ public class MessageSignatureVerifier(
 
     private companion object {
         const val UNVERIFIED: String = "No signature of the delivery verifies under the policy"
+        const val REPLAYED: String = "The signature of the delivery was accepted before"
+        const val CONTENT_DIGEST: String = "content-digest"
         const val KEY_ID: String = "keyid"
         const val ALGORITHM: String = "alg"
         const val CREATED: String = "created"

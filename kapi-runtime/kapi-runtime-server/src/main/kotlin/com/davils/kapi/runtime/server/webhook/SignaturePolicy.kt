@@ -32,8 +32,10 @@ import kotlin.time.Duration
  * `content-digest`; it must carry `created` unless [isCreatedRequired] is false, no older than [maxAge] and no further
  * ahead than [clockSkew] by [clock]; an `expires` it carries must not have passed; it must carry [tag] when one is
  * set, which keeps a signature made for another application from being replayed here (RFC 9421 §7.2.7); and when
- * [label] is set only the signature of that label is checked. The fields are read within [limits]. The policy is
- * immutable and safe to share between threads.
+ * [label] is set only the signature of that label is checked. By default a delivery with content also needs a
+ * signature over a `Content-Digest` that matches it ([isContentBound]). A [ReplayGuard] in [replays] refuses a
+ * signature that was accepted before. The fields are read within [limits]. The policy is immutable and safe to share
+ * between threads.
  *
  * @since 1.0.0
  */
@@ -94,6 +96,22 @@ public class SignaturePolicy internal constructor(builder: SignaturePolicyBuilde
      */
     public val limits: FieldLimits = builder.limits
 
+    /**
+     * Whether a delivery with content is accepted only by a signature that covers `content-digest`, and only when that
+     * field matches the content by RFC 9530; without it, a signature binds the method and the target but not the body,
+     * which anyone on the way could change.
+     *
+     * @since 1.0.0
+     */
+    public val isContentBound: Boolean = builder.isContentBound
+
+    /**
+     * Remembers accepted signatures so none is accepted twice, or `null` to accept a replay within [maxAge].
+     *
+     * @since 1.0.0
+     */
+    public val replays: ReplayGuard? = builder.replays
+
     override fun ValidationScope.validate() {
         if (!maxAge.isPositive()) fail(::maxAge, "must be positive", ServerViolationCodes.DURATION_INVALID)
         if (clockSkew.isNegative()) fail(::clockSkew, "must not be negative", ServerViolationCodes.DURATION_INVALID)
@@ -101,7 +119,8 @@ public class SignaturePolicy internal constructor(builder: SignaturePolicyBuilde
 
     @OptIn(DavilsInternal::class)
     override fun toString(): String = "SignaturePolicy(label=${label?.let(SafeText::text) ?: "any"}, " +
-        "requiredComponents=${requiredComponents.map(SafeText::text)}, maxAge=$maxAge, clockSkew=$clockSkew)"
+        "requiredComponents=${requiredComponents.map(SafeText::text)}, maxAge=$maxAge, clockSkew=$clockSkew, " +
+        "isContentBound=$isContentBound)"
 
     /**
      * The default policy.
@@ -110,8 +129,8 @@ public class SignaturePolicy internal constructor(builder: SignaturePolicyBuilde
      */
     public companion object {
         /**
-         * The policy that demands `@method` and `@target-uri`, a `created` of the last five minutes and allows a
-         * minute of clock skew.
+         * The policy that demands `@method` and `@target-uri`, a covered `content-digest` that matches the content
+         * of a delivery with content, a `created` of the last five minutes and allows a minute of clock skew.
          *
          * @since 1.0.0
          */

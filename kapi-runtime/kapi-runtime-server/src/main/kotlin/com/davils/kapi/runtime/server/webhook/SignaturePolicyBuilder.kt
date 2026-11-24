@@ -122,6 +122,28 @@ public class SignaturePolicyBuilder internal constructor() : ValidatingBuilder<S
             field = value
         }
 
+    /**
+     * See [SignaturePolicy.isContentBound].
+     *
+     * @since 1.0.0
+     */
+    public var isContentBound: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
+     * See [SignaturePolicy.replays].
+     *
+     * @since 1.0.0
+     */
+    public var replays: ReplayGuard? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
     override fun assemble(): SignaturePolicy = SignaturePolicy(this)
 
     private companion object {
