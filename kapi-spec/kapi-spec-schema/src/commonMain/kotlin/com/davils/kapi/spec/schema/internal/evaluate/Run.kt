@@ -23,6 +23,10 @@ import com.davils.kapi.spec.schema.internal.Refusal
 import com.davils.kapi.spec.schema.internal.Trail
 import com.davils.kapi.spec.schema.internal.value.Instance
 
+private const val CELLS_PER_STEP: Long = 64
+
+private const val CELL_COPIES: Long = 2
+
 internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
     private var steps: Long = 0L
 
@@ -85,6 +89,7 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
         val items = (instance as? Instance.ArrayValue)?.run { items.size }
         val size = items ?: (instance as? Instance.ObjectValue)?.run { keys.size }
         val tracked = size?.takeIf { isTrackingAnnotations }
+        tracked?.let { cells -> charge(cells.toLong() * CELL_COPIES / CELLS_PER_STEP) }
         return tracked?.let(Evaluated::of) ?: Evaluated.UNTRACKED
     }
 }

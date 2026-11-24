@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Annotation tracking** of `unevaluatedItems` and `unevaluatedProperties` charges the evaluation budget for every
+  item and property it tracks, so a wide array under many subschemas is refused by `maximumEvaluationSteps` instead
+  of running for a minute.
 - **Patterns of JSON Schema** charge the evaluation budget for every state of the matcher and every character of the
   text, so many large patterns over a long string are refused by `maximumEvaluationSteps` instead of running for
   hours within the default budget.

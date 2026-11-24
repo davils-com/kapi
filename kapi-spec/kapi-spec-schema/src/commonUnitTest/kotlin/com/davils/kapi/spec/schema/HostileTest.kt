@@ -37,6 +37,10 @@ private const val PATTERNS: Int = 30
 
 private const val LONG_TEXT: Int = 65_000
 
+private const val FAN_OUT: Int = 60
+
+private const val WIDE_ARRAY: Int = 200_000
+
 class HostileTest : FunSpec({
     test("a schema nested far too deep is refused, not overflowed") {
         val schema = nested(open = """{"items": """, center = "{}", close = "}", depth = 300)
@@ -123,6 +127,19 @@ class HostileTest : FunSpec({
         val start = TimeSource.Monotonic.markNow()
 
         schemaOf(schema).refusalOf(text).reason shouldBe RefusalReason.EvaluationSteps
+        start.elapsedNow() shouldBeLessThan 5.seconds
+    }
+
+    test("tracking unevaluated items over a wide array pays for every item it tracks") {
+        val leaf = List(FAN_OUT) { "{}" }.joinToString()
+        val middle = List(FAN_OUT) { """{"${'$'}ref": "#/${'$'}defs/b"}""" }.joinToString()
+        val top = List(FAN_OUT) { """{"${'$'}ref": "#/${'$'}defs/a"}""" }.joinToString()
+        val defs = """"a": {"allOf": [$middle]}, "b": {"allOf": [$leaf]}"""
+        val schema = """{"unevaluatedItems": true, "${'$'}defs": {$defs}, "allOf": [$top]}"""
+        val value = JsonArray(List(WIDE_ARRAY) { JsonPrimitive(0) })
+        val start = TimeSource.Monotonic.markNow()
+
+        schemaOf(schema).refusalOf(value).reason shouldBe RefusalReason.EvaluationSteps
         start.elapsedNow() shouldBeLessThan 5.seconds
     }
 
