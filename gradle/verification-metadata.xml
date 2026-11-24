@@ -106,6 +106,9 @@
          </artifact>
       </component>
       <component group="io.opentelemetry" name="opentelemetry-bom" version="1.49.0">
+         <artifact name="opentelemetry-bom-1.49.0.module">
+            <pgp value="3F05DDA9F317301E927136D417A27CE7A60FF5F0"/>
+         </artifact>
          <artifact name="opentelemetry-bom-1.49.0.pom">
             <pgp value="3F05DDA9F317301E927136D417A27CE7A60FF5F0"/>
          </artifact>
