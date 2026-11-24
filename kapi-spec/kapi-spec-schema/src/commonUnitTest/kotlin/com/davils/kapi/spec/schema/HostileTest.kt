@@ -18,17 +18,24 @@ package com.davils.kapi.spec.schema
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 private const val WIDE: Int = 20_000
 
 private const val SHALLOW_DEPTH: Int = 100
 
 private const val STEP_BUDGET: Long = 1_000_000L
+
+private const val PATTERNS: Int = 30
+
+private const val LONG_TEXT: Int = 65_000
 
 class HostileTest : FunSpec({
     test("a schema nested far too deep is refused, not overflowed") {
@@ -108,6 +115,15 @@ class HostileTest : FunSpec({
         val value = json(nested(open = "[", center = "1", close = "]", depth = 7))
         schemaOf(schema) { limits { maximumEvaluationSteps = STEP_BUDGET } }.refusalOf(value).reason shouldBe
             RefusalReason.EvaluationSteps
+    }
+
+    test("a pattern of many states over a long text pays for every state it runs") {
+        val schema = """{"allOf": [""" + List(PATTERNS) { """{"pattern": ".{0,4998}b"}""" }.joinToString() + "]}"
+        val text = JsonPrimitive("a".repeat(LONG_TEXT) + "b")
+        val start = TimeSource.Monotonic.markNow()
+
+        schemaOf(schema).refusalOf(text).reason shouldBe RefusalReason.EvaluationSteps
+        start.elapsedNow() shouldBeLessThan 5.seconds
     }
 
     test("multipleOf with extreme exponents is exact and bounded") {

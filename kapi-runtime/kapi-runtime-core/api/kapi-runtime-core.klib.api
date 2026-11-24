@@ -1415,6 +1415,8 @@ final class com.davils.kapi.runtime.core.pattern/Pattern { // com.davils.kapi.ru
         final fun <get-limits>(): com.davils.kapi.runtime.core.pattern/PatternLimits // com.davils.kapi.runtime.core.pattern/Pattern.limits.<get-limits>|<get-limits>(){}[0]
     final val source // com.davils.kapi.runtime.core.pattern/Pattern.source|{}source[0]
         final fun <get-source>(): kotlin/String // com.davils.kapi.runtime.core.pattern/Pattern.source.<get-source>|<get-source>(){}[0]
+    final val states // com.davils.kapi.runtime.core.pattern/Pattern.states|{}states[0]
+        final fun <get-states>(): kotlin/Int // com.davils.kapi.runtime.core.pattern/Pattern.states.<get-states>|<get-states>(){}[0]
 
     final fun containsMatchIn(kotlin/CharSequence): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/Pattern.containsMatchIn|containsMatchIn(kotlin.CharSequence){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.pattern/Pattern.equals|equals(kotlin.Any?){}[0]

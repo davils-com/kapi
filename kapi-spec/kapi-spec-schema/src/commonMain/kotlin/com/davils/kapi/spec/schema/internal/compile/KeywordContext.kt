@@ -21,6 +21,7 @@ package com.davils.kapi.spec.schema.internal.compile
 import com.davils.kapi.spec.schema.DiagnosticCodes
 import com.davils.kapi.spec.schema.internal.Patterns
 import com.davils.kapi.spec.schema.internal.Refusal
+import com.davils.kapi.spec.schema.internal.SchemaPattern
 import com.davils.kapi.spec.schema.internal.Uris
 import com.davils.kapi.spec.schema.internal.dialect.Draft
 import com.davils.kapi.spec.schema.internal.dialect.Profile
@@ -108,7 +109,7 @@ internal class KeywordContext(
         return instance.getOrNull()?.let { value -> Canonical.of(value) { } }
     }
 
-    fun pattern(keyword: String, source: String): ((CharSequence) -> Boolean)? {
+    fun pattern(keyword: String, source: String): SchemaPattern? {
         val maximum = session.limits.maximumPatternLength
         if (source.length > maximum) {
             return report(keyword, "The pattern is longer than $maximum characters", DiagnosticCodes.LIMIT_EXCEEDED)

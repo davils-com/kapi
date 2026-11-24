@@ -16,14 +16,15 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
+import com.davils.kapi.spec.schema.internal.SchemaPattern
 import com.davils.kapi.spec.schema.internal.evaluate.Run
 
-private const val CHARACTERS_PER_STEP: Int = 16
+private const val STATES_PER_STEP: Long = 64
 
 internal object Patterns {
-    fun matches(matcher: (CharSequence) -> Boolean, text: String, run: Run): Boolean {
+    fun matches(matcher: SchemaPattern, text: String, run: Run): Boolean {
         run.refuseLongText(text)
-        run.charge(text.length.toLong() / CHARACTERS_PER_STEP + 1L)
-        return matcher(text)
+        run.charge((text.length + 1L) * matcher.states / STATES_PER_STEP + 1L)
+        return matcher.matches(text)
     }
 }

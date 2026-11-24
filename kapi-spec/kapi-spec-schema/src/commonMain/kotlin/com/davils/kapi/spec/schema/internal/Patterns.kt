@@ -21,13 +21,12 @@ import com.davils.kapi.runtime.core.pattern.PatternCompilation
 import com.davils.kapi.runtime.core.pattern.patternLimits
 
 internal object Patterns {
-    fun compile(source: String, maximumSourceLength: Int, maximumInputLength: Int): ((CharSequence) -> Boolean)? {
+    fun compile(source: String, maximumSourceLength: Int, maximumInputLength: Int): SchemaPattern? {
         val limits = patternLimits {
             this.maximumSourceLength = maximumSourceLength
             this.maximumInputLength = maximumInputLength
         }
         val compiled = Pattern.compile(source, limits) as? PatternCompilation.Compiled ?: return null
-        val pattern = compiled.pattern
-        return { input -> pattern.containsMatchIn(input) }
+        return SchemaPattern(compiled.pattern)
     }
 }

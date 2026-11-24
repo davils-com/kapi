@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Patterns of JSON Schema** charge the evaluation budget for every state of the matcher and every character of the
+  text, so many large patterns over a long string are refused by `maximumEvaluationSteps` instead of running for
+  hours within the default budget.
 - **Generated AsyncAPI payload models** write the origin of their schema only into the `from` of `@DavilsGenerated`,
   escaped as a string literal: a pointer of a document with `*/` in it can no longer close a KDoc and inject Kotlin
   into the generated code.

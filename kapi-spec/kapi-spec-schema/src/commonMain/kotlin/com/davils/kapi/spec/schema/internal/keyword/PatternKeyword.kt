@@ -18,6 +18,7 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
+import com.davils.kapi.spec.schema.internal.SchemaPattern
 import com.davils.kapi.spec.schema.internal.evaluate.Frame
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 import com.davils.kapi.spec.schema.internal.value.Instance
@@ -26,7 +27,7 @@ import com.davils.kore.core.text.SafeText
 
 internal class PatternKeyword(
     private val source: String,
-    private val matcher: (CharSequence) -> Boolean,
+    private val matcher: SchemaPattern,
 ) : Keyword("pattern") {
     override fun evaluate(frame: Frame): Boolean {
         val text = (frame.instance as? Instance.StringValue ?: return true).value

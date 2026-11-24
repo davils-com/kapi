@@ -66,6 +66,14 @@ public class Pattern private constructor(
     private val identity: List<Any> get() = listOf(source, limits)
 
     /**
+     * The number of states of the compiled program, which bounds the work of a match per code unit of its input.
+     *
+     * @since 1.0.0
+     */
+    @DavilsInternal
+    public val states: Int get() = program.operations.size
+
+    /**
      * Returns whether the pattern matches anywhere in [input], as `RegExp.prototype.test` of ECMA-262 does: a pattern
      * without anchors matches if any part of [input] matches it.
      *

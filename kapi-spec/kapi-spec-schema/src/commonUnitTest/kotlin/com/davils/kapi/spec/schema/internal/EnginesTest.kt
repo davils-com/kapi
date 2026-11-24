@@ -17,6 +17,7 @@
 package com.davils.kapi.spec.schema.internal
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -28,8 +29,11 @@ class EnginesTest : FunSpec({
         test("search the string like ECMA-262 does") {
             val pattern = Patterns.compile("^[a-z]+\\d$", maximumSourceLength = LIMIT, maximumInputLength = LIMIT)
 
-            pattern.shouldNotBeNull().invoke("abc1") shouldBe true
-            pattern("abc") shouldBe false
+            val compiled = pattern.shouldNotBeNull()
+
+            compiled.matches("abc1") shouldBe true
+            compiled.matches("abc") shouldBe false
+            compiled.states shouldBeGreaterThan 0L
         }
 
         test("are refused when they need backtracking or exceed the source limit") {

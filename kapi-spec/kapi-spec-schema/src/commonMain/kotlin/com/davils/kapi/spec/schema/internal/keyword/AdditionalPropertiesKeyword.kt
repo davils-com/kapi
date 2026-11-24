@@ -16,6 +16,7 @@
 
 package com.davils.kapi.spec.schema.internal.keyword
 
+import com.davils.kapi.spec.schema.internal.SchemaPattern
 import com.davils.kapi.spec.schema.internal.evaluate.Frame
 import com.davils.kapi.spec.schema.internal.evaluate.Keyword
 import com.davils.kapi.spec.schema.internal.value.Instance
@@ -23,7 +24,7 @@ import com.davils.kapi.spec.schema.internal.value.Instance
 internal class AdditionalPropertiesKeyword(
     private val child: Int,
     private val sortedNames: List<String>,
-    private val patterns: List<(CharSequence) -> Boolean>,
+    private val patterns: List<SchemaPattern>,
 ) : Keyword("additionalProperties") {
     override fun evaluate(frame: Frame): Boolean {
         val members = frame.instance as? Instance.ObjectValue ?: return true

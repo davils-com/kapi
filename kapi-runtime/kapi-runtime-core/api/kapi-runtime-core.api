@@ -1154,6 +1154,7 @@ public final class com/davils/kapi/runtime/core/pattern/Pattern {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getLimits ()Lcom/davils/kapi/runtime/core/pattern/PatternLimits;
 	public final fun getSource ()Ljava/lang/String;
+	public final fun getStates ()I
 	public fun hashCode ()I
 	public final fun matchesEntirely (Ljava/lang/CharSequence;)Z
 	public fun toString ()Ljava/lang/String;
