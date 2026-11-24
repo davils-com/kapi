@@ -20,6 +20,7 @@ import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.asyncapi.plan.PathPart
 import com.davils.kapi.codegen.core.asyncapi.read.Addresses
 import com.davils.kapi.codegen.core.asyncapi.read.Correlations
+import com.davils.kapi.codegen.core.asyncapi.read.Names
 import com.davils.kapi.codegen.core.emit.Texts
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -134,6 +135,13 @@ class TextsTest : FunSpec({
             test("is a path template or refused: ${address.take(SHOWN)}") {
                 Addresses.parts(address, parameter) shouldBe parts
             }
+        }
+    }
+
+    context("a member name") {
+        test("keeps a free name and moves one the generated session takes") {
+            Names.member("room") shouldBe "room"
+            Names.member("send") shouldBe "sendValue"
         }
     }
 

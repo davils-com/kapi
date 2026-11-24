@@ -26,6 +26,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
+private const val WIDE_CONTROL: Int = 0x85
+
+private const val LEFT_TO_RIGHT: Int = 0x200E
+
 private const val TYPE: String = "type"
 
 private const val REF: String = "\$ref"
@@ -185,6 +189,12 @@ class TranslationTest : FunSpec({
             val value = mapping("a" to sequence(Value.Null(), Value.Flag(false), number(2)), "b" to mapping())
 
             JsonText.text(value) shouldBe """{"a":[null,false,2],"b":{}}"""
+        }
+
+        test("escapes wide controls and invisible characters in a text") {
+            val text = "a" + Char(WIDE_CONTROL) + "b" + Char(LEFT_TO_RIGHT) + "c"
+
+            JsonText.text(Value.Text(text)) shouldBe """"a\u0085b\u200ec""""
         }
     }
 })

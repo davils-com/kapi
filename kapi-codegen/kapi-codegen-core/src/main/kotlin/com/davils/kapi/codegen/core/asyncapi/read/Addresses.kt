@@ -33,7 +33,7 @@ internal object Addresses {
         val literals = mutableListOf<PathPart>()
         val head = pieces.first()
         val isShaped = rooted.length <= MOST_ADDRESS_LENGTH && isLiteral(head)
-        if (head.isNotEmpty()) literals += PathPart.Literal(head)
+        literals += PathPart.Literal(head)
         val rest = pieces.drop(1).map { piece -> templated(piece, parameter) }
         val isValid = isShaped && rest.none { parts -> parts == null }
         rest.forEach { parts -> literals += parts.orEmpty() }
