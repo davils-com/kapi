@@ -21,6 +21,7 @@ import com.davils.kapi.runtime.client.call.SecurityUse
 import com.davils.kapi.runtime.client.fixture.Exchanges
 import com.davils.kapi.runtime.client.fixture.Spans
 import com.davils.kapi.runtime.client.fixture.Tokens
+import com.davils.kapi.runtime.client.fixture.collecting
 import com.davils.kapi.runtime.client.fixture.pets
 import com.davils.kapi.runtime.client.fixture.unauthorized
 import com.davils.kapi.runtime.client.redirect.redirectPolicy
@@ -39,12 +40,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.io.IOException
 
 private const val API: String = "petstore"
@@ -153,14 +149,11 @@ class ApiClientTelemetryTest : FunSpec({
                     val moved = respond(content = "", status = HttpStatusCode.Found, headers = location)
                     unauthorized().takeIf { isMoved } ?: moved
                 }
-                val reported = async(start = CoroutineStart.UNDISPATCHED) {
-                    val events = bus[ClientEvent.TOPIC].events().take(REPORTED)
-                    events.map { envelope -> envelope.payload.toString() }.toList()
-                }
+                val reported = collecting(this, bus[ClientEvent.TOPIC], REPORTED)
 
                 exchanges.withClient { client -> client.execute(secured) }
 
-                reported.await() shouldBe listOf(
+                reported.await().map(ClientEvent::toString) shouldBe listOf(
                     "Redirected(api, listPets, status=302, hop=1, isCrossOrigin=false)",
                     "Refreshed(api, listPets, bearer, isRefreshed=true)",
                     "Redirected(api, listPets, status=302, hop=1, isCrossOrigin=false)",

@@ -21,6 +21,7 @@ import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.fixture.Exchanges
 import com.davils.kapi.runtime.client.fixture.Note
+import com.davils.kapi.runtime.client.fixture.collecting
 import com.davils.kapi.runtime.client.fixture.pets
 import com.davils.kapi.runtime.core.framing.FramingFailure
 import com.davils.kapi.runtime.core.framing.ServerSentEvent
@@ -37,11 +38,7 @@ import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.io.IOException
 import kotlin.time.Duration.Companion.hours
@@ -131,17 +128,15 @@ class EventsTest : FunSpec({
                     val first = stream(lines("retry: 1", "id: 7", "data: a")).takeIf { seen.size == 1 }
                     first ?: stream("data: b\n\n", HttpStatusCode.NoContent)
                 }
-                val reported = async(start = CoroutineStart.UNDISPATCHED) {
-                    val topic = bus[ClientEvent.TOPIC].events().take(1)
-                    topic.map { envelope -> envelope.payload.toString() }.toList()
-                }
+                val reported = collecting(this, bus[ClientEvent.TOPIC], 1)
                 val read = exchanges.withClient { client -> client.events(pets, quick).toList() }
                 val ended = read.last().shouldBeInstanceOf<StreamEvent.Ended>()
 
                 items(read).map { item -> item.value.data } shouldBe listOf("a")
                 seen shouldBe listOf(null, "7")
                 ended.exchange.shouldBeInstanceOf<Exchange.Answered>()
-                reported.await() shouldBe listOf("Reconnecting(api, listPets, attempt=1, delay=1ms, isResumed=true)")
+                val reconnecting = "Reconnecting(api, listPets, attempt=1, delay=1ms, isResumed=true)"
+                reported.await().map(ClientEvent::toString) shouldBe listOf(reconnecting)
                 bus.close()
             }
         }

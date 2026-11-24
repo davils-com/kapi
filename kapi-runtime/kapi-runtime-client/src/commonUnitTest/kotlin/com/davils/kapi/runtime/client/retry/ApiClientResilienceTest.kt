@@ -21,6 +21,7 @@ import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.call.apiCall
 import com.davils.kapi.runtime.client.fixture.Exchanges
+import com.davils.kapi.runtime.client.fixture.collecting
 import com.davils.kapi.runtime.client.fixture.ok
 import com.davils.kapi.runtime.client.fixture.pets
 import com.davils.kapi.runtime.core.negotiation.MediaType
@@ -38,13 +39,9 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.io.bytestring.encodeToByteString
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -104,10 +101,7 @@ class ApiClientResilienceTest : FunSpec({
                     resilience = retrying()
                     events = bus
                 }) { respond(content = "", status = HttpStatusCode.ServiceUnavailable) }
-                val reported = async(start = CoroutineStart.UNDISPATCHED) {
-                    val events = bus[ClientEvent.TOPIC].events().take(2)
-                    events.map { envelope -> envelope.payload }.toList()
-                }
+                val reported = collecting(this, bus[ClientEvent.TOPIC], 2)
                 events.withClient { client ->
                     reported.isActive shouldBe true
                     client.execute(keyed)

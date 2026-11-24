@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.client.oauth
 
+import com.davils.kapi.runtime.client.fixture.collecting
 import com.davils.kapi.runtime.client.oauth.fixture.CLIENT
 import com.davils.kapi.runtime.client.oauth.fixture.TokenServer
 import com.davils.kapi.runtime.client.oauth.fixture.error
@@ -32,13 +33,8 @@ import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.io.IOException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -244,17 +240,14 @@ class OAuthTokensTest : FunSpec({
                     val status = answers.removeFirst()
                     granted(TOKEN).takeIf { status == HttpStatusCode.OK } ?: error("invalid_client")
                 }
-                val reported = async(start = CoroutineStart.UNDISPATCHED) {
-                    val events = bus[OAuthEvent.TOPIC].events().take(2)
-                    events.map { envelope -> envelope.payload.toString() }.toList()
-                }
+                val reported = collecting(this, bus[OAuthEvent.TOPIC], 2)
 
                 val rendered = tokens.withTokens { source ->
                     source.refresh(source.token())
                     source.toString()
                 }
 
-                reported.await() shouldBe listOf(
+                reported.await().map(OAuthEvent::toString) shouldBe listOf(
                     "Granted($CLIENT, client_credentials)",
                     "Refused($CLIENT, client_credentials, status 400 invalid_client)",
                 )
