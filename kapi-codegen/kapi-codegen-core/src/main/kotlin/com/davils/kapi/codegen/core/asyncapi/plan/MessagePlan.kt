@@ -24,6 +24,6 @@ internal data class MessagePlan(
     val payload: PayloadSource,
     val correlation: List<String>?,
     val summary: String?,
-    val location: Location?,
+    val location: Location,
     val tag: String? = null,
 )

@@ -130,6 +130,32 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
     "a message without a payload among tagged ones" to (
         doc(room("messages: {a: {payload: $TAGGED}, b: {name: b}}")) to listOf(PREFIX + "message.indistinct$ROOM")
         ),
+    "components in Avro and components that resolve to nothing" to (
+        doc(
+            PLAIN,
+            components = "{schemas: {R: {schemaFormat: 'application/vnd.apache.avro;version=1.9.0', " +
+                "schema: {type: record, name: R, fields: []}}, Gone: {$REF: '#/components/schemas/None'}}}",
+        ) to emptyList()
+        ),
+    "a request and a reply without correlation ids" to (
+        doc(
+            "{room: {address: /room, messages: $TEXT}, back: {address: /back, messages: {b: {payload: $STRING}}}}",
+            operations = "{send: {action: send, channel: {$REF: '#/channels/room'}, " +
+                "reply: {channel: {$REF: '#/channels/back'}}}, listen: {action: receive, " +
+                "channel: {$REF: '#/channels/back'}}}",
+        ) to listOf(PREFIX + "reply.channel@/operations/send/reply")
+        ),
+    "a channel and a message with only a title" to (
+        doc("{room: {address: /room, title: Room, messages: {a: {title: Said, payload: $STRING}}}}") to emptyList()
+        ),
+    "a payload whose schema format is JSON Schema by name" to (
+        doc(
+            room(
+                "messages: {a: {payload: {schemaFormat: 'application/schema+json;version=draft-07', " +
+                    "schema: $STRING}}}",
+            ),
+        ) to emptyList()
+        ),
     "a message of XML" to (
         doc(room("messages: {a: {contentType: application/xml, payload: {type: string}}}")) to
             listOf(PREFIX + "content-type.unsupported$ROOM/messages/a")

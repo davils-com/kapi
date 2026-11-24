@@ -66,7 +66,7 @@ internal class Emission(options: GeneratorOptions, private val origin: String, p
         )
     }
 
-    fun generated(plan: ChannelPlan): AnnotationSpec = generated(plan.location?.run { pointer.text }.orEmpty())
+    fun generated(plan: ChannelPlan): AnnotationSpec = generated(plan.location.pointer.text)
 
     fun generated(pointer: String): AnnotationSpec {
         val annotation = AnnotationSpec.builder(Runtime.generated)

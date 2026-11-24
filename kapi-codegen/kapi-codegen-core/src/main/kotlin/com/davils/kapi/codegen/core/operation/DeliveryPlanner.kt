@@ -19,8 +19,8 @@ package com.davils.kapi.codegen.core.operation
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.operation.plan.DeliveryPlan
 import com.davils.kapi.codegen.core.operation.plan.TimeoutPlan
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.core.model.Element
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kapi.spec.openapi.model.path.Operation
 import kotlin.time.Duration
@@ -37,9 +37,8 @@ internal object DeliveryPlanner {
     }
 
     private fun isIdempotent(method: String, operation: Operation): Boolean {
-        val declared = operation.extensions.flag(Keywords.IDEMPOTENT) as? ExtensionReading.Present
-            ?: return method.lowercase() in repeatable
-        return declared.value
+        val isDeclared = operation.extensions.flag(Keywords.IDEMPOTENT).valueOrNull()
+        return isDeclared ?: (method.lowercase() in repeatable)
     }
 
     private fun timeout(value: Value): TimeoutPlan {

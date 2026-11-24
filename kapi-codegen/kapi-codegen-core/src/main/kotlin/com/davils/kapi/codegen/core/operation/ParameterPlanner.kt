@@ -28,7 +28,8 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlace
 import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.pipeline.shown
-import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
+import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.parameter.Parameter
 import com.davils.kapi.spec.openapi.model.parameter.ParameterPlacement
 import com.davils.kapi.spec.openapi.model.parameter.ParameterStyle
@@ -70,15 +71,9 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
 
     private fun queryString(context: String, parameter: Parameter): ParameterPlan? {
         val content = scope.contentOf(parameter.content).entries.singleOrNull()
-        val declared = content?.run { key.trim() }
-        val isForm = declared?.let(MediaTypes::essenceOf) == FORM
-        val isJson = declared?.let(MediaTypes::isJson) == true
-        val schema = content?.value?.schema?.takeIf { isForm || isJson }
         val name = nameOf(parameter)
-        val use = schema?.let { found -> models.typeOf(found, context + Identifiers.type(name)) }
-        val isFields = use != null && types.isFields(use.shape) && use.shape !is TypeShape.Entries
-        val type = use?.takeIf { isJson || isFields }
-        if (type == null) {
+        val queried = content?.let { entry -> queried(context + Identifiers.type(name), entry) }
+        if (queried == null) {
             scope.findings.error(
                 CodegenCodes.OPERATION_UNSUPPORTED,
                 "The parameter ${shown(parameter.name)} takes the whole query string, which the generator " +
@@ -88,6 +83,7 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
             return null
         }
         names.audit(name, "The parameter ${shown(parameter.name)}", parameter.location)
+        val (type, mediaType) = queried
         return ParameterPlan(
             name = name,
             wireName = parameter.name,
@@ -96,8 +92,19 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
             isExploded = true,
             type = type.copy(isNullable = type.isNullable || !parameter.isRequired),
             isQuoted = false,
-            mediaType = declared?.takeIf { isJson } ?: FORM,
+            mediaType = mediaType,
         )
+    }
+
+    private fun queried(context: String, entry: Map.Entry<String, MediaType>): Pair<TypeUse, String>? {
+        val declared = entry.key.trim()
+        val isJson = MediaTypes.isJson(declared)
+        val isForm = MediaTypes.essenceOf(declared) == FORM
+        val schema = entry.value.schema?.takeIf { isForm || isJson } ?: return null
+        val use = models.typeOf(schema, context)
+        val isFields = types.isFields(use.shape) && use.shape !is TypeShape.Entries
+        val mediaType = declared.takeIf { isJson } ?: FORM
+        return use.takeIf { isJson || isFields }?.let { found -> found to mediaType }
     }
 
     private fun ignore(parameter: Parameter) {
@@ -126,9 +133,8 @@ internal class ParameterPlanner(private val scope: PlanScope, private val models
     }
 
     private fun nameOf(parameter: Parameter): String {
-        val declared = parameter.extensions.text(Keywords.NAME) as? ExtensionReading.Present
-            ?: return Identifiers.member(parameter.name)
-        return declared.value
+        val declared = parameter.extensions.text(Keywords.NAME).valueOrNull()
+        return declared ?: Identifiers.member(parameter.name)
     }
 
     private fun typeOf(context: String, parameter: Parameter): TypeUse {

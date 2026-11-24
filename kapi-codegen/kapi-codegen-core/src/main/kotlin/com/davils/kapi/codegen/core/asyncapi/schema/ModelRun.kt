@@ -24,6 +24,7 @@ import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.asyncapi.GeneratorOptions
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
@@ -42,8 +43,8 @@ private val componentPath: List<String> = listOf("components", "schemas")
 
 internal class ModelRun(private val options: GeneratorOptions, private val report: Findings) {
     suspend fun run(document: Document, hoisted: List<Hoisted>): Models? {
-        val root = document.location
-        val uri = root?.document ?: DocumentUri.MEMORY
+        val root = document.place
+        val uri = root.document
         val byKey = hoisted.associateBy(Hoisted::key)
         val text = JsonText.document(options.apiName, hoisted)
         val reading = OpenApi.reader().read(Source.Text(text, uri))
@@ -64,25 +65,23 @@ internal class ModelRun(private val options: GeneratorOptions, private val repor
         artifacts = setOf(Artifact.Models)
     }
 
-    private fun remapped(diagnostic: Diagnostic, byKey: Map<String, Hoisted>, root: Location?) {
+    private fun remapped(diagnostic: Diagnostic, byKey: Map<String, Hoisted>, root: Location) {
         val tokens = diagnostic.location?.run { pointer.tokens }.orEmpty()
-        val isSchema = tokens.take(2) == componentPath
-        val hoisted = byKey[tokens.getOrNull(2).takeIf { isSchema }]
+        val hoisted = byKey[tokens.getOrNull(2)]
         val location = hoisted?.let { found -> located(found, tokens.drop(COMPONENT_DEPTH)) } ?: root
-        val isKept = hoisted != null || diagnostic.isError
         val moved = Diagnostic(
             code = diagnostic.code,
             severity = diagnostic.severity,
             message = diagnostic.message,
             location = location,
         )
-        if (isKept) report.add(moved)
+        report.add(moved)
     }
 
-    private fun located(hoisted: Hoisted, rest: List<String>): Location? {
+    private fun located(hoisted: Hoisted, rest: List<String>): Location {
         val path = rest.runningFold<String, Value?>(hoisted.schema.definition) { value, token -> childOf(value, token) }
-        val found = path.mapNotNull { value -> value?.location }
-        return found.lastOrNull() ?: hoisted.schema.location
+        val found = path.filterNotNull()
+        return found.last().place
     }
 
     private fun childOf(value: Value?, token: String): Value? = when (value) {

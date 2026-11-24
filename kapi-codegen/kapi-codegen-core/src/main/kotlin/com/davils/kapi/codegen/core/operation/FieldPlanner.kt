@@ -27,9 +27,10 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.FieldKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
+import com.davils.kapi.codegen.core.pipeline.isTrue
 import com.davils.kapi.codegen.core.pipeline.shown
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.core.diagnostic.Location
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -81,9 +82,8 @@ internal class FieldPlanner(private val scope: PlanScope, private val models: Mo
     }
 
     private fun isLeftOut(schema: Schema): Boolean {
-        val reading = schema.extensions.flag(Keywords.IGNORE) as? ExtensionReading.Present
         val isReadOnly = (schema as? SchemaDefinition)?.isReadOnly == true
-        return isReadOnly || reading?.value == true
+        return isReadOnly || schema.extensions.flag(Keywords.IGNORE).isTrue()
     }
 
     private fun field(context: String, site: FieldSite): FieldPlan {
@@ -104,9 +104,9 @@ internal class FieldPlanner(private val scope: PlanScope, private val models: Mo
     }
 
     private fun nameOf(site: FieldSite): String {
-        val declared = site.schema.extensions.text(Keywords.NAME) as? ExtensionReading.Present
-            ?: return Identifiers.member(site.wireName)
-        return declared.value
+        val extensions = site.schema.extensions
+        val declared = extensions.text(Keywords.NAME).valueOrNull()
+        return declared ?: Identifiers.member(site.wireName)
     }
 
     private fun audit(site: FieldSite, kind: FieldKind) {

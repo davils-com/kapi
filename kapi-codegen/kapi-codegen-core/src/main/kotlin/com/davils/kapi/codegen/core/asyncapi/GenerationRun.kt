@@ -33,6 +33,7 @@ import com.davils.kapi.codegen.core.asyncapi.schema.PayloadTypes
 import com.davils.kapi.codegen.core.asyncapi.schema.SchemaHoist
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.core.source.SourceDocument
 
@@ -61,7 +62,7 @@ internal class GenerationRun(private val options: GeneratorOptions) {
             ?: return null
         val payloads = PayloadTypes(hoist = hoist, hoisted = hoisted, catalog = models.catalog, report = report)
         messages.forEach(payloads::typeOf)
-        val uri = document.location?.run { this.document.value }.orEmpty()
+        val uri = document.place.document.value
         val origin = uri.substringAfterLast('/')
         val emission = Emission(options, origin, payloads)
         val files = models.files + channels(emission, plans) + clients(emission, plans) + servers(emission, plans)

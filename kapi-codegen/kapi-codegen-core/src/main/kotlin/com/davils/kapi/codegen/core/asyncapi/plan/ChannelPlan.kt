@@ -29,7 +29,7 @@ internal data class ChannelPlan(
     val requests: List<RequestPlan>,
     val security: List<List<SchemeUsePlan>>,
     val summary: String?,
-    val location: Location?,
+    val location: Location,
 ) {
     val template: String
         get() = path.joinToString("") { part ->

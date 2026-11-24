@@ -26,8 +26,8 @@ import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.operation.plan.HeaderPlan
+import com.davils.kapi.codegen.core.pipeline.isTrue
 import com.davils.kapi.codegen.core.pipeline.shown
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.parameter.Header
 import com.davils.kapi.spec.openapi.resolve
@@ -63,8 +63,8 @@ internal class HeaderPlanner(private val scope: PlanScope, private val models: M
     }
 
     private fun isTyped(name: String, header: Header): Boolean {
-        val reading = header.extensions.flag(Keywords.SENSITIVE) as? ExtensionReading.Present
-        return name.lowercase() != CONTENT_TYPE && reading?.value != true
+        val isSensitive = header.extensions.flag(Keywords.SENSITIVE).isTrue()
+        return name.lowercase() != CONTENT_TYPE && !isSensitive
     }
 
     private fun plan(context: String, wireName: String, header: Header): HeaderPlan? {

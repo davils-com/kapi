@@ -27,7 +27,7 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.operation.plan.StreamPlan
-import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.Response
 import com.davils.kapi.spec.openapi.model.content.ResponseStatus
@@ -108,9 +108,8 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
     }
 
     private fun declaredKind(media: MediaType): StreamKind? {
-        val reading = media.extensions.text(Keywords.STREAM) as? ExtensionReading.Present
-        val declared = reading?.value ?: return null
-        return StreamKind.of(declared)
+        val declared = media.extensions.text(Keywords.STREAM).valueOrNull()
+        return declared?.let(StreamKind::of)
     }
 
     private fun streamOf(context: String, response: Response): StreamPlan? {

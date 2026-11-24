@@ -29,7 +29,8 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.BodyPlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
-import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.codegen.core.pipeline.isTrue
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.openapi.model.content.MediaType
 import com.davils.kapi.spec.openapi.model.content.RequestBody
 import com.davils.kapi.spec.openapi.model.path.Operation
@@ -63,10 +64,9 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
     }
 
     private fun isPatch(operation: Operation, body: BodyPlan): Boolean {
-        val reading = operation.extensions.flag(Keywords.TRI_STATE) as? ExtensionReading.Present
+        val isAsked = operation.extensions.flag(Keywords.TRI_STATE).isTrue()
         val named = body.type.shape as? TypeShape.Named
         val isObject = named?.kind == ModelKind.Object && named.packageName == null
-        val isAsked = reading?.value == true
         val isPatchable = body.kind == BodyKind.Json && isObject
         if (isAsked && !isPatchable) {
             scope.findings.error(
@@ -100,8 +100,7 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
     }
 
     private fun isUpload(media: MediaType): Boolean {
-        val reading = media.extensions.text(Keywords.STREAM) as? ExtensionReading.Present
-        val kind = reading?.value ?: return false
+        val kind = media.extensions.text(Keywords.STREAM).valueOrNull() ?: return false
         if (kind != StreamKind.Bytes.function) {
             scope.findings.error(
                 CodegenCodes.EXTENSION_VALUE,

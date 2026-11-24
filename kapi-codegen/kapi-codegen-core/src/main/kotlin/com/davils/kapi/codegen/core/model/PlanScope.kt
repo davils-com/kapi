@@ -23,6 +23,7 @@ import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.model.Referable
@@ -56,7 +57,7 @@ internal class PlanScope(
 
     val plans: List<ModelPlan> get() = declared.map(::linked).sortedBy(ModelPlan::name)
 
-    val documentUri: String get() = document.location?.run { document.value }.orEmpty()
+    val documentUri: String get() = document.place.document.value
 
     val documentName: String get() = documentUri.substringAfterLast(SEPARATOR)
 
@@ -79,17 +80,17 @@ internal class PlanScope(
     fun located(reference: Reference): Pair<String, Schema>? {
         val tokens = reference.target.pointer.tokens
         val isComponent = tokens.size == COMPONENT_DEPTH && tokens.take(2) == componentPath
-        val isLocal = reference.target.document == document.location?.document
+        val isLocal = reference.target.document == document.place.document
         val last = tokens.lastOrNull().orEmpty()
         val key = last.takeIf { isComponent && isLocal }.orEmpty()
         val schema = schemas[key] ?: return null
         return key to schema
     }
 
-    fun plannedName(schema: Schema): String? = schema.location?.let(inline::get)
+    fun plannedName(schema: Schema): String? = inline[schema.place]
 
     fun remember(schema: Schema, name: String) {
-        schema.location?.let { location -> inline[location] = name }
+        inline[schema.place] = name
     }
 
     fun declare(plan: ModelPlan) {
@@ -106,7 +107,7 @@ internal class PlanScope(
     }
 
     fun originOf(schema: Schema): String {
-        val location = schema.location ?: return ""
+        val location = schema.place
         val origin = location.document.value.substringAfterLast(SEPARATOR) + "#" + location.pointer
         origins[origin] = location
         return origin

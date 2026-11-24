@@ -27,6 +27,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.RequestPlan
 import com.davils.kapi.codegen.core.asyncapi.plan.Side
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
@@ -170,7 +171,7 @@ internal class ChannelPlanner(
         val operations = own.map { (_, operation) -> operation }
         val demanded = security.plan(
             channel = key,
-            location = channel.location,
+            location = channel.place,
             operations = operations,
             servers = webServers(channel),
         )
@@ -185,7 +186,7 @@ internal class ChannelPlanner(
             requests = flows.mapNotNull { flow -> requestOf(flow, planned) },
             security = demanded,
             summary = channel.summary ?: channel.title ?: channel.description,
-            location = channel.location,
+            location = channel.place,
         )
     }
 

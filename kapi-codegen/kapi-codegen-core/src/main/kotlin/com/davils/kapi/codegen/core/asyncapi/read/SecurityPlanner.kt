@@ -63,23 +63,26 @@ internal class SecurityPlanner(private val document: Document, private val repor
 
     private fun use(referable: Referable<SecurityScheme>): SchemeUsePlan? {
         val name = (referable as? Referable.Referenced)?.run { reference.target.pointer.last }
-        val scheme = document.resolve(referable)
-        val place = scheme?.let(::placeOf)
-        val shownName = name?.let(::shown) ?: "written inline"
-        if (name == null || scheme == null || place == null) {
+        val resolved = document.resolve(referable)
+        val placed = resolved?.let(::placedOf)
+        if (name == null || placed == null) {
+            val shownName = name?.let(::shown) ?: "written inline"
             val text = "The security scheme $shownName cannot authorize a WebSocket handshake: a scheme must be a " +
                 "named component of the type httpApiKey, http with bearer or basic, oauth2, openIdConnect or X509"
-            report.error(GenerationCodes.SECURITY_UNSUPPORTED, text, scheme?.location)
+            report.error(GenerationCodes.SECURITY_UNSUPPORTED, text, resolved?.location)
+            return null
         }
-        val scopes = scopesOf(scheme)
-        if (name == null || place == null) return null
-        return SchemeUsePlan(scheme = name, kind = place.first, field = place.second, scopes = scopes)
+        val (scheme, place) = placed
+        return SchemeUsePlan(scheme = name, kind = place.first, field = place.second, scopes = scopesOf(scheme))
     }
 
-    private fun scopesOf(scheme: SecurityScheme?): List<String> = when (scheme) {
+    private fun placedOf(scheme: SecurityScheme): Pair<SecurityScheme, Pair<SchemeKind, String>>? =
+        placeOf(scheme)?.let { place -> scheme to place }
+
+    private fun scopesOf(scheme: SecurityScheme): List<String> = when (scheme) {
         is OAuth2Scheme -> scheme.scopes
         is OpenIdConnectScheme -> scheme.scopes
-        is ApiKeyScheme, is HttpApiKeyScheme, is HttpScheme, is SimpleScheme, null -> emptyList()
+        is ApiKeyScheme, is HttpApiKeyScheme, is HttpScheme, is SimpleScheme -> emptyList()
     }
 
     private fun placeOf(scheme: SecurityScheme): Pair<SchemeKind, String>? = when (scheme) {

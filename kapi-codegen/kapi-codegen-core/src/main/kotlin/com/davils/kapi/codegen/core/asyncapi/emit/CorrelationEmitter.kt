@@ -81,14 +81,15 @@ internal class CorrelationEmitter(private val emission: Emission) {
             if (!side.of(plan).isEmpty) type.addFunction(messageId(plan, side))
         }
         if (isTagged) type.addFunction(tag())
-        if (correlated.values.any(List<MessagePlan>::isNotEmpty)) type.addFunction(idAt())
+        if (correlated.values.any(List<Correlated>::isNotEmpty)) type.addFunction(idAt())
         type.addFunction(step())
         return type.build()
     }
 
-    private fun correlated(plan: ChannelPlan, side: Side): List<MessagePlan> {
+    private fun correlated(plan: ChannelPlan, side: Side): List<Correlated> {
         val keys = plan.requests.flatMap { request -> keysOf(request, side) }.toSet()
-        return side.of(plan).messages.filter { message -> message.key in keys && message.correlation != null }
+        val requested = side.of(plan).messages.filter { message -> message.key in keys }
+        return requested.mapNotNull { message -> message.correlation?.let { tokens -> Correlated(message, tokens) } }
     }
 
     private fun keysOf(request: RequestPlan, side: Side): List<String> {
@@ -96,9 +97,9 @@ internal class CorrelationEmitter(private val emission: Emission) {
         return request.replies
     }
 
-    private fun paths(side: Side, messages: List<MessagePlan>): PropertySpec {
-        val entries = messages.map { message ->
-            CodeBlock.of("%L to %L", Texts.literal(message.tag.orEmpty()), path(message))
+    private fun paths(side: Side, messages: List<Correlated>): PropertySpec {
+        val entries = messages.map { correlated ->
+            CodeBlock.of("%L to %L", Texts.literal(correlated.message.tag.orEmpty()), path(correlated))
         }
         val type = MAP.parameterizedBy(STRING, LIST.parameterizedBy(STRING))
         val property = PropertySpec.builder(pathsName(side), type, KModifier.PRIVATE)
@@ -106,19 +107,19 @@ internal class CorrelationEmitter(private val emission: Emission) {
         return property.build()
     }
 
-    private fun path(message: MessagePlan): CodeBlock {
-        val tokens = message.correlation.orEmpty().map(Texts::literal)
+    private fun path(correlated: Correlated): CodeBlock {
+        val tokens = correlated.tokens.map(Texts::literal)
         return CodeBlock.of("listOf(%L)", tokens.joinToCode(", "))
     }
 
-    private fun id(plan: ChannelPlan, side: Side, messages: List<MessagePlan>): FunSpec {
+    private fun id(plan: ChannelPlan, side: Side, messages: List<Correlated>): FunSpec {
         val direction = side.of(plan)
         val function = FunSpec.builder(idName(side))
         function.addParameter(ELEMENT, Runtime.jsonElement)
         function.returns(STRING.copy(nullable = true))
         val single = messages.singleOrNull()?.takeIf { !direction.isSealed }
         val tagged = direction.discriminator?.takeIf { direction.isSealed && messages.isNotEmpty() }
-        val plain = single?.let { message -> CodeBlock.of("%N(%N, %L)", ID, ELEMENT, path(message)) }
+        val plain = single?.let { correlated -> CodeBlock.of("%N(%N, %L)", ID, ELEMENT, path(correlated)) }
         val chosen = tagged?.let { property ->
             CodeBlock.of(
                 "%N[%N(%N, %L)]?.let { %N -> %N(%N, %N) }",
@@ -191,4 +192,6 @@ internal class CorrelationEmitter(private val emission: Emission) {
     private fun messageIdName(side: Side): String = side.label.lowercase() + "MessageId"
 
     private fun pathsName(side: Side): String = side.label.lowercase() + "Paths"
+
+    private data class Correlated(val message: MessagePlan, val tokens: List<String>)
 }

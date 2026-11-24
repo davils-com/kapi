@@ -27,8 +27,9 @@ import com.davils.kapi.codegen.core.model.plan.TypeUse
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.naming.NameClaim
 import com.davils.kapi.codegen.core.naming.NameTable
+import com.davils.kapi.codegen.core.pipeline.isTrue
 import com.davils.kapi.codegen.core.pipeline.shown
-import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.openapi.model.schema.FixedSchema
 import com.davils.kapi.spec.openapi.model.schema.Schema
 import com.davils.kapi.spec.openapi.model.schema.SchemaDefinition
@@ -122,8 +123,7 @@ internal class ModelPlanner(private val scope: PlanScope) {
 
     private fun property(owner: String, shape: ObjectShape, entry: Pair<String, Schema>): PropertyPlan {
         val (jsonName, schema) = entry
-        val declared = schema.extensions.text(Keywords.NAME) as? ExtensionReading.Present
-        val name = declared?.value ?: Identifiers.member(jsonName)
+        val name = schema.extensions.text(Keywords.NAME).valueOrNull() ?: Identifiers.member(jsonName)
         val use = types.typeOf(schema, owner + Identifiers.type(name))
         val isOptional = jsonName !in shape.required
         return PropertyPlan(
@@ -145,7 +145,6 @@ internal class ModelPlanner(private val scope: PlanScope) {
 
     private fun flag(schema: Schema, isSensitive: Boolean): Boolean {
         val keyword = Keywords.SENSITIVE.takeIf { isSensitive } ?: Keywords.IGNORE
-        val reading = schema.extensions.flag(keyword) as? ExtensionReading.Present
-        return reading?.value == true
+        return schema.extensions.flag(keyword).isTrue()
     }
 }

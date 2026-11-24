@@ -31,9 +31,10 @@ import com.davils.kapi.codegen.core.operation.plan.ParameterPlan
 import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.operation.plan.StreamKind
 import com.davils.kapi.codegen.core.options.GeneratorOptions
+import com.davils.kapi.codegen.core.pipeline.isTrue
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.value.ExtensionName
-import com.davils.kapi.spec.core.value.ExtensionReading
 import com.davils.kapi.spec.openapi.model.path.Operation
 import com.davils.kapi.spec.openapi.model.path.PathItem
 import com.davils.kapi.spec.openapi.model.path.PathTemplate
@@ -88,10 +89,7 @@ internal class OperationPlanner(
 
     fun declaredName(operation: Operation): String? = text(operation, Keywords.NAME) ?: operation.operationId
 
-    fun isIgnored(operation: Operation): Boolean {
-        val reading = operation.extensions.flag(Keywords.IGNORE) as? ExtensionReading.Present
-        return reading?.value == true
-    }
+    fun isIgnored(operation: Operation): Boolean = operation.extensions.flag(Keywords.IGNORE).isTrue()
 
     fun planned(site: OperationSite): OperationPlan {
         val operation = site.operation
@@ -195,8 +193,5 @@ internal class OperationPlanner(
         }
     }
 
-    private fun text(element: Element, keyword: ExtensionName): String? {
-        val reading = element.extensions.text(keyword) as? ExtensionReading.Present
-        return reading?.value
-    }
+    private fun text(element: Element, keyword: ExtensionName): String? = element.extensions.text(keyword).valueOrNull()
 }

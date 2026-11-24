@@ -19,7 +19,7 @@ package com.davils.kapi.codegen.core.naming
 import com.davils.kapi.codegen.core.Keywords
 import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.pipeline.shown
-import com.davils.kapi.spec.core.value.ExtensionReading
+import com.davils.kapi.codegen.core.pipeline.valueOrNull
 import com.davils.kapi.spec.openapi.Document
 import com.davils.kapi.spec.openapi.model.schema.Schema
 
@@ -34,8 +34,8 @@ internal class SchemaNames(private val options: GeneratorOptions, private val ta
     }
 
     private fun nameOf(key: String, schema: Schema): String {
-        val declared = schema.extensions.text(Keywords.NAME) as? ExtensionReading.Present
-        val chosen = declared?.run { value.takeIf(Identifiers::isIdentifier) } ?: Identifiers.type(key)
+        val declared = schema.extensions.text(Keywords.NAME).valueOrNull()
+        val chosen = declared?.takeIf(Identifiers::isIdentifier) ?: Identifiers.type(key)
         return options.typePrefix + options.apiName + chosen
     }
 }

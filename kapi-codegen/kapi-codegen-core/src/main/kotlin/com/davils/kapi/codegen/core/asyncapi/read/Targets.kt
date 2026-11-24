@@ -19,15 +19,16 @@
 package com.davils.kapi.codegen.core.asyncapi.read
 
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.model.schema.Schema
 import com.davils.kapi.spec.asyncapi.resolve
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.model.Referable
 import com.davils.kapi.spec.core.model.Target
+import com.davils.kapi.spec.core.model.UriResolution
 import com.davils.kapi.spec.core.value.Value
 import com.davils.kore.core.annotation.DavilsInternal
-import com.davils.kore.core.uri.UriReference
 
 private const val REFERENCE: String = "\$ref"
 
@@ -37,14 +38,8 @@ private const val SCHEMAS: String = "schemas"
 
 private const val MOST_HOPS: Int = 32
 
-private const val HEX_RADIX: Int = 16
-
-private const val ESCAPE_WIDTH: Int = 3
-
-private const val PERCENT: Char = '%'
-
 internal class Targets(private val document: Document) {
-    val origin: DocumentUri = document.location?.document ?: DocumentUri.MEMORY
+    val origin: DocumentUri = document.place.document
 
     fun channel(key: String): Target = Target(origin, JsonPointer.of("channels", key))
 
@@ -65,62 +60,21 @@ internal class Targets(private val document: Document) {
 
     fun targetOf(referable: Referable<Schema>): Target? = when (referable) {
         is Referable.Referenced -> referable.reference.target
-        is Referable.Inline -> referable.value.location?.let { location -> Target(location.document, location.pointer) }
+        is Referable.Inline -> referable.value.place.run { Target(document, pointer) }
     }
 
     fun referenceOf(value: Value): String? = Fields.text(value, REFERENCE)
 
-    fun targetOf(text: String, base: DocumentUri): Target? {
-        val reference = UriReference.parseOrNull(text)
-        val pointer = reference?.let { parsed -> decoded(parsed.fragment.orEmpty()) }?.let(JsonPointer::parseOrNull)
-        val uri = reference?.let { parsed -> documentOf(base, parsed) }
-        if (pointer == null || uri == null) return null
-        return Target(uri, pointer)
-    }
+    fun targetOf(text: String, base: DocumentUri): Target? =
+        UriResolution.parse(text)?.let { reference -> UriResolution.target(base, reference) }
 
-    fun resolved(value: Value?): Value? {
-        var current = value
-        var hops = 0
-        var text = current?.let(::referenceOf)
-        while (text != null && hops < MOST_HOPS) {
-            val base = current?.location?.document ?: origin
-            val target = targetOf(text, base)
-            current = target?.let(::schemaAt)?.definition
-            text = current?.let(::referenceOf)
-            hops += 1
-        }
-        return current?.takeIf { text == null }
-    }
+    fun resolved(value: Value?): Value? = value?.let { found -> resolvedFrom(found, hops = 0) }
 
-    private fun documentOf(base: DocumentUri, reference: UriReference): DocumentUri? {
-        val isUnrooted = reference.scheme == null && reference.authority == null
-        val isSameDocument = isUnrooted && reference.path.isEmpty() && reference.query == null
-        if (isSameDocument) return base
-        val parsed = UriReference.parseOrNull(base.value)
-        val resolved = parsed?.resolve(reference)?.normalize()
-        return resolved?.let { uri -> DocumentUri.parseOrNull(uri.toString().substringBefore('#')) }
-    }
-
-    private fun decoded(fragment: String): String? {
-        val bytes = ArrayList<Byte>(fragment.length)
-        var index = 0
-        while (index < fragment.length) {
-            val isEscape = fragment[index] == PERCENT
-            bytes.add(octetAt(fragment, index, isEscape).toByte())
-            index += ESCAPE_WIDTH.takeIf { isEscape } ?: 1
-        }
-        return strict(bytes.toByteArray())
-    }
-
-    private fun octetAt(fragment: String, index: Int, isEscape: Boolean): Int {
-        if (!isEscape) return fragment[index].code
-        return fragment.substring(startIndex = index + 1, endIndex = index + ESCAPE_WIDTH).toInt(HEX_RADIX)
-    }
-
-    private fun strict(bytes: ByteArray): String? = try {
-        bytes.decodeToString(throwOnInvalidSequence = true)
-    } catch (_: CharacterCodingException) {
-        null
+    private fun resolvedFrom(value: Value, hops: Int): Value? {
+        val text = referenceOf(value) ?: return value
+        val base = value.location?.document ?: origin
+        val next = targetOf(text, base)?.let(::schemaAt)?.definition
+        return next?.takeIf { hops < MOST_HOPS }?.let { found -> resolvedFrom(found, hops + 1) }
     }
 
     private companion object {

@@ -22,6 +22,7 @@ import com.davils.kapi.codegen.core.asyncapi.plan.MessagePlan
 import com.davils.kapi.codegen.core.asyncapi.plan.PayloadSource
 import com.davils.kapi.codegen.core.naming.Identifiers
 import com.davils.kapi.codegen.core.pipeline.Findings
+import com.davils.kapi.codegen.core.pipeline.place
 import com.davils.kapi.codegen.core.pipeline.shown
 import com.davils.kapi.spec.asyncapi.Document
 import com.davils.kapi.spec.asyncapi.effective
@@ -49,7 +50,7 @@ internal class MessagePlanner(private val document: Document, private val report
             payload = payloadOf(key, message),
             correlation = correlationOf(key, message),
             summary = message.summary ?: message.title ?: message.description,
-            location = message.location,
+            location = message.place,
         )
     }
 
