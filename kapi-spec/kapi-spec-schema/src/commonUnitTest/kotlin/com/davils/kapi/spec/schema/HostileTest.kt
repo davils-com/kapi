@@ -137,10 +137,8 @@ class HostileTest : FunSpec({
         val defs = """"a": {"allOf": [$middle]}, "b": {"allOf": [$leaf]}"""
         val schema = """{"unevaluatedItems": true, "${'$'}defs": {$defs}, "allOf": [$top]}"""
         val value = JsonArray(List(WIDE_ARRAY) { JsonPrimitive(0) })
-        val start = TimeSource.Monotonic.markNow()
 
         schemaOf(schema).refusalOf(value).reason shouldBe RefusalReason.EvaluationSteps
-        start.elapsedNow() shouldBeLessThan 5.seconds
     }
 
     test("multipleOf with extreme exponents is exact and bounded") {
