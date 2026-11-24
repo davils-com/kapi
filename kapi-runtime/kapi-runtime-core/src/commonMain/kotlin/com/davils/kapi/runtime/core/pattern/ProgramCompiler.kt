@@ -55,6 +55,7 @@ internal class ProgramCompiler private constructor() {
     }
 
     private fun repetition(node: PatternNode.Repetition) {
+        if (size(node.body) == 0L) return
         repeat(node.minimum) { emit(node.body) }
         val maximum = node.maximum
         if (maximum == null) {
@@ -119,8 +120,9 @@ internal class ProgramCompiler private constructor() {
         private fun repetitionSize(node: PatternNode.Repetition): Long {
             val body = size(node.body)
             val required = node.minimum.toLong() saturatedTimes body
-            val optional = node.maximum?.let { maximum -> (maximum - node.minimum).toLong() saturatedTimes body + 1 }
-            return required saturatedPlus (optional ?: (body saturatedPlus LOOP_OVERHEAD))
+            val optional = node.maximum?.let { maximum -> (maximum - node.minimum).toLong() saturatedTimes (body + 1) }
+            val total = required saturatedPlus (optional ?: (body saturatedPlus LOOP_OVERHEAD))
+            return total.takeIf { body > 0L } ?: 0L
         }
 
         private infix fun Long.saturatedPlus(other: Long): Long = (this + other).coerceAtMost(SIZE_CEILING)

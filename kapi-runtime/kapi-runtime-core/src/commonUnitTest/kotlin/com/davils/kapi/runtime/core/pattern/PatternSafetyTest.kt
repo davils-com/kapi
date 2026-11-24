@@ -19,6 +19,7 @@ package com.davils.kapi.runtime.core.pattern
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import kotlin.time.Duration
@@ -75,6 +76,21 @@ class PatternSafetyTest : FunSpec({
             compiled(escapes.repeat(count), limits).containsMatchIn("é") shouldBe false
 
             start.elapsedNow() shouldBeLessThan SLOW_COMPILATION
+        }
+
+        test("an empty body repeated a billion times compiles at once and changes nothing") {
+            val start = TimeSource.Monotonic.markNow()
+
+            compiled("(?:a{0}){999999999}").containsMatchIn("") shouldBe true
+            compiled("(?:(?:){999999999}){999999999}").containsMatchIn("") shouldBe true
+            compiled("x(?:){999999999,}y").containsMatchIn("xy") shouldBe true
+            compiled("a(?:){0,999999999}b").containsMatchIn("ab") shouldBe true
+
+            start.elapsedNow() shouldBeLessThan 1.seconds
+        }
+
+        test("optional copies are counted with their branches, so a huge range is refused before it is built") {
+            Pattern.compile("a(?:bc){0,999999999}").shouldBeInstanceOf<PatternCompilation.Refused>()
         }
 
         test("the classic nested quantifier answers correctly") {

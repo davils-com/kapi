@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Pattern compilation** finishes at once for a repeated body without states, such as `(?:a{0}){999999999}`, which
+  never finished before, and counts the branch of every optional copy, so `(?:){0,999999999}` can no longer slip past
+  the limit of states.
 - **Credentials in headers of their own**, such as an API key in `X-Api-Key`, are dropped like `Authorization` when
   the client follows a redirect to another origin, so a redirect can no longer carry them to a host they do not
   belong to.
