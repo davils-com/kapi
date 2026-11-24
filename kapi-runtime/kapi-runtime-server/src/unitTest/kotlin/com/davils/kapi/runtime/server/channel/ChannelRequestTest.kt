@@ -223,6 +223,7 @@ class ChannelRequestTest : FunSpec({
 
         test("ends as closed when the channel closes or holds too many other messages") {
             val replies = mutableListOf<String>()
+            val answered = CompletableDeferred<Unit>()
             val held = channelLimits { maxHeldMessages = 1 }
             serve(
                 routes = {
@@ -230,6 +231,7 @@ class ChannelRequestTest : FunSpec({
                         room(limits = held) {
                             replies += request(Note(FIRST), waiting).shown()
                             replies += request(Note("2:ping"), waiting).shown()
+                            answered.complete(Unit)
                         },
                     )
                 },
@@ -239,6 +241,7 @@ class ChannelRequestTest : FunSpec({
                     send(Frame.Text("""{"text":"8:a"}"""))
                     send(Frame.Text("""{"text":"9:b"}"""))
                     closeReason.await()?.code shouldBe ChannelSession.POLICY_VIOLATION
+                    answered.await()
                 }
             }
             val ended = CompletableDeferred<String>()
