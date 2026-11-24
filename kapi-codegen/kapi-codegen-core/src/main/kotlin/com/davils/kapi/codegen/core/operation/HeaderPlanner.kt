@@ -72,12 +72,13 @@ internal class HeaderPlanner(private val scope: PlanScope, private val models: M
         val name = (member + SUFFIX).takeIf { member in taken } ?: member
         val schemas = listOfNotNull(header.schema)
         val uses = schemas.map { schema -> models.typeOf(schema, context + Identifiers.type(name)) }
-        val use = uses.firstOrNull { type -> readerOf(type) != null } ?: return null
+        val (use, reader) = uses.firstNotNullOfOrNull { type -> readerOf(type)?.let { found -> type to found } }
+            ?: return null
         return HeaderPlan(
             name = name,
             wireName = wireName,
             type = TypeUse(use.shape, isNullable = use.isNullable || !header.isRequired),
-            reader = readerOf(use).orEmpty(),
+            reader = reader,
         )
     }
 

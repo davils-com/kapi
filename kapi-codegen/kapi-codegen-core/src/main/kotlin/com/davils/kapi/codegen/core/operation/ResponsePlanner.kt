@@ -100,9 +100,10 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
 
     private fun forcedOf(context: String, response: Response): Pair<String, StreamPlan>? {
         val content = scope.contentOf(response.content)
-        val declared = content.entries.firstOrNull { (_, media) -> declaredKind(media) != null }
-        val (type, media) = declared ?: return null
-        val kind = declaredKind(media) ?: StreamKind.Bytes
+        val declared = content.entries.firstNotNullOfOrNull { (type, media) ->
+            declaredKind(media)?.let { kind -> Triple(type, media, kind) }
+        }
+        val (type, media, kind) = declared ?: return null
         val item = TypeUse(Chunks.item).takeIf { kind == StreamKind.Bytes } ?: itemOf(media, context + ITEM)
         return type to StreamPlan(kind, item)
     }

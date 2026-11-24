@@ -47,7 +47,7 @@ internal class PathResolver(root: Path, private val maximumLength: Int) : Resolv
     } catch (_: NoSuchFileException) {
         Resolution.Missing
     } catch (failure: IOException) {
-        Resolution.Failed(failure::class.simpleName.orEmpty())
+        Resolution.Failed(failure.javaClass.simpleName)
     }
 
     private fun answer(path: Path, isInside: Boolean, isSmall: Boolean): Resolution {

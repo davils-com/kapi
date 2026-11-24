@@ -83,7 +83,8 @@ internal class Launch(private val request: LaunchRequest, private val mode: Laun
     private fun comparisonProblemOf(): String? {
         val isCompared = mode == LaunchMode.Compare
         val baseline = request.baseline?.takeIf { isCompared }
-        val outside = baseline?.toAbsolutePath()?.takeUnless { path -> path.normalize().startsWith(root) }
+        val absolute = baseline?.toAbsolutePath()
+        val outside = absolute?.takeUnless { path -> path.normalize().startsWith(root) }
         val isSideUnknown = isCompared && request.breaking !in sides
         return listOfNotNull(
             outside?.let { path -> "The baseline $path lies outside its root $root" },

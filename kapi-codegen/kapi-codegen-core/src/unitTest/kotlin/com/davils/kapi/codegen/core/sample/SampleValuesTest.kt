@@ -99,6 +99,15 @@ class SampleValuesTest : FunSpec({
         test("is left out when it needs entries there is no value for") {
             sampleOf("a: {type: object, minProperties: 1, additionalProperties: $UNMATCHED}") shouldContain EMPTY
         }
+
+        test("holds maps of its own, as many as it must have") {
+            val nested = "a: {type: object, minProperties: 1, additionalProperties: {$COUNTS, minProperties: 1}}"
+            val unmatched = "a: {type: object, minProperties: 1, additionalProperties: " +
+                "{type: object, minProperties: 1, additionalProperties: $UNMATCHED}}"
+
+            sampleOf(nested) shouldContain """a = mapOf("key1" to mapOf("key1" to 0L)),"""
+            sampleOf(unmatched) shouldContain EMPTY
+        }
     }
 
     context("an enumeration") {
