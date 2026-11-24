@@ -29,6 +29,7 @@ import com.davils.kore.core.failure.contained
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
+import io.ktor.websocket.FrameType
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readReason
@@ -148,16 +149,16 @@ internal class ChannelEngine<S, R : Any>(
         waiter
     }
 
-    private suspend fun handled(frame: Frame): ChannelClose? = when (frame) {
-        is Frame.Text -> data(frame)
-        is Frame.Binary -> data(frame)
-        is Frame.Close -> peerClose(frame)
-        is Frame.Ping -> null
-        is Frame.Pong -> null
+    private suspend fun handled(frame: Frame): ChannelClose? = when (frame.frameType) {
+        FrameType.TEXT -> data(frame)
+        FrameType.BINARY -> data(frame)
+        FrameType.CLOSE -> peerClose(frame)
+        FrameType.PING -> null
+        FrameType.PONG -> null
     }
 
-    private fun peerClose(frame: Frame.Close): ChannelClose {
-        val reason = frame.readReason() ?: return ChannelClose(code = CloseKind.NoStatus.code)
+    private fun peerClose(frame: Frame): ChannelClose {
+        val reason = Frame.Close(frame.data).readReason() ?: return ChannelClose(code = CloseKind.NoStatus.code)
         return ChannelClose(code = reason.code.toInt(), reason = reason.message)
     }
 
