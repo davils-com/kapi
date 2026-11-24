@@ -39,6 +39,10 @@ private const val COMPONENT_DEPTH: Int = 3
 
 private const val QUOTE: String = "\""
 
+private const val NEWLINE: String = "\n"
+
+private const val PROVENANCE: String = "from = \""
+
 private val componentPath: List<String> = listOf("components", "schemas")
 
 internal class ModelRun(private val options: GeneratorOptions, private val report: Findings) {
@@ -95,9 +99,16 @@ internal class ModelRun(private val options: GeneratorOptions, private val repor
         val moves = hoisted.flatMap { found -> movesOf(name, uri, found) }
         val kotlin = files.filter { file -> file.kind == GeneratedFileKind.Kotlin }
         return kotlin.map { file ->
-            val content = moves.fold(file.content) { text, (from, to) -> text.replace(oldValue = from, newValue = to) }
+            val lines = file.content.split(NEWLINE).map { line -> provenanceOf(line, moves) }
+            val content = lines.joinToString(NEWLINE)
             GeneratedFile(path = file.path, kind = file.kind, content = content, platform = file.platform)
         }
+    }
+
+    private fun provenanceOf(line: String, moves: List<Pair<String, String>>): String {
+        val isProvenance = line.trimStart().startsWith(PROVENANCE)
+        if (!isProvenance) return line
+        return moves.fold(line) { text, (from, to) -> text.replace(oldValue = from, newValue = to) }
     }
 
     private fun movesOf(name: String, uri: DocumentUri, hoisted: Hoisted): List<Pair<String, String>> {

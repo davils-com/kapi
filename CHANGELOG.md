@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Generated AsyncAPI payload models** write the origin of their schema only into the `from` of `@DavilsGenerated`,
+  escaped as a string literal: a pointer of a document with `*/` in it can no longer close a KDoc and inject Kotlin
+  into the generated code.
 - **Overlays** can no longer crash a reading or grow a document past its limits: an action whose JSONPath or patch
   goes past the limits of kaml is left out with `openapi.overlay.update` instead of throwing, an update that every
   match would copy past `maximumNodes` is refused before it is built, and an action that grows the document past

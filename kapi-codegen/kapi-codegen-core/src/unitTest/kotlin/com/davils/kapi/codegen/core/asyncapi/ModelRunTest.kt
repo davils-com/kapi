@@ -16,9 +16,12 @@
 
 package com.davils.kapi.codegen.core.asyncapi
 
+import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.asyncapi.fixture.generationOf
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val REF: String = "\$ref"
 
@@ -44,7 +47,34 @@ private suspend fun findingsOf(payload: String, schemas: String = "{}"): List<St
     }
 }
 
+private val injecting: String = listOf(
+    "asyncapi: 3.0.0",
+    "info: {title: T, version: '1'}",
+    "defaultContentType: application/json",
+    "servers: {local: {host: localhost, protocol: ws}}",
+    "channels: {room: {address: /room, messages: {a: {payload: " +
+        "{$REF: '#/x-defs/a*/public%20fun%20pwned():%20Int%20=%201/*t'}}}}}",
+    "operations: {send: {action: receive, channel: {$REF: '#/channels/room'}}}",
+    "x-defs:",
+    "  a*:",
+    "    \"public fun pwned(): Int = 1\":",
+    "      '*t': {type: object, description: '\"t.yaml#/components/schemas/XDefsAPublicFunPwnedInt1T\"', " +
+        "properties: {b: {type: string}}}",
+).joinToString(separator = "\n")
+
 class ModelRunTest : FunSpec({
+    context("the origin of a payload model") {
+        test("is written only where the model names its origin, so no pointer can close a comment and inject code") {
+            val generated = generationOf(name = "t.yaml", text = injecting).shouldBeInstanceOf<Generation.Generated>()
+            val lines = generated.files.flatMap { file -> file.content.lines() }
+
+            val origins = lines.filter { line -> "x-defs/a*/public fun pwned" in line }
+
+            origins.shouldNotBeEmpty()
+            origins.filterNot { line -> line.trimStart().startsWith("from = ") }.shouldBe(emptyList())
+        }
+    }
+
     context("a finding of the models of a payload") {
         test("is located at the property of the payload in the AsyncAPI document") {
             findingsOf("{type: object, properties: {a: {type: object, patternProperties: {x: {}}}}}") shouldBe
