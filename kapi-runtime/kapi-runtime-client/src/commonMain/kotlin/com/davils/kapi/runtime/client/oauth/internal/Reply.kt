@@ -19,7 +19,9 @@ package com.davils.kapi.runtime.client.oauth.internal
 import com.davils.kapi.runtime.core.response.Headers
 
 internal sealed interface Reply {
-    data class Answered(val status: Int, val headers: Headers, val content: String) : Reply
+    data class Answered(val status: Int, val headers: Headers, val content: String) : Reply {
+        override fun toString(): String = "Answered($status, $headers, ${content.length} characters)"
+    }
 
     data class Failed(val reason: String) : Reply
 }
