@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Credentials in headers of their own**, such as an API key in `X-Api-Key`, are dropped like `Authorization` when
+  the client follows a redirect to another origin, so a redirect can no longer carry them to a host they do not
+  belong to.
 - **Path parameters** of the server runtime are read from the route only: a query field named like a path parameter,
   such as `DELETE /accounts/me?accountId=victim`, can no longer replace the value of the path that routing, gateways
   and authorizers saw.

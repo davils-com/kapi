@@ -49,6 +49,7 @@ internal class Outgoing(
     val upload: Upload?,
     val upgrade: Upgrade?,
     val binding: DpopBinding?,
+    val credentialNames: Set<String> = emptySet(),
 ) {
     val isReplayable: Boolean get() = upload == null && upgrade == null
 
@@ -66,12 +67,13 @@ internal class Outgoing(
             upload = upload.takeUnless { isGet },
             upgrade = upgrade.takeUnless { isGet },
             binding = binding.takeIf { isSameOrigin },
+            credentialNames = credentialNames,
         )
     }
 
     private fun isKept(entry: ParameterEntry, isGet: Boolean, isSameOrigin: Boolean): Boolean {
         val name = entry.name.lowercase()
-        val isCredential = name in sensitiveNames
+        val isCredential = name in sensitiveNames || name in credentialNames
         val isContent = name in contentNames
         return (isSameOrigin || !isCredential) && (!isGet || !isContent)
     }
@@ -92,6 +94,7 @@ internal class Outgoing(
                 upload = call.upload,
                 upgrade = call.upgrade,
                 binding = trip.granted.binding,
+                credentialNames = trip.granted.headers.map { entry -> entry.name.lowercase() }.toSet(),
             )
         }
     }

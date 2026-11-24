@@ -48,6 +48,8 @@ private const val OTHER: String = "https://cdn.example.org/files/1"
 
 private const val FOUND: Int = 302
 
+private const val API_KEY: String = "X-Api-Key"
+
 private const val SEE_OTHER: Int = 303
 
 private const val TEMPORARY: Int = 307
@@ -122,6 +124,18 @@ class ApiClientRedirectTest : FunSpec({
 
             moved.url.toString() shouldBe OTHER
             moved.headers[HttpHeaders.Authorization] shouldBe null
+        }
+
+        test("goes to another origin without a key the scheme places in a header of its own") {
+            val exchanges = following { url -> redirect(FOUND, OTHER).takeIf { url == START } ?: ok(EMPTY) }
+            val keyed = SecurityUse("bearer", CredentialPlacement.Header(API_KEY))
+
+            exchanges.withClient { client -> client.execute(pets.change { security(listOf(keyed)) }) }
+            val (first, moved) = exchanges.requests
+
+            first.headers[API_KEY] shouldBe "t1"
+            moved.url.toString() shouldBe OTHER
+            moved.headers[API_KEY] shouldBe null
         }
 
         test("hands the redirect back when the policy keeps calls on their origin") {
