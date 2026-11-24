@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Overlays** can no longer crash a reading or grow a document past its limits: an action whose JSONPath or patch
+  goes past the limits of kaml is left out with `openapi.overlay.update` instead of throwing, an update that every
+  match would copy past `maximumNodes` is refused before it is built, and an action that grows the document past
+  `maximumNodes` or `maximumDepth` is left out; merging an update no longer hashes the keys of the document.
 - **Pattern compilation** finishes at once for a repeated body without states, such as `(?:a{0}){999999999}`, which
   never finished before, and counts the branch of every optional copy, so `(?:){0,999999999}` can no longer slip past
   the limit of states.

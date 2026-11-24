@@ -22,27 +22,59 @@ import com.davils.kaml.document.patch.JsonPatchOperation
 import com.davils.kaml.document.patch.JsonPatchResult
 import com.davils.kaml.document.path.JsonPathMatch
 import com.davils.kaml.document.pointer.JsonPointer
+import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.openapi.DiagnosticCodes
 import com.davils.kapi.spec.openapi.diagnostic.Findings
+import com.davils.kore.core.failure.contained
 
 private val deepestFirst: Comparator<JsonPathMatch> = compareBy<JsonPathMatch>(
     { match -> match.location.tokens.size },
     { match -> match.location.last?.toIntOrNull() ?: 0 },
 ).reversed()
 
-internal class OverlayApplication(private val findings: Findings) {
+internal class OverlayApplication(private val findings: Findings, private val limits: ReadLimits) {
     fun applied(root: YamlNode, actions: List<OverlayAction>): YamlNode =
-        actions.fold(root) { current, action -> applied(current, action) }
+        actions.fold(root) { current, action -> bounded(current, action) }
+
+    private fun bounded(root: YamlNode, action: OverlayAction): YamlNode {
+        val result = contained { applied(root, action) }
+        val changed = result.getOrNull()
+        if (changed == null) {
+            refuse(action, "The action of '${action.target}' goes past the limits of an overlay and is left out")
+            return root
+        }
+        val isBounded = NodeBudget.isWithin(
+            root = changed,
+            maximumNodes = limits.maximumNodes,
+            maximumDepth = limits.maximumDepth,
+        )
+        if (!isBounded) {
+            val message = "The action of '${action.target}' grows the document past ${limits.maximumNodes} nodes or " +
+                "a depth of ${limits.maximumDepth} and is left out"
+            refuse(action, message)
+        }
+        return changed.takeIf { isBounded } ?: root
+    }
 
     private fun applied(root: YamlNode, action: OverlayAction): YamlNode {
         val matches = action.matches(root)
+        if (!isAcceptable(action, matches)) return root
+        val updates = action.update?.let { update -> updates(matches, update, action) }
+        return patched(root, updates ?: removals(matches, action), action)
+    }
+
+    private fun isAcceptable(action: OverlayAction, matches: List<JsonPathMatch>): Boolean {
         if (matches.isEmpty()) {
             val message = "The target '${action.target}' selects nothing in the document"
             action.report(findings, DiagnosticCodes.OVERLAY_UNMATCHED, message)
-            return root
+            return false
         }
-        val updates = action.update?.let { update -> updates(matches, update, action) }
-        return patched(root, updates ?: removals(matches, action), action)
+        val growth = action.update?.let { update -> NodeBudget.count(update, limits.maximumNodes) }
+        val isTooLarge = growth != null && growth * matches.size > limits.maximumNodes
+        if (isTooLarge) {
+            refuse(action, "The update of '${action.target}' would add more than ${limits.maximumNodes} nodes")
+        }
+        return !isTooLarge
     }
 
     private fun updates(

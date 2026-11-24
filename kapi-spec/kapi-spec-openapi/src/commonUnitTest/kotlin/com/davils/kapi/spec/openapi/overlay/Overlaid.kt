@@ -22,6 +22,7 @@ import com.davils.kaml.core.node.YamlNode
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
 import com.davils.kapi.spec.core.load.LoadedDocument
+import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kapi.spec.core.policy.SeverityPolicy
 import com.davils.kapi.spec.core.source.SourceDocument
 import com.davils.kapi.spec.openapi.diagnostic.Findings
@@ -45,11 +46,15 @@ internal class Overlaid(
     val codes: List<ViolationCode> get() = diagnostics.map(Diagnostic::code)
 }
 
-internal fun overlaid(document: List<String>, overlay: List<String>): Overlaid {
+internal fun overlaid(
+    document: List<String>,
+    overlay: List<String>,
+    limits: ReadLimits = ReadLimits.Default,
+): Overlaid {
     val findings = Findings(SeverityPolicy.Default, MAXIMUM_DIAGNOSTICS)
     val loaded = loadedOf(overlay)
     val actions = OverlayReader(loaded, findings).actions()
-    val root = OverlayApplication(findings).applied(nodeOfLines(document), actions)
+    val root = OverlayApplication(findings, limits).applied(nodeOfLines(document), actions)
     return Overlaid(root, findings.sorted(mapOf(overlayUri to 0)))
 }
 

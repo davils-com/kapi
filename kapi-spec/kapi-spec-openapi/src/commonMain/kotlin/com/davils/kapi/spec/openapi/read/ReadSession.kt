@@ -59,7 +59,7 @@ internal class ReadSession(
     private suspend fun overlaid(document: LoadedDocument): LoadedDocument {
         if (overlays.isEmpty()) return document
         val actions = overlays.flatMap { overlay -> actionsOf(overlay) }
-        val root = OverlayApplication(findings).applied(document.root, actions)
+        val root = OverlayApplication(findings, configuration.limits).applied(document.root, actions)
         val applied = LoadedDocument(document.text, root, document.source)
         loader.replace(applied)
         return applied

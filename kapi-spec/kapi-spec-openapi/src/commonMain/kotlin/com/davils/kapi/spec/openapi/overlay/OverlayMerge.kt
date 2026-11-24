@@ -29,15 +29,14 @@ internal object OverlayMerge {
     }
 
     private fun mapping(target: YamlNode.Mapping, update: YamlNode.Mapping): YamlNode.Mapping {
-        val changes = update.entries.associateBy(YamlEntry::key)
-        val kept = target.entries.map { entry -> changed(entry, changes[entry.key]) }
+        val kept = target.entries.map { entry -> changed(entry, update[entry.key]) }
         val added = update.entries.filter { change -> target[change.key] == null }
         return target.withEntries(kept + added)
     }
 
-    private fun changed(entry: YamlEntry, change: YamlEntry?): YamlEntry {
+    private fun changed(entry: YamlEntry, change: YamlNode?): YamlEntry {
         if (change == null) return entry
-        return YamlEntry(key = entry.key, value = deep(value = entry.value, change = change.value))
+        return YamlEntry(key = entry.key, value = deep(value = entry.value, change = change))
     }
 
     private fun deep(value: YamlNode, change: YamlNode): YamlNode {
