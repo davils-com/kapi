@@ -50,6 +50,8 @@ private const val PATH: String = "/rooms/{roomId}"
 
 private const val ROOM: String = "/rooms/1"
 
+private val roomId: ParameterFormat = ParameterFormat("roomId", ParameterStyle.Simple, isExploded = false)
+
 private const val OPEN: String = "open"
 
 private const val FIRST: String = "1:ping"
@@ -111,6 +113,12 @@ private fun limited(request: Request): Reply? {
     return input.refused().takeUnless { input.isValid }
 }
 
+private fun inRoomOne(request: Request): Reply? {
+    val input = request.input()
+    val room = input.value(place = Place.Path, format = roomId, type = number, isRequired = true)
+    return input.refused().takeUnless { input.isValid && room == 1 }
+}
+
 private fun ChannelReply<Note>.shown(): String {
     val received = this as? ChannelReply.Received ?: return toString()
     return received.message.text
@@ -145,6 +153,12 @@ class ChannelRequestTest : FunSpec({
         test("upgrades a valid handshake") {
             serve(routes = { mount(room(admission = ::limited) { send(Note(OPEN)) }) }) {
                 talk("$ROOM?limit=5") { textOf(this) shouldBe """{"text":"$OPEN"}""" }
+            }
+        }
+
+        test("reads the parameters of the path from the path, never from a query field of the same name") {
+            serve(routes = { mount(room(admission = ::inRoomOne) { send(Note(OPEN)) }) }) {
+                talk("$ROOM?roomId=2") { textOf(this) shouldBe """{"text":"$OPEN"}""" }
             }
         }
 
