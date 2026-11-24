@@ -84,10 +84,10 @@ internal class ModelRun(private val options: GeneratorOptions, private val repor
         return found.last().place
     }
 
-    private fun childOf(value: Value?, token: String): Value? = when (value) {
-        is Value.Mapping -> value[token]
-        is Value.Sequence -> token.toIntOrNull()?.let(value.items::getOrNull)
-        is Value.Text, is Value.Number, is Value.Flag, is Value.Null, null -> null
+    private fun childOf(value: Value?, token: String): Value? {
+        val items = (value as? Value.Sequence)?.items
+        val item = token.toIntOrNull()?.let { index -> items?.getOrNull(index) }
+        return item ?: (value as? Value.Mapping)?.get(token)
     }
 
     private fun rewritten(files: List<GeneratedFile>, uri: DocumentUri, hoisted: List<Hoisted>): List<GeneratedFile> {

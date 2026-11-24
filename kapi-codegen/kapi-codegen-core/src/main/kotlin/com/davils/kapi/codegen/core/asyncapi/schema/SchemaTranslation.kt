@@ -21,6 +21,8 @@ import com.davils.kapi.codegen.core.pipeline.Findings
 import com.davils.kapi.spec.asyncapi.model.schema.SchemaFormat
 import com.davils.kapi.spec.core.value.Value
 
+private val TRUE: Value = Value.Flag(isTrue = true)
+
 private const val REFERENCE: String = "\$ref"
 
 private const val ITEMS: String = "items"
@@ -150,14 +152,14 @@ internal class SchemaTranslation(
     private fun openApi(value: Value.Mapping, entries: MutableMap<String, Value>) {
         exclusives.forEach { (exclusive, bound) ->
             val flag = entries[exclusive] as? Value.Flag
-            val limit = entries[bound]?.takeIf { flag?.isTrue == true }
+            val limit = entries[bound]?.takeIf { flag == TRUE }
             if (flag != null) entries.remove(exclusive)
             limit?.let { found ->
                 entries.remove(bound)
                 entries[exclusive] = found
             }
         }
-        val isNullable = (value[NULLABLE] as? Value.Flag)?.isTrue == true
+        val isNullable = value[NULLABLE] == TRUE
         val type = entries[TYPE] as? Value.Text
         if (isNullable && type != null) entries[TYPE] = Value.Sequence(listOf(type, Value.Text(NULL)))
         val listed = (entries[ENUM] as? Value.Sequence)?.takeIf { isNullable }

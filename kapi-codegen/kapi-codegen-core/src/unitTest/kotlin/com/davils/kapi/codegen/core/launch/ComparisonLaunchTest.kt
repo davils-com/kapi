@@ -168,6 +168,15 @@ class ComparisonLaunchTest : FunSpec({
         }
     }
 
+    context("a generation of a document that has a baseline") {
+        test("ignores the baseline, which only a comparison reads") {
+            val request = requestOf(createTempDirectory(COMPARE), Versions(openApi(GET), openApi(GET)))
+
+            Launcher.lint(request).isAccepted shouldBe true
+            request.report.readText() shouldContain """"outcome": "Audited""""
+        }
+    }
+
     context("a comparison that cannot start") {
         test("fails for a baseline outside the root, an unknown side or no baseline at all") {
             val outside = Versions(baseline = openApi(GET), candidate = openApi(GET), isBaselineInside = false)

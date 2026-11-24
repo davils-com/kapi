@@ -33,6 +33,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 
+private val TRUE: Value = Value.Flag(isTrue = true)
+
 private const val LOCAL: String = "#/components/schemas/"
 
 private const val MOST_DEPTH: Int = 16
@@ -79,7 +81,7 @@ internal class PayloadTypes(
     }
 
     private fun typeOfValue(value: Value, depth: Int): TypeName? {
-        val mapping = value as? Value.Mapping ?: return element.takeIf { (value as? Value.Flag)?.isTrue == true }
+        val mapping = value as? Value.Mapping ?: return element.takeIf { value == TRUE }
         val text = (mapping[REFERENCE] as? Value.Text)?.value
         val type = (mapping[TYPE] as? Value.Text)?.value
         val format = (mapping[FORMAT] as? Value.Text)?.value

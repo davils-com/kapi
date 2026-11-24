@@ -44,6 +44,11 @@ private const val RESERVED: String = "Sec-WebSocket-Key"
 
 private const val STRING: String = "{type: string}"
 
+private fun identified(kind: String): String =
+    "{type: object, required: [kind, id], properties: {kind: {const: $kind}, id: {type: string}}}"
+
+private const val CORRELATION: String = "{location: '\$message.payload#/id'}"
+
 private const val PREFIX: String = "codegen.asyncapi."
 
 private const val ROOM: String = "@/channels/room"
@@ -154,6 +159,25 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
                 "messages: {a: {payload: {schemaFormat: 'application/schema+json;version=draft-07', " +
                     "schema: $STRING}}}",
             ),
+        ) to emptyList()
+        ),
+    "a request and its reply on one channel without correlation ids" to (
+        doc(
+            "{room: {address: /room, messages: {a: {payload: $STRING}, b: {payload: $STRING}}}}",
+            operations = "{ask: {action: send, channel: {$REF: '#/channels/room'}, " +
+                "messages: [{$REF: '#/channels/room/messages/a'}], reply: {channel: {$REF: '#/channels/room'}, " +
+                "messages: [{$REF: '#/channels/room/messages/b'}]}}}",
+        ) to listOf(PREFIX + "reply.unpaired$ROOM/messages/a")
+        ),
+    "a request and its reply with correlation ids among other messages" to (
+        doc(
+            "{room: {address: /room, messages: {a: {payload: ${identified("a")}, correlationId: $CORRELATION}, " +
+                "b: {payload: ${identified("b")}, correlationId: $CORRELATION}, " +
+                "c: {payload: {type: object, required: [kind], properties: {kind: {const: c}}}}}}}",
+            operations = "{ask: {action: receive, channel: {$REF: '#/channels/room'}, " +
+                "messages: [{$REF: '#/channels/room/messages/a'}], reply: {channel: {$REF: '#/channels/room'}, " +
+                "messages: [{$REF: '#/channels/room/messages/b'}]}}, tell: {action: send, " +
+                "channel: {$REF: '#/channels/room'}, messages: [{$REF: '#/channels/room/messages/c'}]}}",
         ) to emptyList()
         ),
     "a message of XML" to (

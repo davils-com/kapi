@@ -296,6 +296,22 @@ class LauncherTest : FunSpec({
         }
     }
 
+    context("a finding without a place") {
+        test("is reported without a file, a line or a column") {
+            val base = createTempDirectory(LAUNCH)
+            val name = "        name: {type: string}"
+            val added = listOf(name, "        id: {type: integer, readOnly: true}", "    PetWrite: {type: string}", "")
+            val document = PETSTORE.replace(oldValue = name + LINE, newValue = added.joinToString(LINE))
+            val request = requestIn(base, document = document)
+
+            val verdict = Launcher.run(request)
+
+            verdict.isAccepted shouldBe false
+            verdict.failures.joinToString() shouldContain "error: [codegen.name.collision]"
+            request.sarif.readText() shouldContain "codegen.name.collision"
+        }
+    }
+
     context("a verdict") {
         test("asks for a reason for every acknowledgement and refuses unused ones") {
             val report = LaunchReport(
