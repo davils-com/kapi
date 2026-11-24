@@ -5,67 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.0.0 - 2026-11-24
 
-### Security
-
-- **The file resolver of the generator** refuses a `file` URI that names a host, which Windows reads as a network
-  share, and checks that a path lies below its root before it touches the file system.
-- **Streamed replies** of the server run their producer as the authorized caller and contained: a producer that fails
-  is reported as a failed operation and breaks the response instead of ending it as if it were complete.
-- **Authorization responses** of OAuth 2 are refused when they name `code`, `state` or `iss` more than once, and need
-  `iss` when the metadata of the server announce `authorization_response_iss_parameter_supported` (RFC 9207), which
-  `ServerMetadata.isIssuerReturned` shows.
-- **Hidden characters in raw strings** of generated code are written as `${'\uXXXX'}` templates, since an escape
-  means nothing in a raw string and would have changed the value.
-- **Cookie credentials** that hold a character a cookie value cannot carry, such as `;`, are refused with
-  `CallFailure.CredentialMalformed` instead of adding cookies of their own to the request.
-- **Text sources** longer in characters than `maximumDocumentLength` are refused before they are encoded.
-- **Validation errors** stop a validation once there are more than `maximumErrors` of them, instead of after the run.
-- **Typo suggestions of OpenAPI readers** skip fields whose length differs by more than two, so a long unknown key
-  costs nothing, like in the AsyncAPI reader.
-- **Resolvers of the application** run contained when a document loads another one: an exception is reported as a
-  failed resolution with `*.load.failed` instead of escaping the reader, as the KDoc of `Resolver` promised.
-- **Comparisons** charge a step for every property and required name of an object they compare and stop recording
-  which changes they saw once they are full, so a schema of many properties cannot outrun `maximumNodes`.
-- **AsyncAPI traits** are refused with `asyncapi.trait.too-large` when applying them to every operation and message
-  would copy more extensions and fields than the document may have nodes, so `Document.effective` and the comparison
-  stay within the limits of the reading.
-- **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
-  chosen to collide in `hashCode` can no longer make the check quadratic.
-- **Webhook signatures** bind the body: by default a delivery with content is accepted only by a signature that
-  covers a `Content-Digest` matching its bytes (`SignaturePolicy.isContentBound`), and a `ReplayGuard` in
-  `SignaturePolicy.replays` refuses a signature that was accepted before.
-- **WebSocket channels** are refused when the `WebSockets` plugin of Ktor reads frames larger than the channel
-  allows, because Ktor reads the first frames before a limit set on the session applies: the client fails with
-  `CallFailure.ChannelFramesUnbounded`, and `mount` of the server throws.
-- **Codecs of the application** run contained when they read: a codec that throws makes a failed decoding, and on a
-  WebSocket channel a close with 1007, instead of an exception out of a call, a stream or a channel.
-- **Annotation tracking** of `unevaluatedItems` and `unevaluatedProperties` charges the evaluation budget for every
-  item and property it tracks, so a wide array under many subschemas is refused by `maximumEvaluationSteps` instead
-  of running for a minute.
-- **Patterns of JSON Schema** charge the evaluation budget for every state of the matcher and every character of the
-  text, so many large patterns over a long string are refused by `maximumEvaluationSteps` instead of running for
-  hours within the default budget.
-- **Generated AsyncAPI payload models** write the origin of their schema only into the `from` of `@DavilsGenerated`,
-  escaped as a string literal: a pointer of a document with `*/` in it can no longer close a KDoc and inject Kotlin
-  into the generated code.
-- **Overlays** can no longer crash a reading or grow a document past its limits: an action whose JSONPath or patch
-  goes past the limits of kaml is left out with `openapi.overlay.update` instead of throwing, an update that every
-  match would copy past `maximumNodes` is refused before it is built, and an action that grows the document past
-  `maximumNodes` or `maximumDepth` is left out; merging an update no longer hashes the keys of the document.
-- **Pattern compilation** finishes at once for a repeated body without states, such as `(?:a{0}){999999999}`, which
-  never finished before, and counts the branch of every optional copy, so `(?:){0,999999999}` can no longer slip past
-  the limit of states.
-- **Credentials in headers of their own**, such as an API key in `X-Api-Key`, are dropped like `Authorization` when
-  the client follows a redirect to another origin, so a redirect can no longer carry them to a host they do not
-  belong to.
-- **Path parameters** of the server runtime are read from the route only: a query field named like a path parameter,
-  such as `DELETE /accounts/me?accountId=victim`, can no longer replace the value of the path that routing, gateways
-  and authorizers saw.
+The first version of kapi: the API toolkit of Davils as an open source library under the Apache License 2.0. It reads
+OpenAPI 3.0, 3.1 and 3.2, Swagger 2.0 and AsyncAPI 3 strictly, validates JSON Schema 2020-12, compares two versions of
+a document and generates typed clients, servers, models, mocks, webhooks and WebSocket channels on top of Ktor 3.6, for
+Kotlin on the JVM and on `wasmJs`, built with Kreate 5.4.1 on Kore 2.3.2, kaml 1.0.0, krypt 1.0.0, kontinuity 1.0.0,
+konfetti 1.0.0 and kollect 1.0.0 and published to `https://repo.davils.com`. The code comes from the OpenAPI stack of an
+internal Davils project and is hardened for critical infrastructure on the way, including an independent security
+audit of every module before this release.
 
 ### Added
 
+- **The reading of documents** `kapi-spec-core`: text and located sources, suspending resolvers of the application
+  with remote references refused unless a resolver allows them, loading through kaml within `ReadLimits` and their
+  hard ceilings, `$ref` resolution with confinement, hop and document limits and cycle detection, diagnostics that
+  name their code, severity, source, JSON Pointer, line, column and snippet, the severity policy, Overlays 1.0 and the
+  writing of documents.
+- **JSON Schema** `kapi-spec-schema`: `JsonSchema` compiles and validates JSON Schema 2020-12 with the dialects of
+  OpenAPI 3.0 and 3.1 over YAML nodes and JSON elements, within budgets for steps, depth, instance size and errors,
+  with format assertions, `$ref` and `$dynamicRef`, `unevaluatedItems` and `unevaluatedProperties`, the outputs
+  `Flag` and `Basic`, and patterns in the linear matcher of the core runtime.
+- **OpenAPI** `kapi-spec-openapi`: `OpenApi.reader()` reads OpenAPI 3.0, 3.1 and 3.2 strictly and upgrades Swagger
+  2.0, with the model, typo suggestions for unknown fields, the rules, the check against the official schemas,
+  overlays and the writer.
+- **AsyncAPI** `kapi-spec-asyncapi`: `AsyncApi.reader()` reads AsyncAPI 3 strictly with the WebSocket binding, with
+  the model, the rules, `Document.effective` for operations and messages with their traits applied, and the writer.
+- **Test support for readers** `kapi-spec-testing`: a corpus of OpenAPI documents, hostile documents and an in-memory
+  resolver.
+- **The core runtime** `kapi-runtime-core`: codecs for JSON, CBOR, text, forms, multipart and octet streams within
+  limits, parameter styles, header fields such as `Link`, `Retry-After`, `Content-Disposition`, `Cache-Control` and
+  `Idempotency-Key`, content negotiation by RFC 9110, entity tags and preconditions, byte ranges, server-sent events,
+  JSON Lines and JSON text sequences, digest fields of RFC 9530, problem details of RFC 9457, credentials and
+  `Secret`, validation with `Constraints` and exact `Decimal`s, and the destination policy against server-side
+  request forgery.
+- **The server runtime** `kapi-runtime-server`: the Ktor plugin `install(Kapi)` and `mount(routes)` read and check a
+  request as a whole within limits for bodies, header fields, queries, multipart bodies and decompression, negotiate
+  the reply, stream bodies and server-sent events, answer conditional and range requests, authorize with API keys,
+  Basic, JWTs through krypt, token introspection and client certificates, verify webhooks with HTTP message signatures
+  of RFC 9421 and digests of RFC 9530, answer with problem details, serve WebSocket channels and report through
+  kollect and konfetti.
+- **Test support for generated code** `kapi-runtime-testing`: fake token sources and clocks, mock APIs that record
+  every exchange, a fake authorization server, contract checks against a document, and `Routes.call` for generated
+  server routes without Ktor.
+- **The bill of materials** `kapi-bom` with every module of kapi.
 - **The compatibility check of the Gradle plugin**: `openApi("pets") { compatibility { baseline = file(...);
   breaking = CompatibilitySide.Clients; acknowledge(code, reason) } }` registers `kapiCompatibility<Name>`, which
   `kapiCompatibility`, `kapiCheck` and `check` run. It reads the document and its baseline with the confined
@@ -179,3 +162,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and `HostileDocuments.collidingKeys` and `collidingKeysDocument` of `kapi-spec-testing` test them.
 - **Shared resolution of references**: `UriResolution`, `PointerTree` and the views of the comparison live in
   `kapi-spec-core` as `@DavilsInternal` API that the readers of OpenAPI and AsyncAPI and the generator share.
+- **Documents and JSON Schema hardened after an audit**: overlays can no longer crash a reading or grow a document past
+  `maximumNodes` and `maximumDepth`; resolvers of the application run contained and a failure becomes `*.load.failed`;
+  a text source is sized before it is encoded; typo suggestions skip fields of a far length; comparisons charge a step
+  for every property and stop recording seen changes once full; AsyncAPI traits that would copy more than the
+  document may hold are refused with `asyncapi.trait.too-large`; patterns are charged for every state and character
+  they run and compile at once for a repeated body without states; annotation tracking is charged for every item it
+  tracks; and a validation stops at the error that passes `maximumErrors`.
+- **Runtimes hardened after an audit**: path parameters are read from the route only, never from a query field of the
+  same name; credentials in header fields of their own are dropped like `Authorization` on a redirect to another
+  origin; a cookie credential must be a cookie value; an OAuth 2 authorization response that repeats `code`, `state` or
+  `iss` is refused and `iss` is required when the server announces it by RFC 9207 (`ServerMetadata.isIssuerReturned`);
+  answers of an authorization server never show their content; codecs of the application run contained; a WebSocket
+  channel is refused when the `WebSockets` plugin of Ktor reads frames larger than the channel allows, with
+  `CallFailure.ChannelFramesUnbounded` on the client and an exception of `mount` on the server, so set its
+  `maxFrameSize`; webhook signatures must cover a `Content-Digest` that matches the body
+  (`SignaturePolicy.isContentBound`) and a `ReplayGuard` in `SignaturePolicy.replays` refuses replays; producers of
+  streamed replies run contained and as the authorized caller, and a failing one breaks the response; and unique
+  strings, numbers and enums are checked by sorting instead of hashing.
+- **The generator hardened after an audit**: AsyncAPI payload models write the origin of their schema only into
+  `@DavilsGenerated`, so a pointer with `*/` cannot inject code; hidden characters in raw strings keep their value as
+  `${'\uXXXX'}` templates; and the file resolver refuses a `file` URI that names a host, which Windows reads as a
+  network share, and confines a path to its root before it touches the file system.
