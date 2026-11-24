@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   failed resolution with `*.load.failed` instead of escaping the reader, as the KDoc of `Resolver` promised.
 - **Comparisons** charge a step for every property and required name of an object they compare and stop recording
   which changes they saw once they are full, so a schema of many properties cannot outrun `maximumNodes`.
+- **AsyncAPI traits** are refused with `asyncapi.trait.too-large` when applying them to every operation and message
+  would copy more extensions and fields than the document may have nodes, so `Document.effective` and the comparison
+  stay within the limits of the reading.
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
   chosen to collide in `hashCode` can no longer make the check quadratic.
 - **Webhook signatures** bind the body: by default a delivery with content is accepted only by a signature that

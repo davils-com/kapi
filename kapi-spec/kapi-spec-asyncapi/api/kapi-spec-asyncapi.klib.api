@@ -1365,6 +1365,8 @@ final object com.davils.kapi.spec.asyncapi/DiagnosticCodes { // com.davils.kapi.
         final fun <get-STRUCTURE_SCHEMA>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.STRUCTURE_SCHEMA.<get-STRUCTURE_SCHEMA>|<get-STRUCTURE_SCHEMA>(){}[0]
     final val TAG_DUPLICATE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TAG_DUPLICATE|{}TAG_DUPLICATE[0]
         final fun <get-TAG_DUPLICATE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TAG_DUPLICATE.<get-TAG_DUPLICATE>|<get-TAG_DUPLICATE>(){}[0]
+    final val TRAIT_TOO_LARGE // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TRAIT_TOO_LARGE|{}TRAIT_TOO_LARGE[0]
+        final fun <get-TRAIT_TOO_LARGE>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.TRAIT_TOO_LARGE.<get-TRAIT_TOO_LARGE>|<get-TRAIT_TOO_LARGE>(){}[0]
     final val VERSION_MISSING // com.davils.kapi.spec.asyncapi/DiagnosticCodes.VERSION_MISSING|{}VERSION_MISSING[0]
         final fun <get-VERSION_MISSING>(): com.davils.kore.core.validation.violation/ViolationCode // com.davils.kapi.spec.asyncapi/DiagnosticCodes.VERSION_MISSING.<get-VERSION_MISSING>|<get-VERSION_MISSING>(){}[0]
     final val VERSION_PATCH_MISSING // com.davils.kapi.spec.asyncapi/DiagnosticCodes.VERSION_PATCH_MISSING|{}VERSION_PATCH_MISSING[0]

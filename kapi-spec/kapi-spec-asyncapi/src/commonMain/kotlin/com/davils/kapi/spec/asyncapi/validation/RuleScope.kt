@@ -27,6 +27,7 @@ import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.load.LoadedDocument
 import com.davils.kapi.spec.core.model.Element
 import com.davils.kapi.spec.core.model.Referable
+import com.davils.kapi.spec.core.policy.ReadLimits
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.validation.violation.ViolationCode
 
@@ -36,6 +37,7 @@ internal class RuleScope(
     val document: Document,
     private val findings: Findings,
     documents: List<LoadedDocument>,
+    val limits: ReadLimits = ReadLimits.Default,
 ) {
     private val loaded: Map<DocumentUri, LoadedDocument> = documents.associateByKeyed(LoadedDocument::uri)
 

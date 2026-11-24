@@ -82,7 +82,37 @@ private val document: String =
         |        type: object
     """.trimMargin()
 
+private const val EXTENSIONS: Int = 40
+
+private const val MESSAGES: Int = 10
+
+private const val USES: Int = 5
+
+private const val NODES: Long = 1_000L
+
+private val amplifying: String = buildList {
+    add("components:")
+    add("  messageTraits:")
+    add("    big:")
+    repeat(EXTENSIONS) { index -> add("      x-e$index: $index") }
+    add("  messages:")
+    repeat(MESSAGES) { index ->
+        add("    m$index:")
+        add("      traits:")
+        repeat(USES) { add("        - ${'$'}ref: '#/components/messageTraits/big'") }
+    }
+}.joinToString("\n")
+
 class TraitsTest : FunSpec({
+    context("the traits of a document") {
+        test("are refused when applying them would copy more than the document may have nodes") {
+            val limited = readingOf(amplifying) { limits { maximumNodes = NODES } }
+
+            readingOf(amplifying).codes() shouldBe emptyList()
+            limited.codes() shouldBe listOf(DiagnosticCodes.TRAIT_TOO_LARGE)
+        }
+    }
+
     context("the traits of an operation") {
         test("are merged in their order, and what the operation declares wins") {
             val reading = readingOf(document)

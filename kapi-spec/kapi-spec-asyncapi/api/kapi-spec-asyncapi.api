@@ -125,6 +125,7 @@ public final class com/davils/kapi/spec/asyncapi/DiagnosticCodes {
 	public final fun getSOURCE_NON_JSON_VALUE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSTRUCTURE_SCHEMA-J_S2PC0 ()Ljava/lang/String;
 	public final fun getTAG_DUPLICATE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getTRAIT_TOO_LARGE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getVERSION_MISSING-J_S2PC0 ()Ljava/lang/String;
 	public final fun getVERSION_PATCH_MISSING-J_S2PC0 ()Ljava/lang/String;
 	public final fun getVERSION_UNSUPPORTED-J_S2PC0 ()Ljava/lang/String;

@@ -442,6 +442,14 @@ public object DiagnosticCodes {
     public val SECURITY_REFERENCE_PLACEMENT: ViolationCode = code("security.reference-placement")
 
     /**
+     * Applying the traits of the operations and messages would copy more extensions and fields than the document may
+     * have nodes, so `Document.effective` could not be called within the limits of the reading.
+     *
+     * @since 1.0.0
+     */
+    public val TRAIT_TOO_LARGE: ViolationCode = code("trait.too-large")
+
+    /**
      * Every code of the catalogue, in the order of their declaration.
      *
      * @since 1.0.0
@@ -505,6 +513,7 @@ public object DiagnosticCodes {
         STRUCTURE_SCHEMA,
         OPERATION_KEY_DUPLICATE,
         SECURITY_REFERENCE_PLACEMENT,
+        TRAIT_TOO_LARGE,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("asyncapi.$name")

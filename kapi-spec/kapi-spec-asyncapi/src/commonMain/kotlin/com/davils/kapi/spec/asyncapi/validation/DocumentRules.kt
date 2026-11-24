@@ -34,6 +34,7 @@ internal object DocumentRules {
         SecurityRules::check,
         BindingRules::check,
         TagRules::check,
+        TraitRules::check,
     )
 
     fun check(scope: RuleScope) {

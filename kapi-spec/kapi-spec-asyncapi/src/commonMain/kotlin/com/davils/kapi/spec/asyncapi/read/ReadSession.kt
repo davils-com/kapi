@@ -63,7 +63,12 @@ internal class ReadSession(
         val builder = DocumentReader.fill(cursor, version)
         builder.targets.putAll(TargetResolver(scope, loader).resolve())
         val document = builder.build()
-        val rules = RuleScope(document = document, findings = findings, documents = loader.documents)
+        val rules = RuleScope(
+            document = document,
+            findings = findings,
+            documents = loader.documents,
+            limits = configuration.limits,
+        )
         DocumentRules.check(rules)
         if (configuration.structure == StructureCheck.ReaderAndOfficialSchema) {
             StructureValidation(findings = findings, document = root, model = document).check(schema)
