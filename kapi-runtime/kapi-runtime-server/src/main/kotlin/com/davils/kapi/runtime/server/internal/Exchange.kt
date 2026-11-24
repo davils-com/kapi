@@ -16,16 +16,20 @@
 
 package com.davils.kapi.runtime.server.internal
 
+import com.davils.kapi.runtime.core.codec.Codecs
 import com.davils.kapi.runtime.server.ApiServer
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.ReplyBody
 import com.davils.kapi.runtime.server.request.BodyRefusedException
 import com.davils.kapi.runtime.server.request.Request
 import com.davils.kollect.core.trace.SpanKind
 import com.davils.kollect.core.trace.traced
 import com.davils.kore.core.failure.attempted
+import com.davils.kore.core.principal.Principal
 import com.davils.kore.core.principal.withPrincipal
 import io.ktor.server.application.ApplicationCall
+import io.ktor.utils.io.ByteWriteChannel
 
 private const val SPAN: String = "kapi.server.request"
 
@@ -79,7 +83,34 @@ internal class Exchange(private val server: ApiServer, private val operation: Op
 
     private suspend fun handled(request: Request): Reply {
         val result = attempted { writer.encoded(invoke(request)) }
-        return result.getOrElse { failure -> failed(failure) }
+        val reply = result.getOrElse { failure -> failed(failure) }
+        return guarded(reply, request.principal)
+    }
+
+    private fun guarded(reply: Reply, principal: Principal?): Reply {
+        val stream = reply.body as? ReplyBody.Stream ?: return reply
+        val body = ReplyBody.Stream(stream.mediaType, stream.length) { channel: ByteWriteChannel, codecs: Codecs ->
+            val written = attempted {
+                produced(stream = stream, channel = channel, codecs = codecs, principal = principal)
+            }
+            written.exceptionOrNull()?.let { failure -> broken(channel, failure) }
+        }
+        return Reply(status = reply.status, headers = reply.headers, body = body)
+    }
+
+    private suspend fun produced(
+        stream: ReplyBody.Stream,
+        channel: ByteWriteChannel,
+        codecs: Codecs,
+        principal: Principal?,
+    ) {
+        if (principal == null) return stream.write(channel, codecs)
+        withPrincipal(principal) { stream.write(channel, codecs) }
+    }
+
+    private fun broken(channel: ByteWriteChannel, failure: Throwable) {
+        telemetry.failed(operation.name, failure)
+        channel.cancel(failure)
     }
 
     private suspend fun invoke(request: Request): Reply {

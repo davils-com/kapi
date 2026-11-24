@@ -22,7 +22,16 @@ import com.davils.kapi.runtime.core.framing.ServerSentEvent
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.server.fixture.Note
 import com.davils.kapi.runtime.server.fixture.PROBE
+import com.davils.kapi.runtime.server.fixture.serve
 import com.davils.kapi.runtime.server.fixture.serveOne
+import com.davils.kapi.runtime.server.operation
+import com.davils.kapi.runtime.server.operation.CredentialSource
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.SchemeUse
+import com.davils.kapi.runtime.server.security.ApiKeyAuthorizer
+import com.davils.kore.core.failure.attempted
+import com.davils.kore.core.principal.currentPrincipal
+import com.davils.kore.core.principal.principal
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -31,6 +40,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.io.bytestring.encodeToByteString
 import kotlinx.serialization.json.Json
@@ -40,6 +50,10 @@ import kotlin.time.Duration.Companion.milliseconds
 private const val OK: Int = 200
 
 private const val PAUSE: Long = 120L
+
+private const val KEY: String = "key"
+
+private const val KEY_HEADER: String = "X-Key"
 
 private val beat: Duration = 20.milliseconds
 
@@ -73,6 +87,35 @@ class StreamTest : FunSpec({
                 val response = client.post(PROBE)
 
                 response.bodyAsText() shouldBe records("\u001E" + """{"text":"a"}""", "\u001E" + """{"text":"b"}""")
+            }
+        }
+    }
+
+    context("the producer of a streamed reply") {
+        test("runs as the caller the server authorized") {
+            val keyed = listOf(listOf(SchemeUse(KEY, CredentialSource.Header(KEY_HEADER))))
+            val keys = ApiKeyAuthorizer { key -> principal("member").takeIf { key.reveal() == KEY } }
+            val probe = Operation(name = "probe", method = "POST", path = PROBE, security = keyed) {
+                reply(OK) { events { send(ServerSentEvent(data = currentPrincipal()?.id.orEmpty())) } }
+            }
+
+            serve(settings = { authorizer(KEY, keys) }, routes = { operation(probe) }) {
+                val response = client.post(PROBE) { header(key = KEY_HEADER, value = KEY) }
+
+                response.bodyAsText() shouldBe records("data: member", "")
+            }
+        }
+
+        test("that fails breaks the response instead of ending it") {
+            val failing = flow {
+                emit("ab".encodeToByteString())
+                error("the producer broke")
+            }
+
+            serveOne(handler = { reply(OK) { stream(MediaType.OctetStream, failing) } }) {
+                val read = attempted { client.post(PROBE).bodyAsText() }
+
+                read.getOrNull() shouldBe null
             }
         }
     }
@@ -142,7 +185,7 @@ class StreamTest : FunSpec({
         test("refuses a heartbeat that never comes and a comment that would break a line") {
             shouldThrow<IllegalArgumentException> { reply(OK) { events(heartbeat = Duration.ZERO) { } } }
             serveOne(handler = { reply(OK) { events { comment("a\nb") } } }) {
-                client.post(PROBE).bodyAsText() shouldBe ""
+                attempted { client.post(PROBE).bodyAsText() }.getOrNull() shouldBe null
             }
         }
     }

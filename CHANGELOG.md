@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Streamed replies** of the server run their producer as the authorized caller and contained: a producer that fails
+  is reported as a failed operation and breaks the response instead of ending it as if it were complete.
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
   chosen to collide in `hashCode` can no longer make the check quadratic.
 - **Webhook signatures** bind the body: by default a delivery with content is accepted only by a signature that
