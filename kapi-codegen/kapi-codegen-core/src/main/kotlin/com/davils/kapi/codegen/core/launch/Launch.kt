@@ -47,6 +47,8 @@ import com.davils.kapi.spec.asyncapi.Reading as ChannelReading
 
 private const val MAXIMUM_MESSAGE_LENGTH: Int = 1024
 
+private const val NO_BASELINE: String = "A comparison needs the baseline of the document"
+
 private val readable: Json = Json { prettyPrint = true }
 
 private val sides: Map<String, List<(Change) -> Impact>> = mapOf(
@@ -71,20 +73,19 @@ internal class Launch(private val request: LaunchRequest, private val mode: Laun
     private suspend fun checked(): LaunchReport {
         val problem = problemOf() ?: comparisonProblemOf()
         if (problem != null) return failed(problem)
+        val baseline = request.baseline
         return when (mode) {
             LaunchMode.Generate, LaunchMode.Lint -> read()
-            LaunchMode.Compare -> compared()
+            LaunchMode.Compare -> baseline?.let { found -> compared(found) } ?: failed(NO_BASELINE)
         }
     }
 
     private fun comparisonProblemOf(): String? {
-        val baseline = request.baseline?.toAbsolutePath()
         val isCompared = mode == LaunchMode.Compare
-        val isMissing = isCompared && baseline == null
-        val outside = baseline?.takeUnless { path -> path.normalize().startsWith(root) }?.takeIf { isCompared }
+        val baseline = request.baseline?.takeIf { isCompared }
+        val outside = baseline?.toAbsolutePath()?.takeUnless { path -> path.normalize().startsWith(root) }
         val isSideUnknown = isCompared && request.breaking !in sides
         return listOfNotNull(
-            "A comparison needs the baseline of the document".takeIf { isMissing },
             outside?.let { path -> "The baseline $path lies outside its root $root" },
             "The side ${request.breaking} is unknown; it is Clients, Providers or Both".takeIf { isSideUnknown },
         ).firstOrNull()
@@ -207,32 +208,30 @@ internal class Launch(private val request: LaunchRequest, private val mode: Laun
         files = emptyList(),
     )
 
-    private suspend fun compared(): LaunchReport = when (request.kind) {
-        LaunchKind.OpenApi -> comparedOpenApi()
-        LaunchKind.AsyncApi -> comparedAsyncApi()
+    private suspend fun compared(baseline: Path): LaunchReport = when (request.kind) {
+        LaunchKind.OpenApi -> comparedOpenApi(Source.Located(PathResolver.uriOf(baseline)))
+        LaunchKind.AsyncApi -> comparedAsyncApi(Source.Located(PathResolver.uriOf(baseline)))
     }
 
-    private suspend fun comparedOpenApi(): LaunchReport {
+    private suspend fun comparedOpenApi(earliest: Source): LaunchReport {
         val reader = readers.openApi()
-        val baseline = reader.read(sourceOf(request.baseline))
-        val candidate = reader.read(sourceOf(request.specification))
+        val baseline = reader.read(earliest)
+        val candidate = reader.read(Source.Located(PathResolver.uriOf(request.specification)))
         val earlier = baseline as? Reading.Read
         val later = candidate as? Reading.Read
         if (earlier == null || later == null) return refused(baseline.diagnostics + candidate.diagnostics)
         return changed(OpenApi.compare(baseline = earlier.document, candidate = later.document))
     }
 
-    private suspend fun comparedAsyncApi(): LaunchReport {
+    private suspend fun comparedAsyncApi(earliest: Source): LaunchReport {
         val reader = readers.asyncApi()
-        val baseline = reader.read(sourceOf(request.baseline))
-        val candidate = reader.read(sourceOf(request.specification))
+        val baseline = reader.read(earliest)
+        val candidate = reader.read(Source.Located(PathResolver.uriOf(request.specification)))
         val earlier = baseline as? ChannelReading.Read
         val later = candidate as? ChannelReading.Read
         if (earlier == null || later == null) return refused(baseline.diagnostics + candidate.diagnostics)
         return changed(AsyncApi.compare(baseline = earlier.document, candidate = later.document))
     }
-
-    private fun sourceOf(path: Path?): Source = Source.Located(PathResolver.uriOf(path ?: request.specification))
 
     private fun changed(comparison: Comparison): LaunchReport = LaunchReport(
         outcome = LaunchOutcome.Compared,
@@ -260,16 +259,24 @@ internal class Launch(private val request: LaunchRequest, private val mode: Laun
         isNote = false,
     )
 
-    private fun placed(code: String, message: String, location: Location?, isError: Boolean, isNote: Boolean) =
-        LaunchDiagnostic(
+    private fun placed(
+        code: String,
+        message: String,
+        location: Location?,
+        isError: Boolean,
+        isNote: Boolean,
+    ): LaunchDiagnostic {
+        val position = location?.position
+        return LaunchDiagnostic(
             code = code,
             isError = isError,
             message = SafeText.text(message, MAXIMUM_MESSAGE_LENGTH),
             file = location?.let { found -> relative(found.document.value) },
-            line = location?.position?.let { found -> found.line + 1 },
-            column = location?.position?.let { found -> found.column + 1 },
+            line = position?.run { line + 1 },
+            column = position?.run { column + 1 },
             isNote = isNote,
         )
+    }
 
     private fun relative(uri: String): String {
         val absolute = Path.of(URI(uri)).toAbsolutePath()

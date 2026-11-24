@@ -37,6 +37,8 @@ private const val ADDED: String = "openapi.compatibility.operation-added"
 
 private const val REASON: String = "pets are listed by the search from 2.0.0 on"
 
+private const val CANDIDATE: String = "petstore.yaml:"
+
 private const val NEWLINE: String = "\n"
 
 private const val NO_CONTENT: String = "{'204': {description: ok}}"
@@ -142,11 +144,21 @@ class ComparisonLaunchTest : FunSpec({
             compared(versions).second.failures.joinToString() shouldContain "asyncapi.compatibility.channel-removed"
         }
 
-        test("is refused with the findings of a version that cannot be read") {
-            val (_, verdict) = compared(Versions(baseline = "openapi: 3.1.0\n", candidate = openApi("post")))
+        test("is refused with the findings of either version that cannot be read") {
+            val broken = "openapi: 3.1.0\n"
+            val earlier = compared(Versions(baseline = broken, candidate = openApi("post"))).second
+            val later = compared(Versions(baseline = openApi("post"), candidate = broken)).second
+            val channels = Versions(
+                baseline = asyncApi("room"),
+                candidate = "asyncapi: 3.0.0\n",
+                kind = LaunchKind.AsyncApi,
+            )
+            val earlierChannels = channels.copy(baseline = channels.candidate, candidate = channels.baseline)
 
-            verdict.isAccepted shouldBe false
-            verdict.failures.joinToString() shouldContain "petstore-1.0.0.yaml"
+            earlier.failures.joinToString() shouldContain "petstore-1.0.0.yaml"
+            later.failures.joinToString() shouldContain CANDIDATE
+            compared(channels).second.failures.joinToString() shouldContain CANDIDATE
+            compared(earlierChannels).second.failures.joinToString() shouldContain "petstore-1.0.0.yaml"
         }
     }
 
