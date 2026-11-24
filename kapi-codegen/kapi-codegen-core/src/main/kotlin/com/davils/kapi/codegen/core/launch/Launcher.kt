@@ -41,7 +41,7 @@ public object Launcher {
      * @throws java.io.IOException if an output cannot be written.
      * @since 1.0.0
      */
-    public fun run(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, isLint = false).run() }
+    public fun run(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, LaunchMode.Generate).run() }
 
     /**
      * Lints the document of [request], blocking the calling thread until it is done.
@@ -55,5 +55,22 @@ public object Launcher {
      * @throws java.io.IOException if a report cannot be written.
      * @since 1.0.0
      */
-    public fun lint(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, isLint = true).run() }
+    public fun lint(request: LaunchRequest): LaunchVerdict = runBlocking { Launch(request, LaunchMode.Lint).run() }
+
+    /**
+     * Compares the document of [request] with its [LaunchRequest.baseline], blocking the calling thread until it is
+     * done.
+     *
+     * Both versions are read with the same confined resolver, without overlays, and compared by the rules of their
+     * specification. A change that breaks the side [LaunchRequest.breaking] names is a warning, which fails the build
+     * unless it is acknowledged with a reason; every other change is a note. The comparison writes only the JSON
+     * report and the SARIF log.
+     *
+     * @param request what to compare and where the reports go.
+     * @return the verdict, which the plugin turns into a passing or failing task.
+     * @throws java.io.IOException if a report cannot be written.
+     * @since 1.0.0
+     */
+    public fun compare(request: LaunchRequest): LaunchVerdict =
+        runBlocking { Launch(request, LaunchMode.Compare).run() }
 }

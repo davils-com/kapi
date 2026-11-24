@@ -30,6 +30,8 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
+private const val REPORT: String = "report.json"
+
 private const val ACTION: String = "kapi-action"
 
 private const val COMMON: String = "common"
@@ -48,7 +50,7 @@ private fun parametersIn(base: Path, document: String, kind: DocumentKind, isLin
     source.kind.set(kind.name)
     options(parameters.options)
     outputs(outputs = parameters.outputs, base = base)
-    parameters.lint.set(isLint)
+    parameters.mode.set(DocumentTask.LINT.takeIf { isLint } ?: DocumentTask.GENERATE)
     return parameters
 }
 
@@ -66,7 +68,7 @@ private fun outputs(outputs: OutputParameters, base: Path) {
     outputs.commonKotlin.set(base.resolve(COMMON).toFile())
     outputs.jvmKotlin.set(base.resolve("jvm").toFile())
     outputs.resources.set(base.resolve("resources").toFile())
-    outputs.report.set(base.resolve("report.json").toFile())
+    outputs.report.set(base.resolve(REPORT).toFile())
     outputs.sarif.set(base.resolve("report.sarif").toFile())
 }
 
@@ -90,7 +92,7 @@ class LaunchActionTest : FunSpec({
         action.execute()
 
         contains(folder = base.resolve(COMMON), name = "ApiPet.kt") shouldBe true
-        base.resolve("report.json").readText() shouldContain """"outcome": "Generated""""
+        base.resolve(REPORT).readText() shouldContain """"outcome": "Generated""""
     }
 
     test("lints an AsyncAPI document without writing code and fails on its unacknowledged warning") {
@@ -103,6 +105,25 @@ class LaunchActionTest : FunSpec({
         failure.message.orEmpty() shouldContain "codegen.asyncapi.protocol.unsupported"
         base.resolve(COMMON).exists() shouldBe false
         base.resolve("report.sarif").exists() shouldBe true
+    }
+
+    test("compares a document with its baseline and accepts a change that breaks nobody") {
+        val base = createTempDirectory(ACTION)
+        val document = fixture("petstore.yaml")
+        val parameters = parametersIn(base = base, document = document, kind = DocumentKind.OpenApi, isLint = false)
+        val baseline = base.resolve(DocumentKind.OpenApi.folder).resolve("api-1.0.0.yaml")
+        baseline.writeText(document)
+        parameters.mode.set(DocumentTask.COMPARE)
+        parameters.document.baseline.set(baseline.toFile())
+        parameters.document.breaking.set(CompatibilitySide.Both.name)
+        val action = object : LaunchAction() {
+            override fun getParameters(): LaunchParameters = parameters
+        }
+
+        action.execute()
+
+        base.resolve(REPORT).readText() shouldContain """"outcome": "Compared""""
+        base.resolve(COMMON).exists() shouldBe false
     }
 
     test("fails a generation of a broken document with the rendered diagnostic") {

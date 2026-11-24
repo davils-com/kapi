@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The compatibility check of the Gradle plugin**: `openApi("pets") { compatibility { baseline = file(...);
+  breaking = CompatibilitySide.Clients; acknowledge(code, reason) } }` registers `kapiCompatibility<Name>`, which
+  `kapiCompatibility`, `kapiCheck` and `check` run. It reads the document and its baseline with the confined
+  resolver of the document, compares them with `OpenApi.compare` or `AsyncApi.compare` in the isolated worker of the
+  generator through `Launcher.compare`, and fails on every change that breaks the chosen side unless it is
+  acknowledged with a reason; every other change is a note, with the level `note` in the SARIF log. Without a
+  baseline the task is skipped.
 - **The build** of kapi with Kreate 5.4.1: one module per concern, one convention plugin per concern, strict
   dependency locking and verification, Detekt with every rule over main and test sources, Kover at 97 %, the API and
   semver check, Trivy, the standards audit and the assurance gate.

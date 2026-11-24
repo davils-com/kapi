@@ -29,4 +29,8 @@ internal interface DocumentParameters {
     val overlays: ListProperty<String>
 
     val kind: Property<String>
+
+    val baseline: RegularFileProperty
+
+    val breaking: Property<String>
 }

@@ -52,4 +52,11 @@ public enum class LaunchOutcome {
      * @since 1.0.0
      */
     Audited,
+
+    /**
+     * The document and its baseline were read and compared, which writes no code.
+     *
+     * @since 1.0.0
+     */
+    Compared,
 }

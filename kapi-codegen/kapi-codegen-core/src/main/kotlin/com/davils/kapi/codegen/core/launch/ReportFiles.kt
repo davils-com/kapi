@@ -74,7 +74,7 @@ internal object ReportFiles {
 
     private fun result(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
         put(key = "ruleId", value = diagnostic.code)
-        put(key = "level", value = "error".takeIf { diagnostic.isError } ?: "warning")
+        put(key = "level", value = levelOf(diagnostic))
         putJsonObject("message") { put(key = "text", value = diagnostic.message) }
         put(key = "locations", element = locations(diagnostic))
     }
@@ -93,6 +93,9 @@ internal object ReportFiles {
         }
     }
 
+    private fun levelOf(diagnostic: LaunchDiagnostic): String =
+        "error".takeIf { diagnostic.isError } ?: "note".takeIf { diagnostic.isNote } ?: "warning"
+
     private fun region(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
         put(key = "startLine", value = diagnostic.line ?: 1)
         diagnostic.column?.let { column -> put(key = "startColumn", value = column) }
@@ -100,7 +103,7 @@ internal object ReportFiles {
 
     private fun diagnostic(diagnostic: LaunchDiagnostic): JsonObject = buildJsonObject {
         put(key = "code", value = diagnostic.code)
-        put(key = "severity", value = "error".takeIf { diagnostic.isError } ?: "warning")
+        put(key = "severity", value = levelOf(diagnostic))
         put(key = "message", value = diagnostic.message)
         put(key = "file", value = diagnostic.file)
         put(key = "line", value = diagnostic.line)

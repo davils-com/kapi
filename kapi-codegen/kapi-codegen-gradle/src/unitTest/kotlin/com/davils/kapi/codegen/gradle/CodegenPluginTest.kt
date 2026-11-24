@@ -179,14 +179,16 @@ class CodegenPluginTest : FunSpec({
     }
 
     context("the lifecycle") {
-        test("kapiLint runs every lint, kapiCheck runs kapiLint and check runs kapiCheck") {
+        test("kapiLint and kapiCompatibility run theirs, kapiCheck runs both and check runs kapiCheck") {
             val project = project("base")
 
             project.document("a")
             project.kapi().asyncApi("b") { spec -> spec.packageName.set(PACKAGE) }
 
             project.task<Task>("kapiLint").dependencyNames() shouldBe setOf("kapiLintA", "kapiLintB")
-            project.task<Task>("kapiCheck").dependencyNames() shouldBe setOf("kapiLint")
+            project.task<Task>("kapiCompatibility").dependencyNames() shouldBe
+                setOf("kapiCompatibilityA", "kapiCompatibilityB")
+            project.task<Task>("kapiCheck").dependencyNames() shouldBe setOf("kapiLint", "kapiCompatibility")
             project.task<Task>("check").dependencyNames() shouldContain "kapiCheck"
         }
     }

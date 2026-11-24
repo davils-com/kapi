@@ -203,7 +203,11 @@ public abstract class DocumentTask : DefaultTask() {
         group = GROUP
     }
 
-    internal fun launch(isLint: Boolean, folders: Action<OutputParameters>) {
+    internal fun launch(
+        mode: String,
+        compared: Action<DocumentParameters> = Action { },
+        folders: Action<OutputParameters>,
+    ) {
         val queue = workers.processIsolation { isolation ->
             isolation.classpath.from(generatorClasspath)
             isolation.forkOptions { fork ->
@@ -217,6 +221,7 @@ public abstract class DocumentTask : DefaultTask() {
             document.root.set(root)
             document.overlays.set(overlays)
             document.kind.set(kind)
+            compared.execute(document)
             val options = parameters.options
             options.packageName.set(packageName)
             options.apiName.set(apiName)
@@ -228,11 +233,17 @@ public abstract class DocumentTask : DefaultTask() {
             parameters.outputs.report.set(report)
             parameters.outputs.sarif.set(sarif)
             folders.execute(parameters.outputs)
-            parameters.lint.set(isLint)
+            parameters.mode.set(mode)
         }
     }
 
     internal companion object {
         const val GROUP: String = "kapi"
+
+        const val GENERATE: String = "Generate"
+
+        const val LINT: String = "Lint"
+
+        const val COMPARE: String = "Compare"
     }
 }

@@ -43,7 +43,7 @@ public abstract class Lint : DocumentTask() {
     @TaskAction
     public fun audit() {
         val unused = temporaryDir
-        launch(isLint = true) { outputs ->
+        launch(mode = LINT) { outputs ->
             outputs.commonKotlin.set(unused)
             outputs.jvmKotlin.set(unused)
             outputs.resources.set(unused)

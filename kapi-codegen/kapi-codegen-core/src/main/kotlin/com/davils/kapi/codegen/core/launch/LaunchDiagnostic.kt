@@ -22,11 +22,13 @@ import com.davils.kore.core.annotation.DavilsInternal
  * A diagnostic of a run, with its place in the file it was found in, relative to the root of the request.
  *
  * @property code the stable code, such as `openapi.reference.cycle`.
- * @property isError whether the diagnostic is an error; a warning otherwise.
+ * @property isError whether the diagnostic is an error; a warning or a note otherwise.
  * @property message the message, already escaped for display.
  * @property file the path of the file relative to the root, with `/` as separator, or `null`.
  * @property line the line, counted from one, or `null`.
  * @property column the column, counted from one, or `null`.
+ * @property isNote whether the diagnostic is a note, which informs and never fails a build, such as a change of a
+ * document that breaks nobody.
  * @since 1.0.0
  */
 @DavilsInternal
@@ -37,6 +39,7 @@ public class LaunchDiagnostic(
     public val file: String?,
     public val line: Int?,
     public val column: Int?,
+    public val isNote: Boolean = false,
 ) {
     /**
      * Renders the diagnostic as one line, such as `api/petstore.yaml:3:5: error: [code] message`.
@@ -46,7 +49,7 @@ public class LaunchDiagnostic(
      */
     public fun render(): String {
         val place = listOfNotNull(file, line, column).joinToString(":")
-        val severity = ERROR.takeIf { isError } ?: WARNING
+        val severity = ERROR.takeIf { isError } ?: NOTE.takeIf { isNote } ?: WARNING
         val head = "$severity: [$code] $message"
         return "$place: $head".takeIf { place.isNotEmpty() } ?: head
     }
@@ -61,5 +64,7 @@ public class LaunchDiagnostic(
         const val ERROR: String = "error"
 
         const val WARNING: String = "warning"
+
+        const val NOTE: String = "note"
     }
 }

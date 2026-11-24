@@ -26,11 +26,37 @@ public final class com/davils/kapi/codegen/gradle/CodegenPlugin : org/gradle/api
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
-public abstract class com/davils/kapi/codegen/gradle/DocumentSpec : org/gradle/api/Named {
+public abstract class com/davils/kapi/codegen/gradle/Compatibility : com/davils/kapi/codegen/gradle/DocumentTask {
+	public fun <init> ()V
+	public final fun compare ()V
+	public abstract fun getBaseline ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getBreaking ()Lorg/gradle/api/provider/Property;
+}
+
+public final class com/davils/kapi/codegen/gradle/CompatibilitySide : java/lang/Enum {
+	public static final field Both Lcom/davils/kapi/codegen/gradle/CompatibilitySide;
+	public static final field Clients Lcom/davils/kapi/codegen/gradle/CompatibilitySide;
+	public static final field Providers Lcom/davils/kapi/codegen/gradle/CompatibilitySide;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/codegen/gradle/CompatibilitySide;
+	public static fun values ()[Lcom/davils/kapi/codegen/gradle/CompatibilitySide;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/CompatibilitySpec {
 	public fun <init> ()V
 	public final fun acknowledge (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun getAcknowledgements ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getBaseline ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getBreaking ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class com/davils/kapi/codegen/gradle/DocumentSpec : org/gradle/api/Named {
+	public fun <init> ()V
+	public final fun acknowledge (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun compatibility (Lorg/gradle/api/Action;)V
+	public abstract fun getAcknowledgements ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getApiName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getCompatibility ()Lcom/davils/kapi/codegen/gradle/CompatibilitySpec;
 	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getRoot ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getSource ()Lorg/gradle/api/file/RegularFileProperty;
@@ -39,8 +65,11 @@ public abstract class com/davils/kapi/codegen/gradle/DocumentSpec : org/gradle/a
 }
 
 public abstract class com/davils/kapi/codegen/gradle/DocumentTask : org/gradle/api/DefaultTask {
+	public static final field COMPARE Ljava/lang/String;
 	public static final field Companion Lcom/davils/kapi/codegen/gradle/DocumentTask$Companion;
+	public static final field GENERATE Ljava/lang/String;
 	public static final field GROUP Ljava/lang/String;
+	public static final field LINT Ljava/lang/String;
 	public fun <init> ()V
 	public abstract fun getAcknowledgements ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getApiName ()Lorg/gradle/api/provider/Property;

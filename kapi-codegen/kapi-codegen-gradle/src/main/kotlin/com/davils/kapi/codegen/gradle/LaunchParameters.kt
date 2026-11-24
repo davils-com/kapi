@@ -30,5 +30,5 @@ internal interface LaunchParameters : WorkParameters {
     @get:Nested
     val outputs: OutputParameters
 
-    val lint: Property<Boolean>
+    val mode: Property<String>
 }

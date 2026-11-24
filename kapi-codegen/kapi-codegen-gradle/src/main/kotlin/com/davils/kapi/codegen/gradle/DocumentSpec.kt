@@ -16,11 +16,13 @@
 
 package com.davils.kapi.codegen.gradle
 
+import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Nested
 
 /**
  * What every API document of the `kapi { }` block shares: where it lies, the package and names of the generated code
@@ -84,6 +86,14 @@ public abstract class DocumentSpec : Named {
      */
     public abstract val acknowledgements: MapProperty<String, String>
 
+    /**
+     * The check of this document against an earlier version of it.
+     *
+     * @since 1.0.0
+     */
+    @get:Nested
+    public abstract val compatibility: CompatibilitySpec
+
     init {
         typePrefix.convention("")
         visibility.convention(Visibility.Public)
@@ -99,6 +109,16 @@ public abstract class DocumentSpec : Named {
      */
     public fun acknowledge(code: String, reason: String) {
         acknowledgements.put(code, reason)
+    }
+
+    /**
+     * Configures [compatibility].
+     *
+     * @param configure the configuration.
+     * @since 1.0.0
+     */
+    public fun compatibility(configure: Action<in CompatibilitySpec>) {
+        configure.execute(compatibility)
     }
 
     internal abstract fun kind(): DocumentKind

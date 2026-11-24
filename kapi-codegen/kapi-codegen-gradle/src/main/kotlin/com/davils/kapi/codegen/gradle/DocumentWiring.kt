@@ -33,6 +33,8 @@ private const val CHECK: String = "kapiCheck"
 
 private const val GENERATE: String = "kapiGenerate"
 
+private const val COMPATIBILITY: String = "kapiCompatibility"
+
 private const val BASE: String = "base"
 
 internal class DocumentWiring(
@@ -48,10 +50,15 @@ internal class DocumentWiring(
             task.description = "Lints every API document of kapi."
             task.dependsOn(project.tasks.withType(Lint::class.java))
         }
+        val compatibility = project.tasks.register(COMPATIBILITY) { task ->
+            task.group = DocumentTask.GROUP
+            task.description = "Compares every API document of kapi that has a baseline with it."
+            task.dependsOn(project.tasks.withType(Compatibility::class.java))
+        }
         val check = project.tasks.register(CHECK) { task ->
             task.group = DocumentTask.GROUP
             task.description = "Runs every check of kapi."
-            task.dependsOn(lint)
+            task.dependsOn(lint, compatibility)
         }
         project.pluginManager.withPlugin(BASE) {
             project.tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME) { task -> task.dependsOn(check) }
@@ -60,7 +67,7 @@ internal class DocumentWiring(
 
     fun wire(spec: DocumentSpec) {
         val suffix = upperCamel(spec.name)
-        val names = listOf(GENERATE + suffix, LINT + suffix)
+        val names = listOf(GENERATE + suffix, LINT + suffix, COMPATIBILITY + suffix)
         val taken = names.filter { name -> name in project.tasks.names }
         if (taken.isNotEmpty()) throw clash(spec, taken)
         conventions(spec)
@@ -77,6 +84,14 @@ internal class DocumentWiring(
             configure(task, spec)
             task.report.set(reportsOf(spec).map { folder -> folder.file("lint.json") })
             task.sarif.set(reportsOf(spec).map { folder -> folder.file("lint.sarif") })
+        }
+        project.tasks.register(COMPATIBILITY + suffix, Compatibility::class.java) { task ->
+            configure(task, spec)
+            task.acknowledgements.set(spec.compatibility.acknowledgements)
+            task.baseline.set(spec.compatibility.baseline)
+            task.breaking.set(spec.compatibility.breaking.map(CompatibilitySide::name))
+            task.report.set(reportsOf(spec).map { folder -> folder.file("compatibility.json") })
+            task.sarif.set(reportsOf(spec).map { folder -> folder.file("compatibility.sarif") })
         }
         sources.wire(spec, generate)
     }

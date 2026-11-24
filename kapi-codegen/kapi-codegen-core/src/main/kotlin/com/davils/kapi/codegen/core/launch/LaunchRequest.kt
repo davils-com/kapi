@@ -39,6 +39,9 @@ import java.nio.file.Path
  * @property generatorVersion the version of kapi that generates.
  * @property acknowledgements the codes of warnings the build accepts, each with its reason.
  * @property kind the specification the document follows; OpenAPI by default. An AsyncAPI document takes no overlays.
+ * @property baseline the earlier version of the document that a comparison checks [specification] against, inside
+ * [root], or `null` for a generation or a lint.
+ * @property breaking for whom a change must not break, `Clients`, `Providers` or `Both`; `Clients` by default.
  * @since 1.0.0
  */
 @DavilsInternal
@@ -59,6 +62,8 @@ public class LaunchRequest(
     public val generatorVersion: String,
     public val acknowledgements: Map<String, String>,
     public val kind: LaunchKind = LaunchKind.OpenApi,
+    public val baseline: Path? = null,
+    public val breaking: String = "Clients",
 ) {
     override fun toString(): String = "LaunchRequest($kind, $specification, $packageName, $apiName, $artifacts)"
 }

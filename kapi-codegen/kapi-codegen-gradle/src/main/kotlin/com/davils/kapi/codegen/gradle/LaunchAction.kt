@@ -20,6 +20,7 @@ package com.davils.kapi.codegen.gradle
 
 import com.davils.kapi.codegen.core.launch.LaunchKind
 import com.davils.kapi.codegen.core.launch.LaunchRequest
+import com.davils.kapi.codegen.core.launch.LaunchVerdict
 import com.davils.kapi.codegen.core.launch.Launcher
 import com.davils.kore.core.annotation.DavilsInternal
 import org.gradle.api.GradleException
@@ -30,19 +31,28 @@ import org.gradle.api.provider.Provider
 import org.gradle.workers.WorkAction
 import java.nio.file.Path
 
+private val actions: Map<String, (LaunchRequest) -> LaunchVerdict> = mapOf(
+    DocumentTask.GENERATE to Launcher::run,
+    DocumentTask.LINT to Launcher::lint,
+    DocumentTask.COMPARE to Launcher::compare,
+)
+
+private val verbs: Map<String, String> = mapOf(
+    DocumentTask.GENERATE to "generate",
+    DocumentTask.LINT to "pass the lint",
+    DocumentTask.COMPARE to "stay compatible with its baseline",
+)
+
 internal abstract class LaunchAction : WorkAction<LaunchParameters> {
     override fun execute() {
         val request = requestOf(parameters)
-        val isLint = parameters.lint.get()
-        val verdict = when (isLint) {
-            true -> Launcher.lint(request)
-            false -> Launcher.run(request)
-        }
+        val mode = parameters.mode.get()
+        val verdict = actions.getValue(mode)(request)
         val logger = Logging.getLogger(LaunchAction::class.java)
         verdict.lines.forEach(logger::warn)
         if (verdict.isAccepted) return
         val failures = verdict.failures.joinToString(separator = "\n")
-        val verb = "pass the lint".takeIf { isLint } ?: "generate"
+        val verb = verbs.getValue(mode)
         throw GradleException("The API document ${request.specification} does not $verb:\n$failures")
     }
 
@@ -68,6 +78,8 @@ internal abstract class LaunchAction : WorkAction<LaunchParameters> {
             generatorVersion = options.generatorVersion.get(),
             acknowledgements = options.acknowledgements.get(),
             kind = LaunchKind.valueOf(document.kind.get()),
+            baseline = document.baseline.orNull?.run { asFile.toPath() },
+            breaking = document.breaking.getOrElse(CompatibilitySide.Clients.name),
         )
     }
 

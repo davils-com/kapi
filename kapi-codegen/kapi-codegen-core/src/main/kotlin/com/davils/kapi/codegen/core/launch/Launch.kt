@@ -26,7 +26,11 @@ import com.davils.kapi.codegen.core.Generation
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.codegen.core.options.Visibility
 import com.davils.kapi.spec.asyncapi.AsyncApi
+import com.davils.kapi.spec.core.compatibility.Change
+import com.davils.kapi.spec.core.compatibility.Comparison
+import com.davils.kapi.spec.core.compatibility.Impact
 import com.davils.kapi.spec.core.diagnostic.Diagnostic
+import com.davils.kapi.spec.core.diagnostic.Location
 import com.davils.kapi.spec.core.source.Source
 import com.davils.kapi.spec.openapi.OpenApi
 import com.davils.kapi.spec.openapi.Reading
@@ -41,14 +45,20 @@ import java.nio.file.Files
 import java.nio.file.Path
 import com.davils.kapi.spec.asyncapi.Reading as ChannelReading
 
-private const val MAXIMUM_DOCUMENT_LENGTH: Int = 16 * 1024 * 1024
-
 private const val MAXIMUM_MESSAGE_LENGTH: Int = 1024
 
 private val readable: Json = Json { prettyPrint = true }
 
-internal class Launch(private val request: LaunchRequest, private val isLint: Boolean) {
+private val sides: Map<String, List<(Change) -> Impact>> = mapOf(
+    "Clients" to listOf(Change::client),
+    "Providers" to listOf(Change::provider),
+    "Both" to listOf(Change::client, Change::provider),
+)
+
+internal class Launch(private val request: LaunchRequest, private val mode: LaunchMode) {
     private val root: Path = request.root.toAbsolutePath().normalize()
+
+    private val readers: LaunchReaders = LaunchReaders(root)
 
     suspend fun run(): LaunchVerdict {
         val report = checked()
@@ -59,9 +69,25 @@ internal class Launch(private val request: LaunchRequest, private val isLint: Bo
     }
 
     private suspend fun checked(): LaunchReport {
-        val problem = problemOf()
+        val problem = problemOf() ?: comparisonProblemOf()
         if (problem != null) return failed(problem)
-        return read()
+        return when (mode) {
+            LaunchMode.Generate, LaunchMode.Lint -> read()
+            LaunchMode.Compare -> compared()
+        }
+    }
+
+    private fun comparisonProblemOf(): String? {
+        val baseline = request.baseline?.toAbsolutePath()
+        val isCompared = mode == LaunchMode.Compare
+        val isMissing = isCompared && baseline == null
+        val outside = baseline?.takeUnless { path -> path.normalize().startsWith(root) }?.takeIf { isCompared }
+        val isSideUnknown = isCompared && request.breaking !in sides
+        return listOfNotNull(
+            "A comparison needs the baseline of the document".takeIf { isMissing },
+            outside?.let { path -> "The baseline $path lies outside its root $root" },
+            "The side ${request.breaking} is unknown; it is Clients, Providers or Both".takeIf { isSideUnknown },
+        ).firstOrNull()
     }
 
     private fun problemOf(): String? {
@@ -84,10 +110,7 @@ internal class Launch(private val request: LaunchRequest, private val isLint: Bo
     }
 
     private suspend fun readOpenApi(): LaunchReport {
-        val reader = OpenApi.reader {
-            resolver = PathResolver(root, MAXIMUM_DOCUMENT_LENGTH)
-            references { this.root = PathResolver.uriOf(this@Launch.root.resolve(".")) }
-        }
+        val reader = readers.openApi()
         val overlays = request.overlays.map { overlay -> Source.Located(PathResolver.uriOf(overlay)) }
         val reading = reader.read(Source.Located(PathResolver.uriOf(request.specification)), overlays)
         return when (reading) {
@@ -114,10 +137,7 @@ internal class Launch(private val request: LaunchRequest, private val isLint: Bo
     }
 
     private suspend fun readAsyncApi(): LaunchReport {
-        val reader = AsyncApi.reader {
-            resolver = PathResolver(root, MAXIMUM_DOCUMENT_LENGTH)
-            references { this.root = PathResolver.uriOf(this@Launch.root.resolve(".")) }
-        }
+        val reader = readers.asyncApi()
         val reading = reader.read(Source.Located(PathResolver.uriOf(request.specification)))
         return when (reading) {
             is ChannelReading.Read -> channels(reading)
@@ -148,6 +168,7 @@ internal class Launch(private val request: LaunchRequest, private val isLint: Bo
     }
 
     private fun written(generation: Generation.Generated, read: List<Diagnostic>): LaunchReport {
+        val isLint = mode == LaunchMode.Lint
         val outcome = LaunchOutcome.Audited.takeIf { isLint } ?: LaunchOutcome.Generated
         if (!isLint) generation.files.forEach(::writeFile)
         return LaunchReport(
@@ -186,18 +207,69 @@ internal class Launch(private val request: LaunchRequest, private val isLint: Bo
         files = emptyList(),
     )
 
-    private fun diagnosticOf(diagnostic: Diagnostic): LaunchDiagnostic {
-        val location = diagnostic.location
-        val position = location?.position
-        return LaunchDiagnostic(
-            code = diagnostic.code.value,
-            isError = diagnostic.severity == Severity.Error,
-            message = SafeText.text(diagnostic.message, MAXIMUM_MESSAGE_LENGTH),
-            file = location?.let { found -> relative(found.document.value) },
-            line = position?.let { found -> found.line + 1 },
-            column = position?.let { found -> found.column + 1 },
+    private suspend fun compared(): LaunchReport = when (request.kind) {
+        LaunchKind.OpenApi -> comparedOpenApi()
+        LaunchKind.AsyncApi -> comparedAsyncApi()
+    }
+
+    private suspend fun comparedOpenApi(): LaunchReport {
+        val reader = readers.openApi()
+        val baseline = reader.read(sourceOf(request.baseline))
+        val candidate = reader.read(sourceOf(request.specification))
+        val earlier = baseline as? Reading.Read
+        val later = candidate as? Reading.Read
+        if (earlier == null || later == null) return refused(baseline.diagnostics + candidate.diagnostics)
+        return changed(OpenApi.compare(baseline = earlier.document, candidate = later.document))
+    }
+
+    private suspend fun comparedAsyncApi(): LaunchReport {
+        val reader = readers.asyncApi()
+        val baseline = reader.read(sourceOf(request.baseline))
+        val candidate = reader.read(sourceOf(request.specification))
+        val earlier = baseline as? ChannelReading.Read
+        val later = candidate as? ChannelReading.Read
+        if (earlier == null || later == null) return refused(baseline.diagnostics + candidate.diagnostics)
+        return changed(AsyncApi.compare(baseline = earlier.document, candidate = later.document))
+    }
+
+    private fun sourceOf(path: Path?): Source = Source.Located(PathResolver.uriOf(path ?: request.specification))
+
+    private fun changed(comparison: Comparison): LaunchReport = LaunchReport(
+        outcome = LaunchOutcome.Compared,
+        reason = null,
+        diagnostics = comparison.changes.map(::changeOf),
+        files = emptyList(),
+    )
+
+    private fun changeOf(change: Change): LaunchDiagnostic {
+        val impacts = sides.getValue(request.breaking).map { side -> side(change) }
+        return placed(
+            code = change.code.value,
+            message = change.message,
+            location = change.candidate ?: change.baseline,
+            isError = false,
+            isNote = Impact.Breaking !in impacts,
         )
     }
+
+    private fun diagnosticOf(diagnostic: Diagnostic): LaunchDiagnostic = placed(
+        code = diagnostic.code.value,
+        message = diagnostic.message,
+        location = diagnostic.location,
+        isError = diagnostic.severity == Severity.Error,
+        isNote = false,
+    )
+
+    private fun placed(code: String, message: String, location: Location?, isError: Boolean, isNote: Boolean) =
+        LaunchDiagnostic(
+            code = code,
+            isError = isError,
+            message = SafeText.text(message, MAXIMUM_MESSAGE_LENGTH),
+            file = location?.let { found -> relative(found.document.value) },
+            line = location?.position?.let { found -> found.line + 1 },
+            column = location?.position?.let { found -> found.column + 1 },
+            isNote = isNote,
+        )
 
     private fun relative(uri: String): String {
         val absolute = Path.of(URI(uri)).toAbsolutePath()

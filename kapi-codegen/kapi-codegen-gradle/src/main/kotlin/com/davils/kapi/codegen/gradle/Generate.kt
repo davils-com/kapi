@@ -79,7 +79,7 @@ public abstract class Generate : DocumentTask() {
     @TaskAction
     public fun generateKotlin() {
         files.delete { spec -> spec.delete(commonKotlin, jvmKotlin, resources) }
-        launch(isLint = false) { outputs ->
+        launch(mode = GENERATE) { outputs ->
             outputs.commonKotlin.set(commonKotlin)
             outputs.jvmKotlin.set(jvmKotlin)
             outputs.resources.set(resources)

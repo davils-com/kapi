@@ -20,6 +20,9 @@ package com.davils.kapi.codegen.core.launch
 
 import com.davils.kore.core.annotation.DavilsInternal
 
+private val complete: Set<LaunchOutcome> =
+    setOf(LaunchOutcome.Generated, LaunchOutcome.Audited, LaunchOutcome.Compared)
+
 /**
  * What a build makes of a run: the lines to show and the failures that stop it.
  *
@@ -65,11 +68,11 @@ public class LaunchVerdict(
          * @since 1.0.0
          */
         public fun of(report: LaunchReport, acknowledgements: Map<String, String>): LaunchVerdict {
-            val warnings = report.diagnostics.filterNot(LaunchDiagnostic::isError)
+            val warnings = report.diagnostics.filter { diagnostic -> !diagnostic.isError && !diagnostic.isNote }
             val errors = report.diagnostics.filter(LaunchDiagnostic::isError)
             val open = warnings.filter { warning -> acknowledgements[warning.code].isNullOrBlank() }
             val unmatched = acknowledgements.keys.filter { code -> warnings.none { warning -> warning.code == code } }
-            val isComplete = report.outcome == LaunchOutcome.Generated || report.outcome == LaunchOutcome.Audited
+            val isComplete = report.outcome in complete
             val unused = unmatched.takeIf { isComplete }.orEmpty()
             val blank = acknowledgements.filterValues(String::isBlank).keys
             val failures = listOfNotNull(report.reason) +
