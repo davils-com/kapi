@@ -149,6 +149,15 @@ class ComparisonTest : FunSpec({
             changes.last().message shouldContain "1 further changes were dropped"
         }
 
+        test("counts a change it already holds as dropped once it is full") {
+            val log = log { limits { maximumDiagnostics = 1 } }
+            log.report(rule = RULE, impacts = breaking, message = "one", baseline = null, candidate = null)
+            log.report(rule = RULE, impacts = breaking, message = "one", baseline = null, candidate = null)
+
+            val changes = log.comparison().changes
+            changes.last().message shouldContain "1 further changes were dropped"
+        }
+
         test("stops after its steps and reports it once") {
             val log = log { limits { maximumNodes = 1 } }
 

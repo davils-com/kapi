@@ -246,6 +246,15 @@ class SchemaComparisonTest : FunSpec({
             (before to after).compared { limits { maximumNodes = HUGE.toLong() } }.rules() shouldBe listOf(INCOMPLETE)
         }
 
+        test("compare objects of many properties within the steps of the limits") {
+            val named = (1..HUGE).associate { index -> "p$index" to schema() }
+            val before = schema { properties = named }
+            val after = schema { properties = named - "p1" }
+
+            (before to after).compared().rules() shouldBe listOf("property-removed")
+            (before to after).compared { limits { maximumNodes = HUGE.toLong() } }.rules() shouldBe listOf(INCOMPLETE)
+        }
+
         test("of a const narrow, widen or break both sides") {
             val a = schema { constant = Value.Text("a") }
 

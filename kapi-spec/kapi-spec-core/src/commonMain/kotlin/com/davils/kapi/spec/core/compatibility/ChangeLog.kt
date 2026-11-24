@@ -93,10 +93,9 @@ public class ChangeLog(private val prefix: String, settings: ComparisonSettings)
         )
         val places = "${baseline?.toString().orEmpty()}|${candidate?.toString().orEmpty()}"
         val key = "${change.code}|$impacts|$message|$places"
-        if (!seen.add(key)) return
-        val hasRoom = recorded.size < limits.maximumDiagnostics
-        if (hasRoom) recorded += change
-        if (!hasRoom) dropped += 1
+        val isFull = recorded.size >= limits.maximumDiagnostics
+        if (isFull) dropped += 1
+        if (!isFull && seen.add(key)) recorded += change
     }
 
     /**

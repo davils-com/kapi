@@ -31,10 +31,20 @@ internal class ObjectRules(
     private val nested: (Pairing) -> Unit,
 ) {
     fun compare(pairing: Pairing) {
-        val before = OrderedSet(pairing.baseline.required)
-        val after = OrderedSet(pairing.candidate.required)
         val old = pairing.baseline.properties
         val new = pairing.candidate.properties
+        val names = old.size + new.size + pairing.baseline.required.size + pairing.candidate.required.size
+        val isWithin = pairing.log.steps(
+            count = names.toLong(),
+            baseline = pairing.baseline.location,
+            candidate = pairing.candidate.location,
+        )
+        if (isWithin) properties(pairing = pairing, old = old, new = new)
+    }
+
+    private fun properties(pairing: Pairing, old: Map<String, SchemaView>, new: Map<String, SchemaView>) {
+        val before = OrderedSet(pairing.baseline.required)
+        val after = OrderedSet(pairing.candidate.required)
         old.forEach { (name, schema) -> if (name !in new) removed(pairing = pairing, name = name, schema = schema) }
         new.forEach { (name, schema) ->
             if (name !in old) added(pairing = pairing, name = name, schema = schema, isRequired = name in after)

@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Text sources** longer in characters than `maximumDocumentLength` are refused before they are encoded.
 - **Resolvers of the application** run contained when a document loads another one: an exception is reported as a
   failed resolution with `*.load.failed` instead of escaping the reader, as the KDoc of `Resolver` promised.
+- **Comparisons** charge a step for every property and required name of an object they compare and stop recording
+  which changes they saw once they are full, so a schema of many properties cannot outrun `maximumNodes`.
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
   chosen to collide in `hashCode` can no longer make the check quadratic.
 - **Webhook signatures** bind the body: by default a delivery with content is accepted only by a signature that
