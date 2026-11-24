@@ -41,6 +41,9 @@ private const val POST: String = "/pets: {post: {operationId: a"
 
 private const val GET_AT: String = "@/paths/~1pets/get"
 
+private const val UPLOAD_STREAM: String = "codegen.extension.value@/paths/~1pets/post/requestBody/" +
+    "content/application~1octet-stream/x-kapi-stream"
+
 private const val PAGINATION: String = "codegen.extension.value$GET_AT/x-kapi-pagination"
 
 private val cases: Map<String, Pair<List<String>, List<String>>> = mapOf(
@@ -93,6 +96,52 @@ private val cases: Map<String, Pair<List<String>, List<String>>> = mapOf(
         ),
     "a name that is no text" to (
         paths("$GET, x-kapi-name: 7, $NONE}}") to listOf("codegen.extension.value$GET_AT/x-kapi-name")
+        ),
+    "a pagination without a style" to (
+        paths("$GET, x-kapi-pagination: {parameter: page}, responses: {'200': {description: ok, $PAGE}}}}") to
+            listOf(PAGINATION)
+        ),
+    "a page pagination over a whole array with a narrow parameter" to (
+        paths(
+            "$GET, x-kapi-pagination: {style: page, parameter: page}, parameters: [{name: page, in: query, " +
+                "schema: {type: integer, format: int32}}], responses: {'204': {description: none}, " +
+                "'200': {description: ok, content: {application/json: {schema: {type: array, items: $TEXT}}}}}}}",
+        ) to emptyList()
+        ),
+    "a stream of lines on a request body" to (
+        paths(
+            "$POST, requestBody: {content: {application/octet-stream: {x-kapi-stream: lines, " +
+                "schema: {type: string, format: binary}}}}, $NONE}}",
+        ) to listOf(UPLOAD_STREAM)
+        ),
+    "a response that streams bytes beside JSON" to (
+        paths(
+            "$GET, responses: {'200': {description: ok, content: {application/json: {schema: $TEXT}, " +
+                "application/octet-stream: {x-kapi-stream: bytes, schema: {type: string, format: binary}}}}}}}",
+        ) to emptyList()
+        ),
+    "a nullable query string that is required" to (
+        paths(
+            "/pets: {query: {operationId: a, parameters: [{name: q, in: querystring, required: true, " +
+                "content: {application/json: {schema: {type: [string, 'null']}}}}], $NONE}}",
+        ) to emptyList()
+        ),
+    "an entity tag on an operation that changes" to (
+        paths(
+            "$POST, responses: {'200': {description: ok, headers: {ETag: {schema: $TEXT}}, " +
+                "content: {application/json: {schema: $TEXT}}}}}}",
+        ) to emptyList()
+        ),
+    "a map in the query that is not exploded" to (
+        paths(
+            "$GET, parameters: [{name: m, in: query, explode: false, schema: {type: object, " +
+                "additionalProperties: $TEXT}}], $NONE}}",
+        ) to emptyList()
+        ),
+    "a response of server-sent events only" to (
+        paths(
+            "$GET, responses: {'200': {description: ok, content: {text/event-stream: {itemSchema: $TEXT}}}}}}",
+        ) to emptyList()
         ),
     "a body that is a map" to (
         paths(
