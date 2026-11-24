@@ -18,6 +18,7 @@ package com.davils.kapi.runtime.client.channel
 
 import com.davils.kapi.runtime.client.channel.fixture.FakeSession
 import com.davils.kapi.runtime.client.channel.fixture.Message
+import com.davils.kapi.runtime.client.channel.fixture.ThrowingCodec
 import com.davils.kapi.runtime.core.codec.Codecs
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import io.kotest.assertions.throwables.shouldThrow
@@ -169,6 +170,18 @@ class ChannelSessionTest : FunSpec({
             session.inbound.send(text("not json"))
 
             closeOf(session, correlated) shouldBe ChannelClose(code = CloseKind.InvalidPayload.code, isLocal = true)
+        }
+
+        test("gets a close with 1007 when the codec of the application throws while it reads") {
+            val session = FakeSession()
+            session.inbound.send(text("""{"text":"a"}"""))
+
+            val outcome = ran(session = session, protocol = null, spec = correlated, codec = ThrowingCodec()) {
+                incoming.toList()
+            }
+
+            val completed = outcome.shouldBeInstanceOf<ChannelOutcome.Completed<List<Message>>>()
+            completed.close.kind shouldBe CloseKind.InvalidPayload
         }
     }
 

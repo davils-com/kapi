@@ -27,6 +27,7 @@ import com.davils.kapi.runtime.core.codec.internal.OctetStreamCodec
 import com.davils.kapi.runtime.core.codec.internal.TextCodec
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.failure.contained
 import com.davils.kore.core.validation.Validatable
 import com.davils.kore.core.validation.ValidationScope
 import kotlinx.io.bytestring.ByteString
@@ -141,7 +142,8 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
      * @param content the content, which may come from an attacker.
      * @param mediaType the media type of [content]; its parameters, such as `charset`, reach the codec.
      * @return the value, or why the content holds none: it is larger than [maxContentBytes], no codec covers its type,
-     * or the codec refused it.
+     * or the codec refused it. A codec of the caller is foreign code and runs inside `contained` of Kore: what it
+     * throws is a failed decoding, never an exception of this call.
      * @since 1.0.0
      */
     public fun <T> decode(
@@ -152,7 +154,8 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
         val codec = codecFor(mediaType)
         val isTooLarge = content.size > maxContentBytes
         if (isTooLarge || codec == null) return Decoding.Failed(refusalOf(content, mediaType))
-        return codec.decode(deserializer, content, mediaType)
+        val decoding = contained { codec.decode(deserializer, content, mediaType) }
+        return decoding.getOrElse { Decoding.Failed(THROWN) }
     }
 
     override fun ValidationScope.validate() {
@@ -190,6 +193,8 @@ public class Codecs internal constructor(builder: CodecsBuilder) : Validatable {
         private const val MISSING: String = "The content has no media type that can be read"
 
         private const val UNSUPPORTED: String = "No codec reads the media type of the content"
+
+        private const val THROWN: String = "The codec failed to read the content"
 
         /**
          * The built-in codecs with the default JSON and limits.

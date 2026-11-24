@@ -31,5 +31,5 @@ internal class UpperCodec(override val mediaTypes: List<MediaRange>) : Codec {
     }
 
     override fun <T> decode(deserializer: DeserializationStrategy<T>, content: ByteString): Decoding<T> =
-        Decoding.Failed("upper case cannot be read")
+        error("upper case cannot be read")
 }

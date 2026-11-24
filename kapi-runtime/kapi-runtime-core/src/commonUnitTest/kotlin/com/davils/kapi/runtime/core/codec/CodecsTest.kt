@@ -49,6 +49,8 @@ private const val TEXT: String = "text/plain"
 
 private const val OCTETS: String = "application/octet-stream"
 
+private const val UPPER: String = "text/upper"
+
 private const val INVALID_BYTE: Int = 0xFF
 
 private const val LATIN_E_ACUTE: Int = 0xE9
@@ -255,12 +257,20 @@ class CodecsTest : FunSpec({
 
     context("configured codecs") {
         test("ask a codec of the application before the built-in one") {
-            val upper = UpperCodec(listOf(MediaRange.Json, MediaRange.of("text/upper")))
+            val upper = UpperCodec(listOf(MediaRange.Json, MediaRange.of(UPPER)))
             val codecs = codecs { codec(upper) }
 
             codecs.codecFor(JSON) shouldBe upper
-            codecs.codecFor(MediaType.parse("text/upper")) shouldBe upper
+            codecs.codecFor(MediaType.parse(UPPER)) shouldBe upper
             codecs.supports("application/problem+json") shouldBe true
+        }
+
+        test("contain a codec of the caller that throws while it reads") {
+            val codecs = codecs { codec(UpperCodec(listOf(MediaRange.of(UPPER)))) }
+
+            val decoding = codecs.decode(Pet.serializer(), "REX".encodeToByteString(), UPPER)
+
+            decoding.shouldBeInstanceOf<Decoding.Failed>().reason shouldContain "codec failed"
         }
 
         test("use the JSON they were given") {

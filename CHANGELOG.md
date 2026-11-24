@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **Codecs of the application** run contained when they read: a codec that throws makes a failed decoding, and on a
+  WebSocket channel a close with 1007, instead of an exception out of a call, a stream or a channel.
 - **Annotation tracking** of `unevaluatedItems` and `unevaluatedProperties` charges the evaluation budget for every
   item and property it tracks, so a wide array under many subschemas is refused by `maximumEvaluationSteps` instead
   of running for a minute.

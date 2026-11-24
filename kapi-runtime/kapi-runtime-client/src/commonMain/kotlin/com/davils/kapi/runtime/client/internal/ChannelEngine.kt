@@ -44,6 +44,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.Buffer
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.readByteArray
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.JsonElement
 import kotlin.time.Duration
 
@@ -56,6 +57,8 @@ private const val MOST_REASON_BYTES: Int = 123
 private const val FIRST_APPLICATION_CODE: Int = 3_000
 
 private const val LAST_APPLICATION_CODE: Int = 4_999
+
+private const val THROWN: String = "The codec failed to read the message"
 
 @OptIn(DavilsInternal::class)
 internal class ChannelEngine<S, R : Any>(
@@ -167,7 +170,7 @@ internal class ChannelEngine<S, R : Any>(
     }
 
     private suspend fun delivered(bytes: ByteArray): ChannelClose? =
-        when (val decoding = codec.decode(spec.receiveDeserializer, ByteString(bytes))) {
+        when (val decoding = decodedOf(spec.receiveDeserializer, ByteString(bytes))) {
             is Decoding.Decoded -> {
                 routed(decoding.value, ByteString(bytes))
                 null
@@ -195,9 +198,14 @@ internal class ChannelEngine<S, R : Any>(
     }
 
     private fun jsonId(bytes: ByteString, id: ((JsonElement) -> String?)?): String? {
-        val decoded = (codec.decode(JsonElement.serializer(), bytes) as? Decoding.Decoded)?.value
+        val decoded = (decodedOf(JsonElement.serializer(), bytes) as? Decoding.Decoded)?.value
         val element = decoded?.takeIf { id != null } ?: return null
         return contained { id?.invoke(element) }.getOrNull()
+    }
+
+    private fun <T> decodedOf(deserializer: DeserializationStrategy<T>, bytes: ByteString): Decoding<T> {
+        val decoding = contained { codec.decode(deserializer, bytes) }
+        return decoding.getOrElse { Decoding.Failed(THROWN) }
     }
 
     private suspend fun routed(message: R, bytes: ByteString) {
