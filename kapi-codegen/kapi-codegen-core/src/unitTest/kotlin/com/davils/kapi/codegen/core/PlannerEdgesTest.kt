@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core
 
 import com.davils.kapi.codegen.core.fixture.generator
 import com.davils.kapi.codegen.core.fixture.paths
+import com.davils.kapi.codegen.core.fixture.schemas
 import com.davils.kapi.codegen.core.fixture.textOf
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.spec.core.diagnostic.DocumentUri
@@ -143,6 +144,21 @@ private val cases: Map<String, Pair<List<String>, List<String>>> = mapOf(
             "$GET, responses: {'200': {description: ok, content: {text/event-stream: {itemSchema: $TEXT}}}}}}",
         ) to emptyList()
         ),
+    "a property that refers into another schema" to (
+        models("Owner: {type: object, properties: {name: {\$ref: '#/components/schemas/Pet/properties/name'}}}") to
+            listOf("codegen.reference.unsupported@/components/schemas/Owner/properties/name")
+        ),
+    "a union with a member that refers into another schema" to (
+        models("Tag: {oneOf: [{\$ref: '#/components/schemas/Pet/properties/name'}, {type: integer}]}") to
+            listOf(
+                "codegen.schema.unsupported@/components/schemas/Tag/oneOf/0",
+                "codegen.schema.unsupported@/components/schemas/Tag/oneOf/1",
+            )
+        ),
+    "a composition with a member that refers into another schema" to (
+        models("Named: {allOf: [{\$ref: '#/components/schemas/Pet/properties/name'}]}") to
+            listOf("codegen.schema.unsupported@/components/schemas/Named/allOf/0")
+        ),
     "a body that is a map" to (
         paths(
             "$POST, requestBody: {content: {application/json: {schema: {type: object, " +
@@ -150,6 +166,9 @@ private val cases: Map<String, Pair<List<String>, List<String>>> = mapOf(
         ) to emptyList()
         ),
 )
+
+private fun models(declared: String): List<String> =
+    paths("$GET, $NONE}}") + schemas(listOf("Pet: {type: object, properties: {name: {type: string}}}", declared))
 
 class PlannerEdgesTest : FunSpec({
     context("an operation at the edge of what the generator supports") {

@@ -51,6 +51,13 @@ private const val CORRELATION: String = "{location: '\$message.payload#/id'}"
 
 private const val SEND_ON_ROOM: String = "{send: {action: send, channel: {$REF: '#/channels/room'}, "
 
+private const val UNREFERENCED: String = "codegen.asyncapi.reference.unsupported" +
+    "@/channels/room/messages/a/payload/properties/b/\$ref"
+
+private const val ASK: String = "ask: {action: send, channel: {$REF: '#/channels/room'}, " +
+    "messages: [{$REF: '#/channels/room/messages/a'}], reply: {channel: {$REF: '#/channels/room'}, " +
+    "messages: [{$REF: '#/channels/room/messages/b'}]}}"
+
 private const val PREFIX: String = "codegen.asyncapi."
 
 private const val ROOM: String = "@/channels/room"
@@ -166,9 +173,7 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
     "a request and its reply on one channel without correlation ids" to (
         doc(
             "{room: {address: /room, messages: {a: {payload: $STRING}, b: {payload: $STRING}}}}",
-            operations = "{ask: {action: send, channel: {$REF: '#/channels/room'}, " +
-                "messages: [{$REF: '#/channels/room/messages/a'}], reply: {channel: {$REF: '#/channels/room'}, " +
-                "messages: [{$REF: '#/channels/room/messages/b'}]}}}",
+            operations = "{$ASK}",
         ) to listOf(PREFIX + "reply.unpaired$ROOM/messages/a")
         ),
     "a request and its reply with correlation ids among other messages" to (
@@ -213,6 +218,48 @@ private val cases: Map<String, Pair<String, List<String>>> = mapOf(
             operations = "{ask: {action: send, channel: {$REF: '#/channels/room'}, " +
                 "reply: {channel: {$REF: '#/channels/room'}}}}",
         ) to listOf(PREFIX + "channel.skipped@/channels/back")
+        ),
+    "a payload whose models take a name twice" to (
+        doc(
+            room("messages: {a: {payload: {$REF: '#/components/schemas/Pet'}}}"),
+            components = "{schemas: {Pet: {type: object, properties: {id: {type: integer, readOnly: true}, " +
+                "name: $STRING}}, PetWrite: $STRING}}",
+        ) to listOf("codegen.name.collision@")
+        ),
+    "a payload property whose reference names no pointer" to (
+        doc(room("messages: {a: {payload: {type: object, properties: {b: {$REF: '#b'}}}}}")) to listOf(UNREFERENCED)
+        ),
+    "a payload property that refers to a schema in Avro" to (
+        doc(
+            room("messages: {a: {payload: {type: object, properties: {b: {$REF: '#/components/schemas/R'}}}}}"),
+            components = "{schemas: {R: {schemaFormat: 'application/vnd.apache.avro;version=1.9.0', " +
+                "schema: {type: record, name: R, fields: []}}}}",
+        ) to listOf(UNREFERENCED)
+        ),
+    "an operation whose message reference is too short to name a channel" to (
+        doc(PLAIN, operations = SEND_ON_ROOM + "messages: [{$REF: '#/a'}]}}") to
+            listOf(PREFIX + "message.foreign@/operations/send/messages/0")
+        ),
+    "a key scheme of the old kind and a basic scheme of HTTP" to (
+        doc(
+            PLAIN,
+            servers = "{local: {host: localhost, protocol: ws, security: [{$REF: '#/components/securitySchemes/k'}, " +
+                "{$REF: '#/components/securitySchemes/h'}]}}",
+            components = schemes("{k: {type: apiKey, in: user}, h: {type: http, scheme: basic}}"),
+        ) to listOf(PREFIX + "security.unsupported@/components/securitySchemes/k")
+        ),
+    "a handshake query that is an object without properties" to (
+        doc(room("messages: $TEXT, bindings: {ws: {query: {type: object}}}")) to
+            listOf(PREFIX + "handshake.unsupported$ROOM/bindings/ws/query")
+        ),
+    "a request whose sealed side has correlated and plain messages" to (
+        doc(
+            "{room: {address: /room, messages: {a: {payload: ${identified("a")}, correlationId: $CORRELATION}, " +
+                "b: {payload: ${identified("b")}, correlationId: $CORRELATION}, " +
+                "c: {payload: {type: object, required: [kind], properties: {kind: {const: c}}}}}}}",
+            operations = "{$ASK, tell: {action: send, " +
+                "channel: {$REF: '#/channels/room'}, messages: [{$REF: '#/channels/room/messages/c'}]}}",
+        ) to emptyList()
         ),
     "a message of XML" to (
         doc(room("messages: {a: {contentType: application/xml, payload: {type: string}}}")) to
