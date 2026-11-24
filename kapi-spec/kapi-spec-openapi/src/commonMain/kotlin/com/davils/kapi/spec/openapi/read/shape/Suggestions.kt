@@ -16,16 +16,15 @@
 
 package com.davils.kapi.spec.openapi.read.shape
 
+import kotlin.math.abs
+
 private const val MAXIMUM_DISTANCE: Int = 2
 
 internal object Suggestions {
     fun nearest(name: String, candidates: Collection<String>): String? {
-        val distances = candidates.map { candidate ->
-            candidate to distance(
-                left = name.lowercase(),
-                right = candidate.lowercase(),
-            )
-        }
+        val lowered = name.lowercase()
+        val near = candidates.filter { candidate -> abs(candidate.length - name.length) <= MAXIMUM_DISTANCE }
+        val distances = near.map { candidate -> candidate to distance(left = lowered, right = candidate.lowercase()) }
         val best = distances.minByOrNull { (_, distance) -> distance }
         return best?.takeIf { (_, distance) -> distance <= MAXIMUM_DISTANCE }?.first
     }
@@ -41,9 +40,7 @@ internal object Suggestions {
         current[0] = cell.index + 1
         right.indices.forEach { column ->
             val substitution = previous[column] + cost(left = cell.value, right = right[column])
-            val deletion = previous[column + 1] + 1
-            val insertion = current[column] + 1
-            current[column + 1] = intArrayOf(deletion, insertion, substitution).min()
+            current[column + 1] = minOf(a = previous[column + 1] + 1, b = current[column] + 1, c = substitution)
         }
         return current
     }

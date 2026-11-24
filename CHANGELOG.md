@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cookie credentials** that hold a character a cookie value cannot carry, such as `;`, are refused with
   `CallFailure.CredentialMalformed` instead of adding cookies of their own to the request.
 - **Text sources** longer in characters than `maximumDocumentLength` are refused before they are encoded.
+- **Typo suggestions of OpenAPI readers** skip fields whose length differs by more than two, so a long unknown key
+  costs nothing, like in the AsyncAPI reader.
 - **Resolvers of the application** run contained when a document loads another one: an exception is reported as a
   failed resolution with `*.load.failed` instead of escaping the reader, as the KDoc of `Resolver` promised.
 - **Comparisons** charge a step for every property and required name of an object they compare and stop recording

@@ -19,6 +19,8 @@ package com.davils.kapi.spec.openapi.read.shape
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+private const val LONG_KEY: Int = 1_000_000
+
 private val fields: List<String> = listOf("info", "paths", "components", "required")
 
 class SuggestionsTest : FunSpec({
@@ -31,6 +33,10 @@ class SuggestionsTest : FunSpec({
 
         test("finds nothing when no field is close") {
             Suggestions.nearest("webhooks", fields) shouldBe null
+        }
+
+        test("skips fields whose length differs too much, so a long key costs nothing") {
+            Suggestions.nearest("i".repeat(LONG_KEY), fields) shouldBe null
         }
 
         test("finds nothing among no fields") {
