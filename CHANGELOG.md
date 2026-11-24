@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Security
+
+- **Path parameters** of the server runtime are read from the route only: a query field named like a path parameter,
+  such as `DELETE /accounts/me?accountId=victim`, can no longer replace the value of the path that routing, gateways
+  and authorizers saw.
+
 ### Added
 
 - **The compatibility check of the Gradle plugin**: `openApi("pets") { compatibility { baseline = file(...);

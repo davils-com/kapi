@@ -36,6 +36,8 @@ import io.ktor.server.plugins.origin
 import io.ktor.server.request.httpMethod
 import io.ktor.server.request.receiveChannel
 import io.ktor.server.request.uri
+import io.ktor.server.routing.RoutingCall
+import io.ktor.server.routing.RoutingPipelineCall
 
 private const val QUERY: String = "query"
 
@@ -123,7 +125,8 @@ internal class RequestReader(private val context: ServerContext, private val sen
 
     private fun parametersOf(call: ApplicationCall, template: String): Map<String, String> {
         val names = PathTemplates.names(template)
-        return names.associateWith { name -> call.parameters[name].orEmpty() }
+        val routed = (call as? RoutingCall)?.pathParameters ?: (call as? RoutingPipelineCall)?.pathParameters
+        return names.associateWith { name -> routed?.get(name).orEmpty() }
     }
 
     private fun schemeOf(call: ApplicationCall): String {

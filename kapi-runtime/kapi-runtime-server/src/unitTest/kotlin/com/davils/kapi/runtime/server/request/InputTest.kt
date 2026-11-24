@@ -85,6 +85,16 @@ class InputTest : FunSpec({
             }
         }
 
+        test("is read from the path only, never from a query field of the same name") {
+            val operation = probe(path = "/items/{limit}", method = "GET") { input ->
+                listOf(input.required(Place.Path, simple, number), input.required(Place.Query, form, number))
+            }
+
+            probing(operation) {
+                client.get("/items/5?limit=9").bodyAsText() shouldBe "[5, 9]"
+            }
+        }
+
         test("is a text as it came, even when it looks like something else") {
             val operation = probe(method = "GET") { input -> input.required(Place.Query, form, text) }
 
