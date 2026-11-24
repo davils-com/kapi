@@ -37,6 +37,12 @@ private const val ADDED: String = "openapi.compatibility.operation-added"
 
 private const val REASON: String = "pets are listed by the search from 2.0.0 on"
 
+private const val GET: String = "get"
+
+private const val POST: String = "post"
+
+private const val BASELINE: String = "petstore-1.0.0.yaml"
+
 private const val CANDIDATE: String = "petstore.yaml:"
 
 private const val NEWLINE: String = "\n"
@@ -60,7 +66,7 @@ private fun requestOf(base: Path, versions: Versions): LaunchRequest {
     val specification = root.resolve("petstore.yaml")
     specification.writeText(versions.candidate)
     val folder = Files.createDirectories(base.resolve("baseline".takeUnless { versions.isBaselineInside } ?: "api"))
-    val baseline = folder.resolve("petstore-1.0.0.yaml")
+    val baseline = folder.resolve(BASELINE)
     baseline.writeText(versions.baseline)
     return LaunchRequest(
         specification = specification,
@@ -92,7 +98,7 @@ private fun compared(versions: Versions): Pair<LaunchRequest, LaunchVerdict> {
 class ComparisonLaunchTest : FunSpec({
     context("a comparison with the baseline") {
         test("fails on a change that breaks the clients and writes it with its place in both reports") {
-            val (request, verdict) = compared(Versions(baseline = openApi("get", "post"), candidate = openApi("post")))
+            val (request, verdict) = compared(Versions(baseline = openApi(GET, POST), candidate = openApi(POST)))
 
             verdict.isAccepted shouldBe false
             verdict.failures.joinToString() shouldContain REMOVED
@@ -104,8 +110,8 @@ class ComparisonLaunchTest : FunSpec({
 
         test("accepts a breaking change that is acknowledged with a reason") {
             val versions = Versions(
-                baseline = openApi("get", "post"),
-                candidate = openApi("post"),
+                baseline = openApi(GET, POST),
+                candidate = openApi(POST),
                 acknowledgements = mapOf(REMOVED to REASON),
             )
 
@@ -113,7 +119,7 @@ class ComparisonLaunchTest : FunSpec({
         }
 
         test("notes a change that breaks nobody and passes") {
-            val (request, verdict) = compared(Versions(baseline = openApi("post"), candidate = openApi("get", "post")))
+            val (request, verdict) = compared(Versions(baseline = openApi(POST), candidate = openApi(GET, POST)))
 
             verdict.isAccepted shouldBe true
             verdict.lines.joinToString() shouldContain "note: [$ADDED]"
@@ -121,13 +127,13 @@ class ComparisonLaunchTest : FunSpec({
         }
 
         test("judges the side it is asked for: a removal breaks clients, an addition the providers") {
-            val removed = Versions(baseline = openApi("get", "post"), candidate = openApi("post"), breaking = "Both")
+            val removed = Versions(baseline = openApi(GET, POST), candidate = openApi(POST), breaking = "Both")
             val served = Versions(
-                baseline = openApi("get", "post"),
-                candidate = openApi("post"),
+                baseline = openApi(GET, POST),
+                candidate = openApi(POST),
                 breaking = "Providers",
             )
-            val added = Versions(baseline = openApi("post"), candidate = openApi("get", "post"), breaking = "Providers")
+            val added = Versions(baseline = openApi(POST), candidate = openApi(GET, POST), breaking = "Providers")
 
             compared(removed).second.isAccepted shouldBe false
             compared(served).second.isAccepted shouldBe true
@@ -146,8 +152,8 @@ class ComparisonLaunchTest : FunSpec({
 
         test("is refused with the findings of either version that cannot be read") {
             val broken = "openapi: 3.1.0\n"
-            val earlier = compared(Versions(baseline = broken, candidate = openApi("post"))).second
-            val later = compared(Versions(baseline = openApi("post"), candidate = broken)).second
+            val earlier = compared(Versions(baseline = broken, candidate = openApi(POST))).second
+            val later = compared(Versions(baseline = openApi(POST), candidate = broken)).second
             val channels = Versions(
                 baseline = asyncApi("room"),
                 candidate = "asyncapi: 3.0.0\n",
@@ -155,18 +161,18 @@ class ComparisonLaunchTest : FunSpec({
             )
             val earlierChannels = channels.copy(baseline = channels.candidate, candidate = channels.baseline)
 
-            earlier.failures.joinToString() shouldContain "petstore-1.0.0.yaml"
+            earlier.failures.joinToString() shouldContain BASELINE
             later.failures.joinToString() shouldContain CANDIDATE
             compared(channels).second.failures.joinToString() shouldContain CANDIDATE
-            compared(earlierChannels).second.failures.joinToString() shouldContain "petstore-1.0.0.yaml"
+            compared(earlierChannels).second.failures.joinToString() shouldContain BASELINE
         }
     }
 
     context("a comparison that cannot start") {
         test("fails for a baseline outside the root, an unknown side or no baseline at all") {
-            val outside = Versions(baseline = openApi("get"), candidate = openApi("get"), isBaselineInside = false)
-            val side = Versions(baseline = openApi("get"), candidate = openApi("get"), breaking = "Everyone")
-            val missing = requestOf(createTempDirectory(COMPARE), Versions(openApi("get"), openApi("get")))
+            val outside = Versions(baseline = openApi(GET), candidate = openApi(GET), isBaselineInside = false)
+            val side = Versions(baseline = openApi(GET), candidate = openApi(GET), breaking = "Everyone")
+            val missing = requestOf(createTempDirectory(COMPARE), Versions(openApi(GET), openApi(GET)))
             val bare = LaunchRequest(
                 specification = missing.specification,
                 root = missing.root,

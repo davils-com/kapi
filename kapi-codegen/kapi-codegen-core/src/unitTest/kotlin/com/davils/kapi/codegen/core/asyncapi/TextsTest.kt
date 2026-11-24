@@ -57,6 +57,8 @@ private val literals: Map<String, String> = mapOf(
     "\u202E" to quoted(escape("202e")),
     "a\nb" to listOf(quoted("a"), quoted(escape("000a")), quoted("b")).joinToString(separator = " + "),
     "\uD83D\uDE00" to quoted(escape("d83d") + escape("de00")),
+    "a\u0085b" to listOf(quoted("a"), quoted(escape("0085")), quoted("b")).joinToString(separator = " + "),
+    "lone \uD800" to quoted("lone ") + " + " + quoted(escape("d800")),
 )
 
 private val kdocs: Map<String, String> = mapOf(
@@ -67,6 +69,7 @@ private val kdocs: Map<String, String> = mapOf(
     "\u202Eflip" to "\\u202eflip",
     "dot \u00B7 and \u2662 and %" to "dot &#183; and &#9826; and &#37;",
     "smile \uD83D\uDE00" to "smile \uD83D\uDE00",
+    "next\u0085line" to "next\\u0085line",
 )
 
 private val addresses: Map<String, List<PathPart>?> = mapOf(
