@@ -84,6 +84,7 @@ internal class Outgoing(
             val key = call.idempotencyKey?.let { found ->
                 ParameterEntry(name = IDEMPOTENCY_KEY, value = found.toString())
             }
+            val granted = trip.granted.headers.map { entry -> entry.name.lowercase() }
             return Outgoing(
                 method = call.method,
                 url = url,
@@ -94,7 +95,7 @@ internal class Outgoing(
                 upload = call.upload,
                 upgrade = call.upgrade,
                 binding = trip.granted.binding,
-                credentialNames = trip.granted.headers.map { entry -> entry.name.lowercase() }.toSet(),
+                credentialNames = granted.toSet(),
             )
         }
     }

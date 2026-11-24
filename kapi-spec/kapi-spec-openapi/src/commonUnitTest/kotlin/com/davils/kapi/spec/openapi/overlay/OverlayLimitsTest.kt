@@ -29,10 +29,11 @@ private const val DEPTH: Int = 6
 
 private const val MANY: Int = 10_001
 
-private val small = ReadLimitsBuilder().apply {
+private val small = ReadLimitsBuilder().run {
     maximumNodes = NODES
     maximumDepth = DEPTH
-}.build()
+    build()
+}
 
 private val items: List<String> = listOf("items:") + (1..MANY).map { index -> "  - $index" }
 

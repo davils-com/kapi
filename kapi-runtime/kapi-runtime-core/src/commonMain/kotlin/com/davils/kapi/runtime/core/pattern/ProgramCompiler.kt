@@ -120,7 +120,7 @@ internal class ProgramCompiler private constructor() {
         private fun repetitionSize(node: PatternNode.Repetition): Long {
             val body = size(node.body)
             val required = node.minimum.toLong() saturatedTimes body
-            val optional = node.maximum?.let { maximum -> (maximum - node.minimum).toLong() saturatedTimes (body + 1) }
+            val optional = node.maximum?.let { maximum -> (maximum - node.minimum).toLong() saturatedTimes body + 1 }
             val total = required saturatedPlus (optional ?: (body saturatedPlus LOOP_OVERHEAD))
             return total.takeIf { body > 0L } ?: 0L
         }

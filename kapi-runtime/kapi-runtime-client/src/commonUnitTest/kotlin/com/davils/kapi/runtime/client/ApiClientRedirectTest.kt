@@ -48,6 +48,8 @@ private const val OTHER: String = "https://cdn.example.org/files/1"
 
 private const val FOUND: Int = 302
 
+private const val BEARER: String = "bearer"
+
 private const val API_KEY: String = "X-Api-Key"
 
 private const val SEE_OTHER: Int = 303
@@ -65,7 +67,7 @@ private const val START: String = "$BASE/pets"
 private val secured: Call = apiCall(operation = "addPet", method = "POST") {
     path("/pets")
     body(MediaType.Json, EMPTY.encodeToByteString())
-    security(listOf(SecurityUse("bearer", CredentialPlacement.Bearer)))
+    security(listOf(SecurityUse(BEARER, CredentialPlacement.Bearer)))
 }
 
 private fun MockRequestHandleScope.redirect(status: Int, location: String): HttpResponseData = respond(
@@ -77,7 +79,7 @@ private fun MockRequestHandleScope.redirect(status: Int, location: String): Http
 private fun following(answer: suspend MockRequestHandleScope.(String) -> HttpResponseData): Exchanges = Exchanges(
     configure = {
         redirects = redirectPolicy { maxHops = HOPS }
-        credentials = credentials { scheme("bearer") { Secret("t1") } }
+        credentials = credentials { scheme(BEARER) { Secret("t1") } }
     },
 ) { request -> answer(request.url.toString()) }
 
@@ -128,7 +130,7 @@ class ApiClientRedirectTest : FunSpec({
 
         test("goes to another origin without a key the scheme places in a header of its own") {
             val exchanges = following { url -> redirect(FOUND, OTHER).takeIf { url == START } ?: ok(EMPTY) }
-            val keyed = SecurityUse("bearer", CredentialPlacement.Header(API_KEY))
+            val keyed = SecurityUse(BEARER, CredentialPlacement.Header(API_KEY))
 
             exchanges.withClient { client -> client.execute(pets.change { security(listOf(keyed)) }) }
             val (first, moved) = exchanges.requests
