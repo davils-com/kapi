@@ -185,7 +185,7 @@ class ChannelEdgeTest : FunSpec({
             val call = apiCall(operation = "chat", method = "GET") { header(name = "a b", value = "x") }
             val exchanges = Exchanges(http = {
                 followRedirects = false
-                install(WebSockets)
+                install(WebSockets) { maxFrameSize = ChannelSettings.Default.maxFrameBytes }
             })
 
             val outcome = exchanges.withClient { client -> client.channel(call, specOf()) { } }

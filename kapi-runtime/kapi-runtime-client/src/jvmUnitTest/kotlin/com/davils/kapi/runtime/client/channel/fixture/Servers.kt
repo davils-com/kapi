@@ -20,6 +20,7 @@ import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.ClientSettingsBuilder
 import com.davils.kapi.runtime.client.apiClient
 import com.davils.kapi.runtime.client.call.Timeout
+import com.davils.kapi.runtime.client.channel.ChannelSettings
 import com.davils.kapi.runtime.core.destination.destinationPolicy
 import com.davils.kapi.runtime.core.security.Secret
 import com.davils.kapi.runtime.core.security.credentials
@@ -89,7 +90,7 @@ internal suspend fun <T> withServer(
         val port = connectors.first().port
         return HttpClient(ClientEngine) {
             followRedirects = false
-            install(WebSockets)
+            install(WebSockets) { maxFrameSize = ChannelSettings.Default.maxFrameBytes }
         }.use { http -> block(clientOf(http = http, port = port, timeout = timeout, configure = configure)) }
     } finally {
         server.stop(gracePeriodMillis = 0, timeoutMillis = 0)

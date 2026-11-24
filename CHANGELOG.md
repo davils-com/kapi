@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Unique items** of generated models are checked by sorting when they are strings, numbers or enums, so text
   chosen to collide in `hashCode` can no longer make the check quadratic.
+- **WebSocket channels** are refused when the `WebSockets` plugin of Ktor reads frames larger than the channel
+  allows, because Ktor reads the first frames before a limit set on the session applies: the client fails with
+  `CallFailure.ChannelFramesUnbounded`, and `mount` of the server throws.
 - **Codecs of the application** run contained when they read: a codec that throws makes a failed decoding, and on a
   WebSocket channel a close with 1007, instead of an exception out of a call, a stream or a channel.
 - **Annotation tracking** of `unevaluatedItems` and `unevaluatedProperties` charges the evaluation budget for every

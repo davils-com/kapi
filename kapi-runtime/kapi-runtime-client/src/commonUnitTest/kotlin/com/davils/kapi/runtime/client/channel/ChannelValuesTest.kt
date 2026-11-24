@@ -31,6 +31,7 @@ import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kore.core.validation.report.ValidationException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -50,7 +51,7 @@ private val spec: ChannelSpec<Message, Message> = ChannelSpec(Message.serializer
 private fun sockets(configure: ClientSettingsBuilder.() -> Unit = {}): Exchanges =
     Exchanges(configure = configure, http = {
         followRedirects = false
-        install(WebSockets)
+        install(WebSockets) { maxFrameSize = ChannelSettings.Default.maxFrameBytes }
     })
 
 private suspend fun outcomeOf(
@@ -138,6 +139,14 @@ class ChannelValuesTest : FunSpec({
             outcomeOf(Exchanges(), channel = png) shouldBe
                 ChannelOutcome.Failed(CallFailure.ParameterRefused("image/png"))
             outcomeOf(Exchanges()) shouldBe ChannelOutcome.Failed(CallFailure.ChannelsNotInstalled)
+            val unboundedSockets = Exchanges(http = {
+                followRedirects = false
+                install(WebSockets)
+            })
+            val unbounded = outcomeOf(unboundedSockets)
+                .shouldBeInstanceOf<ChannelOutcome.Failed>()
+            unbounded.failure.shouldBeInstanceOf<CallFailure.ChannelFramesUnbounded>().maxFrameSize shouldBeGreaterThan
+                FRAME_BYTES
             outcomeOf(sockets(), call = secured) shouldBe ChannelOutcome.Failed(CallFailure.CredentialMissing)
             outcomeOf(sockets { baseUrl = "" }) shouldBe ChannelOutcome.Failed(CallFailure.BaseUrlMissing)
             outcomeOf(sockets(), call = private) shouldBe

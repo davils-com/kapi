@@ -236,6 +236,24 @@ public sealed interface CallFailure {
     }
 
     /**
+     * The `WebSockets` plugin of the `HttpClient` reads frames of up to [maxFrameSize] bytes, more than the
+     * `maxFrameBytes` of the channel allows, so the channel is not opened: Ktor reads the first frames of a session
+     * before the limit of the channel applies. Install the plugin with a `maxFrameSize` no larger than the
+     * `maxFrameBytes` of every channel, such as `install(WebSockets) { maxFrameSize = 1_048_576 }`.
+     *
+     * @property maxFrameSize the limit of the plugin.
+     * @since 1.0.0
+     */
+    public class ChannelFramesUnbounded(public val maxFrameSize: Long) : CallFailure {
+        override fun equals(other: Any?): Boolean =
+            other is ChannelFramesUnbounded && maxFrameSize == other.maxFrameSize
+
+        override fun hashCode(): Int = maxFrameSize.hashCode()
+
+        override fun toString(): String = "ChannelFramesUnbounded($maxFrameSize)"
+    }
+
+    /**
      * The server refused to open a channel and answered [status] instead of `101 Switching Protocols`.
      *
      * @property status the status of the answer, or 0 if the engine named none.

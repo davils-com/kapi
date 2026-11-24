@@ -4,10 +4,12 @@ import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.apiClient
 import com.davils.kapi.runtime.client.channel.ChannelOutcome
 import com.davils.kapi.runtime.client.channel.ChannelReply
+import com.davils.kapi.runtime.client.channel.ChannelSettings
 import com.davils.kapi.runtime.core.destination.destinationPolicy
 import com.davils.kapi.runtime.core.security.Secret
 import com.davils.kapi.runtime.core.security.credentials
 import com.davils.kapi.runtime.server.Kapi
+import com.davils.kapi.runtime.server.channel.ChannelLimits
 import com.davils.kapi.runtime.server.mount
 import com.davils.kapi.runtime.server.security.ApiKeyAuthorizer
 import com.davils.kore.core.principal.principal
@@ -65,7 +67,7 @@ public object Scenario {
     public fun run(): List<String> = runBlocking {
         val keys = ApiKeyAuthorizer { key -> principal("desk").takeIf { key.reveal() == "k1" } }
         val server = embeddedServer(CIO, port = 0, host = HOST) {
-            install(ServerWebSockets)
+            install(ServerWebSockets) { maxFrameSize = ChannelLimits.Default.maxFrameBytes.toLong() }
             install(Kapi) { authorizer("key", keys) }
             routing { mount(QuotesRoutes(Desk())) }
         }
@@ -74,7 +76,7 @@ public object Scenario {
             val port = server.engine.resolvedConnectors().first().port
             HttpClient(ClientEngine) {
                 followRedirects = false
-                install(ClientWebSockets)
+                install(ClientWebSockets) { maxFrameSize = ChannelSettings.Default.maxFrameBytes }
             }.use { http -> listOf(talk(clientOf(http, port, "k1")), talk(clientOf(http, port, "k2"))) }
         } finally {
             server.stop(gracePeriodMillis = 0, timeoutMillis = 0)

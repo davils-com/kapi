@@ -3,6 +3,7 @@ package scenario
 import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.apiClient
 import com.davils.kapi.runtime.client.channel.ChannelOutcome
+import com.davils.kapi.runtime.client.channel.ChannelSettings
 import com.davils.kapi.runtime.core.destination.destinationPolicy
 import com.davils.kapi.runtime.core.security.Secret
 import com.davils.kapi.runtime.core.security.credentials
@@ -67,7 +68,7 @@ private class Room : ChatRoomService {
 public object Scenario {
     public fun run(): List<String> = runBlocking {
         val server = embeddedServer(CIO, port = 0, host = HOST) {
-            install(ServerWebSockets)
+            install(ServerWebSockets) { maxFrameSize = LIMIT.toLong() }
             install(Kapi) { authorizer("token", Tokens) }
             routing {
                 mount(ChatRoutes(Room(), channelLimits { maxFrameBytes = LIMIT; maxMessageBytes = LIMIT }))
@@ -78,7 +79,7 @@ public object Scenario {
             val port = server.engine.resolvedConnectors().first().port
             HttpClient(ClientEngine) {
                 followRedirects = false
-                install(ClientWebSockets)
+                install(ClientWebSockets) { maxFrameSize = ChannelSettings.Default.maxFrameBytes }
             }.use { http -> talk(clientOf(http, port, "t1")) + talk(clientOf(http, port, "wrong")).take(1) + admitted() }
         } finally {
             server.stop(gracePeriodMillis = 0, timeoutMillis = 0)

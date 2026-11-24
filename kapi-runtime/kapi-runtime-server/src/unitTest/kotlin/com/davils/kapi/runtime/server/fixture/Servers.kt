@@ -20,6 +20,7 @@ import com.davils.kapi.runtime.core.problem.Problem
 import com.davils.kapi.runtime.core.problem.ProblemSerializer
 import com.davils.kapi.runtime.server.Kapi
 import com.davils.kapi.runtime.server.ServerSettingsBuilder
+import com.davils.kapi.runtime.server.channel.ChannelLimits
 import com.davils.kapi.runtime.server.operation
 import com.davils.kapi.runtime.server.operation.Operation
 import com.davils.kapi.runtime.server.reply.Reply
@@ -48,7 +49,7 @@ internal suspend fun serve(
     runTestApplication {
         application {
             install(Kapi, settings)
-            install(WebSockets)
+            install(WebSockets) { maxFrameSize = ChannelLimits.Default.maxFrameBytes.toLong() }
             transport()
             routing { routes() }
         }

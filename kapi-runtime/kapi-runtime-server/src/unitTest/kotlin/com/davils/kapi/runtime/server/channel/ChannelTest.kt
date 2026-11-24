@@ -63,6 +63,8 @@ private const val PROTOCOL: String = "chat.v1"
 
 private const val KEY_HEADER: String = "X-Key"
 
+private const val SMALL_FRAME: Int = 1_024
+
 private val notes: MessageCodec<Note> = MessageCodec(Note.serializer())
 
 private fun echo(
@@ -227,6 +229,15 @@ class ChannelTest : FunSpec({
                 talk {
                     (incoming.receive() is Frame.Binary) shouldBe true
                 }
+            }
+        }
+    }
+
+    context("a channel mounted on a server") {
+        test("is refused when the WebSockets plugin reads frames larger than the channel allows") {
+            val small = channelLimits { maxFrameBytes = SMALL_FRAME }
+            serve(routes = { shouldThrow<IllegalArgumentException> { mount(echo(limits = small)) } }) {
+                startApplication()
             }
         }
     }

@@ -54,6 +54,7 @@ private val failures: List<CallFailure> = listOf(
     CallFailure.CrossOrigin,
     CallFailure.Framing(FramingFailure.NotUtf8),
     CallFailure.ChannelsNotInstalled,
+    CallFailure.ChannelFramesUnbounded(HOPS.toLong()),
     CallFailure.HandshakeRefused(STATUS),
 )
 
@@ -74,6 +75,7 @@ private val texts: List<String> = listOf(
     "CrossOrigin",
     "Framing(NotUtf8)",
     "ChannelsNotInstalled",
+    "ChannelFramesUnbounded(3)",
     "HandshakeRefused(418)",
 )
 

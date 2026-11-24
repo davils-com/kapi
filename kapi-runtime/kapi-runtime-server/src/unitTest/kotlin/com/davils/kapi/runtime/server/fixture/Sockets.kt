@@ -18,6 +18,7 @@ package com.davils.kapi.runtime.server.fixture
 
 import com.davils.kapi.runtime.server.Kapi
 import com.davils.kapi.runtime.server.ServerSettingsBuilder
+import com.davils.kapi.runtime.server.channel.ChannelLimits
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
@@ -41,7 +42,7 @@ internal suspend fun onCio(
 ) {
     val server = embeddedServer(CIO, port = 0, host = HOST) {
         install(Kapi, settings)
-        install(WebSockets)
+        install(WebSockets) { maxFrameSize = ChannelLimits.Default.maxFrameBytes.toLong() }
         transport()
         routing { routes() }
     }

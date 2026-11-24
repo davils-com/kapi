@@ -59,8 +59,11 @@ internal class ChannelOpening(private val client: ApiClient) {
     private val destinations: Destinations = Destinations(settings.destinations)
 
     suspend fun open(call: Call, channel: ChannelSettings): Outcome<OpenedChannel, CallFailure> {
-        val isInstalled = client.http.pluginOrNull(WebSockets) != null
-        val failure = call.refusal ?: CallFailure.ChannelsNotInstalled.takeUnless { isInstalled }
+        val sockets = client.http.pluginOrNull(WebSockets)
+        val unbounded = sockets?.run { maxFrameSize.takeIf { size -> size > channel.maxFrameBytes } }
+        val failure = call.refusal
+            ?: CallFailure.ChannelsNotInstalled.takeIf { sockets == null }
+            ?: unbounded?.let(CallFailure::ChannelFramesUnbounded)
         if (failure != null) return Outcome.Failure(failure)
         return when (val granted = client.authorization.of(call)) {
             is Outcome.Failure -> granted

@@ -162,6 +162,11 @@ class EqualityTest : FunSpec({
                     CallFailure.Framing(FramingFailure.RecordTooLong),
                 ),
                 listOf(
+                    CallFailure.ChannelFramesUnbounded(1L),
+                    CallFailure.ChannelFramesUnbounded(1L),
+                    CallFailure.ChannelFramesUnbounded(2L),
+                ),
+                listOf(
                     CallFailure.HandshakeRefused(1),
                     CallFailure.HandshakeRefused(1),
                     CallFailure.HandshakeRefused(2),

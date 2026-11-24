@@ -30,6 +30,9 @@ import io.ktor.server.routing.route
 import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.webSocket
 
+private const val UNBOUNDED_FRAMES: String =
+    "The WebSockets plugin reads frames larger than the maxFrameBytes of the channel; lower its maxFrameSize"
+
 /**
  * Serves every operation and channel of [routes] below this route, such as `routing { mount(PetsRoutes(service)) }`.
  *
@@ -37,6 +40,8 @@ import io.ktor.server.websocket.webSocket
  * @param routes the generated route class.
  * @throws io.ktor.server.application.MissingApplicationPluginException if [Kapi] is not installed, or `WebSockets`
  * of Ktor is not installed and [routes] has channels.
+ * @throws IllegalArgumentException if [routes] has channels and the `maxFrameSize` of the `WebSockets` plugin is
+ * larger than the `maxFrameBytes` of one of them.
  * @since 1.0.0
  */
 public fun Route.mount(routes: Routes) {
@@ -66,12 +71,19 @@ public fun Route.operation(operation: Operation) {
  *
  * @receiver the route to mount below.
  * @param endpoint the channel.
+ * Ktor reads the first frames of a session before a limit set on the session applies, so the `WebSockets` plugin
+ * itself must read no frame larger than [ChannelEndpoint.limits] allows, such as
+ * `install(WebSockets) { maxFrameSize = 65_536 }`.
+ *
  * @throws io.ktor.server.application.MissingApplicationPluginException if [Kapi] or `WebSockets` of Ktor is not
  * installed.
+ * @throws IllegalArgumentException if the `maxFrameSize` of the `WebSockets` plugin is larger than the
+ * `maxFrameBytes` of [endpoint].
  * @since 1.0.0
  */
 public fun Route.channel(endpoint: ChannelEndpoint<*, *>) {
-    application.plugin(WebSockets)
+    val sockets = application.plugin(WebSockets)
+    require(sockets.maxFrameSize <= endpoint.limits.maxFrameBytes) { UNBOUNDED_FRAMES }
     val runner = runnerOf(application.plugin(Kapi), endpoint)
     route(endpoint.path, HttpMethod.Get) {
         install(ChannelGate) { admit = runner::admit }
