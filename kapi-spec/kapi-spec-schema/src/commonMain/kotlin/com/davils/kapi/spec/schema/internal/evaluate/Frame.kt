@@ -105,10 +105,13 @@ internal class Frame(
         val trail = visit.keywordTrail.takeIf { keyword.isEmpty() } ?: Trail(visit.keywordTrail, keyword)
         val absolute = node.absolute.takeIf { keyword.isEmpty() } ?: (node.absolute + "/" + Texts.escapedToken(keyword))
         target += Failure(keyword = trail, absolute = absolute, instance = visit.instanceTrail, message = message)
+        run.reportedTo(target)
         return false
     }
 
     fun failAll(failures: List<Failure>?) {
-        sink?.addAll(failures.orEmpty())
+        val target = sink ?: return
+        target.addAll(failures.orEmpty())
+        run.reportedTo(target)
     }
 }

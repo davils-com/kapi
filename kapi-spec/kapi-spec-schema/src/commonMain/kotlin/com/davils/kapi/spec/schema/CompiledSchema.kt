@@ -86,15 +86,12 @@ public class CompiledSchema internal constructor(
     private fun validated(instance: Instance, output: OutputFormat): Validation {
         val sink = ArrayList<Failure>().takeIf { output == OutputFormat.Basic }
         val visit = Visit(instance = instance, instanceTrail = null, keywordTrail = null, scope = null, chain = null)
-        val result = Run(graph, limits).evaluate(root, visit, sink)
+        val result = Run(graph = graph, limits = limits, reported = sink).evaluate(root, visit, sink)
         if (result != null) return Validation.Valid
         return invalid(sink.orEmpty())
     }
 
     private fun invalid(failures: List<Failure>): Validation {
-        if (failures.size > limits.maximumErrors) {
-            throw Refusal(RefusalReason.ReportedErrors, "The value has more than ${limits.maximumErrors} errors", null)
-        }
         val units = failures.map { failure ->
             OutputUnit(
                 keywordLocation = Trail.pointerOf(failure.keyword),

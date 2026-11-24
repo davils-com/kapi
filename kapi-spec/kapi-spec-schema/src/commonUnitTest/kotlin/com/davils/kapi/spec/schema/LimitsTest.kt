@@ -48,6 +48,8 @@ private const val LITERAL_NODES: Int = 3
 
 private const val THREE_ITEMS: String = "[1, 2, 3]"
 
+private const val MANY_ITEMS: Int = 1_000
+
 private fun limited(block: SchemaLimitsBuilder.() -> Unit): CompilerBuilder.() -> Unit = { limits(block) }
 
 private fun arrays(depth: Int): JsonElement {
@@ -184,6 +186,18 @@ class LimitsTest : FunSpec({
         val strict = schemaOf(schema, limited { maximumErrors = ERRORS - 1 })
         strict.refusalOf(json(THREE_ITEMS)).reason shouldBe RefusalReason.ReportedErrors
         strict.validate(json(THREE_ITEMS), OutputFormat.Flag).isValid shouldBe false
+    }
+
+    test("the reported errors stop the validation once there are too many") {
+        val schema = """{"items": {"type": "string"}}"""
+        val many = JsonArray(List(MANY_ITEMS) { index -> JsonPrimitive(index) })
+        val limits = limited {
+            maximumErrors = ERRORS
+            maximumEvaluationSteps = MANY_ITEMS.toLong()
+        }
+        val strict = schemaOf(schema, limits)
+
+        strict.refusalOf(many).reason shouldBe RefusalReason.ReportedErrors
     }
 
     test("the diagnostics of a compilation") {

@@ -27,7 +27,11 @@ private const val CELLS_PER_STEP: Long = 64
 
 private const val CELL_COPIES: Long = 2
 
-internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
+internal class Run(
+    private val graph: Graph,
+    val limits: SchemaLimits,
+    private val reported: List<Failure>? = null,
+) : Meter {
     private var steps: Long = 0L
 
     private var depth: Int = 0
@@ -48,6 +52,13 @@ internal class Run(private val graph: Graph, val limits: SchemaLimits) : Meter {
     }
 
     fun resource(index: Int): ResourceInfo = graph.resources[index]
+
+    fun reportedTo(target: List<Failure>) {
+        val isReported = target === reported
+        if (isReported && target.size > limits.maximumErrors) {
+            throw Refusal(RefusalReason.ReportedErrors, "The value has more than ${limits.maximumErrors} errors", null)
+        }
+    }
 
     fun evaluate(index: Int, visit: Visit, sink: MutableList<Failure>?): Evaluated? {
         trail = visit.instanceTrail
