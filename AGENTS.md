@@ -23,6 +23,7 @@ and critical infrastructure, with security and correctness first.
 | `kapi-runtime/kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation with a linear pattern matcher, problem details, HTTP semantics and the destination policy |
 | `kapi-runtime/kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the Ktor `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
 | `kapi-runtime/kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
+| `kapi-runtime/kapi-runtime-server-ipc` | `com.davils:kapi-runtime-server-ipc` | The bridge to `konnect-ipc-server`, for the JVM only: the plugin `IpcPeers` hands the process on the other side of a local connection to the server as `PeerAttributes.identity` |
 | `kapi-runtime/kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Test support for generated code: fake credentials, mock engines and contract assertions |
 | `kapi-codegen/kapi-codegen-core` | `com.davils:kapi-codegen-core` | The generator, for the JVM only: audits a document, names what it declares and emits Kotlin with KotlinPoet, with the provenance of every file |
 | `kapi-codegen/kapi-codegen-gradle` | `com.davils:kapi-codegen-gradle` | The Gradle plugin `com.davils.kapi`: specifications, generation in an isolated worker, lint, compatibility checks and reports |
@@ -191,7 +192,9 @@ parameters, cookies, tokens, server-sent events and WebSocket frames.
   | `kapi.bom` | The Java platform of the BOM and its publication |
 
 - Dependencies are declared in `gradle/libs.versions.toml`. Libraries of JetBrains (Ktor and kotlinx included) and of
-  Davils (Kore, kaml, konfetti, kollect, kontinuity, krypt) may be added when they are needed; every other dependency
+  Davils (Kore, kaml, konfetti, kollect, kontinuity, krypt, Konnect, kxml) may be added when they are needed;
+  kontinuity is a direct dependency of the client and the server, with safe defaults active, and Konnect of the
+  runtime core; every other dependency
   needs the approval of a maintainer. Approved: KotlinPoet, in `kapi-codegen-core` only.
 - Only `repo.davils.com` serves `com.davils`, through `exclusiveContent`; nothing is resolved from `mavenLocal()`.
 - After a dependency changes, refresh the locks and the verification metadata in one run and review what changed:

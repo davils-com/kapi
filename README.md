@@ -20,6 +20,7 @@ enterprise and critical infrastructure. It is published under the [Apache Licens
 | `kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, parameter styles, headers, negotiation, credentials, validation with a linear pattern matcher, problem details and the destination policy |
 | `kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
 | `kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
+| `kapi-runtime-server-ipc` | `com.davils:kapi-runtime-server-ipc` | The peers of local connections of Konnect as verified peer identities of the kapi server, for the JVM only |
 | `kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Fake credentials, mock APIs, contract checks and calls of generated server routes without Ktor |
 | `kapi-codegen-core` | `com.davils:kapi-codegen-core` | The generator, for the JVM only: audits a document and emits Kotlin with KotlinPoet, with the provenance of every file |
 | `kapi-codegen-gradle` | `com.davils:kapi-codegen-gradle` | The Gradle plugin `com.davils.kapi`: generation in an isolated worker, lint, compatibility checks and SARIF reports |
