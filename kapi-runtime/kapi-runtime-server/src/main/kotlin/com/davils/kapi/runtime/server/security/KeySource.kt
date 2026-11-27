@@ -16,17 +16,25 @@
 
 package com.davils.kapi.runtime.server.security
 
+import com.davils.kontinuity.cache.Cache
+import com.davils.kontinuity.cache.cache
+import com.davils.kontinuity.core.Environment
 import com.davils.kore.core.outcome.getOrNull
 import com.davils.krypt.jose.JoseKey
 import com.davils.krypt.jose.jwk.JsonWebKeys
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+
+private const val CACHE_NAME: String = "kapi-server-keys"
+private val DEFAULT_LIFETIME: Duration = 5.minutes
 
 /**
  * Hands out the keys that may verify the signatures of tokens, such as the keys of the JWKS of an authorization
  * server.
  *
  * A source is code of the application and runs contained; a failure denies the token. It must be safe to call from
- * any coroutine at once. kapi caches nothing: a source that fetches keys over the network caches them itself, such as
- * through the cache of kontinuity.
+ * any coroutine at once. A source that fetches keys over the network is wrapped in [cached], which keeps them in a
+ * cache of kontinuity.
  *
  * @since 1.0.0
  */
@@ -70,6 +78,33 @@ public fun interface KeySource {
         public fun jwks(keys: JsonWebKeys, fetch: suspend () -> String): KeySource = KeySource {
             val set = keys.decodeSet(fetch()).getOrNull()
             set?.keys.orEmpty().mapNotNull { jwk -> keys.key(jwk).getOrNull() }
+        }
+
+        /**
+         * Returns a source that asks [source] once and hands out its keys for [lifetime], through a cache of
+         * kontinuity: callers that arrive while the keys load wait for the same load instead of fetching again, and a
+         * failure is never kept, so the next call asks [source] again.
+         *
+         * @param source the source to cache, such as [jwks].
+         * @param lifetime how long the keys are handed out before [source] is asked again; 5 minutes by default.
+         * @param environment the environment of the cache, with its meters, events and time source.
+         * @return the cached source.
+         * @throws IllegalArgumentException if [lifetime] is not positive and finite.
+         * @since 1.1.0
+         */
+        public fun cached(
+            source: KeySource,
+            lifetime: Duration = DEFAULT_LIFETIME,
+            environment: Environment = Environment.Default,
+        ): KeySource {
+            require(lifetime.isPositive() && lifetime.isFinite()) {
+                "The lifetime of the keys must be positive and finite"
+            }
+            val keys: Cache<Unit, List<JoseKey>> = cache(name = CACHE_NAME, environment = environment) {
+                maximumSize = 1
+                expireAfterWrite = lifetime
+            }
+            return KeySource { keys.getOrLoad(Unit) { source.keys() } }
         }
     }
 }

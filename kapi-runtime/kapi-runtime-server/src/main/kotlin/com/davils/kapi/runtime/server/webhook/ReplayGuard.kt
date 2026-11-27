@@ -16,8 +16,16 @@
 
 package com.davils.kapi.runtime.server.webhook
 
+import com.davils.kontinuity.cache.Cache
+import com.davils.kontinuity.cache.cache
+import com.davils.kontinuity.core.Environment
 import kotlinx.io.bytestring.ByteString
+import kotlin.time.Clock
+import kotlin.time.Duration
 import kotlin.time.Instant
+
+private const val CACHE_NAME: String = "kapi-server-replays"
+private const val DEFAULT_ENTRIES: Int = 100_000
 
 /**
  * Remembers the signatures a [MessageSignatureVerifier] accepted, so a delivery captured on the way cannot be sent
@@ -40,4 +48,38 @@ public fun interface ReplayGuard {
      * @since 1.0.0
      */
     public suspend fun isFirstUse(signature: ByteString, until: Instant): Boolean
+
+    /**
+     * Makes replay guards.
+     *
+     * @since 1.1.0
+     */
+    public companion object {
+        /**
+         * Returns a guard that remembers signatures in memory, in a cache of kontinuity, until their [until] passes.
+         *
+         * The guard holds at most [maxEntries] signatures; when it is full, the signature used least recently is
+         * forgotten first, so [maxEntries] must cover the deliveries a [SignaturePolicy.maxAge] spans. It protects one
+         * process only: several instances of a service share a guard of their own, such as a set in a shared cache.
+         *
+         * @param maxEntries the most signatures remembered at once; 100,000 by default.
+         * @param clock the clock [until] is measured against.
+         * @param environment the environment of the cache, with its meters, events and time source.
+         * @return the guard.
+         * @throws IllegalArgumentException if [maxEntries] is not positive.
+         * @since 1.1.0
+         */
+        public fun inMemory(
+            maxEntries: Int = DEFAULT_ENTRIES,
+            clock: Clock = Clock.System,
+            environment: Environment = Environment.Default,
+        ): ReplayGuard {
+            require(maxEntries > 0) { "A replay guard remembers at least one signature" }
+            val seen: Cache<ByteString, Instant> = cache(name = CACHE_NAME, environment = environment) {
+                maximumSize = maxEntries
+                expireAfter { _, until -> (until - clock.now()).coerceAtLeast(Duration.ZERO) }
+            }
+            return ReplayGuard { signature, until -> seen.putIfAbsent(signature, until) == null }
+        }
+    }
 }
