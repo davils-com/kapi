@@ -72,7 +72,7 @@ class path of its own and adds the generated sources and the matching runtimes t
 // build.gradle.kts
 plugins {
     kotlin("jvm") version "2.4.21"
-    id("com.davils.kapi") version "1.1.0"
+    id("com.davils.kapi") version "1.2.0"
 }
 
 kapi {

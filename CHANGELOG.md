@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0 - 2026-11-27
+
+### Added
+
+- **Every call of a client is protected by a circuit breaker.** `ClientSettingsBuilder.protection` is a policy of
+  kontinuity that every call runs under, idempotent or not, and every attempt of a retried one; without one, the
+  default protection is a circuit breaker of `CallProtection` that stops sending once half of the recent calls could not
+  reach the server, timed out or ended with 500 to 599, and ends a refused call as `CallFailure.Rejected`.
+  `isDefaultProtection = false` turns it off. Only retryable calls run under `resilience` as well, so a call that is not
+  idempotent is never sent twice.
+- **`OAuthSettingsBuilder.metadataLifetime`.** The metadata of an issuer is kept in a cache of kontinuity for an hour by
+  default, at most a day, loaded once for concurrent callers, and discovered again once it expired; metadata that could
+  not be discovered is never kept.
+- **`kapi-runtime-xml`, the XML codec on kxml.** `codecs { xml() }` reads and writes `application/xml`, `text/xml` and
+  every `+xml` type with the hardened reader of kxml. Document type declarations are always refused, so no entity is
+  expanded and no external resource is loaded. It reads within `XmlLimits` (64 levels and 16 MiB by default, at most
+  the hard ceilings of `Codecs`) and lets the `charset` of the media type take precedence as RFC 7303 orders it.
+- **`kapi-runtime-yaml`, the YAML codec on kaml.** `codecs { yaml() }` reads and writes `application/yaml`,
+  `application/x-yaml` and every `+yaml` type of RFC 9512 through the JSON data model of the codecs, so a value reads in
+  YAML as it does in JSON. Aliases, depth and size are bounded by `YamlLimits`, and repeated keys, unknown tags and more
+  than one document are refused.
+- **`kapi-runtime-server-tls`, the peers of mutual TLS of krypt.** The plugin `TlsPeers` puts the path that the trust
+  manager of krypt-tls validated for a connection into `PeerAttributes.certificates`, so an authorizer trusts
+  `PresentedCredential.Certificate`. It never takes a chain krypt did not verify, and removes certificates an earlier
+  plugin put into the call.
+- **Bodies of XML in generated clients and servers.** A body of `application/xml`, `text/xml` or a `+xml` type with a
+  schema is written and read by the XML codec, its model named after its component. `codegen.xml.unsupported` refuses,
+  with its location, what XML cannot carry faithfully: the attributes, wrapped arrays, names and namespaces of the `xml`
+  object, maps, free-form values, unions and nested arrays.
+- **`x-kapi-rate-limit`.** An operation declares `{requests, period, per: caller | principal | address}`, and the
+  generated server enforces it through `OperationRateLimit` in addition to the rate limit of the server, answering
+  `429 Too Many Requests` with a `Retry-After`. Malformed values and values beyond 1,000,000 requests or one day are
+  refused with a located diagnostic.
+- **`CallBuilder.encoded(body)`** sends the body a codec of the client wrote and refuses the call with
+  `CallFailure.ParameterRefused("body")` when none wrote it.
+
+### Changed
+
+- **Server-sent events reconnect through a retry of kontinuity.** The waits, the `retry` of the server, `Last-Event-ID`
+  and the `ClientEvent.Reconnecting` of every reconnection are unchanged, and a stream reconnects as often as its
+  `Reconnection` allows, beyond the attempts one retry of kontinuity takes.
+- **The DPoP nonces of a client are kept in a cache of kontinuity**, for at most ten minutes and 64 origins, the one
+  used least recently giving way instead of all of them being dropped once the 65th origin arrived.
+- **`Operation` takes an optional `rateLimit`.** The constructor of 1.1 is kept for compiled code.
+- **XML bodies are no longer bytes.** A body of XML with a schema used to be generated as `ByteString`; it is now typed
+  and read through the XML codec, which client and server register with `codecs { xml() }`. An XML body without a
+  schema stays bytes.
+- **Built with kxml 1.0.1, the serialization of kaml 1.0.1, krypt-tls 1.2.0 and the circuit breaker and cache of
+  kontinuity 1.2.0.**
+
 ## 1.1.0 - 2026-11-27
 
 ### Added
