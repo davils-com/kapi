@@ -116,6 +116,17 @@ class CallBuilderTest : FunSpec({
             call.refusal shouldBe null
         }
 
+        test("carries the body a codec wrote and is refused when no codec wrote one") {
+            val body = Body(json, "{}".encodeToByteString())
+            val written = apiCall(operation = GET_PET, method = "POST") { encoded(body) }
+            val unwritten = apiCall(operation = GET_PET, method = "POST") { encoded(null) }
+
+            written.body shouldBe body
+            written.refusal shouldBe null
+            unwritten.body shouldBe null
+            unwritten.refusal shouldBe CallFailure.ParameterRefused("body")
+        }
+
         test("keeps its method as written, because methods are case-sensitive, and refuses one that is no token") {
             val lower = apiCall(operation = GET_PET, method = "purge")
             val upper = apiCall(operation = GET_PET, method = "PURGE")

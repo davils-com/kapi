@@ -41,6 +41,8 @@ private const val CHUNK: Int = 8_192
 
 private const val QUERY_STRING: String = "querystring"
 
+private const val BODY: String = "body"
+
 /**
  * Builds a [Call]; generated clients call it, and an interceptor changes a call through [Call.change].
  *
@@ -231,6 +233,22 @@ public class CallBuilder internal constructor(internal val operation: String, in
      */
     public fun body(body: Body) {
         content = body
+    }
+
+    /**
+     * Sends [body], the content a codec of the client wrote, such as
+     * `encoded(client.encode(serializer, value, MediaType.parse("application/xml")))`.
+     *
+     * A body that no codec wrote, `null` because no codec of the client writes its media type or the codec could not
+     * write the value, refuses the call with [CallFailure.ParameterRefused] for `body`: the call is never sent without
+     * the content it was meant to carry.
+     *
+     * @param body the content, or `null` if no codec wrote it.
+     * @since 1.2.0
+     */
+    public fun encoded(body: Body?) {
+        val written = body ?: return refuse(CallFailure.ParameterRefused(BODY))
+        content = written
     }
 
     /**

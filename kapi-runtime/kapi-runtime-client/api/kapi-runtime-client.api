@@ -191,6 +191,7 @@ public final class com/davils/kapi/runtime/client/call/CallBuilder {
 	public final fun body (Lcom/davils/kapi/runtime/core/negotiation/MediaType;Lkotlinx/io/bytestring/ByteString;)V
 	public final fun cookie (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
 	public final fun destination (Ljava/lang/String;)V
+	public final fun encoded (Lcom/davils/kapi/runtime/client/call/Body;)V
 	public final fun form (Lkotlin/jvm/functions/Function1;)V
 	public final fun header (Lcom/davils/kapi/runtime/core/parameter/ParameterFormat;Lcom/davils/kapi/runtime/core/parameter/ParameterValue;)V
 	public final fun header (Ljava/lang/String;Ljava/lang/String;)V
