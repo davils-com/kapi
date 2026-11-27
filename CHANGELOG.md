@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0 - 2026-11-27
+
+### Added
+
+- **`kapi-runtime-server-ipc`, the peers of local connections.** The plugin `IpcPeers` hands the process on the other
+  side of a Unix domain socket or a Windows named pipe of `konnect-ipc-server` to the kapi server as
+  `PeerAttributes.identity`, so an authorizer trusts `PresentedCredential.Peer`; `IpcPeer.toPeerIdentity()` names its
+  user and process.
+- **Every operation is protected by default.** A bulkhead of kontinuity lets one operation serve at most
+  `ServerLimits.maxConcurrentRequests` (512 by default) requests at once and refuses the next one at once with
+  `503 Service Unavailable` and `kapi.server.overloaded`. `ServerSettingsBuilder.rateLimit(requests, per)` limits each
+  caller, its principal or else its address, with a keyed rate limiter of kontinuity and answers `429 Too Many
+  Requests` with `kapi.server.rate-limited` and a `Retry-After`.
+- **Cached keys and an in-memory replay guard.** `KeySource.cached(source, lifetime)` hands out the keys of a source,
+  such as a JWKS, for their lifetime from a cache of kontinuity, loads them once for every caller and keeps no
+  failure; `ReplayGuard.inMemory(maxEntries)` remembers accepted signatures until they expire.
+- **A client retries by default.** Without its own `resilience`, a client runs its retryable calls under a retry of
+  `CallRetry` with three attempts, a jittered exponential backoff and the waits the server asks for, reporting through
+  the meters, the tracer and the event bus of the client; `isDefaultResilience = false` tries every call once.
+- **Addresses of Konnect.** `IpAddress.toKonnect()` and `IpAddress.of(address)` convert to and from the addresses of
+  Konnect.
+
+### Changed
+
+- **The destination policy reads and classifies addresses with Konnect 1.2.0.** The parser of IP addresses and the
+  list of blocks that are not public are gone; an address counts as public when Konnect finds it globally reachable
+  in the IANA special-purpose registries, and an IPv4 address embedded in a mapped, a NAT64 or a 6to4 address is
+  still judged by itself.
+- **The formats `ipv4` and `ipv6` of JSON Schema are checked by Konnect.**
+- **The events of the client, of OAuth and of the server reach the bus through the `Emitter` of konfetti 1.1.0.**
+- **Built with Kreate 5.5.2 and Gradle 9.9.2 on Kore 2.5.0, konfetti 1.1.0, kollect 1.1.0, kaml 1.0.1, krypt 1.2.0,
+  kontinuity 1.2.0 and Konnect 1.2.0**, with Ktor 3.6.1 and kotlinx-io 0.9.3.
+
 ## 1.0.0 - 2026-11-24
 
 The first version of kapi: the API toolkit of Davils as an open source library under the Apache License 2.0. It reads
