@@ -20,6 +20,8 @@
 /kapi-runtime/kapi-runtime-client/src/jvmMain/java/ @davils-com/maintainers
 /kapi-runtime/kapi-runtime-xml/api/                 @davils-com/maintainers
 /kapi-runtime/kapi-runtime-xml/src/jvmMain/java/    @davils-com/maintainers
+/kapi-runtime/kapi-runtime-yaml/api/                @davils-com/maintainers
+/kapi-runtime/kapi-runtime-yaml/src/jvmMain/java/   @davils-com/maintainers
 /kapi-runtime/kapi-runtime-server/api/              @davils-com/maintainers
 /kapi-runtime/kapi-runtime-server/src/main/java/    @davils-com/maintainers
 /kapi-runtime/kapi-runtime-server-ipc/api/              @davils-com/maintainers

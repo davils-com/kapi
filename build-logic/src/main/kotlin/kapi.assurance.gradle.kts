@@ -96,6 +96,7 @@ kreate {
                 ":kapi-runtime:kapi-runtime-core",
                 ":kapi-runtime:kapi-runtime-client",
                 ":kapi-runtime:kapi-runtime-xml",
+                ":kapi-runtime:kapi-runtime-yaml",
                 ":kapi-runtime:kapi-runtime-server",
                 ":kapi-runtime:kapi-runtime-server-ipc",
                 ":kapi-runtime:kapi-runtime-testing",

@@ -1,0 +1,32 @@
+public final class com/davils/kapi/runtime/yaml/YamlCodec : com/davils/kapi/runtime/core/codec/Codec, com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/yaml/YamlCodec$Companion;
+	public static final field HARD_DEPTH I
+	public static final field HARD_INPUT_LENGTH I
+	public fun decode (Lkotlinx/serialization/DeserializationStrategy;Lkotlinx/io/bytestring/ByteString;)Lcom/davils/kapi/runtime/core/codec/Decoding;
+	public fun encode (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
+	public final fun getJson ()Lkotlinx/serialization/json/Json;
+	public final fun getLimits ()Lcom/davils/kaml/core/limit/YamlLimits;
+	public fun getMediaTypes ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/yaml/YamlCodec$Companion {
+}
+
+public final class com/davils/kapi/runtime/yaml/YamlCodecBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getJson ()Lkotlinx/serialization/json/Json;
+	public final fun getLimits ()Lcom/davils/kaml/core/limit/YamlLimits;
+	public final fun limits (Lkotlin/jvm/functions/Function1;)V
+	public final fun setJson (Lkotlinx/serialization/json/Json;)V
+	public final fun setLimits (Lcom/davils/kaml/core/limit/YamlLimits;)V
+}
+
+public final class com/davils/kapi/runtime/yaml/YamlCodecsKt {
+	public static final fun yaml (Lcom/davils/kapi/runtime/core/codec/CodecsBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun yaml$default (Lcom/davils/kapi/runtime/core/codec/CodecsBuilder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun yamlCodec (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/yaml/YamlCodec;
+	public static synthetic fun yamlCodec$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/yaml/YamlCodec;
+}
+

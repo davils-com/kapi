@@ -34,6 +34,7 @@ dependencies {
         api(project(":kapi-runtime:kapi-runtime-core"))
         api(project(":kapi-runtime:kapi-runtime-client"))
         api(project(":kapi-runtime:kapi-runtime-xml"))
+        api(project(":kapi-runtime:kapi-runtime-yaml"))
         api(project(":kapi-runtime:kapi-runtime-server"))
         api(project(":kapi-runtime:kapi-runtime-server-ipc"))
         api(project(":kapi-runtime:kapi-runtime-testing"))
