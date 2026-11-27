@@ -1148,6 +1148,8 @@ final class com.davils.kapi.runtime.client.oauth/OAuthSettings : com.davils.kore
         final fun <get-issuer>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.issuer.<get-issuer>|<get-issuer>(){}[0]
     final val leeway // com.davils.kapi.runtime.client.oauth/OAuthSettings.leeway|{}leeway[0]
         final fun <get-leeway>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettings.leeway.<get-leeway>|<get-leeway>(){}[0]
+    final val metadataLifetime // com.davils.kapi.runtime.client.oauth/OAuthSettings.metadataLifetime|{}metadataLifetime[0]
+        final fun <get-metadataLifetime>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettings.metadataLifetime.<get-metadataLifetime>|<get-metadataLifetime>(){}[0]
     final val revocationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettings.revocationUrl|{}revocationUrl[0]
         final fun <get-revocationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettings.revocationUrl.<get-revocationUrl>|<get-revocationUrl>(){}[0]
     final val scopes // com.davils.kapi.runtime.client.oauth/OAuthSettings.scopes|{}scopes[0]
@@ -1200,6 +1202,9 @@ final class com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder : com.davi
     final var leeway // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway|{}leeway[0]
         final fun <get-leeway>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway.<get-leeway>|<get-leeway>(){}[0]
         final fun <set-leeway>(kotlin.time/Duration) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.leeway.<set-leeway>|<set-leeway>(kotlin.time.Duration){}[0]
+    final var metadataLifetime // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.metadataLifetime|{}metadataLifetime[0]
+        final fun <get-metadataLifetime>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.metadataLifetime.<get-metadataLifetime>|<get-metadataLifetime>(){}[0]
+        final fun <set-metadataLifetime>(kotlin.time/Duration) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.metadataLifetime.<set-metadataLifetime>|<set-metadataLifetime>(kotlin.time.Duration){}[0]
     final var revocationUrl // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl|{}revocationUrl[0]
         final fun <get-revocationUrl>(): kotlin/String // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl.<get-revocationUrl>|<get-revocationUrl>(){}[0]
         final fun <set-revocationUrl>(kotlin/String) // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.revocationUrl.<set-revocationUrl>|<set-revocationUrl>(kotlin.String){}[0]
@@ -1219,8 +1224,12 @@ final class com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder : com.davi
     final object Companion { // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion|null[0]
         final val DEFAULT_LEEWAY // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_LEEWAY|{}DEFAULT_LEEWAY[0]
             final fun <get-DEFAULT_LEEWAY>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_LEEWAY.<get-DEFAULT_LEEWAY>|<get-DEFAULT_LEEWAY>(){}[0]
+        final val DEFAULT_METADATA_LIFETIME // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_METADATA_LIFETIME|{}DEFAULT_METADATA_LIFETIME[0]
+            final fun <get-DEFAULT_METADATA_LIFETIME>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_METADATA_LIFETIME.<get-DEFAULT_METADATA_LIFETIME>|<get-DEFAULT_METADATA_LIFETIME>(){}[0]
         final val DEFAULT_TIMEOUT // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_TIMEOUT|{}DEFAULT_TIMEOUT[0]
             final fun <get-DEFAULT_TIMEOUT>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.DEFAULT_TIMEOUT.<get-DEFAULT_TIMEOUT>|<get-DEFAULT_TIMEOUT>(){}[0]
+        final val HARD_METADATA_LIFETIME // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.HARD_METADATA_LIFETIME|{}HARD_METADATA_LIFETIME[0]
+            final fun <get-HARD_METADATA_LIFETIME>(): kotlin.time/Duration // com.davils.kapi.runtime.client.oauth/OAuthSettingsBuilder.Companion.HARD_METADATA_LIFETIME.<get-HARD_METADATA_LIFETIME>|<get-HARD_METADATA_LIFETIME>(){}[0]
     }
 }
 

@@ -895,6 +895,7 @@ public final class com/davils/kapi/runtime/client/oauth/OAuthSettings : com/davi
 	public final fun getGrant ()Lcom/davils/kapi/runtime/client/oauth/Grant;
 	public final fun getIssuer ()Ljava/lang/String;
 	public final fun getLeeway-UwyO8pc ()J
+	public final fun getMetadataLifetime-UwyO8pc ()J
 	public final fun getRevocationUrl ()Ljava/lang/String;
 	public final fun getScopes ()Ljava/util/Set;
 	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
@@ -919,6 +920,7 @@ public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder : c
 	public final fun getGrant ()Lcom/davils/kapi/runtime/client/oauth/Grant;
 	public final fun getIssuer ()Ljava/lang/String;
 	public final fun getLeeway-UwyO8pc ()J
+	public final fun getMetadataLifetime-UwyO8pc ()J
 	public final fun getRevocationUrl ()Ljava/lang/String;
 	public final fun getScopes ()Ljava/util/Set;
 	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
@@ -936,6 +938,7 @@ public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder : c
 	public final fun setGrant (Lcom/davils/kapi/runtime/client/oauth/Grant;)V
 	public final fun setIssuer (Ljava/lang/String;)V
 	public final fun setLeeway-LRDsOJo (J)V
+	public final fun setMetadataLifetime-LRDsOJo (J)V
 	public final fun setRevocationUrl (Ljava/lang/String;)V
 	public final fun setScopes (Ljava/util/Set;)V
 	public final fun setTimeSource (Lkotlin/time/TimeSource$WithComparableMarks;)V
@@ -945,7 +948,9 @@ public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder : c
 
 public final class com/davils/kapi/runtime/client/oauth/OAuthSettingsBuilder$Companion {
 	public final fun getDEFAULT_LEEWAY-UwyO8pc ()J
+	public final fun getDEFAULT_METADATA_LIFETIME-UwyO8pc ()J
 	public final fun getDEFAULT_TIMEOUT-UwyO8pc ()J
+	public final fun getHARD_METADATA_LIFETIME-UwyO8pc ()J
 }
 
 public final class com/davils/kapi/runtime/client/oauth/OAuthTokens : com/davils/kapi/runtime/core/security/RefreshingTokenSource {

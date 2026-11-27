@@ -32,6 +32,7 @@ module com.davils.kapi.runtime.client {
     requires transitive com.davils.kontinuity.policy;
     requires transitive com.davils.kontinuity.retry;
     requires transitive com.davils.kontinuity.circuitbreaker;
+    requires transitive com.davils.kontinuity.cache;
     requires transitive com.davils.krypt.core;
     requires transitive com.davils.krypt.primitive;
     requires transitive com.davils.krypt.jose;

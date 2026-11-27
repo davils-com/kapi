@@ -20,8 +20,11 @@ import com.davils.kapi.runtime.client.internal.Texts
 import com.davils.kapi.runtime.client.oauth.Discovery
 import com.davils.kapi.runtime.client.oauth.OAuthSettings
 import com.davils.kapi.runtime.client.oauth.ServerMetadata
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import com.davils.kontinuity.cache.Cache
+import com.davils.kontinuity.cache.cache
+import com.davils.kontinuity.core.Environment
+import com.davils.kontinuity.core.environment
+import com.davils.kore.core.failure.attempted
 
 private const val OK: Int = 200
 
@@ -31,18 +34,21 @@ private const val OAUTH_PATH: String = "/.well-known/oauth-authorization-server"
 
 private const val OPENID_PATH: String = "/.well-known/openid-configuration"
 
-internal class Discoverer(private val transport: OAuthHttp, private val settings: OAuthSettings) {
-    private val lock: Mutex = Mutex()
+private const val CACHE_NAME: String = "kapi-oauth-metadata"
 
-    private var cached: ServerMetadata? = null
+internal class Discoverer(private val transport: OAuthHttp, private val settings: OAuthSettings) {
+    private val published: Cache<String, ServerMetadata> =
+        cache(name = CACHE_NAME, environment = environmentOf(settings)) {
+            maximumSize = 1
+            expireAfterWrite = settings.metadataLifetime
+        }
 
     suspend fun metadata(): ServerMetadata? {
         if (settings.issuer.isEmpty()) return null
-        return lock.withLock {
-            val found = cached ?: fetched()
-            cached = found
-            found
+        val loaded = attempted {
+            published.getOrLoad(settings.issuer) { fetched() ?: throw MetadataUnavailableException() }
         }
+        return loaded.getOrNull()
     }
 
     suspend fun tokenUrl(): String? = endpointOf(settings.tokenUrl) { found -> found.tokenEndpoint }
@@ -96,4 +102,9 @@ internal class Discoverer(private val transport: OAuthHttp, private val settings
             scheme + SCHEME_END + rest.substringBefore('/') + OAUTH_PATH + suffix
         }
     }
+}
+
+private fun environmentOf(settings: OAuthSettings): Environment = environment {
+    timeSource = settings.timeSource
+    settings.events?.let { bus -> events(bus) }
 }

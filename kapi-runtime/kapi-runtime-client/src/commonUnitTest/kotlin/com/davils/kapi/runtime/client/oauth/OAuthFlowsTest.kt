@@ -44,7 +44,9 @@ import io.ktor.http.Url
 import kotlinx.io.bytestring.encodeToByteString
 import kotlin.io.encoding.Base64
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TestTimeSource
 
 private const val ISSUER: String = "https://login.example.com/tenant"
 
@@ -140,6 +142,33 @@ class OAuthFlowsTest : FunSpec({
             tokens.withTokens { source -> source.metadata() }
 
             tokens.urls.single() shouldBe "$ISSUER/.well-known/openid-configuration"
+        }
+
+        test("is discovered again once its lifetime passed, and never kept when it could not be discovered") {
+            val clock = TestTimeSource()
+            val kept = TokenServer(configure = {
+                tokenUrl = ""
+                issuer = ISSUER
+                authentication = basic
+                metadataLifetime = 1.minutes
+                timeSource = clock
+            }) { json(DOCUMENT) }
+            val refused = TokenServer(configure = {
+                tokenUrl = ""
+                issuer = ISSUER
+                authentication = basic
+            }) { json("<html>") }
+
+            kept.withTokens { source ->
+                source.metadata()
+                source.metadata()
+                clock += 2.minutes
+                source.metadata()
+            }
+            refused.withTokens { source -> listOf(source.metadata(), source.metadata()) } shouldBe listOf(null, null)
+
+            kept.requests.size shouldBe 2
+            refused.requests.size shouldBe 2
         }
 
         test("is refused for another issuer, an unprotected endpoint or no answer, which leaves no token") {

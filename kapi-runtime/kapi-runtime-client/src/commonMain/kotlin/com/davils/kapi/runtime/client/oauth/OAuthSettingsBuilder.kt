@@ -23,6 +23,8 @@ import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 import com.davils.krypt.primitive.Crypto
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
@@ -161,6 +163,18 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
         }
 
     /**
+     * How long the metadata of the issuer is kept before it is discovered again; an hour by default, at most a day.
+     * Metadata that could not be discovered is never kept, so the next use asks again.
+     *
+     * @since 1.2.0
+     */
+    public var metadataLifetime: Duration = DEFAULT_METADATA_LIFETIME
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
      * How long one request to an endpoint may take; half a minute by default.
      *
      * @since 1.0.0
@@ -247,5 +261,19 @@ public class OAuthSettingsBuilder internal constructor(internal val isFollowingR
          * @since 1.0.0
          */
         public val DEFAULT_TIMEOUT: Duration = 30.seconds
+
+        /**
+         * How long discovered metadata is kept when the application does not say.
+         *
+         * @since 1.2.0
+         */
+        public val DEFAULT_METADATA_LIFETIME: Duration = 1.hours
+
+        /**
+         * The longest [metadataLifetime] any source accepts.
+         *
+         * @since 1.2.0
+         */
+        public val HARD_METADATA_LIFETIME: Duration = 1.days
     }
 }

@@ -130,6 +130,13 @@ public class OAuthSettings internal constructor(builder: OAuthSettingsBuilder) :
     public val leeway: Duration = builder.leeway
 
     /**
+     * How long the metadata of the issuer is kept before it is discovered again.
+     *
+     * @since 1.2.0
+     */
+    public val metadataLifetime: Duration = builder.metadataLifetime
+
+    /**
      * How long one request to an endpoint may take.
      *
      * @since 1.0.0
@@ -183,14 +190,25 @@ public class OAuthSettings internal constructor(builder: OAuthSettingsBuilder) :
         if (scopes.any { scope -> scope.isEmpty() || !scope.all(::isScopeChar) }) {
             fail(::scopes, "must each be a non-empty token of RFC 6749 §3.3", CODES.SCOPE_INVALID)
         }
+        validateTimes()
+        if (isFollowingRedirects) {
+            fail(::tokenUrl, FOLLOWED, CODES.REDIRECTS_FOLLOWED)
+        }
+    }
+
+    private fun ValidationScope.validateTimes() {
         if (leeway.isNegative() || leeway.isInfinite()) {
             fail(::leeway, "must be finite and not below zero", CODES.TIME_INVALID)
         }
         if (!timeout.isPositive() || timeout.isInfinite()) {
             fail(::timeout, "must be finite and above zero", CODES.TIME_INVALID)
         }
-        if (isFollowingRedirects) {
-            fail(::tokenUrl, FOLLOWED, CODES.REDIRECTS_FOLLOWED)
+        if (!metadataLifetime.isPositive() || metadataLifetime > OAuthSettingsBuilder.HARD_METADATA_LIFETIME) {
+            fail(
+                ::metadataLifetime,
+                "must be above zero and at most ${OAuthSettingsBuilder.HARD_METADATA_LIFETIME}",
+                CODES.TIME_INVALID,
+            )
         }
     }
 
