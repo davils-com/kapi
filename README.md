@@ -19,8 +19,11 @@ enterprise and critical infrastructure. It is published under the [Apache Licens
 | `kapi-spec-testing` | `com.davils:kapi-spec-testing` | A corpus of documents, hostile documents and an in-memory resolver for tests of readers |
 | `kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, parameter styles, headers, negotiation, credentials, validation with a linear pattern matcher, problem details and the destination policy |
 | `kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
+| `kapi-runtime-xml` | `com.davils:kapi-runtime-xml` | The codec of `application/xml`, `text/xml` and every `+xml` type on kxml, without document type declarations or external entities |
+| `kapi-runtime-yaml` | `com.davils:kapi-runtime-yaml` | The codec of `application/yaml`, `application/x-yaml` and every `+yaml` type on kaml, within limits of aliases, depth and size |
 | `kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
 | `kapi-runtime-server-ipc` | `com.davils:kapi-runtime-server-ipc` | The peers of local connections of Konnect as verified peer identities of the kapi server, for the JVM only |
+| `kapi-runtime-server-tls` | `com.davils:kapi-runtime-server-tls` | The client certificate chains krypt-tls verified for mutual TLS as the verified certificates of the kapi server, for the JVM only |
 | `kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Fake credentials, mock APIs, contract checks and calls of generated server routes without Ktor |
 | `kapi-codegen-core` | `com.davils:kapi-codegen-core` | The generator, for the JVM only: audits a document and emits Kotlin with KotlinPoet, with the provenance of every file |
 | `kapi-codegen-gradle` | `com.davils:kapi-codegen-gradle` | The Gradle plugin `com.davils.kapi`: generation in an isolated worker, lint, compatibility checks and SARIF reports |
@@ -109,6 +112,13 @@ fix of a runtime reaches every generated client and server without a new generat
 schema, patterns included. Names, documentation and text of a document become valid Kotlin or are refused; no document
 can inject code.
 
+A body of XML is written and read by the codec of `kapi-runtime-xml`, which the client and the server register with
+`codecs { xml() }`; its schema must be an object of `components/schemas`, whose name names the root element, and the
+generator refuses with `codegen.xml.unsupported` what it cannot map faithfully, such as the attributes, wrapped arrays
+and namespaces of the `xml` object, maps and free-form values. `x-kapi-rate-limit` on an operation, such as
+`{requests: 100, period: PT1M, per: principal}`, makes the generated server count the requests per caller, principal
+or address in addition to the rate limit of the server.
+
 ## Calling an API
 
 A generated client takes an `ApiClient` over the `HttpClient` of the application and answers every operation with a
@@ -151,14 +161,19 @@ class Pets(private val store: PetStore) : PetstorePetsService {
 }
 
 fun Application.module() {
+    install(TlsPeers) { session { call -> sessionOf(call) } }
     install(Kapi) {
         authorizer("bearer", jwtAuthorizer)
+        rateLimit(requests = 1_000, per = 1.minutes)
     }
     routing {
         mount(PetstorePetsRoutes(Pets(store)))
     }
 }
 ```
+
+`TlsPeers` of `kapi-runtime-server-tls` hands only the chain that krypt-tls verified for a mutual TLS connection to the
+server, and `IpcPeers` of `kapi-runtime-server-ipc` the process on the other side of a local connection.
 
 ## WebSocket channels
 

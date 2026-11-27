@@ -22,8 +22,11 @@ and critical infrastructure, with security and correctness first.
 | `kapi-spec/kapi-spec-testing` | `com.davils:kapi-spec-testing` | Test support for readers of documents: a corpus of OpenAPI documents, hostile documents and an in-memory resolver |
 | `kapi-runtime/kapi-runtime-core` | `com.davils:kapi-runtime-core` | What generated code runs on: codecs, wire types, parameter styles, headers, content negotiation, credentials, validation with a linear pattern matcher, problem details, HTTP semantics and the destination policy |
 | `kapi-runtime/kapi-runtime-client` | `com.davils:kapi-runtime-client` | Calls over the Ktor `HttpClient` of the application: credentials and OAuth 2, streams, server-sent events, pages, resilience, telemetry and WebSocket sessions |
+| `kapi-runtime/kapi-runtime-xml` | `com.davils:kapi-runtime-xml` | The XML codec on kxml: `application/xml`, `text/xml` and every `+xml` type, read strictly within limits and without document type declarations or external entities |
+| `kapi-runtime/kapi-runtime-yaml` | `com.davils:kapi-runtime-yaml` | The YAML codec on kaml: `application/yaml`, `application/x-yaml` and every `+yaml` type, within limits of aliases, depth and size and mapped through the JSON data model |
 | `kapi-runtime/kapi-runtime-server` | `com.davils:kapi-runtime-server` | The Ktor server plugin, for the JVM only: requests read and checked as a whole, negotiation, streaming, authorization, problems and WebSocket channels |
 | `kapi-runtime/kapi-runtime-server-ipc` | `com.davils:kapi-runtime-server-ipc` | The bridge to `konnect-ipc-server`, for the JVM only: the plugin `IpcPeers` hands the process on the other side of a local connection to the server as `PeerAttributes.identity` |
+| `kapi-runtime/kapi-runtime-server-tls` | `com.davils:kapi-runtime-server-tls` | The bridge to `krypt-tls`, for the JVM only: the plugin `TlsPeers` hands the client certificate chain krypt verified for a mutual TLS connection to the server as `PeerAttributes.certificates` |
 | `kapi-runtime/kapi-runtime-testing` | `com.davils:kapi-runtime-testing` | Test support for generated code: fake credentials, mock engines and contract assertions |
 | `kapi-codegen/kapi-codegen-core` | `com.davils:kapi-codegen-core` | The generator, for the JVM only: audits a document, names what it declares and emits Kotlin with KotlinPoet, with the provenance of every file |
 | `kapi-codegen/kapi-codegen-gradle` | `com.davils:kapi-codegen-gradle` | The Gradle plugin `com.davils.kapi`: specifications, generation in an isolated worker, lint, compatibility checks and reports |
@@ -45,8 +48,8 @@ and in `src/main/java/module-info.java` of a JVM module, which exports only pack
 
 ## Targets
 
-Every module of `kapi-spec` and `kapi-runtime-core`, `kapi-runtime-client` and `kapi-runtime-testing` are Kotlin
-Multiplatform with two targets: `jvm` and `wasmJs`. The Wasm tests run under Node.js. `kapi-runtime-server` and the
+Every module of `kapi-spec` and `kapi-runtime-core`, `kapi-runtime-client`, `kapi-runtime-xml`, `kapi-runtime-yaml` and
+`kapi-runtime-testing` are Kotlin Multiplatform with two targets: `jvm` and `wasmJs`. The Wasm tests run under Node.js. `kapi-runtime-server` and the
 modules of `kapi-codegen` are for the JVM only.
 
 - Code lives in `src/commonMain/kotlin`. What differs per platform hides behind an `internal expect fun` in
