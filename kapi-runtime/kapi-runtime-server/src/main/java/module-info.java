@@ -31,6 +31,10 @@ module com.davils.kapi.runtime.server {
     requires transitive com.davils.konfetti.core;
     requires transitive com.davils.krypt.jose;
     requires transitive com.davils.krypt.x509;
+    requires transitive com.davils.kontinuity.core;
+    requires transitive com.davils.kontinuity.cache;
+    requires transitive com.davils.kontinuity.ratelimiter;
+    requires com.davils.kontinuity.bulkhead;
     requires transitive io.ktor.server.core;
     requires transitive io.ktor.server.websockets;
     requires transitive io.ktor.server.sse;

@@ -17,7 +17,7 @@
  * The runtime core of kapi: codecs, wire types, parameter styles, content negotiation, HTTP semantics, credentials,
  * problem details, validation and the destination policy that generated clients and servers run on.
  */
-@SuppressWarnings("module")
+@SuppressWarnings({"module", "requires-automatic"})
 module com.davils.kapi.runtime.core {
     requires transitive kotlin.stdlib;
     requires transitive kotlinx.coroutines.core;
@@ -25,6 +25,8 @@ module com.davils.kapi.runtime.core {
     requires transitive kotlinx.serialization.core;
     requires transitive kotlinx.serialization.json;
     requires transitive com.davils.kore.core;
+    requires com.davils.konnect.core;
+    requires com.davils.konnect.internetprotocol;
 
     exports com.davils.kapi.runtime.core;
     exports com.davils.kapi.runtime.core.cache;

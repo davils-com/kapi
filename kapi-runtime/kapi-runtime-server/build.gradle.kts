@@ -35,6 +35,9 @@ dependencies {
     api(libs.konfetti.core)
     api(libs.krypt.jose)
     api(libs.krypt.x509)
+    api(libs.kontinuity.cache)
+    api(libs.kontinuity.rate.limiter)
+    implementation(libs.kontinuity.bulkhead)
 }
 
 configurations.matching { configuration -> configuration.name == "unitTestImplementation" }.configureEach {

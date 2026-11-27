@@ -29,6 +29,7 @@ kreate {
 
 dependencies {
     commonMainApi(libs.kore.core)
+    commonMainApi(libs.konnect.internet.protocol)
     commonMainApi(libs.kotlinx.coroutines.core)
     commonMainApi(libs.kotlinx.io.bytestring)
     commonMainApi(libs.kotlinx.serialization.json)

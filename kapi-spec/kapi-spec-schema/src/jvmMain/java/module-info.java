@@ -18,7 +18,7 @@
  * JSON Schema of kapi: a bounded validator of JSON Schema with the dialects of OpenAPI, a linear-time pattern engine
  * and format assertions.
  */
-@SuppressWarnings("module")
+@SuppressWarnings({"module", "requires-automatic"})
 module com.davils.kapi.spec.schema {
     requires transitive kotlin.stdlib;
     requires transitive kotlinx.serialization.core;
@@ -28,6 +28,7 @@ module com.davils.kapi.spec.schema {
     requires transitive com.davils.kaml.document;
     requires transitive com.davils.kapi.spec.core;
     requires transitive com.davils.kapi.runtime.core;
+    requires com.davils.konnect.internetprotocol;
 
     exports com.davils.kapi.spec.schema;
     exports com.davils.kapi.spec.schema.format;
