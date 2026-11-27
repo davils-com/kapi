@@ -35,6 +35,7 @@ internal fun requestOf(
     path: String = PROBE,
     rawQuery: String? = null,
     content: ByteString = ByteString(),
+    peer: Peer = Peer(),
 ): Request = Request(
     line = RequestLine(
         operation = "probe",
@@ -47,7 +48,7 @@ internal fun requestOf(
     pathParameters = emptyMap(),
     query = emptyList(),
     headers = headersOf(headers),
-    peer = Peer(),
+    peer = peer,
     principal = null,
     body = BodySource.buffered(content, ServerLimits.Default),
     context = ServerContext(

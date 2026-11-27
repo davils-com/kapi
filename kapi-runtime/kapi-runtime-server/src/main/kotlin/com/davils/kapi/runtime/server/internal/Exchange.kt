@@ -45,7 +45,7 @@ internal class Exchange(private val server: ApiServer, private val operation: Op
     private val reader = RequestReader(context, server.settings.sensitiveHeaders)
 
     private val writer = ReplyWriter(context.codecs)
-    private val guard = OperationGuard(server.settings, context.problems)
+    private val guard = OperationGuard(server.settings, operation, context.problems)
 
     suspend fun serve(call: ApplicationCall) {
         val started = telemetry.timeSource.markNow()

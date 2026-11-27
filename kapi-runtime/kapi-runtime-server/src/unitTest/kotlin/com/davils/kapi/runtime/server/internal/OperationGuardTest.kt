@@ -19,7 +19,11 @@ package com.davils.kapi.runtime.server.internal
 import com.davils.kapi.runtime.server.fixture.OK
 import com.davils.kapi.runtime.server.fixture.PROBE
 import com.davils.kapi.runtime.server.fixture.problemOf
+import com.davils.kapi.runtime.server.fixture.serve
 import com.davils.kapi.runtime.server.fixture.serveOne
+import com.davils.kapi.runtime.server.operation
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.OperationRateLimit
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.reply.Reply
 import com.davils.kapi.runtime.server.reply.reply
@@ -27,13 +31,21 @@ import com.davils.kapi.runtime.server.request.Request
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.post
+import io.ktor.server.routing.Route
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 private const val TOO_MANY: Int = 429
 private const val UNAVAILABLE: Int = 503
+private const val RETRY_AFTER: String = "Retry-After"
+private const val LIMITED: String = "/limited"
+private const val FREE: String = "/free"
+
+private fun probe(path: String, rateLimit: OperationRateLimit?): Operation =
+    Operation(name = path.drop(1), method = "POST", path = path, rateLimit = rateLimit) { reply(OK) }
 
 class OperationGuardTest : FunSpec({
     test("an operation serves no more requests at once than its limit and refuses the next one at once") {
@@ -64,8 +76,34 @@ class OperationGuardTest : FunSpec({
             val limited = client.post(PROBE)
 
             limited.status.value shouldBe TOO_MANY
-            limited.headers["Retry-After"] shouldBe "60"
+            limited.headers[RETRY_AFTER] shouldBe "60"
             problemOf(limited).code shouldBe ServerCodes.RATE_LIMITED
+        }
+    }
+
+    test("an operation over its own rate limit is answered with too many requests, and others are not") {
+        val routes: Route.() -> Unit = {
+            operation(probe(LIMITED, OperationRateLimit(requests = 1, per = 30.seconds)))
+            operation(probe(FREE, rateLimit = null))
+        }
+        serve(routes = routes) {
+            client.post(LIMITED).status.value shouldBe OK
+            val limited = client.post(LIMITED)
+
+            limited.status.value shouldBe TOO_MANY
+            limited.headers[RETRY_AFTER] shouldBe "30"
+            problemOf(limited).code shouldBe ServerCodes.RATE_LIMITED
+            repeat(times = 3) { client.post(FREE).status.value shouldBe OK }
+        }
+    }
+
+    test("the rate limit of the server and the one of an operation both apply, and the stricter one wins") {
+        val routes: Route.() -> Unit = {
+            operation(probe(LIMITED, OperationRateLimit(requests = 5, per = 1.seconds)))
+        }
+        serve(settings = { rateLimit(requests = 1, per = 1.minutes) }, routes = routes) {
+            client.post(LIMITED).status.value shouldBe OK
+            client.post(LIMITED).headers[RETRY_AFTER] shouldBe "60"
         }
     }
 

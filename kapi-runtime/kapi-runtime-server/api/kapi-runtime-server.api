@@ -307,15 +307,44 @@ public final class com/davils/kapi/runtime/server/operation/CredentialSource$Que
 }
 
 public final class com/davils/kapi/runtime/server/operation/Operation {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLkotlin/jvm/functions/Function2;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLcom/davils/kapi/runtime/server/operation/OperationRateLimit;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLcom/davils/kapi/runtime/server/operation/OperationRateLimit;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLkotlin/jvm/functions/Function2;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getHandler ()Lkotlin/jvm/functions/Function2;
 	public final fun getMethod ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getPath ()Ljava/lang/String;
+	public final fun getRateLimit ()Lcom/davils/kapi/runtime/server/operation/OperationRateLimit;
 	public final fun getSecurity ()Ljava/util/List;
 	public final fun isDelivery ()Z
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/server/operation/OperationRateLimit {
+	public static final field Companion Lcom/davils/kapi/runtime/server/operation/OperationRateLimit$Companion;
+	public static final field MOST_REQUESTS I
+	public synthetic fun <init> (IJLcom/davils/kapi/runtime/server/operation/RateLimitKey;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IJLcom/davils/kapi/runtime/server/operation/RateLimitKey;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
+	public final fun getPer-UwyO8pc ()J
+	public final fun getRequests ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/server/operation/OperationRateLimit$Companion {
+	public final fun getMOST_PERIOD-UwyO8pc ()J
+}
+
+public final class com/davils/kapi/runtime/server/operation/RateLimitKey : java/lang/Enum {
+	public static final field Address Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
+	public static final field Caller Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
+	public static final field Principal Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
+	public static fun values ()[Lcom/davils/kapi/runtime/server/operation/RateLimitKey;
 }
 
 public abstract interface com/davils/kapi/runtime/server/operation/Routes {

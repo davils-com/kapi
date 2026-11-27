@@ -18,6 +18,8 @@ package com.davils.kapi.runtime.server.internal
 
 import com.davils.kapi.runtime.core.response.HttpStatus
 import com.davils.kapi.runtime.server.ServerSettings
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.RateLimitKey
 import com.davils.kapi.runtime.server.problem.ServerCodes
 import com.davils.kapi.runtime.server.reply.Reply
 import com.davils.kapi.runtime.server.request.Request
@@ -28,17 +30,20 @@ import com.davils.kontinuity.core.environment
 import com.davils.kontinuity.ratelimiter.KeyedRateLimiter
 import com.davils.kontinuity.ratelimiter.RateLimiterConfig
 import com.davils.kontinuity.ratelimiter.keyedRateLimiter
+import com.davils.kontinuity.ratelimiter.rateLimiterConfig
+import com.davils.kontinuity.ratelimiter.tokenBucket
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 
 private const val BULKHEAD: String = "kapi-server-operations"
 private const val LIMITER: String = "kapi-server-callers"
+private const val OPERATION_LIMITER: String = "kapi-server-operation-callers"
 private const val RETRY_AFTER: String = "Retry-After"
-private const val ANONYMOUS: String = "anonymous"
-private const val PRINCIPAL: String = "principal:"
-private const val ADDRESS: String = "address:"
 
-internal class OperationGuard(settings: ServerSettings, private val problems: ProblemReplies) {
+internal class OperationGuard(
+    settings: ServerSettings,
+    operation: Operation,
+    private val problems: ProblemReplies,
+) {
     private val environment: Environment = environmentOf(settings)
 
     private val bulkhead: Bulkhead = bulkhead(name = BULKHEAD, environment = environment) {
@@ -46,13 +51,23 @@ internal class OperationGuard(settings: ServerSettings, private val problems: Pr
         maxWaitDuration = Duration.ZERO
     }
 
-    private val limiter: KeyedRateLimiter<String>? = settings.rateLimit?.let { config -> limiterOf(config) }
+    private val server: CallerLimit? = settings.rateLimit?.let { config ->
+        CallerLimit(limiterOf(LIMITER, config), RateLimitKey.Caller, config.limitRefreshPeriod)
+    }
 
-    private val retryAfter: String = retryAfterOf(settings.rateLimit)
+    private val own: CallerLimit? = operation.rateLimit?.let { limit ->
+        val config = rateLimiterConfig {
+            limitForPeriod = limit.requests
+            limitRefreshPeriod = limit.per
+            timeout = Duration.ZERO
+            algorithm = tokenBucket(burst = limit.requests)
+        }
+        CallerLimit(limiterOf(OPERATION_LIMITER, config), limit.key, limit.per)
+    }
 
     suspend fun guarded(request: Request, block: suspend () -> Reply): Reply {
-        val isAllowed = limiter?.tryAcquire(callerOf(request)) != false
-        if (!isAllowed) return limited()
+        val refusing = listOfNotNull(server, own).firstOrNull { limit -> !limit.admits(request) }
+        if (refusing != null) return limited(refusing.retryAfter)
         return bulkheaded(block)
     }
 
@@ -65,7 +80,7 @@ internal class OperationGuard(settings: ServerSettings, private val problems: Pr
         }
     }
 
-    private fun limited(): Reply = problems.problem(
+    private fun limited(retryAfter: String): Reply = problems.problem(
         status = HttpStatus.TOO_MANY_REQUESTS,
         code = ServerCodes.RATE_LIMITED,
         headers = listOf(RETRY_AFTER to retryAfter),
@@ -74,8 +89,8 @@ internal class OperationGuard(settings: ServerSettings, private val problems: Pr
     private fun overloaded(): Reply =
         problems.problem(status = HttpStatus.SERVICE_UNAVAILABLE, code = ServerCodes.OVERLOADED)
 
-    private fun limiterOf(config: RateLimiterConfig): KeyedRateLimiter<String> = keyedRateLimiter(
-        name = LIMITER,
+    private fun limiterOf(name: String, config: RateLimiterConfig): KeyedRateLimiter<String> = keyedRateLimiter(
+        name = name,
         idleTimeout = maxOf(a = config.limitRefreshPeriod, b = KeyedRateLimiter.DEFAULT_IDLE_TIMEOUT),
         environment = environment,
     ) {
@@ -91,18 +106,6 @@ internal class OperationGuard(settings: ServerSettings, private val problems: Pr
             tracer = telemetry.tracer
             telemetry.meters?.let { registry -> meters(registry) }
             telemetry.events?.let { bus -> events(bus) }
-        }
-
-        fun callerOf(request: Request): String {
-            val principal = request.principal?.id
-            if (principal != null) return PRINCIPAL + principal
-            return request.peer.address?.let { address -> ADDRESS + address } ?: ANONYMOUS
-        }
-
-        fun retryAfterOf(config: RateLimiterConfig?): String {
-            val period = config?.limitRefreshPeriod ?: return ""
-            val seconds = period.toLong(DurationUnit.SECONDS)
-            return seconds.coerceAtLeast(1L).toString()
         }
     }
 }

@@ -43,6 +43,8 @@ import com.davils.kore.core.text.SafeText
  * @property path the path template, such as `/pets/{petId}`.
  * @param security the alternatives of security requirements, in order.
  * @property isDelivery whether the operation receives a webhook or a callback.
+ * @property rateLimit the rate limit of the operation, which applies in addition to the rate limit of the server, or
+ * `null` for none; since 1.2.0.
  * @property handler answers a request that passed the checks of the server.
  * @throws IllegalArgumentException if [name] is blank, [method] is no token, or [path] is no path
  * template.
@@ -54,6 +56,7 @@ public class Operation(
     public val path: String,
     security: List<List<SchemeUse>> = emptyList(),
     public val isDelivery: Boolean = false,
+    public val rateLimit: OperationRateLimit? = null,
     public val handler: suspend (Request) -> Reply,
 ) {
     /**
@@ -68,6 +71,40 @@ public class Operation(
         require(PathTemplates.isMethod(method)) { "The method of an operation is a token" }
         require(PathTemplates.isTemplate(path)) { "The path of an operation is a template such as /pets/{petId}" }
     }
+
+    /**
+     * Creates an operation without a rate limit of its own; kept for code compiled against kapi 1.1.
+     *
+     * @param name the `operationId`.
+     * @param method the method.
+     * @param path the path template.
+     * @param security the alternatives of security requirements, in order.
+     * @param isDelivery whether the operation receives a webhook or a callback.
+     * @param handler answers a request that passed the checks of the server.
+     * @throws IllegalArgumentException if [name] is blank, [method] is no token, or [path] is no path template.
+     * @since 1.0.0
+     */
+    @Deprecated(
+        message = "Kept for binary compatibility; use the constructor with a rate limit",
+        replaceWith = ReplaceWith("Operation(name, method, path, security, isDelivery, null, handler)"),
+        level = DeprecationLevel.HIDDEN,
+    )
+    public constructor(
+        name: String,
+        method: String,
+        path: String,
+        security: List<List<SchemeUse>> = emptyList(),
+        isDelivery: Boolean = false,
+        handler: suspend (Request) -> Reply,
+    ) : this(
+        name = name,
+        method = method,
+        path = path,
+        security = security,
+        isDelivery = isDelivery,
+        rateLimit = null,
+        handler = handler,
+    )
 
     @OptIn(DavilsInternal::class)
     override fun toString(): String = "Operation(${SafeText.text(name)}, $method ${SafeText.text(path)})"
