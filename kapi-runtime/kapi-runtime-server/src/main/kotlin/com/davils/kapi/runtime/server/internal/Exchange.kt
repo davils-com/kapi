@@ -45,6 +45,7 @@ internal class Exchange(private val server: ApiServer, private val operation: Op
     private val reader = RequestReader(context, server.settings.sensitiveHeaders)
 
     private val writer = ReplyWriter(context.codecs)
+    private val guard = OperationGuard(server.settings, context.problems)
 
     suspend fun serve(call: ApplicationCall) {
         val started = telemetry.timeSource.markNow()
@@ -77,9 +78,11 @@ internal class Exchange(private val server: ApiServer, private val operation: Op
 
     private suspend fun admitted(request: Request): Reply =
         when (val admission = server.gate.admit(operation.security, request)) {
-            is Admission.Granted -> varied(request, handled(request.authorized(admission.principal)))
+            is Admission.Granted -> varied(request, protected(request.authorized(admission.principal)))
             is Admission.Refused -> context.problems.refused(admission)
         }
+
+    private suspend fun protected(request: Request): Reply = guard.guarded(request) { handled(request) }
 
     private suspend fun handled(request: Request): Reply {
         val result = attempted { writer.encoded(invoke(request)) }

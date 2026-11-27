@@ -103,6 +103,16 @@ public class ServerLimits internal constructor(builder: ServerLimitsBuilder) : V
      */
     public val fields: FieldLimits = builder.fields
 
+    /**
+     * The most requests one operation serves at once, at most [HARD_CONCURRENT_REQUESTS]; a bulkhead of kontinuity
+     * refuses every further request at once with `503 Service Unavailable` and the code
+     * [com.davils.kapi.runtime.server.problem.ServerCodes.OVERLOADED], so a slow operation cannot take every worker of
+     * the server.
+     *
+     * @since 1.1.0
+     */
+    public val maxConcurrentRequests: Int = builder.maxConcurrentRequests
+
     override fun ValidationScope.validate() {
         bounded(::maxRequestBytes, HARD_REQUEST_BYTES)
         bounded(::maxUploadBytes, HARD_UPLOAD_BYTES)
@@ -111,6 +121,7 @@ public class ServerLimits internal constructor(builder: ServerLimitsBuilder) : V
         bounded(::maxQueryParameters, HARD_QUERY_PARAMETERS.toLong())
         bounded(::maxHeaders, HARD_HEADERS.toLong())
         bounded(::maxHeaderBytes, HARD_HEADER_BYTES.toLong())
+        bounded(::maxConcurrentRequests, HARD_CONCURRENT_REQUESTS.toLong())
     }
 
     override fun toString(): String = "ServerLimits(requestBytes=$maxRequestBytes, uploadBytes=$maxUploadBytes, " +
@@ -166,8 +177,16 @@ public class ServerLimits internal constructor(builder: ServerLimitsBuilder) : V
         public const val HARD_HEADER_BYTES: Int = 1_024 * 1_024
 
         /**
+         * The hard ceiling of [maxConcurrentRequests], 100,000.
+         *
+         * @since 1.1.0
+         */
+        public const val HARD_CONCURRENT_REQUESTS: Int = 100_000
+
+        /**
          * The default limits: 4 MiB per body, 64 MiB per upload, 16 MiB inflated, 8192 characters and 256 fields of
-         * query, 100 header fields of 32 KiB together, and the default limits of multipart bodies and header fields.
+         * query, 100 header fields of 32 KiB together, 512 concurrent requests per operation, and the default limits of
+         * multipart bodies and header fields.
          *
          * @since 1.0.0
          */

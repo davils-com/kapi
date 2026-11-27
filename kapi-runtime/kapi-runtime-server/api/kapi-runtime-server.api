@@ -29,6 +29,7 @@ public final class com/davils/kapi/runtime/server/ServerContract {
 
 public final class com/davils/kapi/runtime/server/ServerLimits : com/davils/kore/core/validation/Validatable {
 	public static final field Companion Lcom/davils/kapi/runtime/server/ServerLimits$Companion;
+	public static final field HARD_CONCURRENT_REQUESTS I
 	public static final field HARD_HEADERS I
 	public static final field HARD_HEADER_BYTES I
 	public static final field HARD_QUERY_LENGTH I
@@ -36,6 +37,7 @@ public final class com/davils/kapi/runtime/server/ServerLimits : com/davils/kore
 	public static final field HARD_REQUEST_BYTES J
 	public static final field HARD_UPLOAD_BYTES J
 	public final fun getFields ()Lcom/davils/kapi/runtime/core/FieldLimits;
+	public final fun getMaxConcurrentRequests ()I
 	public final fun getMaxDecompressedBytes ()J
 	public final fun getMaxHeaderBytes ()I
 	public final fun getMaxHeaders ()I
@@ -53,6 +55,7 @@ public final class com/davils/kapi/runtime/server/ServerLimits$Companion {
 }
 
 public final class com/davils/kapi/runtime/server/ServerLimitsBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field DEFAULT_CONCURRENT_REQUESTS I
 	public static final field DEFAULT_DECOMPRESSED_BYTES J
 	public static final field DEFAULT_HEADERS I
 	public static final field DEFAULT_HEADER_BYTES I
@@ -63,6 +66,7 @@ public final class com/davils/kapi/runtime/server/ServerLimitsBuilder : com/davi
 	protected fun assemble ()Lcom/davils/kapi/runtime/server/ServerLimits;
 	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
 	public final fun getFields ()Lcom/davils/kapi/runtime/core/FieldLimits;
+	public final fun getMaxConcurrentRequests ()I
 	public final fun getMaxDecompressedBytes ()J
 	public final fun getMaxHeaderBytes ()I
 	public final fun getMaxHeaders ()I
@@ -73,6 +77,7 @@ public final class com/davils/kapi/runtime/server/ServerLimitsBuilder : com/davi
 	public final fun getMultipart ()Lcom/davils/kapi/runtime/core/codec/multipart/MultipartLimits;
 	protected fun getSubject ()Ljava/lang/String;
 	public final fun setFields (Lcom/davils/kapi/runtime/core/FieldLimits;)V
+	public final fun setMaxConcurrentRequests (I)V
 	public final fun setMaxDecompressedBytes (J)V
 	public final fun setMaxHeaderBytes (I)V
 	public final fun setMaxHeaders (I)V
@@ -89,6 +94,7 @@ public final class com/davils/kapi/runtime/server/ServerSettings : com/davils/ko
 	public final fun getCodecs ()Lcom/davils/kapi/runtime/core/codec/Codecs;
 	public final fun getLimits ()Lcom/davils/kapi/runtime/server/ServerLimits;
 	public final fun getProblems ()Lcom/davils/kapi/runtime/server/problem/ProblemSettings;
+	public final fun getRateLimit ()Lcom/davils/kontinuity/ratelimiter/RateLimiterConfig;
 	public final fun getRealm ()Ljava/lang/String;
 	public final fun getSensitiveHeaders ()Ljava/util/Set;
 	public final fun getTelemetry ()Lcom/davils/kapi/runtime/server/telemetry/TelemetrySettings;
@@ -110,6 +116,7 @@ public final class com/davils/kapi/runtime/server/ServerSettingsBuilder : com/da
 	public final fun getVerifier ()Lcom/davils/kapi/runtime/server/webhook/DeliveryVerifier;
 	public final fun limits (Lkotlin/jvm/functions/Function1;)V
 	public final fun problems (Lkotlin/jvm/functions/Function1;)V
+	public final fun rateLimit-HG0u8IE (IJ)V
 	public final fun setClock (Lkotlin/time/Clock;)V
 	public final fun setCodecs (Lcom/davils/kapi/runtime/core/codec/Codecs;)V
 	public final fun setRealm (Ljava/lang/String;)V
@@ -354,8 +361,10 @@ public final class com/davils/kapi/runtime/server/problem/ServerCodes {
 	public static final field INVALID Ljava/lang/String;
 	public static final field MALFORMED Ljava/lang/String;
 	public static final field NOT_ACCEPTABLE Ljava/lang/String;
+	public static final field OVERLOADED Ljava/lang/String;
 	public static final field PRECONDITION_FAILED Ljava/lang/String;
 	public static final field RANGE_NOT_SATISFIABLE Ljava/lang/String;
+	public static final field RATE_LIMITED Ljava/lang/String;
 	public static final field REQUIRED Ljava/lang/String;
 	public static final field TOO_LARGE Ljava/lang/String;
 	public static final field UNAUTHENTICATED Ljava/lang/String;
@@ -719,6 +728,8 @@ public abstract interface com/davils/kapi/runtime/server/security/KeySource {
 }
 
 public final class com/davils/kapi/runtime/server/security/KeySource$Companion {
+	public final fun cached-8Mi8wO0 (Lcom/davils/kapi/runtime/server/security/KeySource;JLcom/davils/kontinuity/core/Environment;)Lcom/davils/kapi/runtime/server/security/KeySource;
+	public static synthetic fun cached-8Mi8wO0$default (Lcom/davils/kapi/runtime/server/security/KeySource$Companion;Lcom/davils/kapi/runtime/server/security/KeySource;JLcom/davils/kontinuity/core/Environment;ILjava/lang/Object;)Lcom/davils/kapi/runtime/server/security/KeySource;
 	public final fun jwks (Lcom/davils/krypt/jose/jwk/JsonWebKeys;Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/server/security/KeySource;
 	public final fun of (Ljava/util/List;)Lcom/davils/kapi/runtime/server/security/KeySource;
 }
@@ -872,7 +883,13 @@ public final class com/davils/kapi/runtime/server/webhook/MessageSignatureVerifi
 }
 
 public abstract interface com/davils/kapi/runtime/server/webhook/ReplayGuard {
+	public static final field Companion Lcom/davils/kapi/runtime/server/webhook/ReplayGuard$Companion;
 	public abstract fun isFirstUse (Lkotlinx/io/bytestring/ByteString;Lkotlin/time/Instant;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kapi/runtime/server/webhook/ReplayGuard$Companion {
+	public final fun inMemory (ILkotlin/time/Clock;Lcom/davils/kontinuity/core/Environment;)Lcom/davils/kapi/runtime/server/webhook/ReplayGuard;
+	public static synthetic fun inMemory$default (Lcom/davils/kapi/runtime/server/webhook/ReplayGuard$Companion;ILkotlin/time/Clock;Lcom/davils/kontinuity/core/Environment;ILjava/lang/Object;)Lcom/davils/kapi/runtime/server/webhook/ReplayGuard;
 }
 
 public abstract interface com/davils/kapi/runtime/server/webhook/SignatureKeyResolver {

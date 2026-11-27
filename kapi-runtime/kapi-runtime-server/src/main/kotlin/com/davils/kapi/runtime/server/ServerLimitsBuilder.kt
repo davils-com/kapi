@@ -131,6 +131,17 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
             field = value
         }
 
+    /**
+     * See [ServerLimits.maxConcurrentRequests].
+     *
+     * @since 1.1.0
+     */
+    public var maxConcurrentRequests: Int = DEFAULT_CONCURRENT_REQUESTS
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
     override fun assemble(): ServerLimits = ServerLimits(this)
 
     private companion object {
@@ -141,5 +152,6 @@ public class ServerLimitsBuilder internal constructor() : ValidatingBuilder<Serv
         const val DEFAULT_QUERY_PARAMETERS: Int = 256
         const val DEFAULT_HEADERS: Int = 100
         const val DEFAULT_HEADER_BYTES: Int = 32 * 1_024
+        const val DEFAULT_CONCURRENT_REQUESTS: Int = 512
     }
 }

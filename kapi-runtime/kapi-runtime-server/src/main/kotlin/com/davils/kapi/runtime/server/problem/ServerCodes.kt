@@ -136,4 +136,19 @@ public object ServerCodes {
      * @since 1.0.0
      */
     public const val INTERNAL: String = "kapi.server.internal"
+
+    /**
+     * The operation serves as many requests at once as [com.davils.kapi.runtime.server.ServerLimits.maxConcurrentRequests]
+     * allows; status 503.
+     *
+     * @since 1.1.0
+     */
+    public const val OVERLOADED: String = "kapi.server.overloaded"
+
+    /**
+     * The caller sent more requests to the operation than the rate limit of the server allows; status 429.
+     *
+     * @since 1.1.0
+     */
+    public const val RATE_LIMITED: String = "kapi.server.rate-limited"
 }

@@ -24,6 +24,7 @@ import com.davils.kapi.runtime.server.problem.ProblemSettings
 import com.davils.kapi.runtime.server.security.Authorizer
 import com.davils.kapi.runtime.server.telemetry.TelemetrySettings
 import com.davils.kapi.runtime.server.webhook.DeliveryVerifier
+import com.davils.kontinuity.ratelimiter.RateLimiterConfig
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
 import com.davils.kore.core.validation.Validatable
@@ -104,6 +105,13 @@ public class ServerSettings internal constructor(builder: ServerSettingsBuilder)
      * @since 1.0.0
      */
     public val clock: Clock = builder.clock
+
+    /**
+     * The rate limit of one caller per operation, or `null` for none; set by [ServerSettingsBuilder.rateLimit].
+     *
+     * @since 1.1.0
+     */
+    public val rateLimit: RateLimiterConfig? = builder.rateLimit
 
     override fun ValidationScope.validate() {
         val isRealm = realm.length in 1..MOST_REALM_LENGTH && realm.all { char -> char in ' '..'~' && char != '"' }

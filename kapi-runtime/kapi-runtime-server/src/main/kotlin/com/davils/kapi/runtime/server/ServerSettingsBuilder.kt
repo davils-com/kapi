@@ -23,9 +23,13 @@ import com.davils.kapi.runtime.server.security.Authorizer
 import com.davils.kapi.runtime.server.telemetry.TelemetrySettings
 import com.davils.kapi.runtime.server.telemetry.TelemetrySettingsBuilder
 import com.davils.kapi.runtime.server.webhook.DeliveryVerifier
+import com.davils.kontinuity.ratelimiter.RateLimiterConfig
+import com.davils.kontinuity.ratelimiter.rateLimiterConfig
+import com.davils.kontinuity.ratelimiter.tokenBucket
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 import kotlin.time.Clock
+import kotlin.time.Duration
 
 /**
  * Configures the [ServerSettings] of `install(Kapi) { … }`.
@@ -96,6 +100,9 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
     internal var limits: ServerLimits = ServerLimits.Default
         private set
 
+    internal var rateLimit: RateLimiterConfig? = null
+        private set
+
     internal var problems: ProblemSettings = ProblemSettings.Default
         private set
 
@@ -116,6 +123,30 @@ public class ServerSettingsBuilder internal constructor() : ValidatingBuilder<Se
         val builder = ServerLimitsBuilder()
         builder.configure()
         limits = builder.build()
+    }
+
+    /**
+     * Limits how many requests one caller sends to one operation, such as `rateLimit(requests = 100, per = 1.minutes)`;
+     * see [ServerSettings.rateLimit].
+     *
+     * A caller is its principal once authorized, or else the address of its peer. A request over the limit is answered
+     * at once with `429 Too Many Requests`, the code [com.davils.kapi.runtime.server.problem.ServerCodes.RATE_LIMITED]
+     * and a `Retry-After` of the period; at most 10,000 callers per operation are counted at once, and the requests of
+     * a new caller are refused while every counted caller is still active, so a flood of callers cannot lift the limit.
+     *
+     * @param requests the requests one caller may send per period, 1 to 1,000,000.
+     * @param per the period, positive and at most one day.
+     * @throws com.davils.kore.core.validation.report.ValidationException if [requests] or [per] is out of range.
+     * @since 1.1.0
+     */
+    public fun rateLimit(requests: Int, per: Duration) {
+        checkOpen()
+        rateLimit = rateLimiterConfig {
+            limitForPeriod = requests
+            limitRefreshPeriod = per
+            timeout = Duration.ZERO
+            algorithm = tokenBucket(burst = requests)
+        }
     }
 
     /**
