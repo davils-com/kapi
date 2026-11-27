@@ -33,6 +33,7 @@ internal data class OperationPlan(
     val origin: Location? = null,
     val isDelivery: Boolean = false,
     val upgrade: String? = null,
+    val rateLimit: RateLimitPlan? = null,
     val summary: String? = null,
     val description: String? = null,
 ) {

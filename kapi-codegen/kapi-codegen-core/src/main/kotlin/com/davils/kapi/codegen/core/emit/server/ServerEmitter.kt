@@ -30,6 +30,7 @@ import com.davils.kapi.codegen.core.emit.client.SerializerCode
 import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.FieldPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
+import com.davils.kapi.codegen.core.operation.plan.RateLimitPlan
 import com.davils.kapi.codegen.core.operation.plan.SecurityPlan
 import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.options.Visibility
@@ -174,9 +175,20 @@ internal class ServerEmitter(
         code.add("path = %S,\n", operation.path)
         code.add("security = listOf(%L),\n", operation.security.map(::alternative).joinToCode(", "))
         if (operation.isDelivery) code.add("isDelivery = true,\n")
+        operation.rateLimit?.let { limit -> code.add("rateLimit = %L,\n", rateLimit(limit)) }
         code.add("handler = ::%N,\n⇤)", operation.name)
         return code.build()
     }
+
+    private fun rateLimit(limit: RateLimitPlan): CodeBlock = CodeBlock.of(
+        "%T(requests = %L, per = %T.parseIsoString(%S), key = %T.%L)",
+        ServerTypes.rateLimit,
+        limit.requests,
+        ServerTypes.duration,
+        limit.period,
+        ServerTypes.rateLimitKey,
+        limit.key,
+    )
 
     private fun alternative(uses: List<SecurityPlan>): CodeBlock =
         CodeBlock.of("listOf(%L)", uses.map(::use).joinToCode(", "))

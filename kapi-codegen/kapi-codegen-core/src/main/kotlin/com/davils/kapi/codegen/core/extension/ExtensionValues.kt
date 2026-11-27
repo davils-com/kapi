@@ -17,6 +17,7 @@
 package com.davils.kapi.codegen.core.extension
 
 import com.davils.kapi.codegen.core.naming.Identifiers
+import com.davils.kapi.codegen.core.operation.RateLimitPlanner
 import com.davils.kapi.spec.core.value.Value
 import kotlin.time.Duration
 
@@ -66,6 +67,8 @@ internal object ExtensionValues {
     }
 
     fun isStream(value: Value): Boolean = textOf(value) in streamKinds
+
+    fun isRateLimit(value: Value): Boolean = RateLimitPlanner.parse(value) != null
 
     private fun isQualified(value: Value): Boolean = Identifiers.isQualified(textOf(value))
 

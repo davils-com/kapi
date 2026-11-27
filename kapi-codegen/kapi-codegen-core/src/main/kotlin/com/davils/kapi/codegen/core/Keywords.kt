@@ -116,6 +116,14 @@ public object Keywords {
     public val UPGRADE: ExtensionName = ExtensionName("x-kapi-upgrade")
 
     /**
+     * `x-kapi-rate-limit`: how many requests one caller, principal or address may send to an operation per period,
+     * which the generated server enforces in addition to the rate limit of the server.
+     *
+     * @since 1.2.0
+     */
+    public val RATE_LIMIT: ExtensionName = ExtensionName("x-kapi-rate-limit")
+
+    /**
      * Every extension keyword the generator reads.
      *
      * @since 1.0.0
@@ -134,5 +142,6 @@ public object Keywords {
         TRI_STATE,
         STREAM,
         UPGRADE,
+        RATE_LIMIT,
     )
 }

@@ -43,6 +43,12 @@ internal object ServerTypes {
 
     val schemeUse: ClassName = ClassName(OPERATION, "SchemeUse")
 
+    val rateLimit: ClassName = ClassName(OPERATION, "OperationRateLimit")
+
+    val rateLimitKey: ClassName = ClassName(OPERATION, "RateLimitKey")
+
+    val duration: ClassName = ClassName("kotlin.time", "Duration")
+
     val source: ClassName = ClassName(OPERATION, "CredentialSource")
 
     val request: ClassName = ClassName(REQUEST, "Request")

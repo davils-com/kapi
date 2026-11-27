@@ -33,6 +33,11 @@ internal enum class ExtensionShape(val expectation: String, private val check: (
         "a mapping with the style cursor, offset, page or link and the texts parameter, items, next and size",
         ExtensionValues::isPagination,
     ),
+    RateLimit(
+        "a mapping of requests from 1 to 1,000,000, a period of an ISO 8601 duration above zero and at most one " +
+            "day and, optionally, per caller, principal or address",
+        ExtensionValues::isRateLimit,
+    ),
     ;
 
     fun accepts(value: Value): Boolean = check(value)

@@ -122,6 +122,7 @@ public final class com/davils/kapi/codegen/core/Keywords {
 	public final fun getIGNORE-YOP81MM ()Ljava/lang/String;
 	public final fun getNAME-YOP81MM ()Ljava/lang/String;
 	public final fun getPAGINATION-YOP81MM ()Ljava/lang/String;
+	public final fun getRATE_LIMIT-YOP81MM ()Ljava/lang/String;
 	public final fun getSENSITIVE-YOP81MM ()Ljava/lang/String;
 	public final fun getSTREAM-YOP81MM ()Ljava/lang/String;
 	public final fun getTIMEOUT-YOP81MM ()Ljava/lang/String;

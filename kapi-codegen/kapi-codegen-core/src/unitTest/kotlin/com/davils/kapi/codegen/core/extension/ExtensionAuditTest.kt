@@ -48,6 +48,12 @@ private const val SOON: String = "x-kapi-timeout: soon"
 
 private const val AFTER: String = "  parameter: after"
 
+private const val RATE_LIMIT: String = "x-kapi-rate-limit:"
+
+private const val HUNDRED: String = "  requests: 100"
+
+private const val MINUTE: String = "  period: PT1M"
+
 private const val TWO_NAMES: String = "x-kapi-enum-names: [FIRST, SECOND]"
 
 private val value: List<Any> = listOf(CodegenCodes.EXTENSION_VALUE)
@@ -65,6 +71,10 @@ private val accepted: Map<String, List<String>> = mapOf(
     "a timeout as a duration" to operation("x-kapi-timeout: PT30S"),
     "a timeout per phase" to operation(TIMEOUT, REQUEST, "  connect: PT5S", "  socket: PT1M"),
     "a pagination" to operation(PAGINATION, "  style: cursor", AFTER, "  items: data"),
+    "a rate limit per caller" to operation(RATE_LIMIT, "  requests: 100", "  period: PT1M"),
+    "a rate limit per principal at its bounds" to
+        operation(RATE_LIMIT, "  requests: 1000000", "  period: P1D", "  per: principal"),
+    "a rate limit per address" to operation(RATE_LIMIT, "  requests: 1", "  period: PT0.001S", "  per: address"),
     "a keyword another part of kide owns" to schema("x-kapi-requires-restart: true", "x-kapi-deprecation: soon"),
     "an extension of somebody else" to operation("x-vendor-anything:", "  nested: [1, 2]"),
 )
@@ -94,6 +104,20 @@ private val mistyped: Map<String, List<String>> = mapOf(
     "a pagination with a blank text" to operation(PAGINATION, PAGED, "  items: ''"),
     "a pagination with another key" to operation(PAGINATION, PAGED, "  total: count"),
     "a pagination that is no mapping" to operation("x-kapi-pagination: cursor"),
+    "a rate limit that is no mapping" to operation("x-kapi-rate-limit: 100"),
+    "a rate limit without requests" to operation(RATE_LIMIT, MINUTE),
+    "a rate limit without a period" to operation(RATE_LIMIT, HUNDRED),
+    "a rate limit of no requests" to operation(RATE_LIMIT, "  requests: 0", MINUTE),
+    "a rate limit above its ceiling" to operation(RATE_LIMIT, "  requests: 1000001", MINUTE),
+    "a rate limit of a fraction of a request" to operation(RATE_LIMIT, "  requests: 1.5", MINUTE),
+    "a rate limit whose requests are a text" to operation(RATE_LIMIT, "  requests: '100'", MINUTE),
+    "a rate limit over a period of zero" to operation(RATE_LIMIT, HUNDRED, "  period: PT0S"),
+    "a rate limit over more than a day" to operation(RATE_LIMIT, HUNDRED, "  period: PT24H0.001S"),
+    "a rate limit over a period that is no duration" to operation(RATE_LIMIT, HUNDRED, "  period: 60"),
+    "a rate limit per something else" to operation(RATE_LIMIT, HUNDRED, MINUTE, "  per: tenant"),
+    "a rate limit with another key" to operation(RATE_LIMIT, HUNDRED, MINUTE, "  burst: 10"),
+    "a rate limit over a text that is no duration" to operation(RATE_LIMIT, HUNDRED, "  period: soon"),
+    "a rate limit per something that is no text" to operation(RATE_LIMIT, HUNDRED, MINUTE, "  per: 5"),
 )
 
 class ExtensionAuditTest : FunSpec({

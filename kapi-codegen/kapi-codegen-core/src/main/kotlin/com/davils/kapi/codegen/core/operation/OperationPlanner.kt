@@ -120,6 +120,7 @@ internal class OperationPlanner(
             origin = operation.location,
             isDelivery = site.isDelivery,
             upgrade = upgrade,
+            rateLimit = RateLimitPlanner.plan(operation),
             summary = operation.summary,
             description = operation.description,
         )

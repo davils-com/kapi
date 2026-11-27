@@ -1375,6 +1375,8 @@ import com.davils.kapi.runtime.core.parameter.ParameterFormat
 import com.davils.kapi.runtime.core.parameter.ParameterStyle
 import com.davils.kapi.runtime.server.operation.CredentialSource
 import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.OperationRateLimit
+import com.davils.kapi.runtime.server.operation.RateLimitKey
 import com.davils.kapi.runtime.server.operation.Routes
 import com.davils.kapi.runtime.server.operation.SchemeUse
 import com.davils.kapi.runtime.server.reply.Reply
@@ -1386,6 +1388,7 @@ import com.davils.kore.core.`annotation`.DavilsGenerated
 import com.example.petstore.operation.PetstoreDeletePetResponse
 import kotlin.Long
 import kotlin.collections.List
+import kotlin.time.Duration
 import kotlinx.serialization.builtins.serializer
 
 @DavilsGenerated(
@@ -1401,6 +1404,7 @@ public class PetstoreAdminRoutes(
             method = "DELETE",
             path = "/pets/{petId}",
             security = listOf(listOf(SchemeUse("oauth", CredentialSource.Bearer, setOf("pets:write"))), listOf(SchemeUse("key", CredentialSource.Header("X-Api-Key"), setOf()))),
+            rateLimit = OperationRateLimit(requests = 100, per = Duration.parseIsoString("PT1M"), key = RateLimitKey.Principal),
             handler = ::deletePet,
         ),
     )

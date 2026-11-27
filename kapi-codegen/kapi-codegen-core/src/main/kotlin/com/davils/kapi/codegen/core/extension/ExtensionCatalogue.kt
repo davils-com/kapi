@@ -53,6 +53,7 @@ internal object ExtensionCatalogue {
         ExtensionKeyword(Keywords.TRI_STATE, ExtensionShape.Flag, operation),
         ExtensionKeyword(Keywords.STREAM, ExtensionShape.Stream, setOf(ExtensionSite.MediaType)),
         ExtensionKeyword(Keywords.UPGRADE, ExtensionShape.Label, operation),
+        ExtensionKeyword(Keywords.RATE_LIMIT, ExtensionShape.RateLimit, operation),
     )
 
     private val byName: Map<ExtensionName, ExtensionKeyword> = keywords.associateBy(ExtensionKeyword::name)

@@ -176,6 +176,10 @@ paths:
     delete:
       operationId: deletePet
       tags: [admin]
+      x-kapi-rate-limit:
+        requests: 100
+        period: PT1M
+        per: principal
       security:
         - oauth: [pets:write]
         - key: []
