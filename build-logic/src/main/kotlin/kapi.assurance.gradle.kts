@@ -96,6 +96,7 @@ kreate {
                 ":kapi-runtime:kapi-runtime-core",
                 ":kapi-runtime:kapi-runtime-client",
                 ":kapi-runtime:kapi-runtime-server",
+                ":kapi-runtime:kapi-runtime-server-ipc",
                 ":kapi-runtime:kapi-runtime-testing",
                 ":kapi-codegen:kapi-codegen-core",
                 ":kapi-codegen:kapi-codegen-gradle",

@@ -1,0 +1,8 @@
+public final class com/davils/kapi/runtime/server/ipc/IpcPeersKt {
+	public static final fun getIpcPeers ()Lio/ktor/server/application/ApplicationPlugin;
+}
+
+public final class com/davils/kapi/runtime/server/ipc/PeerIdentitiesKt {
+	public static final fun toPeerIdentity (Lcom/davils/konnect/ipc/core/access/IpcPeer;)Lcom/davils/kapi/runtime/server/request/PeerIdentity;
+}
+

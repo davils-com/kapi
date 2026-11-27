@@ -32,6 +32,7 @@ check:
       - ":kapi-runtime:kapi-runtime-core:clean"
       - ":kapi-runtime:kapi-runtime-client:clean"
       - ":kapi-runtime:kapi-runtime-server:clean"
+      - ":kapi-runtime:kapi-runtime-server-ipc:clean"
       - ":kapi-runtime:kapi-runtime-testing:clean"
       - ":kapi-codegen:kapi-codegen-core:clean"
       - ":kapi-codegen:kapi-codegen-gradle:clean"
@@ -44,6 +45,7 @@ check:
       - ":kapi-runtime:kapi-runtime-core:jvmJar"
       - ":kapi-runtime:kapi-runtime-client:jvmJar"
       - ":kapi-runtime:kapi-runtime-server:jar"
+      - ":kapi-runtime:kapi-runtime-server-ipc:jar"
       - ":kapi-runtime:kapi-runtime-testing:jvmJar"
       - ":kapi-codegen:kapi-codegen-core:jar"
       - ":kapi-codegen:kapi-codegen-gradle:jar"
@@ -56,6 +58,7 @@ check:
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-server-ipc/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
       - "kapi-codegen/kapi-codegen-gradle/build/libs/*.jar"
@@ -95,6 +98,7 @@ publish:
     - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-client:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-server:publishAllPublicationsToDavilsRepository"
+    - ":kapi-runtime:kapi-runtime-server-ipc:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-testing:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-codegen:kapi-codegen-gradle:publishAllPublicationsToDavilsRepository"
@@ -175,6 +179,9 @@ release:
       - path: com/davils/kapi-runtime-server
         artifact: kapi-runtime-server
         task: ":kapi-runtime:kapi-runtime-server:publishMavenPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-server-ipc
+        artifact: kapi-runtime-server-ipc
+        task: ":kapi-runtime:kapi-runtime-server-ipc:publishMavenPublicationToDavilsRepository"
       - path: com/davils/kapi-runtime-testing-jvm
         artifact: kapi-runtime-testing-jvm
         task: ":kapi-runtime:kapi-runtime-testing:publishJvmPublicationToDavilsRepository"
@@ -213,6 +220,7 @@ release:
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.klib"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-server-ipc/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-testing/build/libs/*.klib"
       - "kapi-codegen/kapi-codegen-core/build/libs/*.jar"
