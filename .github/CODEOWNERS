@@ -26,6 +26,8 @@
 /kapi-runtime/kapi-runtime-server/src/main/java/    @davils-com/maintainers
 /kapi-runtime/kapi-runtime-server-ipc/api/              @davils-com/maintainers
 /kapi-runtime/kapi-runtime-server-ipc/src/main/java/    @davils-com/maintainers
+/kapi-runtime/kapi-runtime-server-tls/api/              @davils-com/maintainers
+/kapi-runtime/kapi-runtime-server-tls/src/main/java/    @davils-com/maintainers
 /kapi-runtime/kapi-runtime-testing/api/             @davils-com/maintainers
 /kapi-runtime/kapi-runtime-testing/src/jvmMain/java/ @davils-com/maintainers
 /kapi-codegen/kapi-codegen-core/api/                @davils-com/maintainers

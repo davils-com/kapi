@@ -37,6 +37,7 @@ dependencies {
         api(project(":kapi-runtime:kapi-runtime-yaml"))
         api(project(":kapi-runtime:kapi-runtime-server"))
         api(project(":kapi-runtime:kapi-runtime-server-ipc"))
+        api(project(":kapi-runtime:kapi-runtime-server-tls"))
         api(project(":kapi-runtime:kapi-runtime-testing"))
         api(project(":kapi-codegen:kapi-codegen-core"))
         api(project(":kapi-codegen:kapi-codegen-gradle"))

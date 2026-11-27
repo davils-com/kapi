@@ -1,0 +1,8 @@
+public final class com/davils/kapi/runtime/server/tls/TlsPeersConfiguration {
+	public final fun session (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/davils/kapi/runtime/server/tls/TlsPeersKt {
+	public static final fun getTlsPeers ()Lio/ktor/server/application/ApplicationPlugin;
+}
+
