@@ -20,8 +20,10 @@ package com.davils.kapi.runtime.client.dpop
 
 import com.davils.kapi.runtime.client.internal.Texts
 import com.davils.kapi.runtime.core.security.Secret
+import com.davils.kontinuity.cache.Cache
+import com.davils.kontinuity.cache.Eviction
+import com.davils.kontinuity.cache.cache
 import com.davils.kore.core.annotation.DavilsInternal
-import com.davils.kore.core.collection.OrderedMap
 import com.davils.krypt.core.algorithm.DigestAlgorithm
 import com.davils.krypt.jose.JoseKey
 import com.davils.krypt.jose.JsonValue
@@ -30,9 +32,10 @@ import com.davils.krypt.jose.jwt.Jwt
 import com.davils.krypt.jose.jwt.jwtClaims
 import com.davils.krypt.primitive.Crypto
 import io.ktor.http.parseUrl
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.io.bytestring.encodeToByteString
+import kotlin.time.Duration.Companion.minutes
 
 private const val TYPE: String = "dpop+jwt"
 
@@ -52,16 +55,18 @@ private const val MOST_NONCES: Int = 64
 
 private const val MOST_NONCE_LENGTH: Int = 1_024
 
+private const val CACHE_NAME: String = "kapi-dpop-nonces"
+
 /**
  * Proves the possession of a private key for every request by RFC 9449, so a token stolen from the application is
  * useless to whoever holds it.
  *
  * A proof is a JWT of the type `dpop+jwt`, signed by the private key with the public key in its header, that names a
  * fresh `jti`, the method, the URL without its query and fragment, the time it was made and, for a request that
- * carries an access token, the hash of the token. A nonce a server hands out with `DPoP-Nonce` is kept per origin, at
- * most for 64 origins, and goes into every later proof for that origin; a nonce that is no `NQCHAR` text of RFC 9449
- * §8 is ignored. The proofs are safe to use from many coroutines at once. [toString] names the algorithm, never the
- * key.
+ * carries an access token, the hash of the token. A nonce a server hands out with `DPoP-Nonce` is kept per origin, for
+ * at most ten minutes and at most for 64 origins, the one used least recently giving way, and goes into every later
+ * proof for that origin; a nonce that is no `NQCHAR` text of RFC 9449 §8 is ignored. The proofs are safe to use from
+ * many coroutines at once. [toString] names the algorithm, never the key.
  *
  * @since 1.0.0
  */
@@ -78,9 +83,11 @@ public class DpopProofs internal constructor(
 ) {
     private val jwt: Jwt = Jwt(crypto)
 
-    private val lock: Mutex = Mutex()
-
-    private val nonces: OrderedMap<String, String> = OrderedMap()
+    private val nonces: Cache<String, String> = cache(CACHE_NAME) {
+        maximumSize = MOST_NONCES
+        eviction = Eviction.Lru
+        expireAfterWrite = 10.minutes
+    }
 
     /**
      * Makes the proof of a request.
@@ -92,7 +99,7 @@ public class DpopProofs internal constructor(
      * @since 1.0.0
      */
     public suspend fun proof(method: String, url: String, accessToken: Secret? = null): String {
-        val nonce = lock.withLock { nonces[originOf(url)] }
+        val nonce = nonces[originOf(url)]
         val hash = accessToken?.let { token -> hashOf(token) }
         val identifier = Texts.base64Url.encode(crypto.environment.random.bytes(ID_BYTES))
         val claims = jwtClaims {
@@ -109,18 +116,16 @@ public class DpopProofs internal constructor(
 
     /**
      * Keeps [nonce], the value of a `DPoP-Nonce` field of an answer from [url], for the later proofs of its origin.
+     * A caller that is cancelled keeps nothing.
      *
      * @param url the absolute URL the answer came from.
      * @param nonce the nonce, or `null` when the answer named none.
      * @since 1.0.0
      */
     public suspend fun acceptNonce(url: String, nonce: String?) {
+        currentCoroutineContext().ensureActive()
         val accepted = nonce?.takeIf(::isNonce) ?: return
-        val origin = originOf(url)
-        lock.withLock {
-            if (origin !in nonces && nonces.size >= MOST_NONCES) nonces.clear()
-            nonces[origin] = accepted
-        }
+        nonces.put(key = originOf(url), value = accepted)
     }
 
     override fun toString(): String = "DpopProofs(${algorithm.algorithmName})"

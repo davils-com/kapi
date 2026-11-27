@@ -68,6 +68,10 @@ private const val TOKEN: String = "t1"
 
 private const val ORIGINS: Int = 65
 
+private const val FIRST_ORIGIN: String = "https://h0.example.com"
+
+private const val LAST_ORIGIN: String = "https://h64.example.com"
+
 private val crypto: Crypto = Crypto()
 
 private val base64: Base64 = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT)
@@ -123,9 +127,20 @@ class DpopProofsTest : FunSpec({
             val (proofs, _) = proofs()
             repeat(ORIGINS) { index -> proofs.acceptNonce(url = "https://h$index.example.com", nonce = "n$index") }
 
-            Jwts.text(claimsOf(proofs, "https://h64.example.com"), NONCE) shouldBe "n64"
-            Jwts.text(claimsOf(proofs, "https://h0.example.com"), NONCE) shouldBe null
+            Jwts.text(claimsOf(proofs, LAST_ORIGIN), NONCE) shouldBe "n64"
+            Jwts.text(claimsOf(proofs, FIRST_ORIGIN), NONCE) shouldBe null
             Jwts.text(claimsOf(proofs, "not a url"), NONCE) shouldBe null
+        }
+
+        test("gives way to a new origin with the nonce used least recently") {
+            val (proofs, _) = proofs()
+            repeat(ORIGINS - 1) { index -> proofs.acceptNonce(url = "https://h$index.example.com", nonce = "n$index") }
+            claimsOf(proofs, FIRST_ORIGIN)
+
+            proofs.acceptNonce(url = LAST_ORIGIN, nonce = "n64")
+
+            Jwts.text(claimsOf(proofs, FIRST_ORIGIN), NONCE) shouldBe "n0"
+            Jwts.text(claimsOf(proofs, "https://h1.example.com"), NONCE) shouldBe null
         }
 
         test("is never made with a MAC") {
