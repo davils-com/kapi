@@ -57,6 +57,8 @@ private const val RECONNECTS: Int = 2
 
 private const val LIMIT: Int = 8
 
+private const val MANY_RECONNECTS: Int = 150
+
 private const val DEFAULT_RECONNECTS: Int = 5
 
 private const val HARD_RECONNECTS: Int = 1_000
@@ -147,6 +149,26 @@ class EventsTest : FunSpec({
 
             read shouldBe listOf(StreamEvent.Ended(Exchange.Failed(CallFailure.Unreachable("IOException"))))
             exchanges.requests.size shouldBe RECONNECTS + 1
+        }
+
+        test("keeps reconnecting past the attempts one retry of kontinuity takes, and reports every reconnection") {
+            val many = reconnection {
+                maxReconnects = MANY_RECONNECTS
+                delay = 1.milliseconds
+            }
+            coroutineScope {
+                val bus = eventBus(this)
+                bus.declare(ClientEvent.TOPIC)
+                val exchanges = Exchanges(configure = { this.events = bus }) { throw IOException("refused") }
+                val reported = collecting(this, bus[ClientEvent.TOPIC], MANY_RECONNECTS)
+
+                exchanges.withClient { client -> client.events(pets, many).toList() }
+
+                exchanges.requests.size shouldBe MANY_RECONNECTS + 1
+                val attempts = reported.await().map { event -> (event as ClientEvent.Reconnecting).attempt }
+                attempts shouldBe (1..MANY_RECONNECTS).toList()
+                bus.close()
+            }
         }
 
         test("ends for a server that refuses or ends the stream with no content") {

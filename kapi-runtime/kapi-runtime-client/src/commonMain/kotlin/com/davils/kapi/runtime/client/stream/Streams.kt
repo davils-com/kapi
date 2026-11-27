@@ -20,7 +20,6 @@ import com.davils.kapi.runtime.client.ApiClient
 import com.davils.kapi.runtime.client.ClientEvent
 import com.davils.kapi.runtime.client.call.Call
 import com.davils.kapi.runtime.client.call.CallFailure
-import com.davils.kapi.runtime.client.call.Exchange
 import com.davils.kapi.runtime.client.internal.FieldText
 import com.davils.kapi.runtime.client.internal.Lines
 import com.davils.kapi.runtime.client.internal.Records
@@ -28,11 +27,9 @@ import com.davils.kapi.runtime.client.internal.StreamSink
 import com.davils.kapi.runtime.core.codec.Decoding
 import com.davils.kapi.runtime.core.framing.FramingFailure
 import com.davils.kapi.runtime.core.framing.ServerSentEvent
-import com.davils.kapi.runtime.core.framing.ServerSentEventReader
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.response.Headers
 import com.davils.kore.core.outcome.Outcome
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
@@ -40,8 +37,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 import kotlinx.serialization.DeserializationStrategy
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 private const val MALFORMED: String = "An item of the stream is not what the document declares"
 
@@ -145,42 +140,11 @@ public fun <T> ApiClient.records(
  */
 public fun ApiClient.events(call: Call, reconnection: Reconnection? = null): Flow<StreamEvent<ServerSentEvent>> =
     channelFlow {
-        var lastId = ""
-        var retry: Long? = null
-        var reconnects = 0
-        var ended: Exchange? = null
-        while (ended == null) {
-            val reader = ServerSentEventReader(settings.framing)
-            val deliver: suspend (Outcome<List<ServerSentEvent>, FramingFailure>) -> CallFailure? = { outcome ->
-                handled(outcome) { event -> send(StreamEvent.Item(event, id = event.id, type = event.type)) }
-            }
-            val sink = StreamSink(
-                isStreamed = ::isEventStream,
-                accept = { chunk -> deliver(reader.feed(chunk)) },
-                finish = { deliver(reader.finish()) },
-            )
-            val exchange = withContext(sink) { streamed(resumed(call = call, lastId = lastId)) }
-            lastId = reader.lastEventId.ifEmpty { lastId }
-            retry = reader.retry ?: retry
-            val wait = reconnection?.let { found ->
-                waitOf(reconnection = found, exchange = exchange, reconnects = reconnects, retry = retry)
-            }
-            if (wait == null) ended = exchange
-            if (wait != null) {
-                reconnects += 1
-                val isResumed = lastId.isNotEmpty()
-                telemetry.emit {
-                    ClientEvent.Reconnecting(
-                        api = settings.name,
-                        operation = call.operation,
-                        attempt = reconnects,
-                        delay = wait,
-                        isResumed = isResumed,
-                    )
-                }
-                delay(wait)
-            }
+        val source = EventSource(client = this@events, call = call)
+        val deliver: suspend (ServerSentEvent) -> Unit = { event ->
+            send(StreamEvent.Item(event, id = event.id, type = event.type))
         }
+        val ended = reconnection?.let { found -> source.reconnecting(found, deliver) } ?: source.connect(deliver)
         send(StreamEvent.Ended(ended))
     }
 
@@ -219,7 +183,7 @@ private fun <T> ApiClient.decoded(
     is Decoding.Failed -> StreamEvent.Malformed(MALFORMED)
 }
 
-private suspend fun <R> handled(outcome: Outcome<List<R>, FramingFailure>, each: suspend (R) -> Unit): CallFailure? =
+internal suspend fun <R> handled(outcome: Outcome<List<R>, FramingFailure>, each: suspend (R) -> Unit): CallFailure? =
     when (outcome) {
         is Outcome.Failure -> {
             CallFailure.Framing(outcome.failure)
@@ -231,23 +195,13 @@ private suspend fun <R> handled(outcome: Outcome<List<R>, FramingFailure>, each:
         }
     }
 
-private fun resumed(call: Call, lastId: String): Call {
+internal fun resumed(call: Call, lastId: String): Call {
     val isWritable = lastId.isNotEmpty() && FieldText.isValue(lastId)
     if (!isWritable) return call
     return call.change { header(name = LAST_EVENT_ID, value = lastId) }
 }
 
-private fun isEventStream(status: Int, headers: Headers): Boolean {
+internal fun isEventStream(status: Int, headers: Headers): Boolean {
     val type = headers[CONTENT_TYPE]?.let(MediaType::parseOrNull)
     return StreamSink.isOpened(status) && status != NO_CONTENT && type?.essence == MediaType.EventStream.essence
-}
-
-private fun waitOf(reconnection: Reconnection, exchange: Exchange, reconnects: Int, retry: Long?): Duration? {
-    val isLeft = reconnects < reconnection.maxReconnects
-    val isReconnectable = when (exchange) {
-        is Exchange.Failed -> exchange.failure is CallFailure.Unreachable || exchange.failure == CallFailure.TimedOut
-        is Exchange.Answered -> isEventStream(exchange.status, exchange.headers)
-    }
-    val wait = retry?.milliseconds ?: reconnection.delay
-    return wait.coerceAtMost(reconnection.maximumDelay).takeIf { isLeft && isReconnectable }
 }

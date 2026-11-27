@@ -48,6 +48,13 @@ internal fun defaultProtectionOf(builder: ClientSettingsBuilder): Policy? {
     return resilience(name = PROTECTION_NAME, environment = environment) { circuitBreaker(breaker) }
 }
 
+internal fun ClientSettings.resilienceEnvironment(): Environment = environment {
+    tracer = this@resilienceEnvironment.tracer
+    timeSource = this@resilienceEnvironment.timeSource
+    this@resilienceEnvironment.meters?.let { registry -> meters(registry) }
+    this@resilienceEnvironment.events?.let { bus -> events(bus) }
+}
+
 private fun environmentOf(builder: ClientSettingsBuilder): Environment = environment {
     tracer = builder.tracer
     timeSource = builder.timeSource
