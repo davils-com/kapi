@@ -69,8 +69,9 @@ private const val NONCE_ERROR: String = "use_dpop_nonce"
  * A call passes its phases: the interceptors of [ClientSettings.interceptions], the credentials of the client, the
  * destination policy for its URL and every redirect hop, and the transport, which reads an answer up to
  * [ClientSettings.maxResponseBytes] and never throws for a status. A call the server rejects with `401` is sent once
- * more after a source of its credentials refreshed or a DPoP nonce arrived, and a retryable call runs under
- * [ClientSettings.resilience]. Every call is counted, timed and traced in kollect. The client never creates an
+ * more after a source of its credentials refreshed or a DPoP nonce arrived. Every call, and every attempt of a
+ * retried one, runs under [ClientSettings.protection]; only a retryable call runs under [ClientSettings.resilience]
+ * as well, so a call that is not idempotent is never sent twice. Every call is counted, timed and traced in kollect. The client never creates an
  * `HttpClient`, never closes the one it was handed and is safe to share between coroutines and threads.
  *
  * @since 1.0.0
@@ -195,8 +196,17 @@ public class ApiClient internal constructor(
     }
 
     private suspend fun resilient(call: Call): Exchange {
-        val policy = settings.resilience?.takeIf { call.isRetryable } ?: return attempt(call)
+        val policy = settings.resilience?.takeIf { call.isRetryable } ?: return shielded(call)
         return guarded(policy, call)
+    }
+
+    private suspend fun shielded(call: Call): Exchange {
+        val protection = settings.protection ?: return attempt(call)
+        val outcome = attempted { protection.execute { Attempt(call, attempt(call)) } }
+        return outcome.fold(
+            onSuccess = { attempt -> attempt.exchange },
+            onFailure = { failure -> refusedOf(failure, Exchange.Failed(CallFailure.TimedOut)) },
+        )
     }
 
     private suspend fun guarded(policy: Policy, call: Call): Exchange {
@@ -206,7 +216,7 @@ public class ApiClient internal constructor(
             policy.execute {
                 val number = attempts.incrementAndFetch()
                 if (number > 1) telemetry.emit { retrying(call, number) }
-                val attempt = Attempt(call, attempt(call))
+                val attempt = Attempt(call, shielded(call))
                 last.store(attempt.exchange)
                 attempt
             }

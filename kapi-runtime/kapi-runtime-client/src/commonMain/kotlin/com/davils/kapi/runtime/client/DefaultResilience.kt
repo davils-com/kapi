@@ -16,6 +16,7 @@
 
 package com.davils.kapi.runtime.client
 
+import com.davils.kapi.runtime.client.retry.CallProtection
 import com.davils.kapi.runtime.client.retry.CallRetry
 import com.davils.kontinuity.core.Environment
 import com.davils.kontinuity.core.backoff.exponential
@@ -29,6 +30,8 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val POLICY_NAME: String = "kapi-client"
 private const val RETRY_NAME: String = "kapi-client-retry"
+private const val PROTECTION_NAME: String = "kapi-client-protection"
+private const val BREAKER_NAME: String = "kapi-client-breaker"
 
 internal fun defaultResilienceOf(builder: ClientSettingsBuilder): Policy? {
     if (!builder.isDefaultResilience) return null
@@ -36,6 +39,13 @@ internal fun defaultResilienceOf(builder: ClientSettingsBuilder): Policy? {
     val backoff = exponential(initial = 200.milliseconds, maximum = 10.seconds).jittered(proportional())
     val retry = CallRetry.retry(name = RETRY_NAME, backoff = backoff, environment = environment)
     return resilience(name = POLICY_NAME, environment = environment) { retry(retry) }
+}
+
+internal fun defaultProtectionOf(builder: ClientSettingsBuilder): Policy? {
+    if (!builder.isDefaultProtection) return null
+    val environment = environmentOf(builder)
+    val breaker = CallProtection.circuitBreaker(name = BREAKER_NAME, environment = environment)
+    return resilience(name = PROTECTION_NAME, environment = environment) { circuitBreaker(breaker) }
 }
 
 private fun environmentOf(builder: ClientSettingsBuilder): Environment = environment {

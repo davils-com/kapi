@@ -1387,6 +1387,8 @@ final class com.davils.kapi.runtime.client/ClientSettings : com.davils.kore.core
         final fun <get-meters>(): com.davils.kollect.core/MeterRegistry? // com.davils.kapi.runtime.client/ClientSettings.meters.<get-meters>|<get-meters>(){}[0]
     final val name // com.davils.kapi.runtime.client/ClientSettings.name|{}name[0]
         final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettings.name.<get-name>|<get-name>(){}[0]
+    final val protection // com.davils.kapi.runtime.client/ClientSettings.protection|{}protection[0]
+        final fun <get-protection>(): com.davils.kontinuity.policy/Policy? // com.davils.kapi.runtime.client/ClientSettings.protection.<get-protection>|<get-protection>(){}[0]
     final val redirects // com.davils.kapi.runtime.client/ClientSettings.redirects|{}redirects[0]
         final fun <get-redirects>(): com.davils.kapi.runtime.client.redirect/RedirectPolicy? // com.davils.kapi.runtime.client/ClientSettings.redirects.<get-redirects>|<get-redirects>(){}[0]
     final val resilience // com.davils.kapi.runtime.client/ClientSettings.resilience|{}resilience[0]
@@ -1428,6 +1430,9 @@ final class com.davils.kapi.runtime.client/ClientSettingsBuilder : com.davils.ko
     final var framing // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing|{}framing[0]
         final fun <get-framing>(): com.davils.kapi.runtime.core.framing/FramingLimits // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing.<get-framing>|<get-framing>(){}[0]
         final fun <set-framing>(com.davils.kapi.runtime.core.framing/FramingLimits) // com.davils.kapi.runtime.client/ClientSettingsBuilder.framing.<set-framing>|<set-framing>(com.davils.kapi.runtime.core.framing.FramingLimits){}[0]
+    final var isDefaultProtection // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultProtection|{}isDefaultProtection[0]
+        final fun <get-isDefaultProtection>(): kotlin/Boolean // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultProtection.<get-isDefaultProtection>|<get-isDefaultProtection>(){}[0]
+        final fun <set-isDefaultProtection>(kotlin/Boolean) // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultProtection.<set-isDefaultProtection>|<set-isDefaultProtection>(kotlin.Boolean){}[0]
     final var isDefaultResilience // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultResilience|{}isDefaultResilience[0]
         final fun <get-isDefaultResilience>(): kotlin/Boolean // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultResilience.<get-isDefaultResilience>|<get-isDefaultResilience>(){}[0]
         final fun <set-isDefaultResilience>(kotlin/Boolean) // com.davils.kapi.runtime.client/ClientSettingsBuilder.isDefaultResilience.<set-isDefaultResilience>|<set-isDefaultResilience>(kotlin.Boolean){}[0]
@@ -1440,6 +1445,9 @@ final class com.davils.kapi.runtime.client/ClientSettingsBuilder : com.davils.ko
     final var name // com.davils.kapi.runtime.client/ClientSettingsBuilder.name|{}name[0]
         final fun <get-name>(): kotlin/String // com.davils.kapi.runtime.client/ClientSettingsBuilder.name.<get-name>|<get-name>(){}[0]
         final fun <set-name>(kotlin/String) // com.davils.kapi.runtime.client/ClientSettingsBuilder.name.<set-name>|<set-name>(kotlin.String){}[0]
+    final var protection // com.davils.kapi.runtime.client/ClientSettingsBuilder.protection|{}protection[0]
+        final fun <get-protection>(): com.davils.kontinuity.policy/Policy? // com.davils.kapi.runtime.client/ClientSettingsBuilder.protection.<get-protection>|<get-protection>(){}[0]
+        final fun <set-protection>(com.davils.kontinuity.policy/Policy?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.protection.<set-protection>|<set-protection>(com.davils.kontinuity.policy.Policy?){}[0]
     final var redirects // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects|{}redirects[0]
         final fun <get-redirects>(): com.davils.kapi.runtime.client.redirect/RedirectPolicy? // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects.<get-redirects>|<get-redirects>(){}[0]
         final fun <set-redirects>(com.davils.kapi.runtime.client.redirect/RedirectPolicy?) // com.davils.kapi.runtime.client/ClientSettingsBuilder.redirects.<set-redirects>|<set-redirects>(com.davils.kapi.runtime.client.redirect.RedirectPolicy?){}[0]
@@ -1501,6 +1509,14 @@ final object com.davils.kapi.runtime.client.oauth/TokenTypes { // com.davils.kap
         final fun <get-JWT>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.JWT.<get-JWT>|<get-JWT>(){}[0]
     final const val REFRESH_TOKEN // com.davils.kapi.runtime.client.oauth/TokenTypes.REFRESH_TOKEN|{}REFRESH_TOKEN[0]
         final fun <get-REFRESH_TOKEN>(): kotlin/String // com.davils.kapi.runtime.client.oauth/TokenTypes.REFRESH_TOKEN.<get-REFRESH_TOKEN>|<get-REFRESH_TOKEN>(){}[0]
+}
+
+final object com.davils.kapi.runtime.client.retry/CallProtection { // com.davils.kapi.runtime.client.retry/CallProtection|null[0]
+    final val results // com.davils.kapi.runtime.client.retry/CallProtection.results|{}results[0]
+        final fun <get-results>(): com.davils.kontinuity.core.filter/ResultFilter // com.davils.kapi.runtime.client.retry/CallProtection.results.<get-results>|<get-results>(){}[0]
+
+    final fun circuitBreaker(kotlin/String, com.davils.kontinuity.core/Environment = ...): com.davils.kontinuity.circuitbreaker/CircuitBreaker // com.davils.kapi.runtime.client.retry/CallProtection.circuitBreaker|circuitBreaker(kotlin.String;com.davils.kontinuity.core.Environment){}[0]
+    final fun isFailure(com.davils.kapi.runtime.client.retry/Attempt): kotlin/Boolean // com.davils.kapi.runtime.client.retry/CallProtection.isFailure|isFailure(com.davils.kapi.runtime.client.retry.Attempt){}[0]
 }
 
 final object com.davils.kapi.runtime.client.retry/CallRetry { // com.davils.kapi.runtime.client.retry/CallRetry|null[0]

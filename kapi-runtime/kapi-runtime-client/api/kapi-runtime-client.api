@@ -77,6 +77,7 @@ public final class com/davils/kapi/runtime/client/ClientSettings : com/davils/ko
 	public final fun getMaxResponseBytes ()J
 	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
 	public final fun getName ()Ljava/lang/String;
+	public final fun getProtection ()Lcom/davils/kontinuity/policy/Policy;
 	public final fun getRedirects ()Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
 	public final fun getResilience ()Lcom/davils/kontinuity/policy/Policy;
 	public final fun getSensitiveHeaders ()Ljava/util/Set;
@@ -105,6 +106,7 @@ public final class com/davils/kapi/runtime/client/ClientSettingsBuilder : com/da
 	public final fun getMaxResponseBytes ()J
 	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
 	public final fun getName ()Ljava/lang/String;
+	public final fun getProtection ()Lcom/davils/kontinuity/policy/Policy;
 	public final fun getRedirects ()Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;
 	public final fun getResilience ()Lcom/davils/kontinuity/policy/Policy;
 	public final fun getSensitiveHeaders ()Ljava/util/Set;
@@ -112,10 +114,12 @@ public final class com/davils/kapi/runtime/client/ClientSettingsBuilder : com/da
 	public final fun getTimeout ()Lcom/davils/kapi/runtime/client/call/Timeout;
 	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
 	public final fun intercept (Lcom/davils/kapi/runtime/client/pipeline/CallPhase;Ljava/lang/String;Lcom/davils/kapi/runtime/client/pipeline/Interceptor;)V
+	public final fun isDefaultProtection ()Z
 	public final fun isDefaultResilience ()Z
 	public final fun setBaseUrl (Ljava/lang/String;)V
 	public final fun setCodecs (Lcom/davils/kapi/runtime/core/codec/Codecs;)V
 	public final fun setCredentials (Lcom/davils/kapi/runtime/core/security/Credentials;)V
+	public final fun setDefaultProtection (Z)V
 	public final fun setDefaultResilience (Z)V
 	public final fun setDestinations (Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;)V
 	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
@@ -123,6 +127,7 @@ public final class com/davils/kapi/runtime/client/ClientSettingsBuilder : com/da
 	public final fun setMaxResponseBytes (J)V
 	public final fun setMeters (Lcom/davils/kollect/core/MeterRegistry;)V
 	public final fun setName (Ljava/lang/String;)V
+	public final fun setProtection (Lcom/davils/kontinuity/policy/Policy;)V
 	public final fun setRedirects (Lcom/davils/kapi/runtime/client/redirect/RedirectPolicy;)V
 	public final fun setResilience (Lcom/davils/kontinuity/policy/Policy;)V
 	public final fun setSensitiveHeaders (Ljava/util/Set;)V
@@ -1130,6 +1135,14 @@ public final class com/davils/kapi/runtime/client/retry/Attempt {
 	public final fun getExchange ()Lcom/davils/kapi/runtime/client/call/Exchange;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kapi/runtime/client/retry/CallProtection {
+	public static final field INSTANCE Lcom/davils/kapi/runtime/client/retry/CallProtection;
+	public final fun circuitBreaker (Ljava/lang/String;Lcom/davils/kontinuity/core/Environment;)Lcom/davils/kontinuity/circuitbreaker/CircuitBreaker;
+	public static synthetic fun circuitBreaker$default (Lcom/davils/kapi/runtime/client/retry/CallProtection;Ljava/lang/String;Lcom/davils/kontinuity/core/Environment;ILjava/lang/Object;)Lcom/davils/kontinuity/circuitbreaker/CircuitBreaker;
+	public final fun getResults ()Lcom/davils/kontinuity/core/filter/ResultFilter;
+	public final fun isFailure (Lcom/davils/kapi/runtime/client/retry/Attempt;)Z
 }
 
 public final class com/davils/kapi/runtime/client/retry/CallRetry {

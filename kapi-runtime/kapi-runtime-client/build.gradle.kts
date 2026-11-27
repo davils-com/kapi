@@ -30,6 +30,7 @@ dependencies {
     commonMainApi(project(":kapi-runtime:kapi-runtime-core"))
     commonMainApi(libs.ktor.client.core)
     commonMainApi(libs.kontinuity.policy)
+    commonMainApi(libs.kontinuity.circuit.breaker)
     commonMainApi(libs.kollect.core)
     commonMainApi(libs.konfetti.core)
     commonMainApi(libs.krypt.jose)

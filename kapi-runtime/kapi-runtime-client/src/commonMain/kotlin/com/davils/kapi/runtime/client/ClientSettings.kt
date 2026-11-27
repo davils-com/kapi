@@ -120,6 +120,14 @@ public class ClientSettings internal constructor(builder: ClientSettingsBuilder)
     public val resilience: Policy? = builder.resilience ?: defaultResilienceOf(builder)
 
     /**
+     * The protection every call runs under: the one of the builder, the default protection of
+     * [ClientSettingsBuilder.isDefaultProtection], or `null` when the builder turned it off.
+     *
+     * @since 1.2.0
+     */
+    public val protection: Policy? = builder.protection ?: defaultProtectionOf(builder)
+
+    /**
      * The redirects the client follows, or `null`.
      *
      * @since 1.0.0

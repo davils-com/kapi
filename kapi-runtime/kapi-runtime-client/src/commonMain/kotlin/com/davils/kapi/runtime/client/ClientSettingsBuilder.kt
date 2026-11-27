@@ -185,6 +185,36 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
         }
 
     /**
+     * The policy of kontinuity every call runs under, idempotent or not, such as a circuit breaker built with
+     * [com.davils.kapi.runtime.client.retry.CallProtection], a bulkhead or a rate limiter; `null` by default, which
+     * gives every client the default protection of [ClientSettings.protection] unless [isDefaultProtection] is
+     * `false`. A non-idempotent call runs under it as well, so it must never hold a retry: retries belong in
+     * [resilience], which only retryable calls run under. Every attempt of a retried call passes the protection again.
+     *
+     * @since 1.2.0
+     */
+    public var protection: Policy? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
+     * Whether a client without its own [protection] runs every call under the default protection: a circuit breaker of
+     * [com.davils.kapi.runtime.client.retry.CallProtection] that stops sending calls once half of the recent ones could
+     * not reach the server, timed out or ended with a server error, reporting through the meters, the tracer and the
+     * event bus of the client. A call the open breaker refuses ends as
+     * [com.davils.kapi.runtime.client.call.CallFailure.Rejected]. `true` by default; `false` sends every call.
+     *
+     * @since 1.2.0
+     */
+    public var isDefaultProtection: Boolean = true
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
      * The redirects the client follows itself; `null` by default, which hands a redirect to the caller as an answer.
      *
      * @since 1.0.0

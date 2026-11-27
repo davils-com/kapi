@@ -34,6 +34,7 @@ krypt-primitive = { module = "com.davils:krypt-primitive", version.ref = "krypt"
 kontinuity-core = { module = "com.davils:kontinuity-core", version.ref = "kontinuity" }
 kontinuity-policy = { module = "com.davils:kontinuity-policy", version.ref = "kontinuity" }
 kontinuity-retry = { module = "com.davils:kontinuity-retry", version.ref = "kontinuity" }
+kontinuity-circuit-breaker = { module = "com.davils:kontinuity-circuit-breaker", version.ref = "kontinuity" }
 kontinuity-cache = { module = "com.davils:kontinuity-cache", version.ref = "kontinuity" }
 kontinuity-bulkhead = { module = "com.davils:kontinuity-bulkhead", version.ref = "kontinuity" }
 kontinuity-rate-limiter = { module = "com.davils:kontinuity-rate-limiter", version.ref = "kontinuity" }
