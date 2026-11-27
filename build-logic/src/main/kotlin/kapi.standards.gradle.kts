@@ -137,6 +137,10 @@ kreate {
             rfc(7009) {
                 note = "Token revocation: the revocation of tokens by kapi-runtime-client."
             }
+            rfc(7303) {
+                note = "XML media types: application/xml, text/xml, the +xml suffix and the charset precedence of " +
+                    "kapi-runtime-xml."
+            }
             rfc(7464) {
                 note = "JSON text sequences: the framing of streamed records in kapi-runtime-core."
             }
@@ -197,6 +201,9 @@ kreate {
             }
             rfc(9457) {
                 note = "Problem details: the problems of every refused request and of typed client results."
+            }
+            rfc(9512) {
+                note = "The YAML media type: application/yaml and the +yaml suffix of kapi-runtime-yaml."
             }
             rfc(9530) {
                 note = "Digest fields: Content-Digest and Repr-Digest of kapi-runtime-core and the delivery verifier."

@@ -870,6 +870,22 @@
             }
         },
         {
+            "id": "rfc:7303",
+            "reviewedOn": "2026-11-27",
+            "note": "Reviewed for kapi 1.2.0: the XML media types and the charset precedence kapi-runtime-xml relies on through kxml.",
+            "snapshot": {
+                "title": "XML Media Types",
+                "status": "PROPOSED STANDARD",
+                "published": "July 2014",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "4578": "HELD"
+                }
+            }
+        },
+        {
             "id": "rfc:7396",
             "reviewedOn": "2026-11-23",
             "note": "Reviewed for kapi 1.0.0: the parts kapi implements, as the declaration notes.",
@@ -1318,6 +1334,20 @@
                     "7731": "HELD",
                     "8858": "REPORTED"
                 }
+            }
+        },
+        {
+            "id": "rfc:9512",
+            "reviewedOn": "2026-11-27",
+            "note": "Reviewed for kapi 1.2.0: the YAML media type and the +yaml suffix kapi-runtime-yaml reads and writes.",
+            "snapshot": {
+                "title": "YAML Media Type",
+                "status": "INFORMATIONAL",
+                "published": "February 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
             }
         },
         {
