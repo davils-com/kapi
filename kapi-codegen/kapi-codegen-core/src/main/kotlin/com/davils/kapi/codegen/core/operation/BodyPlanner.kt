@@ -38,6 +38,8 @@ import com.davils.kapi.spec.openapi.resolve
 
 private const val BYTES: String = "application/octet-stream"
 
+private const val XML: String = "application/xml"
+
 private const val WILDCARD: Char = '*'
 
 private val json: TypeUse = TypeUse(TypeShape.Scalar(ScalarKind.Json))
@@ -51,6 +53,8 @@ private val structured: Map<String, BodyKind> = mapOf(
 
 internal class BodyPlanner(private val scope: PlanScope, private val models: ModelPlanner) {
     private val fields: FieldPlanner = FieldPlanner(scope, models)
+
+    private val xml: XmlBodies = XmlBodies(scope)
 
     fun plan(context: String, operation: Operation): BodyPlan? {
         val declared = listOfNotNull(operation.requestBody)
@@ -86,6 +90,8 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         return when (kind) {
             BodyKind.Json -> BodyPlan(kind, typeOf(media, context, isOptional), type)
 
+            BodyKind.Xml -> xml(context, entry, isOptional)
+
             BodyKind.Binary -> BodyPlan(kind, TypeUse(bytes, isNullable = isOptional), concrete(type))
 
             BodyKind.Form, BodyKind.Multipart -> fields(
@@ -119,6 +125,15 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
             fields = fields.plan(context, entry.second, kind),
         )
 
+    private fun xml(context: String, entry: Pair<String, MediaType>, isOptional: Boolean): BodyPlan {
+        val (type, media) = entry
+        val concrete = type.takeIf { WILDCARD !in type } ?: XML
+        val schema = media.schema ?: return BodyPlan(BodyKind.Binary, TypeUse(bytes, isNullable = isOptional), concrete)
+        val use = typeOf(media, context, isOptional)
+        xml.audit(schema, media, use)
+        return BodyPlan(BodyKind.Xml, use, concrete)
+    }
+
     private fun typeOf(media: MediaType, context: String, isOptional: Boolean): TypeUse {
         val schema = media.schema ?: return json.copy(isNullable = isOptional)
         val type = models.typeOf(schema, context)
@@ -129,7 +144,8 @@ internal class BodyPlanner(private val scope: PlanScope, private val models: Mod
         if (MediaTypes.isJson(type)) return BodyKind.Json
         val base = MediaTypes.essenceOf(type)
         val known = structured.filterKeys { prefix -> base.startsWith(prefix) }
-        return known.values.firstOrNull() ?: BodyKind.Binary
+        val markup = BodyKind.Xml.takeIf { MediaTypes.isXml(type) }
+        return known.values.firstOrNull() ?: markup ?: BodyKind.Binary
     }
 
     private fun baseOf(type: String): String = type.substringBefore(';').trim()

@@ -32,7 +32,7 @@ private const val LINE: String = "\n"
 
 private const val BROKEN: String = "class Broken { val missing: Missing = TODO() }"
 
-private val documents: List<String> = listOf("models", "client", "server", "mocks", "hooks", "hostile")
+private val documents: List<String> = listOf("models", "client", "server", "mocks", "hooks", "hostile", "xml")
 
 class GoldenTest : FunSpec({
     context("the Kotlin of a document") {

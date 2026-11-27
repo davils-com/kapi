@@ -20,6 +20,10 @@ private const val JSON: String = "application/json"
 
 private const val JSON_SUFFIX: String = "+json"
 
+private val xml: Set<String> = setOf("application/xml", "text/xml")
+
+private const val XML_SUFFIX: String = "+xml"
+
 internal object MediaTypes {
     fun essenceOf(type: String): String {
         val bare = type.substringBefore(';')
@@ -29,5 +33,10 @@ internal object MediaTypes {
     fun isJson(type: String): Boolean {
         val essence = essenceOf(type)
         return essence == JSON || essence.endsWith(JSON_SUFFIX)
+    }
+
+    fun isXml(type: String): Boolean {
+        val essence = essenceOf(type)
+        return essence in xml || essence.endsWith(XML_SUFFIX)
     }
 }

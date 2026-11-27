@@ -54,6 +54,7 @@ internal class ObjectEmitter(private val types: TypeNames, private val visibilit
         builder.addModifiers(visibility)
         Docs.on(builder, plan.description)
         builder.addAnnotation(Kotlin.serializable)
+        plan.root?.let { root -> builder.addAnnotation(Annotations.serialName(root)) }
         if (plan.properties.any(PropertyPlan::isPatch)) builder.addAnnotation(Annotations.experimentalSerialization())
         builder.addAnnotation(Annotations.generated(plan.origin))
         builder.primaryConstructor(constructor(plan))

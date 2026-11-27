@@ -82,7 +82,7 @@ internal class InputCode(
     }
 
     private fun body(body: BodyPlan, form: ClassName): Reading = when (body.kind) {
-        BodyKind.Json -> whole(
+        BodyKind.Json, BodyKind.Xml -> whole(
             body,
             CodeBlock.of("%N.body(%L, %L, %L)", INPUT, serializer(body.type), required(body), ranges(body)),
         )

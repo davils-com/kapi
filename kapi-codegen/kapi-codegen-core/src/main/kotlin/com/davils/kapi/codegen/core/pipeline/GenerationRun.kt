@@ -18,6 +18,7 @@ package com.davils.kapi.codegen.core.pipeline
 
 import com.davils.kapi.codegen.core.GeneratedFile
 import com.davils.kapi.codegen.core.Generation
+import com.davils.kapi.codegen.core.MediaTypes
 import com.davils.kapi.codegen.core.ModelCatalog
 import com.davils.kapi.codegen.core.emit.ModelEmitter
 import com.davils.kapi.codegen.core.emit.client.ClientEmitter
@@ -34,12 +35,16 @@ import com.davils.kapi.codegen.core.model.ModelSplit
 import com.davils.kapi.codegen.core.model.PlanScope
 import com.davils.kapi.codegen.core.model.plan.ModelPlan
 import com.davils.kapi.codegen.core.model.plan.PropertyPlan
+import com.davils.kapi.codegen.core.model.plan.TypeShape
 import com.davils.kapi.codegen.core.naming.NameTable
 import com.davils.kapi.codegen.core.naming.SchemaNames
 import com.davils.kapi.codegen.core.operation.HookPlanner
 import com.davils.kapi.codegen.core.operation.OperationPlanner
+import com.davils.kapi.codegen.core.operation.XmlBodies
+import com.davils.kapi.codegen.core.operation.plan.BodyKind
 import com.davils.kapi.codegen.core.operation.plan.BodyPlan
 import com.davils.kapi.codegen.core.operation.plan.OperationPlan
+import com.davils.kapi.codegen.core.operation.plan.ResponsePlan
 import com.davils.kapi.codegen.core.options.Artifact
 import com.davils.kapi.codegen.core.options.GeneratorOptions
 import com.davils.kapi.codegen.core.sample.MockPlanner
@@ -93,8 +98,10 @@ internal class GenerationRun(
         val operations = operations(planner)
         val hooks = hooks(scope, planner)
         val split = ModelSplit(scope)
-        val shaped = split.split(scope.plans)
+        val divided = split.split(scope.plans)
         val written = operations.map { operation -> written(split, operation) }
+        val roots = rootsOf(written + hooks)
+        val shaped = divided.map { plan -> rooted(plan, roots) }
         val patches = ModelPatches(scope)
         val bodies = (written + hooks).mapNotNull { operation -> operation.body }.filter(BodyPlan::isPatch)
         audit(scope, written, hooks)
@@ -105,6 +112,24 @@ internal class GenerationRun(
             samples = samples(scope, shaped),
             hooks = hooks.map { operation -> patched(patches, operation) },
         )
+    }
+
+    private fun rootsOf(operations: List<OperationPlan>): Set<String> {
+        val bodies = operations.mapNotNull(OperationPlan::body)
+        val requests = bodies.filter { body -> body.kind == BodyKind.Xml }
+        val responses = operations.flatMap(OperationPlan::responses).filter { response -> isXml(response) }
+        val types = requests.map(BodyPlan::type) + responses.mapNotNull(ResponsePlan::body)
+        return types.mapNotNull { type -> (type.shape as? TypeShape.Named)?.name }.toSet()
+    }
+
+    private fun isXml(response: ResponsePlan): Boolean {
+        val type = response.accept.firstOrNull().takeIf { response.body != null }
+        return type != null && MediaTypes.isXml(type)
+    }
+
+    private fun rooted(plan: ModelPlan, roots: Set<String>): ModelPlan {
+        val root = (plan as? ModelPlan.ObjectPlan)?.takeIf { candidate -> candidate.name in roots } ?: return plan
+        return root.copy(root = XmlBodies.nameOf(root.origin))
     }
 
     private fun audit(scope: PlanScope, operations: List<OperationPlan>, hooks: List<OperationPlan>) {

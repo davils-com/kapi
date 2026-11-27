@@ -1,0 +1,107 @@
+package com.example.petstore
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.server.mount
+import com.example.petstore.client.PetstoreOrdersClient
+import com.example.petstore.model.PetstoreItem
+import com.example.petstore.model.PetstoreNote
+import com.example.petstore.model.PetstoreOrder
+import com.example.petstore.model.PetstoreOrderWrite
+import com.example.petstore.model.PetstoreStatus
+import com.example.petstore.operation.PetstoreGetOrderResponse
+import com.example.petstore.operation.PetstoreGetOrderResult
+import com.example.petstore.operation.PetstoreGetReceiptResponse
+import com.example.petstore.operation.PetstoreGetReceiptResult
+import com.example.petstore.operation.PetstoreNoteOrderResponse
+import com.example.petstore.operation.PetstoreNoteOrderResult
+import com.example.petstore.operation.PetstorePlaceOrderResponse
+import com.example.petstore.operation.PetstorePlaceOrderResult
+import com.example.petstore.server.PetstoreOrdersRoutes
+import com.example.petstore.server.PetstoreOrdersService
+import io.ktor.server.routing.Route
+import kotlinx.io.bytestring.decodeToString
+import kotlinx.io.bytestring.encodeToByteString
+
+public class Scenario(client: ApiClient, base: String) {
+    private val orders: PetstoreOrdersClient = PetstoreOrdersClient(client)
+
+    private val book: PetstoreItem = PetstoreItem(sku = "b-1", quantity = 2, tags = listOf("gift", "red"))
+
+    public suspend fun run(): List<String> = listOf(
+        placed(orders.placeOrder(PetstoreOrderWrite(id = 1, status = PetstoreStatus.OPEN, items = listOf(book), note = "dry & <cool>"))),
+        placed(orders.placeOrder(PetstoreOrderWrite(id = 1, items = emptyList()))),
+        placed(orders.placeOrder(PetstoreOrderWrite(id = 2, items = listOf(PetstoreItem(sku = "", quantity = 0))))),
+        found(orders.getOrder(1)),
+        found(orders.getOrder(9)),
+        noted(orders.noteOrder(1, PetstoreNote(text = "ring twice"))),
+        noted(orders.noteOrder(1)),
+        noted(orders.noteOrder(9, PetstoreNote(text = "x"))),
+        receipt(orders.getReceipt(1)),
+    )
+
+    private fun shown(order: PetstoreOrder): String =
+        "${order.id}:${order.status}:${order.items.joinToString { item -> "${item.sku}x${item.quantity}${item.tags}" }}:${order.note}:${order.placed != null}"
+
+    private fun placed(result: PetstorePlaceOrderResult): String = when (result) {
+        is PetstorePlaceOrderResult.Created -> "placed " + shown(result.body) + " as " + result.headers["Content-Type"]
+        is PetstorePlaceOrderResult.Conflict -> "conflict"
+        is PetstorePlaceOrderResult.Unexpected -> "unexpected ${result.status}"
+        is PetstorePlaceOrderResult.Malformed -> "malformed ${result.status}"
+        is PetstorePlaceOrderResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun found(result: PetstoreGetOrderResult): String = when (result) {
+        is PetstoreGetOrderResult.Ok -> "found " + shown(result.body) + " as " + result.headers["Content-Type"]
+        is PetstoreGetOrderResult.NotFound -> "not found"
+        is PetstoreGetOrderResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetOrderResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetOrderResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun noted(result: PetstoreNoteOrderResult): String = when (result) {
+        is PetstoreNoteOrderResult.Ok -> "noted " + shown(result.body)
+        is PetstoreNoteOrderResult.NotFound -> "not found"
+        is PetstoreNoteOrderResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreNoteOrderResult.Malformed -> "malformed ${result.status}"
+        is PetstoreNoteOrderResult.Failed -> "failed ${result.failure}"
+    }
+
+    private fun receipt(result: PetstoreGetReceiptResult): String = when (result) {
+        is PetstoreGetReceiptResult.Ok -> "receipt " + result.content.decodeToString()
+        is PetstoreGetReceiptResult.Unexpected -> "unexpected ${result.status}"
+        is PetstoreGetReceiptResult.Malformed -> "malformed ${result.status}"
+        is PetstoreGetReceiptResult.Failed -> "failed ${result.failure}"
+    }
+}
+
+public object Wiring {
+    public fun install(route: Route) {
+        route.mount(PetstoreOrdersRoutes(OrdersService()))
+    }
+}
+
+private class OrdersService : PetstoreOrdersService {
+    private val orders: MutableMap<Long, PetstoreOrder> = linkedMapOf()
+
+    override suspend fun placeOrder(body: PetstoreOrderWrite): PetstorePlaceOrderResponse {
+        if (body.id in orders) return PetstorePlaceOrderResponse.Conflict
+        val order = PetstoreOrder(id = body.id, status = body.status, items = body.items, note = body.note, placed = kotlin.time.Instant.fromEpochSeconds(0))
+        orders[body.id] = order
+        return PetstorePlaceOrderResponse.Created(order)
+    }
+
+    override suspend fun getOrder(orderId: Long): PetstoreGetOrderResponse {
+        val order = orders[orderId] ?: return PetstoreGetOrderResponse.NotFound
+        return PetstoreGetOrderResponse.Ok(order)
+    }
+
+    override suspend fun noteOrder(orderId: Long, body: PetstoreNote?): PetstoreNoteOrderResponse {
+        val order = orders[orderId] ?: return PetstoreNoteOrderResponse.NotFound
+        val noted = order.copy(note = body?.text)
+        orders[orderId] = noted
+        return PetstoreNoteOrderResponse.Ok(noted)
+    }
+
+    override suspend fun getReceipt(orderId: Long): PetstoreGetReceiptResponse =
+        PetstoreGetReceiptResponse.Ok("<receipt>$orderId</receipt>".encodeToByteString())
+}

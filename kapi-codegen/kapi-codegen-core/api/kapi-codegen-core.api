@@ -37,6 +37,7 @@ public final class com/davils/kapi/codegen/core/CodegenCodes {
 	public final fun getSAMPLE_UNAVAILABLE-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_UNCHECKED-J_S2PC0 ()Ljava/lang/String;
 	public final fun getSCHEMA_UNSUPPORTED-J_S2PC0 ()Ljava/lang/String;
+	public final fun getXML_UNSUPPORTED-J_S2PC0 ()Ljava/lang/String;
 }
 
 public final class com/davils/kapi/codegen/core/Fingerprint {

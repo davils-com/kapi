@@ -35,6 +35,7 @@ private const val RULE: String = "===== "
 private val chosen: Map<String, Set<Artifact>> = mapOf(
     "client" to setOf(Artifact.Models, Artifact.Client, Artifact.Server),
     "server" to setOf(Artifact.Models, Artifact.Client, Artifact.Server),
+    "xml" to setOf(Artifact.Models, Artifact.Client, Artifact.Server),
     "mocks" to setOf(Artifact.Models, Artifact.Client, Artifact.Server, Artifact.Mocks),
     "hooks" to setOf(Artifact.Models, Artifact.Senders, Artifact.Receivers),
     "hostile" to Artifact.entries.toSet(),

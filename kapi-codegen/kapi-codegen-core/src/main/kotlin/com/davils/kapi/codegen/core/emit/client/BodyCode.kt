@@ -35,6 +35,7 @@ private val forms: Map<FieldKind, String> = mapOf(FieldKind.Text to "field", Fie
 internal class BodyCode(private val serializers: SerializerCode) {
     fun of(body: BodyPlan): CodeBlock = when (body.kind) {
         BodyKind.Json -> whole(body, json(BODY, body.type))
+        BodyKind.Xml -> encoded(body)
         BodyKind.Binary -> whole(body, CodeBlock.of(BODY))
         BodyKind.Upload -> upload(body)
         BodyKind.Form -> block(CodeBlock.of("form {\n"), body.fields.map(::formField))
@@ -44,6 +45,13 @@ internal class BodyCode(private val serializers: SerializerCode) {
     private fun whole(body: BodyPlan, content: CodeBlock): CodeBlock {
         val guard = CodeBlock.of(GUARD, BODY).takeIf { body.type.isNullable }
         return CodeBlock.of("%Lbody(%L, %L)\n", guard ?: "", mediaType(body.contentType), content)
+    }
+
+    private fun encoded(body: BodyPlan): CodeBlock {
+        val guard = CodeBlock.of(GUARD, BODY).takeIf { body.type.isNullable }
+        val serializer = serializers.of(body.type.copy(isNullable = false))
+        val type = mediaType(body.contentType)
+        return CodeBlock.of("%Lencoded(client.encode(%L, %N, %L))\n", guard ?: "", serializer, BODY, type)
     }
 
     private fun upload(body: BodyPlan): CodeBlock {

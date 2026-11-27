@@ -48,6 +48,8 @@ private val streams: Map<String, StreamKind> = mapOf(
 
 private const val SEQUENCE: String = "application/json-seq"
 
+private const val WILDCARD: Char = '*'
+
 private val json: TypeUse = TypeUse(TypeShape.Scalar(ScalarKind.Json))
 
 private val names: Map<Int, String> = mapOf(
@@ -71,6 +73,8 @@ private val ranges: Map<Int, String> = mapOf(
 internal class ResponsePlanner(private val scope: PlanScope, private val models: ModelPlanner) {
     private val headers: HeaderPlanner = HeaderPlanner(scope, models)
 
+    private val xml: XmlBodies = XmlBodies(scope)
+
     fun plan(context: String, operation: Operation): List<ResponsePlan> {
         val declared = operation.responses.entries
         val entries = declared.entries.sortedBy { (status, _) -> status.value }
@@ -85,13 +89,13 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
         val range = digit.digitToIntOrNull().takeIf { status.isRange }
         val name = nameOf(status, range)
         val forced = forcedOf(context + name, response)
-        val media = jsonOf(scope.contentOf(response.content)).takeIf { forced == null }
+        val media = bodyOf(scope.contentOf(response.content)).takeIf { forced == null }
         val accepted = listOfNotNull(forced?.first ?: media?.key)
         return ResponsePlan(
             name = name,
             status = status.code,
             range = range,
-            body = media?.let { content -> typeOf(content.value, context + name) },
+            body = media?.let { content -> bodyTypeOf(content, context + name) },
             accept = accepted.ifEmpty { scope.contentOf(response.content).keys.toList() },
             headers = headers.plan(context + name, response),
             stream = forced?.second ?: streamOf(context + name, response).takeIf { media == null },
@@ -128,8 +132,20 @@ internal class ResponsePlanner(private val scope: PlanScope, private val models:
         return names[code] ?: "Status$code"
     }
 
-    private fun jsonOf(content: Map<String, MediaType>): Map.Entry<String, MediaType>? =
-        content.entries.firstOrNull { (type, _) -> MediaTypes.isJson(type) }
+    private fun bodyOf(content: Map<String, MediaType>): Map.Entry<String, MediaType>? {
+        val json = content.entries.firstOrNull { (type, _) -> MediaTypes.isJson(type) }
+        return json ?: content.entries.firstOrNull { (type, media) -> isXml(type, media) }
+    }
+
+    private fun isXml(type: String, media: MediaType): Boolean =
+        MediaTypes.isXml(type) && WILDCARD !in type && media.schema != null
+
+    private fun bodyTypeOf(content: Map.Entry<String, MediaType>, context: String): TypeUse {
+        val type = typeOf(content.value, context)
+        val schema = content.value.schema.takeIf { !MediaTypes.isJson(content.key) }
+        schema?.let { found -> xml.audit(found, content.value, type) }
+        return type
+    }
 
     private fun itemOf(media: MediaType, context: String): TypeUse {
         val schema = media.itemSchema ?: return typeOf(media, context)

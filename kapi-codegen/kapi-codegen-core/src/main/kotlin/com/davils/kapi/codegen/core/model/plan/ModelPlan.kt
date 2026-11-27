@@ -30,6 +30,7 @@ internal sealed interface ModelPlan {
         val dependencies: List<DependencyPlan> = emptyList(),
         val unions: List<String> = emptyList(),
         override val description: String? = null,
+        val root: String? = null,
     ) : ModelPlan
 
     data class EnumPlan(

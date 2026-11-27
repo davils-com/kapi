@@ -1,0 +1,854 @@
+===== com/example/petstore/model/PetstoreItem.kt
+package com.example.petstore.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml#/components/schemas/Item",
+)
+public class PetstoreItem(
+    @SerialName("sku")
+    public val sku: String,
+    @SerialName("quantity")
+    public val quantity: Int,
+    @SerialName("tags")
+    public val tags: List<String>? = null,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (Constraints.length(sku) < 1) fail(::sku, "must have at least 1 characters", ConstraintViolationCodes.MIN_LENGTH)
+        if (quantity < 1L) fail(::quantity, "must be at least 1", ConstraintViolationCodes.MINIMUM)
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        sku: String = this.sku,
+        quantity: Int = this.quantity,
+        tags: List<String>? = this.tags,
+    ): PetstoreItem = PetstoreItem(sku = sku, quantity = quantity, tags = tags)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreItem && listOf(this.sku, this.quantity, this.tags) == listOf(other.sku, other.quantity, other.tags)
+
+    override fun hashCode(): Int = listOf(this.sku, this.quantity, this.tags).hashCode()
+
+    override fun toString(): String = "PetstoreItem(" + "sku=" + this.sku + ", quantity=" + this.quantity + ", tags=" + this.tags + ")"
+}
+===== com/example/petstore/model/PetstoreNote.kt
+package com.example.petstore.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kapi.runtime.core.validation.Constraints
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@SerialName("Note")
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml#/components/schemas/Note",
+)
+public class PetstoreNote(
+    @SerialName("text")
+    public val text: String,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (Constraints.length(text) > 200) fail(::text, "must have at most 200 characters", ConstraintViolationCodes.MAX_LENGTH)
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(text: String = this.text): PetstoreNote = PetstoreNote(text = text)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreNote && listOf(this.text) == listOf(other.text)
+
+    override fun hashCode(): Int = listOf(this.text).hashCode()
+
+    override fun toString(): String = "PetstoreNote(" + "text=" + this.text + ")"
+}
+===== com/example/petstore/model/PetstoreOrder.kt
+package com.example.petstore.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.collections.List
+import kotlin.time.Instant
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@SerialName("Order")
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml#/components/schemas/Order",
+)
+public class PetstoreOrder(
+    @SerialName("id")
+    public val id: Long,
+    @SerialName("status")
+    public val status: PetstoreStatus? = null,
+    @SerialName("items")
+    public val items: List<PetstoreItem>,
+    @SerialName("note")
+    public val note: String? = null,
+    @SerialName("placed")
+    public val placed: Instant? = null,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (status != null) {
+            if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+        }
+        if (items.size > 10) fail(::items, "must have at most 10 items", ConstraintViolationCodes.MAX_ITEMS)
+        each(::items, items) { item ->
+            with(item) { validate() }
+        }
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        id: Long = this.id,
+        status: PetstoreStatus? = this.status,
+        items: List<PetstoreItem> = this.items,
+        note: String? = this.note,
+        placed: Instant? = this.placed,
+    ): PetstoreOrder = PetstoreOrder(id = id, status = status, items = items, note = note, placed = placed)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreOrder && listOf(this.id, this.status, this.items, this.note, this.placed) == listOf(other.id, other.status, other.items, other.note, other.placed)
+
+    override fun hashCode(): Int = listOf(this.id, this.status, this.items, this.note, this.placed).hashCode()
+
+    override fun toString(): String = "PetstoreOrder(" + "id=" + this.id + ", status=" + this.status + ", items=" + this.items + ", note=" + this.note + ", placed=" + this.placed + ")"
+}
+===== com/example/petstore/model/PetstoreOrderWrite.kt
+package com.example.petstore.model
+
+import com.davils.kapi.runtime.core.validation.ConstraintViolationCodes
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.davils.kore.core.validation.Validatable
+import com.davils.kore.core.validation.ValidationScope
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.collections.List
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@SerialName("Order")
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml#/components/schemas/Order",
+)
+public class PetstoreOrderWrite(
+    @SerialName("id")
+    public val id: Long,
+    @SerialName("status")
+    public val status: PetstoreStatus? = null,
+    @SerialName("items")
+    public val items: List<PetstoreItem>,
+    @SerialName("note")
+    public val note: String? = null,
+) : Validatable {
+    override fun ValidationScope.validate() {
+        if (status != null) {
+            if (!status.isKnown) fail(::status, "must be one of the values this API knows", ConstraintViolationCodes.ENUM)
+        }
+        if (items.size > 10) fail(::items, "must have at most 10 items", ConstraintViolationCodes.MAX_ITEMS)
+        each(::items, items) { item ->
+            with(item) { validate() }
+        }
+    }
+
+    /**
+     * Returns a copy of this value with the given properties replaced; every property not given keeps its value.
+     */
+    public fun copy(
+        id: Long = this.id,
+        status: PetstoreStatus? = this.status,
+        items: List<PetstoreItem> = this.items,
+        note: String? = this.note,
+    ): PetstoreOrderWrite = PetstoreOrderWrite(id = id, status = status, items = items, note = note)
+
+    override fun equals(other: Any?): Boolean = other is PetstoreOrderWrite && listOf(this.id, this.status, this.items, this.note) == listOf(other.id, other.status, other.items, other.note)
+
+    override fun hashCode(): Int = listOf(this.id, this.status, this.items, this.note).hashCode()
+
+    override fun toString(): String = "PetstoreOrderWrite(" + "id=" + this.id + ", status=" + this.status + ", items=" + this.items + ", note=" + this.note + ")"
+}
+===== com/example/petstore/model/PetstoreStatus.kt
+package com.example.petstore.model
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlin.Boolean
+import kotlin.String
+import kotlin.collections.List
+import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml#/components/schemas/Status",
+)
+public value class PetstoreStatus(
+    public val `value`: String,
+) {
+    public val isKnown: Boolean
+        get() = this in entries
+
+    override fun toString(): String = `value`
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml#/components/schemas/Status",
+    )
+    public companion object {
+        public val OPEN: PetstoreStatus = PetstoreStatus("open")
+
+        public val SHIPPED: PetstoreStatus = PetstoreStatus("shipped")
+
+        public val entries: List<PetstoreStatus> = listOf(OPEN, SHIPPED)
+    }
+}
+===== com/example/petstore/client/PetstoreOrdersClient.kt
+package com.example.petstore.client
+
+import com.davils.kapi.runtime.client.ApiClient
+import com.davils.kapi.runtime.client.call.Exchange
+import com.davils.kapi.runtime.client.call.apiCall
+import com.davils.kapi.runtime.core.codec.Decoding
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.core.parameter.ParameterValue
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreNote
+import com.example.petstore.model.PetstoreOrder
+import com.example.petstore.model.PetstoreOrderWrite
+import com.example.petstore.operation.PetstoreGetOrderResult
+import com.example.petstore.operation.PetstoreGetReceiptResult
+import com.example.petstore.operation.PetstoreNoteOrderResult
+import com.example.petstore.operation.PetstorePlaceOrderResult
+import kotlin.Int
+import kotlin.Long
+import kotlin.collections.Map
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public class PetstoreOrdersClient(
+    private val client: ApiClient,
+) {
+    private val getOrderReaders: Map<Int, (Exchange.Answered) -> PetstoreGetOrderResult> = mapOf(
+        200 to { exchange ->
+            when (val decoding = client.decode(PetstoreOrder.serializer(), exchange)) {
+                is Decoding.Decoded -> PetstoreGetOrderResult.Ok(decoding.value, exchange.headers)
+                is Decoding.Failed -> PetstoreGetOrderResult.Malformed(exchange.status, decoding.reason)
+            }
+        },
+        404 to { exchange -> PetstoreGetOrderResult.NotFound(exchange.content, exchange.headers) },
+    )
+
+    private val getReceiptReaders: Map<Int, (Exchange.Answered) -> PetstoreGetReceiptResult> =
+            mapOf(
+        200 to { exchange -> PetstoreGetReceiptResult.Ok(exchange.content, exchange.headers) },
+    )
+
+    private val noteOrderReaders: Map<Int, (Exchange.Answered) -> PetstoreNoteOrderResult> = mapOf(
+        200 to { exchange ->
+            when (val decoding = client.decode(PetstoreOrder.serializer(), exchange)) {
+                is Decoding.Decoded -> PetstoreNoteOrderResult.Ok(decoding.value, exchange.headers)
+                is Decoding.Failed -> PetstoreNoteOrderResult.Malformed(exchange.status, decoding.reason)
+            }
+        },
+        404 to { exchange -> PetstoreNoteOrderResult.NotFound(exchange.content, exchange.headers) },
+    )
+
+    private val placeOrderReaders: Map<Int, (Exchange.Answered) -> PetstorePlaceOrderResult> =
+            mapOf(
+        201 to { exchange ->
+            when (val decoding = client.decode(PetstoreOrder.serializer(), exchange)) {
+                is Decoding.Decoded -> PetstorePlaceOrderResult.Created(decoding.value, exchange.headers)
+                is Decoding.Failed -> PetstorePlaceOrderResult.Malformed(exchange.status, decoding.reason)
+            }
+        },
+        409 to { exchange -> PetstorePlaceOrderResult.Conflict(exchange.content, exchange.headers) },
+    )
+
+    public suspend fun getOrder(orderId: Long): PetstoreGetOrderResult {
+        val call = apiCall("getOrder", "GET") {
+            path("/orders/")
+            path(ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterValue.Text(orderId.toString()))
+            idempotent()
+            accept(MediaRange.of("application/json"))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreGetOrderResult.Failed(exchange.failure)
+            is Exchange.Answered -> getOrderResult(exchange)
+        }
+    }
+
+    private fun getOrderResult(exchange: Exchange.Answered): PetstoreGetOrderResult {
+        val read = getOrderReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreGetOrderResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+
+    public suspend fun getReceipt(orderId: Long): PetstoreGetReceiptResult {
+        val call = apiCall("getReceipt", "GET") {
+            path("/orders/")
+            path(ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterValue.Text(orderId.toString()))
+            path("/receipt")
+            idempotent()
+            accept(MediaRange.of("application/xml"))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreGetReceiptResult.Failed(exchange.failure)
+            is Exchange.Answered -> getReceiptResult(exchange)
+        }
+    }
+
+    private fun getReceiptResult(exchange: Exchange.Answered): PetstoreGetReceiptResult {
+        val read = getReceiptReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreGetReceiptResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+
+    public suspend fun noteOrder(orderId: Long, body: PetstoreNote? = null): PetstoreNoteOrderResult {
+        val call = apiCall("noteOrder", "PUT") {
+            path("/orders/")
+            path(ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterValue.Text(orderId.toString()))
+            idempotent()
+            accept(MediaRange.of("application/xml"))
+            if (body != null) encoded(client.encode(PetstoreNote.serializer(), body, MediaType.parse("application/vnd.shop.note+xml")))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstoreNoteOrderResult.Failed(exchange.failure)
+            is Exchange.Answered -> noteOrderResult(exchange)
+        }
+    }
+
+    private fun noteOrderResult(exchange: Exchange.Answered): PetstoreNoteOrderResult {
+        val read = noteOrderReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstoreNoteOrderResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+
+    public suspend fun placeOrder(body: PetstoreOrderWrite): PetstorePlaceOrderResult {
+        val call = apiCall("placeOrder", "POST") {
+            path("/orders")
+            accept(MediaRange.of("application/xml"))
+            encoded(client.encode(PetstoreOrderWrite.serializer(), body, MediaType.parse("application/xml")))
+        }
+        return when (val exchange = client.execute(call)) {
+            is Exchange.Failed -> PetstorePlaceOrderResult.Failed(exchange.failure)
+            is Exchange.Answered -> placeOrderResult(exchange)
+        }
+    }
+
+    private fun placeOrderResult(exchange: Exchange.Answered): PetstorePlaceOrderResult {
+        val read = placeOrderReaders[exchange.status]
+        if (read != null) return read(exchange)
+        return PetstorePlaceOrderResult.Unexpected(exchange.status, exchange.headers, exchange.content)
+    }
+}
+===== com/example/petstore/operation/PetstoreGetOrderResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreGetOrderResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreOrder,
+        public val headers: Headers,
+    ) : PetstoreGetOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class NotFound(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreGetOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreGetOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreGetOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreGetOrderResult
+}
+===== com/example/petstore/operation/PetstoreGetReceiptResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreGetReceiptResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreGetReceiptResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreGetReceiptResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreGetReceiptResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreGetReceiptResult
+}
+===== com/example/petstore/operation/PetstoreNoteOrderResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreNoteOrderResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreOrder,
+        public val headers: Headers,
+    ) : PetstoreNoteOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class NotFound(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstoreNoteOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstoreNoteOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstoreNoteOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstoreNoteOrderResult
+}
+===== com/example/petstore/operation/PetstorePlaceOrderResult.kt
+package com.example.petstore.operation
+
+import com.davils.kapi.runtime.client.call.CallFailure
+import com.davils.kapi.runtime.core.response.Headers
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+import kotlin.Int
+import kotlin.String
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstorePlaceOrderResult {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Created(
+        public val body: PetstoreOrder,
+        public val headers: Headers,
+    ) : PetstorePlaceOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Conflict(
+        public val content: ByteString,
+        public val headers: Headers,
+    ) : PetstorePlaceOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Unexpected(
+        public val status: Int,
+        public val headers: Headers,
+        public val content: ByteString,
+    ) : PetstorePlaceOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Malformed(
+        public val status: Int,
+        public val reason: String,
+    ) : PetstorePlaceOrderResult
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Failed(
+        public val failure: CallFailure,
+    ) : PetstorePlaceOrderResult
+}
+===== com/example/petstore/server/PetstoreOrdersRoutes.kt
+package com.example.petstore.server
+
+import com.davils.kapi.runtime.core.negotiation.MediaRange
+import com.davils.kapi.runtime.core.negotiation.MediaType
+import com.davils.kapi.runtime.core.parameter.ParameterFormat
+import com.davils.kapi.runtime.core.parameter.ParameterStyle
+import com.davils.kapi.runtime.server.operation.Operation
+import com.davils.kapi.runtime.server.operation.Routes
+import com.davils.kapi.runtime.server.reply.Reply
+import com.davils.kapi.runtime.server.reply.reply
+import com.davils.kapi.runtime.server.request.ParameterType
+import com.davils.kapi.runtime.server.request.Place
+import com.davils.kapi.runtime.server.request.Request
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreNote
+import com.example.petstore.model.PetstoreOrder
+import com.example.petstore.model.PetstoreOrderWrite
+import com.example.petstore.operation.PetstoreGetOrderResponse
+import com.example.petstore.operation.PetstoreGetReceiptResponse
+import com.example.petstore.operation.PetstoreNoteOrderResponse
+import com.example.petstore.operation.PetstorePlaceOrderResponse
+import kotlin.Long
+import kotlin.collections.List
+import kotlinx.serialization.builtins.serializer
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public class PetstoreOrdersRoutes(
+    private val service: PetstoreOrdersService,
+) : Routes {
+    override val operations: List<Operation> = listOf(
+        Operation(
+            name = "getOrder",
+            method = "GET",
+            path = "/orders/{orderId}",
+            security = listOf(),
+            handler = ::getOrder,
+        ),
+        Operation(
+            name = "getReceipt",
+            method = "GET",
+            path = "/orders/{orderId}/receipt",
+            security = listOf(),
+            handler = ::getReceipt,
+        ),
+        Operation(
+            name = "noteOrder",
+            method = "PUT",
+            path = "/orders/{orderId}",
+            security = listOf(),
+            handler = ::noteOrder,
+        ),
+        Operation(
+            name = "placeOrder",
+            method = "POST",
+            path = "/orders",
+            security = listOf(),
+            handler = ::placeOrder,
+        ),
+    )
+
+    private suspend fun getOrder(request: Request): Reply {
+        val input = request.input()
+        val orderId = input.value(Place.Path, ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        if (!input.isValid || orderId == null) return input.refused()
+        return when (val response = service.getOrder(orderId = orderId)) {
+            is PetstoreGetOrderResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/json"), PetstoreOrder.serializer(), response.body)
+            }
+            is PetstoreGetOrderResponse.NotFound -> reply(404)
+        }
+    }
+
+    private suspend fun getReceipt(request: Request): Reply {
+        val input = request.input()
+        val orderId = input.value(Place.Path, ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        if (!input.isValid || orderId == null) return input.refused()
+        return when (val response = service.getReceipt(orderId = orderId)) {
+            is PetstoreGetReceiptResponse.Ok -> reply(200) {
+                bytes(MediaType.parse("application/xml"), response.content)
+            }
+        }
+    }
+
+    private suspend fun noteOrder(request: Request): Reply {
+        val input = request.input()
+        val orderId = input.value(Place.Path, ParameterFormat("orderId", ParameterStyle.Simple, false), ParameterType(Long.serializer(), false), true)
+        val body = input.body(PetstoreNote.serializer(), false, listOf(MediaRange.of("application/vnd.shop.note+xml")))
+        if (!input.isValid || orderId == null) return input.refused()
+        return when (val response = service.noteOrder(orderId = orderId, body = body)) {
+            is PetstoreNoteOrderResponse.Ok -> reply(200) {
+                body(MediaType.parse("application/xml"), PetstoreOrder.serializer(), response.body)
+            }
+            is PetstoreNoteOrderResponse.NotFound -> reply(404)
+        }
+    }
+
+    private suspend fun placeOrder(request: Request): Reply {
+        val input = request.input()
+        val body = input.body(PetstoreOrderWrite.serializer(), true, listOf(MediaRange.of("application/xml")))
+        if (!input.isValid || body == null) return input.refused()
+        return when (val response = service.placeOrder(body = body)) {
+            is PetstorePlaceOrderResponse.Created -> reply(201) {
+                body(MediaType.parse("application/xml"), PetstoreOrder.serializer(), response.body)
+            }
+            is PetstorePlaceOrderResponse.Conflict -> reply(409)
+        }
+    }
+}
+===== com/example/petstore/server/PetstoreOrdersService.kt
+package com.example.petstore.server
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreNote
+import com.example.petstore.model.PetstoreOrderWrite
+import com.example.petstore.operation.PetstoreGetOrderResponse
+import com.example.petstore.operation.PetstoreGetReceiptResponse
+import com.example.petstore.operation.PetstoreNoteOrderResponse
+import com.example.petstore.operation.PetstorePlaceOrderResponse
+import kotlin.Long
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public interface PetstoreOrdersService {
+    public suspend fun getOrder(orderId: Long): PetstoreGetOrderResponse
+
+    public suspend fun getReceipt(orderId: Long): PetstoreGetReceiptResponse
+
+    public suspend fun noteOrder(orderId: Long, body: PetstoreNote?): PetstoreNoteOrderResponse
+
+    public suspend fun placeOrder(body: PetstoreOrderWrite): PetstorePlaceOrderResponse
+}
+===== com/example/petstore/operation/PetstoreGetOrderResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreGetOrderResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreOrder,
+    ) : PetstoreGetOrderResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data object NotFound : PetstoreGetOrderResponse
+}
+===== com/example/petstore/operation/PetstoreGetReceiptResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import kotlinx.io.bytestring.ByteString
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreGetReceiptResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val content: ByteString,
+    ) : PetstoreGetReceiptResponse
+}
+===== com/example/petstore/operation/PetstoreNoteOrderResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstoreNoteOrderResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Ok(
+        public val body: PetstoreOrder,
+    ) : PetstoreNoteOrderResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data object NotFound : PetstoreNoteOrderResponse
+}
+===== com/example/petstore/operation/PetstorePlaceOrderResponse.kt
+package com.example.petstore.operation
+
+import com.davils.kore.core.`annotation`.DavilsGenerated
+import com.example.petstore.model.PetstoreOrder
+
+@DavilsGenerated(
+    by = "kapi",
+    from = "xml.yaml",
+)
+public sealed interface PetstorePlaceOrderResponse {
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data class Created(
+        public val body: PetstoreOrder,
+    ) : PetstorePlaceOrderResponse
+
+    @DavilsGenerated(
+        by = "kapi",
+        from = "xml.yaml",
+    )
+    public data object Conflict : PetstorePlaceOrderResponse
+}

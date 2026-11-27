@@ -130,6 +130,14 @@ public object CodegenCodes {
     public val MOCK_UNANSWERED: ViolationCode = code("mock.unanswered")
 
     /**
+     * A body of XML whose schema has no faithful mapping to XML, such as an attribute, a wrapped array, a namespace, a
+     * map or a free-form value, refused instead of written in a shape the document does not describe.
+     *
+     * @since 1.2.0
+     */
+    public val XML_UNSUPPORTED: ViolationCode = code("xml.unsupported")
+
+    /**
      * Every code of the generator; codes are stable API.
      *
      * @since 1.0.0
@@ -150,6 +158,7 @@ public object CodegenCodes {
         PAGINATION_INVALID,
         SAMPLE_UNAVAILABLE,
         MOCK_UNANSWERED,
+        XML_UNSUPPORTED,
     )
 
     private fun code(name: String): ViolationCode = ViolationCode("codegen.$name")

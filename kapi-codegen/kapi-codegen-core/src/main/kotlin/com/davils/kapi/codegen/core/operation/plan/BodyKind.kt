@@ -20,6 +20,7 @@ internal enum class BodyKind {
     Json,
     Multipart,
     Form,
+    Xml,
     Binary,
     Upload,
 }

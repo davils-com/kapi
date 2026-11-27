@@ -81,6 +81,8 @@ private val examples: Map<Any, List<String>> = mapOf(
     CodegenCodes.SAMPLE_UNAVAILABLE to schemas(pet("code: $UNMATCHED", required = "code")),
     CodegenCodes.MOCK_UNANSWERED to
         responses("'200': {description: ok, content: {application/json: {schema: $UNMATCHED}}}"),
+    CodegenCodes.XML_UNSUPPORTED to
+        responses("'200': {description: ok, content: {application/xml: {schema: {type: string}}}}"),
 )
 
 private val mocked: Set<Any> = setOf(
