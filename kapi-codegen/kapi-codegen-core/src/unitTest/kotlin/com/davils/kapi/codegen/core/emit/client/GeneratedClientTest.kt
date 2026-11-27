@@ -125,7 +125,10 @@ private suspend fun played(credentials: Credentials): Any? = ServedScenarios.run
             authorizer(BEARER, bearer)
             authorizer(API_KEY, ApiKeyAuthorizer { key -> principal("keeper").takeIf { key.reveal() == KEY } })
         },
-        client = { this.credentials = credentials },
+        client = {
+            this.credentials = credentials
+            isDefaultResilience = false
+        },
     ),
 )
 

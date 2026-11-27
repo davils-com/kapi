@@ -22,6 +22,7 @@ import com.davils.kapi.runtime.client.fixture.Exchanges
 import com.davils.kapi.runtime.client.fixture.Spans
 import com.davils.kapi.runtime.client.fixture.Tokens
 import com.davils.kapi.runtime.client.fixture.collecting
+import com.davils.kapi.runtime.client.fixture.ok
 import com.davils.kapi.runtime.client.fixture.pets
 import com.davils.kapi.runtime.client.fixture.unauthorized
 import com.davils.kapi.runtime.client.redirect.redirectPolicy
@@ -36,7 +37,9 @@ import com.davils.kollect.core.trace.SpanOutcome
 import com.davils.konfetti.core.eventBus
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
@@ -59,6 +62,13 @@ private val statuses: Map<HttpStatusCode, String> = mapOf(
     HttpStatusCode.NotFound to "client_error",
     HttpStatusCode.BadGateway to "server_error",
 )
+
+private const val CALL_SPAN: String = "kapi.client.call"
+
+private fun MockRequestHandleScope.answerOf(attempt: Int): HttpResponseData {
+    if (attempt == 1) return respond(content = "", status = HttpStatusCode.BadGateway)
+    return ok("[]")
+}
 
 private fun MeterRegistry.count(outcome: String): Double {
     val family = snapshot().family(MetricName.of(CALLS))
@@ -101,6 +111,32 @@ class ApiClientTelemetryTest : FunSpec({
         }
     }
 
+    context("the default resilience") {
+        test("retries a retryable call that met a server error and reports through the client") {
+            var answers = 0
+            val exchanges = Exchanges {
+                answers += 1
+                answerOf(answers)
+            }
+
+            exchanges.execute(pets)
+
+            answers shouldBe 2
+        }
+
+        test("is off when the builder turns it off") {
+            var answers = 0
+            val exchanges = Exchanges(configure = { isDefaultResilience = false }) {
+                answers += 1
+                respond(content = "", status = HttpStatusCode.BadGateway)
+            }
+
+            exchanges.execute(pets)
+
+            answers shouldBe 1
+        }
+    }
+
     context("the trace of a client") {
         test("has one client span per call that names the operation, the status and how it ended") {
             val spans = Spans()
@@ -110,9 +146,9 @@ class ApiClientTelemetryTest : FunSpec({
             })
 
             exchanges.execute(pets)
-            val span = spans.recorded.single()
+            val span = spans.recorded.single { recorded -> recorded.operation == CALL_SPAN }
 
-            span.operation shouldBe "kapi.client.call"
+            span.operation shouldBe CALL_SPAN
             span.kind shouldBe SpanKind.Client
             span.attributes shouldBe mapOf(
                 "kapi.api" to API,
@@ -129,7 +165,8 @@ class ApiClientTelemetryTest : FunSpec({
             Exchanges(configure = { tracer = spans }) { respond(content = "", status = HttpStatusCode.BadGateway) }
                 .execute(pets)
 
-            spans.recorded.map { span -> span.outcome } shouldBe listOf(SpanOutcome.Error, SpanOutcome.Error)
+            val calls = spans.recorded.filter { span -> span.operation == CALL_SPAN }
+            calls.map { span -> span.outcome } shouldBe listOf(SpanOutcome.Error, SpanOutcome.Error)
         }
     }
 

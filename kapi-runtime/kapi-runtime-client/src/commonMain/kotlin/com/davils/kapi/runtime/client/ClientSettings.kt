@@ -112,11 +112,12 @@ public class ClientSettings internal constructor(builder: ClientSettingsBuilder)
     public val timeout: Timeout = builder.timeout
 
     /**
-     * The resilience policy of retryable calls, or `null`.
+     * The resilience policy of retryable calls: the one of the builder, the default policy of
+     * [ClientSettingsBuilder.isDefaultResilience], or `null` when the builder turned it off.
      *
      * @since 1.0.0
      */
-    public val resilience: Policy? = builder.resilience
+    public val resilience: Policy? = builder.resilience ?: defaultResilienceOf(builder)
 
     /**
      * The redirects the client follows, or `null`.

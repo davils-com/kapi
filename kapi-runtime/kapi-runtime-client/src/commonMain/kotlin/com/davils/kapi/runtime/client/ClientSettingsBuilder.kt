@@ -159,11 +159,26 @@ public class ClientSettingsBuilder internal constructor(internal val isFollowing
 
     /**
      * The resilience policy of kontinuity a retryable call runs under, such as a retry built with
-     * [com.davils.kapi.runtime.client.retry.CallRetry]; none by default.
+     * [com.davils.kapi.runtime.client.retry.CallRetry]; `null` by default, which gives every client the default policy
+     * of [ClientSettings.resilience] unless [isDefaultResilience] is `false`.
      *
      * @since 1.0.0
      */
     public var resilience: Policy? = null
+        set(value) {
+            checkOpen()
+            field = value
+        }
+
+    /**
+     * Whether a client without its own [resilience] runs its retryable calls under the default policy: a retry of
+     * [com.davils.kapi.runtime.client.retry.CallRetry] with three attempts, a jittered exponential backoff and the
+     * waits the server asks for, reporting through the meters, the tracer and the event bus of the client. `true` by
+     * default; `false` tries every call once.
+     *
+     * @since 1.1.0
+     */
+    public var isDefaultResilience: Boolean = true
         set(value) {
             checkOpen()
             field = value

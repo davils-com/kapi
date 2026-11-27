@@ -112,9 +112,11 @@ public final class com/davils/kapi/runtime/client/ClientSettingsBuilder : com/da
 	public final fun getTimeout ()Lcom/davils/kapi/runtime/client/call/Timeout;
 	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
 	public final fun intercept (Lcom/davils/kapi/runtime/client/pipeline/CallPhase;Ljava/lang/String;Lcom/davils/kapi/runtime/client/pipeline/Interceptor;)V
+	public final fun isDefaultResilience ()Z
 	public final fun setBaseUrl (Ljava/lang/String;)V
 	public final fun setCodecs (Lcom/davils/kapi/runtime/core/codec/Codecs;)V
 	public final fun setCredentials (Lcom/davils/kapi/runtime/core/security/Credentials;)V
+	public final fun setDefaultResilience (Z)V
 	public final fun setDestinations (Lcom/davils/kapi/runtime/core/destination/DestinationPolicy;)V
 	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
 	public final fun setFraming (Lcom/davils/kapi/runtime/core/framing/FramingLimits;)V
