@@ -25,6 +25,7 @@ import com.davils.kollect.core.meter.Counter
 import com.davils.kollect.core.meter.Timer
 import com.davils.kollect.core.trace.SpanKind
 import com.davils.kollect.core.trace.SpanOutcome
+import com.davils.konfetti.core.publish.Emitter
 
 private const val SPAN: String = "kapi.client.call"
 
@@ -63,7 +64,7 @@ internal class ClientTelemetry(private val settings: ClientSettings) {
         declared.family
     }
 
-    private val events: EventSink<ClientEvent> = EventSink(settings.events, ClientEvent.TOPIC)
+    private val events: Emitter<ClientEvent> = Emitter(settings.events, ClientEvent.TOPIC)
 
     suspend fun calling(call: Call, block: suspend () -> Exchange): Exchange {
         val started = settings.timeSource.markNow()

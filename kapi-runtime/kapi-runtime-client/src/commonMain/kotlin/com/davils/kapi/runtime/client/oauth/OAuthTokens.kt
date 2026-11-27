@@ -16,7 +16,6 @@
 
 package com.davils.kapi.runtime.client.oauth
 
-import com.davils.kapi.runtime.client.internal.EventSink
 import com.davils.kapi.runtime.client.oauth.internal.Answer
 import com.davils.kapi.runtime.client.oauth.internal.Discoverer
 import com.davils.kapi.runtime.client.oauth.internal.EndpointPost
@@ -27,6 +26,7 @@ import com.davils.kapi.runtime.client.oauth.internal.Reply
 import com.davils.kapi.runtime.client.oauth.internal.TokenEndpoint
 import com.davils.kapi.runtime.core.security.RefreshingTokenSource
 import com.davils.kapi.runtime.core.security.Secret
+import com.davils.konfetti.core.publish.Emitter
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,7 +74,7 @@ public class OAuthTokens internal constructor(
 
     private val grants: Grants = Grants(settings = settings, endpoint = endpoint, discoverer = discoverer, post = post)
 
-    private val events: EventSink<OAuthEvent> = EventSink(settings.events, OAuthEvent.TOPIC)
+    private val events: Emitter<OAuthEvent> = Emitter(settings.events, OAuthEvent.TOPIC)
 
     private val mutex: Mutex = Mutex()
 

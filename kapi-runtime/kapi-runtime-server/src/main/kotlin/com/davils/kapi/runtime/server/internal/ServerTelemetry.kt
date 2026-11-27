@@ -25,9 +25,7 @@ import com.davils.kollect.core.MeterRegistry
 import com.davils.kollect.core.meter.Counter
 import com.davils.kollect.core.meter.Timer
 import com.davils.kollect.core.trace.Tracer
-import com.davils.konfetti.core.EventBus
-import com.davils.konfetti.core.Topic
-import com.davils.kore.core.failure.contained
+import com.davils.konfetti.core.publish.Emitter
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
@@ -48,7 +46,7 @@ internal class ServerTelemetry(settings: TelemetrySettings) {
 
     private val sessions: Family<Counter>? = settings.meters?.let(::sessionsOf)
 
-    private val topic: Topic<ServerEvent>? = settings.events?.let(::topicOf)
+    private val events: Emitter<ServerEvent> = Emitter(settings.events, ServerTopics.EVENTS)
 
     fun served(operation: String, method: String, status: Int, duration: Duration) {
         requests?.run { with(operation, outcomeOf(status)).increment() }
@@ -69,10 +67,8 @@ internal class ServerTelemetry(settings: TelemetrySettings) {
         emit { ServerEvent.ChannelClosed(channel = channel, code = code, duration = duration) }
     }
 
-    private inline fun emit(event: () -> ServerEvent) {
-        val target = topic?.takeIf { found -> found.hasConsumers } ?: return
-        val built = event()
-        contained { target.offer(built) }
+    private fun emit(event: () -> ServerEvent) {
+        events.emit(event)
     }
 
     private companion object {
@@ -103,11 +99,6 @@ internal class ServerTelemetry(settings: TelemetrySettings) {
                 labelKeys(OPERATION)
             }
             return registration.family
-        }
-
-        fun topicOf(bus: EventBus): Topic<ServerEvent> {
-            if (ServerTopics.EVENTS !in bus) bus.declare(ServerTopics.EVENTS)
-            return bus[ServerTopics.EVENTS]
         }
 
         fun outcomeOf(status: Int): String {

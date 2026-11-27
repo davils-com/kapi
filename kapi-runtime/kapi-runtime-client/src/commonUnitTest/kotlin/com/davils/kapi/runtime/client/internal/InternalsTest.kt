@@ -16,7 +16,6 @@
 
 package com.davils.kapi.runtime.client.internal
 
-import com.davils.kapi.runtime.client.ClientEvent
 import com.davils.kapi.runtime.client.call.Body
 import com.davils.kapi.runtime.client.call.CallFailure
 import com.davils.kapi.runtime.client.call.Exchange
@@ -28,11 +27,9 @@ import com.davils.kapi.runtime.core.destination.destinationPolicy
 import com.davils.kapi.runtime.core.negotiation.MediaType
 import com.davils.kapi.runtime.core.parameter.ParameterEntry
 import com.davils.kapi.runtime.core.response.headersOf
-import com.davils.konfetti.core.eventBus
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.http.Url
-import kotlinx.coroutines.coroutineScope
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.encodeToByteString
 
@@ -199,30 +196,6 @@ class InternalsTest : FunSpec({
             crossed?.cookies shouldBe emptyList()
             switching shouldBe null
             outgoing("GET").isReplayable shouldBe true
-        }
-    }
-
-    context("an event sink") {
-        test("offers events only to a bus whose topic has consumers") {
-            var built = 0
-            EventSink(null, ClientEvent.TOPIC).emit {
-                built += 1
-                ClientEvent.Retrying(api = "a", operation = "o", attempt = 2)
-            }
-            coroutineScope {
-                val bus = eventBus(this)
-                val sink = EventSink(bus, ClientEvent.TOPIC)
-                sink.emit {
-                    built += 1
-                    ClientEvent.Retrying(api = "a", operation = "o", attempt = 2)
-                }
-                (ClientEvent.TOPIC in bus) shouldBe true
-                EventSink(bus, ClientEvent.TOPIC).emit { ClientEvent.Retrying(api = "a", operation = "o", attempt = 2) }
-                bus.close()
-                EventSink(bus, ClientEvent.TOPIC).emit { ClientEvent.Retrying(api = "a", operation = "o", attempt = 2) }
-            }
-
-            built shouldBe 0
         }
     }
 
