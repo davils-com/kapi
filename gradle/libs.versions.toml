@@ -5,6 +5,7 @@ kore = "2.5.0"
 konfetti = "1.1.0"
 kollect = "1.1.0"
 kaml = "1.0.1"
+kxml = "1.0.1"
 krypt = "1.2.0"
 kontinuity = "1.2.0"
 konnect = "1.2.0"
@@ -30,6 +31,9 @@ konfetti-testing = { module = "com.davils:konfetti-testing", version.ref = "konf
 kollect-core = { module = "com.davils:kollect-core", version.ref = "kollect" }
 kaml-core = { module = "com.davils:kaml-core", version.ref = "kaml" }
 kaml-document = { module = "com.davils:kaml-document", version.ref = "kaml" }
+kaml-serialization = { module = "com.davils:kaml-serialization", version.ref = "kaml" }
+kxml-core = { module = "com.davils:kxml-core", version.ref = "kxml" }
+kxml-serialization = { module = "com.davils:kxml-serialization", version.ref = "kxml" }
 krypt-primitive = { module = "com.davils:krypt-primitive", version.ref = "krypt" }
 kontinuity-core = { module = "com.davils:kontinuity-core", version.ref = "kontinuity" }
 kontinuity-policy = { module = "com.davils:kontinuity-policy", version.ref = "kontinuity" }
@@ -43,6 +47,8 @@ konnect-internet-protocol = { module = "com.davils:konnect-internet-protocol", v
 konnect-ipc-server = { module = "com.davils:konnect-ipc-server", version.ref = "konnect" }
 krypt-jose = { module = "com.davils:krypt-jose", version.ref = "krypt" }
 krypt-x509 = { module = "com.davils:krypt-x509", version.ref = "krypt" }
+krypt-tls = { module = "com.davils:krypt-tls", version.ref = "krypt" }
+krypt-authority = { module = "com.davils:krypt-authority", version.ref = "krypt" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
