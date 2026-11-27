@@ -35,10 +35,16 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.io.bytestring.ByteString
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val WINDOW: Int = 2
+
+private const val ATTEMPTS: Int = 3
+
+private const val LAST_SERVER_ERROR: Int = 599
+
+private const val NO_STATUS: Int = 600
 
 private val addPet = apiCall(operation = "addPet", method = "POST") { path("/pets") }
 
@@ -55,7 +61,7 @@ private fun breaking(): Policy = resilience("pets-protection") {
 private fun retrying(): Policy = resilience("pets-retry") {
     retry(
         retry("pets-retry") {
-            maxAttempts = 3
+            maxAttempts = ATTEMPTS
             backoff = fixed(1.milliseconds)
             results = CallRetry.results
         },
@@ -69,10 +75,12 @@ class CallProtectionTest : FunSpec({
         test("are unreachable servers, timeouts and server errors, never answers of 4xx") {
             CallProtection.isFailure(Attempt(pets, Exchange.Failed(CallFailure.TimedOut))) shouldBe true
             CallProtection.isFailure(Attempt(pets, Exchange.Failed(CallFailure.Rejected("bulkhead")))) shouldBe false
-            listOf(500, 503, 599).forEach { status ->
+            val failed = listOf(HttpStatusCode.InternalServerError.value, HttpStatusCode.ServiceUnavailable.value)
+            (failed + LAST_SERVER_ERROR).forEach { status ->
                 CallProtection.isFailure(Attempt(pets, answered(status))) shouldBe true
             }
-            listOf(200, 404, 429, 600).forEach { status ->
+            val working = listOf(HttpStatusCode.OK, HttpStatusCode.NotFound, HttpStatusCode.TooManyRequests)
+            (working.map(HttpStatusCode::value) + NO_STATUS).forEach { status ->
                 CallProtection.isFailure(Attempt(pets, answered(status))) shouldBe false
             }
         }

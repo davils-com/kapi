@@ -71,8 +71,9 @@ private const val NONCE_ERROR: String = "use_dpop_nonce"
  * [ClientSettings.maxResponseBytes] and never throws for a status. A call the server rejects with `401` is sent once
  * more after a source of its credentials refreshed or a DPoP nonce arrived. Every call, and every attempt of a
  * retried one, runs under [ClientSettings.protection]; only a retryable call runs under [ClientSettings.resilience]
- * as well, so a call that is not idempotent is never sent twice. Every call is counted, timed and traced in kollect. The client never creates an
- * `HttpClient`, never closes the one it was handed and is safe to share between coroutines and threads.
+ * as well, so a call that is not idempotent is never sent twice. Every call is counted, timed and traced in kollect.
+ * The client never creates an `HttpClient`, never closes the one it was handed and is safe to share between
+ * coroutines and threads.
  *
  * @since 1.0.0
  */
