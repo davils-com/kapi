@@ -33,6 +33,7 @@ dependencies {
         api(project(":kapi-spec:kapi-spec-testing"))
         api(project(":kapi-runtime:kapi-runtime-core"))
         api(project(":kapi-runtime:kapi-runtime-client"))
+        api(project(":kapi-runtime:kapi-runtime-xml"))
         api(project(":kapi-runtime:kapi-runtime-server"))
         api(project(":kapi-runtime:kapi-runtime-server-ipc"))
         api(project(":kapi-runtime:kapi-runtime-testing"))

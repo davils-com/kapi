@@ -31,6 +31,7 @@ check:
       - ":kapi-spec:kapi-spec-testing:clean"
       - ":kapi-runtime:kapi-runtime-core:clean"
       - ":kapi-runtime:kapi-runtime-client:clean"
+      - ":kapi-runtime:kapi-runtime-xml:clean"
       - ":kapi-runtime:kapi-runtime-server:clean"
       - ":kapi-runtime:kapi-runtime-server-ipc:clean"
       - ":kapi-runtime:kapi-runtime-testing:clean"
@@ -44,6 +45,7 @@ check:
       - ":kapi-spec:kapi-spec-testing:jvmJar"
       - ":kapi-runtime:kapi-runtime-core:jvmJar"
       - ":kapi-runtime:kapi-runtime-client:jvmJar"
+      - ":kapi-runtime:kapi-runtime-xml:jvmJar"
       - ":kapi-runtime:kapi-runtime-server:jar"
       - ":kapi-runtime:kapi-runtime-server-ipc:jar"
       - ":kapi-runtime:kapi-runtime-testing:jvmJar"
@@ -57,6 +59,7 @@ check:
       - "kapi-spec/kapi-spec-testing/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-core/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-xml/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-server-ipc/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"
@@ -97,6 +100,7 @@ publish:
     - ":kapi-spec:kapi-spec-testing:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-core:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-client:publishAllPublicationsToDavilsRepository"
+    - ":kapi-runtime:kapi-runtime-xml:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-server:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-server-ipc:publishAllPublicationsToDavilsRepository"
     - ":kapi-runtime:kapi-runtime-testing:publishAllPublicationsToDavilsRepository"
@@ -176,6 +180,15 @@ release:
       - path: com/davils/kapi-runtime-client
         artifact: kapi-runtime-client
         task: ":kapi-runtime:kapi-runtime-client:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-xml-jvm
+        artifact: kapi-runtime-xml-jvm
+        task: ":kapi-runtime:kapi-runtime-xml:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-xml-wasm-js
+        artifact: kapi-runtime-xml-wasm-js
+        task: ":kapi-runtime:kapi-runtime-xml:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kapi-runtime-xml
+        artifact: kapi-runtime-xml
+        task: ":kapi-runtime:kapi-runtime-xml:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kapi-runtime-server
         artifact: kapi-runtime-server
         task: ":kapi-runtime:kapi-runtime-server:publishMavenPublicationToDavilsRepository"
@@ -219,6 +232,8 @@ release:
       - "kapi-runtime/kapi-runtime-core/build/libs/*.klib"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-client/build/libs/*.klib"
+      - "kapi-runtime/kapi-runtime-xml/build/libs/*.jar"
+      - "kapi-runtime/kapi-runtime-xml/build/libs/*.klib"
       - "kapi-runtime/kapi-runtime-server/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-server-ipc/build/libs/*.jar"
       - "kapi-runtime/kapi-runtime-testing/build/libs/*.jar"

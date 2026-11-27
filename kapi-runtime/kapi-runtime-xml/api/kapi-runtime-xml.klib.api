@@ -1,0 +1,48 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kapi-runtime-xml>
+final class com.davils.kapi.runtime.xml/XmlCodec : com.davils.kapi.runtime.core.codec/Codec, com.davils.kore.core.validation/Validatable { // com.davils.kapi.runtime.xml/XmlCodec|null[0]
+    final val isUnknownElementIgnored // com.davils.kapi.runtime.xml/XmlCodec.isUnknownElementIgnored|{}isUnknownElementIgnored[0]
+        final fun <get-isUnknownElementIgnored>(): kotlin/Boolean // com.davils.kapi.runtime.xml/XmlCodec.isUnknownElementIgnored.<get-isUnknownElementIgnored>|<get-isUnknownElementIgnored>(){}[0]
+    final val limits // com.davils.kapi.runtime.xml/XmlCodec.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kxml.core.limit/XmlLimits // com.davils.kapi.runtime.xml/XmlCodec.limits.<get-limits>|<get-limits>(){}[0]
+    final val mediaTypes // com.davils.kapi.runtime.xml/XmlCodec.mediaTypes|{}mediaTypes[0]
+        final fun <get-mediaTypes>(): kotlin.collections/List<com.davils.kapi.runtime.core.negotiation/MediaRange> // com.davils.kapi.runtime.xml/XmlCodec.mediaTypes.<get-mediaTypes>|<get-mediaTypes>(){}[0]
+    final val serializersModule // com.davils.kapi.runtime.xml/XmlCodec.serializersModule|{}serializersModule[0]
+        final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.davils.kapi.runtime.xml/XmlCodec.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+
+    final fun (com.davils.kore.core.validation/ValidationScope).validate() // com.davils.kapi.runtime.xml/XmlCodec.validate|validate@com.davils.kore.core.validation.ValidationScope(){}[0]
+    final fun <#A1: kotlin/Any?> decode(kotlinx.serialization/DeserializationStrategy<#A1>, kotlinx.io.bytestring/ByteString): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.xml/XmlCodec.decode|decode(kotlinx.serialization.DeserializationStrategy<0:0>;kotlinx.io.bytestring.ByteString){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> decode(kotlinx.serialization/DeserializationStrategy<#A1>, kotlinx.io.bytestring/ByteString, com.davils.kapi.runtime.core.negotiation/MediaType): com.davils.kapi.runtime.core.codec/Decoding<#A1> // com.davils.kapi.runtime.xml/XmlCodec.decode|decode(kotlinx.serialization.DeserializationStrategy<0:0>;kotlinx.io.bytestring.ByteString;com.davils.kapi.runtime.core.negotiation.MediaType){0§<kotlin.Any?>}[0]
+    final fun <#A1: kotlin/Any?> encode(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlinx.io.bytestring/ByteString // com.davils.kapi.runtime.xml/XmlCodec.encode|encode(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+    final fun toString(): kotlin/String // com.davils.kapi.runtime.xml/XmlCodec.toString|toString(){}[0]
+
+    final object Companion { // com.davils.kapi.runtime.xml/XmlCodec.Companion|null[0]
+        final const val HARD_DEPTH // com.davils.kapi.runtime.xml/XmlCodec.Companion.HARD_DEPTH|{}HARD_DEPTH[0]
+            final fun <get-HARD_DEPTH>(): kotlin/Int // com.davils.kapi.runtime.xml/XmlCodec.Companion.HARD_DEPTH.<get-HARD_DEPTH>|<get-HARD_DEPTH>(){}[0]
+        final const val HARD_INPUT_LENGTH // com.davils.kapi.runtime.xml/XmlCodec.Companion.HARD_INPUT_LENGTH|{}HARD_INPUT_LENGTH[0]
+            final fun <get-HARD_INPUT_LENGTH>(): kotlin/Int // com.davils.kapi.runtime.xml/XmlCodec.Companion.HARD_INPUT_LENGTH.<get-HARD_INPUT_LENGTH>|<get-HARD_INPUT_LENGTH>(){}[0]
+    }
+}
+
+final class com.davils.kapi.runtime.xml/XmlCodecBuilder : com.davils.kore.core.dsl/ValidatingBuilder<com.davils.kapi.runtime.xml/XmlCodec> { // com.davils.kapi.runtime.xml/XmlCodecBuilder|null[0]
+    final var isUnknownElementIgnored // com.davils.kapi.runtime.xml/XmlCodecBuilder.isUnknownElementIgnored|{}isUnknownElementIgnored[0]
+        final fun <get-isUnknownElementIgnored>(): kotlin/Boolean // com.davils.kapi.runtime.xml/XmlCodecBuilder.isUnknownElementIgnored.<get-isUnknownElementIgnored>|<get-isUnknownElementIgnored>(){}[0]
+        final fun <set-isUnknownElementIgnored>(kotlin/Boolean) // com.davils.kapi.runtime.xml/XmlCodecBuilder.isUnknownElementIgnored.<set-isUnknownElementIgnored>|<set-isUnknownElementIgnored>(kotlin.Boolean){}[0]
+    final var limits // com.davils.kapi.runtime.xml/XmlCodecBuilder.limits|{}limits[0]
+        final fun <get-limits>(): com.davils.kxml.core.limit/XmlLimits // com.davils.kapi.runtime.xml/XmlCodecBuilder.limits.<get-limits>|<get-limits>(){}[0]
+        final fun <set-limits>(com.davils.kxml.core.limit/XmlLimits) // com.davils.kapi.runtime.xml/XmlCodecBuilder.limits.<set-limits>|<set-limits>(com.davils.kxml.core.limit.XmlLimits){}[0]
+    final var serializersModule // com.davils.kapi.runtime.xml/XmlCodecBuilder.serializersModule|{}serializersModule[0]
+        final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // com.davils.kapi.runtime.xml/XmlCodecBuilder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+        final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // com.davils.kapi.runtime.xml/XmlCodecBuilder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
+
+    final fun limits(kotlin/Function1<com.davils.kxml.core.limit/XmlLimitsBuilder, kotlin/Unit>) // com.davils.kapi.runtime.xml/XmlCodecBuilder.limits|limits(kotlin.Function1<com.davils.kxml.core.limit.XmlLimitsBuilder,kotlin.Unit>){}[0]
+}
+
+final fun (com.davils.kapi.runtime.core.codec/CodecsBuilder).com.davils.kapi.runtime.xml/xml(kotlin/Function1<com.davils.kapi.runtime.xml/XmlCodecBuilder, kotlin/Unit> = ...) // com.davils.kapi.runtime.xml/xml|xml@com.davils.kapi.runtime.core.codec.CodecsBuilder(kotlin.Function1<com.davils.kapi.runtime.xml.XmlCodecBuilder,kotlin.Unit>){}[0]
+final fun com.davils.kapi.runtime.xml/xmlCodec(kotlin/Function1<com.davils.kapi.runtime.xml/XmlCodecBuilder, kotlin/Unit> = ...): com.davils.kapi.runtime.xml/XmlCodec // com.davils.kapi.runtime.xml/xmlCodec|xmlCodec(kotlin.Function1<com.davils.kapi.runtime.xml.XmlCodecBuilder,kotlin.Unit>){}[0]

@@ -1,0 +1,36 @@
+public final class com/davils/kapi/runtime/xml/XmlCodec : com/davils/kapi/runtime/core/codec/Codec, com/davils/kore/core/validation/Validatable {
+	public static final field Companion Lcom/davils/kapi/runtime/xml/XmlCodec$Companion;
+	public static final field HARD_DEPTH I
+	public static final field HARD_INPUT_LENGTH I
+	public fun decode (Lkotlinx/serialization/DeserializationStrategy;Lkotlinx/io/bytestring/ByteString;)Lcom/davils/kapi/runtime/core/codec/Decoding;
+	public fun decode (Lkotlinx/serialization/DeserializationStrategy;Lkotlinx/io/bytestring/ByteString;Lcom/davils/kapi/runtime/core/negotiation/MediaType;)Lcom/davils/kapi/runtime/core/codec/Decoding;
+	public fun encode (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
+	public final fun getLimits ()Lcom/davils/kxml/core/limit/XmlLimits;
+	public fun getMediaTypes ()Ljava/util/List;
+	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public final fun isUnknownElementIgnored ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kapi/runtime/xml/XmlCodec$Companion {
+}
+
+public final class com/davils/kapi/runtime/xml/XmlCodecBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun getLimits ()Lcom/davils/kxml/core/limit/XmlLimits;
+	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public final fun isUnknownElementIgnored ()Z
+	public final fun limits (Lkotlin/jvm/functions/Function1;)V
+	public final fun setLimits (Lcom/davils/kxml/core/limit/XmlLimits;)V
+	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
+	public final fun setUnknownElementIgnored (Z)V
+}
+
+public final class com/davils/kapi/runtime/xml/XmlCodecsKt {
+	public static final fun xml (Lcom/davils/kapi/runtime/core/codec/CodecsBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun xml$default (Lcom/davils/kapi/runtime/core/codec/CodecsBuilder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun xmlCodec (Lkotlin/jvm/functions/Function1;)Lcom/davils/kapi/runtime/xml/XmlCodec;
+	public static synthetic fun xmlCodec$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kapi/runtime/xml/XmlCodec;
+}
+
