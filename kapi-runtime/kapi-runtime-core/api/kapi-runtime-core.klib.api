@@ -1160,10 +1160,12 @@ final class com.davils.kapi.runtime.core.destination/IpAddress { // com.davils.k
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kapi.runtime.core.destination/IpAddress.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kapi.runtime.core.destination/IpAddress.hashCode|hashCode(){}[0]
     final fun toByteArray(): kotlin/ByteArray // com.davils.kapi.runtime.core.destination/IpAddress.toByteArray|toByteArray(){}[0]
+    final fun toKonnect(): com.davils.konnect.internetprotocol.address/IpAddress // com.davils.kapi.runtime.core.destination/IpAddress.toKonnect|toKonnect(){}[0]
     final fun toString(): kotlin/String // com.davils.kapi.runtime.core.destination/IpAddress.toString|toString(){}[0]
 
     final object Companion { // com.davils.kapi.runtime.core.destination/IpAddress.Companion|null[0]
         final fun fromByteArrayOrNull(kotlin/ByteArray): com.davils.kapi.runtime.core.destination/IpAddress? // com.davils.kapi.runtime.core.destination/IpAddress.Companion.fromByteArrayOrNull|fromByteArrayOrNull(kotlin.ByteArray){}[0]
+        final fun of(com.davils.konnect.internetprotocol.address/IpAddress): com.davils.kapi.runtime.core.destination/IpAddress // com.davils.kapi.runtime.core.destination/IpAddress.Companion.of|of(com.davils.konnect.internetprotocol.address.IpAddress){}[0]
         final fun parse(kotlin/String): com.davils.kapi.runtime.core.destination/IpAddress // com.davils.kapi.runtime.core.destination/IpAddress.Companion.parse|parse(kotlin.String){}[0]
         final fun parseOrNull(kotlin/String): com.davils.kapi.runtime.core.destination/IpAddress? // com.davils.kapi.runtime.core.destination/IpAddress.Companion.parseOrNull|parseOrNull(kotlin.String){}[0]
     }

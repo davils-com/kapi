@@ -668,11 +668,13 @@ public final class com/davils/kapi/runtime/core/destination/IpAddress {
 	public final fun isIpv4 ()Z
 	public final fun isPublic ()Z
 	public final fun toByteArray ()[B
+	public final fun toKonnect ()Lcom/davils/konnect/internetprotocol/address/IpAddress;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/davils/kapi/runtime/core/destination/IpAddress$Companion {
 	public final fun fromByteArrayOrNull ([B)Lcom/davils/kapi/runtime/core/destination/IpAddress;
+	public final fun of (Lcom/davils/konnect/internetprotocol/address/IpAddress;)Lcom/davils/kapi/runtime/core/destination/IpAddress;
 	public final fun parse (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/destination/IpAddress;
 	public final fun parseOrNull (Ljava/lang/String;)Lcom/davils/kapi/runtime/core/destination/IpAddress;
 }

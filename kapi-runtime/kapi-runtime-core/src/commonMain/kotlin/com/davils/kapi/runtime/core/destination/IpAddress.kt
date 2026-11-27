@@ -19,9 +19,9 @@
 package com.davils.kapi.runtime.core.destination
 
 import com.davils.kapi.runtime.core.destination.internal.Addresses
-import com.davils.kapi.runtime.core.destination.internal.IpParser
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.text.SafeText
+import com.davils.konnect.internetprotocol.address.IpAddress as KonnectAddress
 
 private const val IPV4_BYTES: Int = 4
 
@@ -123,6 +123,14 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
         octets.joinToString(".") { octet -> (octet.toInt() and BYTE_MASK).toString() }
 
     /**
+     * Returns this address as an address of Konnect, with its version, category and the networks of Konnect.
+     *
+     * @return the address of Konnect.
+     * @since 1.1.0
+     */
+    public fun toKonnect(): KonnectAddress = checkNotNull(Addresses.konnectOf(bytes)) { "An address has 4 or 16 bytes" }
+
+    /**
      * Reads and makes addresses.
      *
      * @since 1.0.0
@@ -135,7 +143,10 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
          * @return the address, or `null` if [text] is none by the strict grammar.
          * @since 1.0.0
          */
-        public fun parseOrNull(text: String): IpAddress? = IpParser.parse(text)?.let(::IpAddress)
+        public fun parseOrNull(text: String): IpAddress? {
+            val read = KonnectAddress.parseOrNull(text) ?: return null
+            return IpAddress(read.toByteArray())
+        }
 
         /**
          * Reads [text] like [parseOrNull].
@@ -147,6 +158,15 @@ public class IpAddress private constructor(private val bytes: ByteArray) {
          */
         public fun parse(text: String): IpAddress =
             requireNotNull(parseOrNull(text)) { "${SafeText.quoted(text)} is no IP address" }
+
+        /**
+         * Makes the address of an address of Konnect.
+         *
+         * @param address the address of Konnect.
+         * @return the address.
+         * @since 1.1.0
+         */
+        public fun of(address: KonnectAddress): IpAddress = IpAddress(address.toByteArray())
 
         /**
          * Makes the address of [bytes].

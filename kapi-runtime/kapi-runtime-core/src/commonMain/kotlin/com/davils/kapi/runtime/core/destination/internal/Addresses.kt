@@ -16,57 +16,39 @@
 
 package com.davils.kapi.runtime.core.destination.internal
 
+import com.davils.konnect.internetprotocol.address.AddressCategory
+import com.davils.konnect.internetprotocol.address.Ipv4Address
+import com.davils.konnect.internetprotocol.address.Ipv6Address
+import com.davils.konnect.internetprotocol.network.IpNetwork
+import com.davils.konnect.internetprotocol.address.IpAddress as KonnectAddress
+
 private const val IPV4_BYTES: Int = 4
-
+private const val IPV6_BYTES: Int = 16
 private const val SIX_TO_FOUR_OFFSET: Int = 2
-
 private const val TAIL_OFFSET: Int = 12
 
-private val notPublicV4: List<AddressBlock> = listOf(
-    "0.0.0.0/8",
-    "10.0.0.0/8",
-    "100.64.0.0/10",
-    "127.0.0.0/8",
-    "169.254.0.0/16",
-    "172.16.0.0/12",
-    "192.0.0.0/24",
-    "192.0.2.0/24",
-    "192.88.99.0/24",
-    "192.168.0.0/16",
-    "198.18.0.0/15",
-    "198.51.100.0/24",
-    "203.0.113.0/24",
-    "224.0.0.0/4",
-    "240.0.0.0/4",
-).map(AddressBlock::of)
-
-private val globalUnicast: AddressBlock = AddressBlock.of("2000::/3")
-
-private val notPublicV6: List<AddressBlock> = listOf(
-    "2001::/23",
-    "2001:db8::/32",
-    "3fff::/20",
-).map(AddressBlock::of)
-
-private val mapped: AddressBlock = AddressBlock.of("::ffff:0:0/96")
-
-private val translated: AddressBlock = AddressBlock.of("64:ff9b::/96")
-
-private val sixToFour: AddressBlock = AddressBlock.of("2002::/16")
+private val mapped: IpNetwork = IpNetwork.parse("::ffff:0:0/96")
+private val translated: IpNetwork = IpNetwork.parse("64:ff9b::/96")
+private val sixToFour: IpNetwork = IpNetwork.parse("2002::/16")
 
 internal object Addresses {
     fun isPublic(address: ByteArray): Boolean {
         val embedded = embedded(address)
         if (embedded != null) return isPublic(embedded)
-        return when (address.size == IPV4_BYTES) {
-            true -> notPublicV4.none { block -> block.contains(address) }
-            false -> globalUnicast.contains(address) && notPublicV6.none { block -> block.contains(address) }
-        }
+        val read = konnectOf(address)
+        return read != null && read.isPublic && read.category == AddressCategory.Public
+    }
+
+    fun konnectOf(address: ByteArray): KonnectAddress? {
+        if (address.size == IPV4_BYTES) return Ipv4Address.fromByteArray(address)
+        return address.takeIf { bytes -> bytes.size == IPV6_BYTES }?.let(Ipv6Address::fromByteArray)
     }
 
     private fun embedded(address: ByteArray): ByteArray? {
-        val offset = TAIL_OFFSET.takeIf { mapped.contains(address) || translated.contains(address) }
-            ?: SIX_TO_FOUR_OFFSET.takeIf { sixToFour.contains(address) }
+        val read = konnectOf(address)?.takeIf { found -> address.size == IPV6_BYTES && found is Ipv6Address }
+            ?: return null
+        val offset = TAIL_OFFSET.takeIf { read in mapped || read in translated }
+            ?: SIX_TO_FOUR_OFFSET.takeIf { read in sixToFour }
         return offset?.let { start -> address.copyOfRange(fromIndex = start, toIndex = start + IPV4_BYTES) }
     }
 }
